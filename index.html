@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensaio Local por Data</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        #data-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        #btn-listar {
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #btn-listar:hover {
+            background-color: #2980b9;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        @media (min-width: 600px) {
+            .container {
+                max-width: 800px;
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            label {
+                margin-right: 10px;
+                margin-bottom: 0;
+                width: 120px;
+            }
+            
+            #data-input {
+                flex-grow: 1;
+                margin-right: 10px;
+                margin-bottom: 0;
+            }
+            
+            #btn-listar {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ensaio Local por Data</h1>
+        <div class="input-group">
+            <label for="data-input">Data (dd/mm/aaaa):</label>
+            <input type="text" id="data-input" placeholder="dd/mm/aaaa" value="02/04/2025">
+            <button id="btn-listar">Listar</button>
+        </div>
+        <span id="error-msg" class="error"></span>
+        
+        <table id="tabela-eventos">
+            <thead>
+                <tr>
+                    <th>Local</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Dados completos dos ensaios
+        const dados = [
+        "ABADIA DE GOIÁS - CENTRAL;1º DOMINGO;17:00hs",
+            "ABADIA DE GOIÁS - REC DOS DOURADOS;2º DOMINGO;17:00hs",
+            "ÁGUA BRANCA;3º DOMINGO;17:00hs",
+            "BAIRRO FLORESTA;3º DOMINGO;17:00hs",
+            "BAIRRO GOYÁ;2ª SEXTA-FEIRA;19:30hs",
+            "BAIRRO SÃO CARLOS;1ª SEGUNDA-FEIRA;19:30hs",
+            "CAPUAVA;2ª SEGUNDA FEIRA;19:30hs",
+            "CAROLINA PARQUE;1º DOMINGO;17:00hs",
+            "CHÁCARA CÉU AZUL;1º SÁBADO;17:00hs",
+            "CHÁCARA MANSÕES DO CAMPUS;3ª QUINTA FEIRA;19:30hs",
+            "CIDADE JARDIM;1ª TERÇA-FEIRA;19:30hs",
+            "COND. DAS ESMERALDA;2ª QUINTA-FEIRA;19:30hs",
+            "CONJ. VERA CRUZ II;2º DOMINGO;17:00hs",
+            "DISTRITO VL. RICA;3ª SEXTA FEIRA DOS MESES ÍMPARES;19:30hs",
+            "ELDORADO OESTE;2ª SEXTA-FEIRA;19:30hs",
+            "FAMA - ST. MARECHAL RONDON;2ª TERÇA-FEIRA;19:30hs",
+            "GOIANIRA - CENTRAL;1ª SEGUNDA-FEIRA;19:30hs",
+            "GOIANIRA - CORA CORALINA;2º DOMINGO;17:00hs",
+            "GOIANIRA - JD. DAS PAINEIRAS;3ª SEGUNDA FEIRA;19:30hs",
+            "GOIANIRA - PQ. LOS ANGELES I;2ª SEGUNDA FEIRA;19:30hs",
+            "GOIANIRA - RES. TRIUNFO;4ª SEGUNDA-FEIRA;19:30hs",
+            "GOIANIRA - ST SUL (JD. IMPERIAL);4ª SEGUNDA FEIRA;19:30hs",
+            "GUAPÓ - CENTRAL;1º DOMINGO;17:00hs",
+            "GUAPÓ - CIDADE NOVA;3ª SEG FEIRA MESES PARES;19:30hs",
+            "GUAPÓ - VL. JOÃO PEDRO;3ª SEG FEIRA MESES ÍMPARES;19:30hs",
+            "JD. AMÉRICA;1º DOMINGO;17:00hs",
+            "JD. BALNEÁRIO MEIA PONTE;1ª SEXTA-FEIRA;19:30hs",
+            "JD. CALIFÓRNIA;4ª QUINTA-FEIRA;19:30hs",
+            "JD. CARAVELAS;2ª QUINTA-FEIRA;19:30hs",
+            "JD. COLORADO;4º DOMINGO;17:00hs",
+            "JD. CURITIBA 1;4º DOMINGO;17:00hs",
+            "JD. CURITIBA 3;2º DOMINGO;17:00hs",
+            "JD. DA LUZ;3ª QUARTA-FEIRA;19:30hs",
+            "JD. DAS AROEIRAS / VL. CONCÓRDIA;2ª SEXTA-FEIRA;19:30hs",
+            "JD. DAS OLIVEIRAS;2º DOMINGO;17:00hs",
+            "JD. DOS CERRADOS III;4º DOMINGO;17:00hs",
+            "JD. EUROPA;2ª QUINTA-FEIRA;19:30hs",
+            "JD. GOIÁS;2ª QUINTA-FEIRA;19:30hs",
+            "JD. GUANABARA;1º DOMINGO;17:00hs",
+            "JD. ITAIPU;2º DOMINGO;17:00hs",
+            "JD. LIBERDADE;1º DOMINGO;17:00hs",
+            "JD. MARILIZA;1ª SEGUNDA-FEIRA;19:30hs",
+            "JD. NOVA ESPERANÇA;1º DOMINGO;17:00hs",
+            "JD. NOVO MUNDO;2ª QUARTA-FEIRA;19:30hs",
+            "JD. POMPÉIA;2º DOMINGO;17:00hs",
+            "JD. PRESIDENTE;1º DOMINGO;17:00hs",
+            "JD. PRIMAVERA;4º SÁBADO;17:00hs",
+            "JD. STO ANTÔNIO;1ª QUINTA-FEIRA;19:30hs",
+            "POSSELÂNDIA - CENTRAL;2ª SEG. FEIRA MESES ÍMPARES;19:30hs",
+            "PQ. AMAZÔNIA;2ª SEXTA-FEIRA;19:30hs",
+            "PQ. ANHANGUERA;3ª TERÇA-FEIRA;19:30hs",
+            "PQ. ATHENEU;1ª QUARTA-FEIRA;19:30hs",
+            "PQ. DAS FLORES;1º SÁBADO;17:00hs",
+            "PQ. INDUSTRIAL JOÃO BRAZ;1º DOMINGO;17:00hs",
+            "PQ. MARACANÃ;3º DOMINGO;17:00hs",
+            "PQ. OESTE INDUSTRIAL;1ª TERÇA-FEIRA;19:30hs",
+            "PQ. TREMENDÃO;1º DOMINGO;17:00hs",
+            "PRIVÊ DAS OLIVEIRAS;3º DOMINGO;17:00hs",
+            "REAL CONQUISTA;1º SÁBADO;17:00hs",
+            "RECANTO DAS MINAS GERAIS;3ª SEXTA-FEIRA;19:30hs",
+            "RES. AMIN CAMARGO;2º SÁBADO;17:00hs",
+            "RES. BARRA VENTO;3º DOMINGO;17:00hs",
+            "RES. BRISAS DA MATA;1º DOMINGO;17:00hs",
+            "RES. BUENA VISTA III;2ª SEXTA-FEIRA;19:30hs",
+            "RES. CAMPOS DOURADOS;3ª SEXTA-FEIRA;19:30hs",
+            "RES. CENTER VILLE;1ª QUINTA-FEIRA;19:30hs",
+            "RES. FELICIDADE;4ª DOMINGO;17:00hs",
+            "RES. FONTE DAS ÁGUAS 1;2ª TERÇA-FEIRA;19:30hs",
+            "RES. ÍRIS VILLE;1º SÁBADO;17:00hs",
+            "RES. ITAIPU;1º DOMINGO;17:00hs",
+            "RES. JUNQUEIRA;1ª SEGUNDA-FEIRA;19:30hs",
+            "RES. MAR DEL PLATA;1ª SEXTA-FEIRA;19:30hs",
+            "RES. MORADA DO IPÊ;1º SÁBADO;17:00hs",
+            "RES. ORLANDO MORAIS;3º SEGUNDA FEIRA;19:30hs",
+            "RES. PARK SOLAR;4ª SEXTA-FEIRA;19:30hs",
+            "RES. RECANTO DO BOSQUE;1ª SEGUNDA-FEIRA;19:30hs",
+            "RES. RIO VERDE;2ª QUINTA-FEIRA;19:30hs",
+            "RES. SOLANGE PARQUE III;3º DOMINGO;17:00hs",
+            "RES. VALE DOS SONHOS;3º DOMINGO;17:00hs",
+            "SERRA AZUL;1ª SEGUNDA-FEIRA;19:30hs",
+            "ST. ALPHAVILLE II;1º DOMINGO;17:00hs",
+            "ST. ALTO DO VALE;2º DOMINGO;17:00hs",
+            "ST. BELA VISTA;1º DOMINGO;17:00hs",
+            "ST. COIMBRA;1º DOMINGO;17:00hs",
+            "ST. CRIMÉIA LESTE;2ª SEGUNDA FEIRA;19:30hs",
+            "ST. ESTRELA DALVA;1º DOMINGO;17:00hs",
+            "ST. FAIÇALVILLE;1º DOMINGO;17:00hs",
+            "ST. FINSOCIAL;2º DOMINGO;17:00hs",
+            "ST. GENTIL MEIRELES;3º DOMINGO;17:00hs",
+            "ST. GOIÂNIA II;4º DOMINGO;17:00hs",
+            "ST. GOIÂNIA VIVA;1º SÁBADO;17:00hs",
+            "ST. GRAJAÚ;2ª SEXTA-FEIRA;19:30hs",
+            "ST. JAÓ;2º DOMINGO;17:00hs",
+            "ST. MADRE GERMANA;1º DOMINGO;17:00hs",
+            "ST. NOROESTE;2º DOMINGO;17:00hs",
+            "ST. NORTE FERROVIÁRIO II;1º DOMINGO;17:00hs",
+            "ST. PALMITO;1º SÁBADO;17:00hs",
+            "ST. PEDRO LUDOVICO;2ª SEXTA-FEIRA;19:30hs",
+            "ST. PERIM;1º SÁBADO;17:00hs",
+            "ST. SANTA GENOVEVA;2ª QUARTA-FEIRA;19:30hs",
+            "ST. SANTOS DUMONT;2ª SEXTA-FEIRA;19:30hs",
+            "ST. SÃO JUDAS TADEU;2ª QUARTA-FEIRA;19:30hs",
+            "ST. UNIVERSITÁRIO;1º DOMINGO;17:00hs",
+            "ST. URIAS MAGALHÃES;1º DOMINGO;17:00hs",
+            "STA. RITA;4ª SEXTA-FEIRA;19:30hs",
+            "STO HILÁRIO;1ª SEXTA-FEIRA;19:30hs",
+            "VARJÃO - FAZ. SALOBRO DE BAIXO;1ª SEXTA-FEIRA;19:30hs",
+            "VARJÃO - CENTRAL;3ª SEXTA-FEIRA;19:30hs",
+            "VL. CRISTINA;3º DOMINGO;17:00hs",
+            "VL. ITATIAIA;3ª SEXTA-FEIRA;19:30hs",
+            "VL. JOÃO VAZ;3ª SEGUNDA-FEIRA;19:30hs",
+            "VL. PEDROSO;2º DOMINGO;17:00hs",
+            "VL. RIZZO;1ª QUINTA-FEIRA;19:30hs",
+            "VL. RORIZ - URIAS MAGALHÃES 2;2ª QUARTA-FEIRA;19:30hs",
+            "VL. ROSA;2ª TERÇA-FEIRA;19:30hs",
+            "VL. SANTA HELENA;2º DOMINGO;17:00hs",
+            "VL. SÃO JOSÉ;1º DOMINGO;17:00hs",
+            "VL. VIANA;3ª QUARTA-FEIRA;19:30hs"
+        ];
+
+        // Função para validar o formato dd/mm/aaaa
+        function validarData(input) {
+            const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            if (!regex.test(input)) return false;
+
+            const [_, dia, mes, ano] = input.match(regex);
+            const data = new Date(ano, mes - 1, dia);
+            return (
+                data.getDate() == dia &&
+                data.getMonth() == mes - 1 &&
+                data.getFullYear() == ano
+            );
+        }
+
+        // Função CORRIGIDA para calcular a data do evento
+        function calcularDataEvento(descricao, mes, ano) {
+            // Extrai a ordem (1º, 2º, etc.) e o dia da semana
+            const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
+            if (!match) return null;
+            
+            const ordem = parseInt(match[1]);
+            let diaSemana = match[2].trim().toUpperCase();
+            
+            // Padroniza o nome do dia da semana
+            diaSemana = diaSemana
+                .replace(/-/g, ' ')
+                .replace(/FEIRA/g, '')
+                .trim();
+            
+            // Mapeamento dos dias da semana
+            const diasMap = {
+                'DOMINGO': 0,
+                'SEGUNDA': 1,
+                'TERÇA': 2, 'TERCA': 2,
+                'QUARTA': 3,
+                'QUINTA': 4,
+                'SEXTA': 5,
+                'SÁBADO': 6, 'SABADO': 6
+            };
+
+            const diaNum = diasMap[diaSemana];
+            if (diaNum === undefined) return null;
+
+            // Calcula a data correta
+            let data = new Date(ano, mes - 1, 1);
+            let contador = 0;
+            
+            while (data.getMonth() === mes - 1) {
+                if (data.getDay() === diaNum) {
+                    contador++;
+                    if (contador === ordem) {
+                        return new Date(data);
+                    }
+                }
+                data.setDate(data.getDate() + 1);
+            }
+            
+            return null;
+        }
+
+        // Função para gerar a tabela
+        function gerarTabela(dataInformada) {
+            const tabela = document.querySelector('#tabela-eventos tbody');
+            tabela.innerHTML = '';
+
+            const [diaStr, mesStr, anoStr] = dataInformada.split('/');
+            const dia = parseInt(diaStr);
+            const mes = parseInt(mesStr);
+            const ano = parseInt(anoStr);
+            
+            let encontrouEventos = false;
+
+            dados.forEach(item => {
+                try {
+                    const [local, descricaoDia, horario] = item.split(';');
+                    const dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+
+                    if (dataEvento && 
+                        dataEvento.getDate() === dia &&
+                        dataEvento.getMonth() === mes - 1 &&
+                        dataEvento.getFullYear() === ano) {
+                        
+                        const dataFormatada = dataInformada;
+                        const row = tabela.insertRow();
+                        row.insertCell(0).textContent = local;
+                        row.insertCell(1).textContent = dataFormatada;
+                        row.insertCell(2).textContent = horario;
+                        encontrouEventos = true;
+                    }
+                } catch (e) {
+                    console.error("Erro ao processar item:", item, e);
+                }
+            });
+
+            if (!encontrouEventos) {
+                const row = tabela.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 3;
+                cell.textContent = "Nenhum ensaio encontrado para esta data.";
+                cell.className = "no-events";
+            }
+        }
+
+        // Configuração inicial
+        //document.getElementById('data-input').value = "02/04/2025";
+        //gerarTabela("02/04/2025");
+        // Substitua esta linha:
+        // gerarTabela("02/04/2025");
+
+        // Por esta:
+        const dataAtual = getDataAtualFormatada();
+        document.getElementById('data-input').value = dataAtual;
+        gerarTabela(dataAtual);
+
+        // Evento do botão "Listar"
+        document.getElementById('btn-listar').addEventListener('click', () => {
+            const input = document.getElementById('data-input').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!validarData(input)) {
+                errorMsg.textContent = 'Data inválida! Use dd/mm/aaaa.';
+                return;
+            }
+
+            errorMsg.textContent = '';
+            gerarTabela(input);
+        });
+
+        // Validação em tempo real
+        document.getElementById('data-input').addEventListener('input', (e) => {
+            const errorMsg = document.getElementById('error-msg');
+            if (!validarData(e.target.value) && e.target.value.length === 10) {
+                errorMsg.textContent = 'Formato inválido! Use dd/mm/aaaa.';
+            } else {
+                errorMsg.textContent = '';
+            }
+        });
+
+        function getDataAtualFormatada() {
+           const hoje = new Date();
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const ano = hoje.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        }
+    </script>
+</body>
+</html>
