@@ -131,7 +131,46 @@
                 width: auto;
             }
         }
+
+        tr.clickable {
+            cursor: pointer; /* Muda o cursor para a "mãozinha" */
+            position: relative; /* Para o tooltip funcionar */
+
+        }
+        tr.clickable:hover::after {
+            content: "Clique para acessar a localização";
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            z-index: 100;        } 
+    
+         .tooltip {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .visible {
+            opacity: 1;
+        }
+    
     </style>
+
 </head>
 <body>
     <div class="container">
@@ -142,6 +181,7 @@
             <button id="btn-listar">Listar</button>
         </div>
         <span id="error-msg" class="error"></span>
+        <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
         
         <table id="tabela-eventos">
             <thead>
@@ -371,7 +411,7 @@
             select.innerHTML = '';
             
             // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 35; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
@@ -461,9 +501,15 @@
                         
                         const dataFormatada = dataInformada;
                         const row = tabela.insertRow();
-                        row.insertCell(0).textContent = local;
+                        row.style.cursor = "pointer";
+
+                        row.className = "clickable"; // Adiciona a classe para o cursor
+                        row.onclick = () => window.open("https://maps.app.goo.gl/" + localizacao, "_blank"); // Redireciona ao clicar
+
+                        row.insertCell(0).innerHTML = local;
                         row.insertCell(1).textContent = cidade;
                         row.insertCell(2).textContent = horario;
+                        
                         encontrouEventos = true;
                     }
                 } catch (e) {
@@ -474,9 +520,11 @@
             if (!encontrouEventos) {
                 const row = tabela.insertRow();
                 const cell = row.insertCell(0);
-                cell.colSpan = 3;
+                cell.colSpan = 4;
                 cell.textContent = "Nenhum ensaio encontrado para esta data.";
                 cell.className = "no-events";
+            } else {
+                MostrarMsg()
             }
         }
 
@@ -497,6 +545,23 @@
                 gerarTabela(e.target.value);
             });
         });
+
+        function MostrarMsg()  { 
+            const tooltip = document.getElementById('infoTooltip');
+            
+            // Mostra o tooltip
+            tooltip.classList.add('visible');
+            
+            // Esconde após 1 segundo
+            setTimeout(() => {
+                tooltip.classList.remove('visible');
+            }, 1000);
+
+
+         }
+        
+       
+
     </script>
 </body>
 </html>
