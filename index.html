@@ -168,6 +168,37 @@
         .visible {
             opacity: 1;
         }
+        .filtros {
+            background-color: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .filtros h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        .filtros-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .filtros label {
+            background-color: #fff;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .filtros input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+        }
     
     </style>
 
@@ -182,6 +213,18 @@
         </div>
         <span id="error-msg" class="error"></span>
         <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
+
+        <!--<div class="filtros">
+            <h3>Filtrar por continente:</h3>
+            <div class="filtros-container">
+                <label><input type="checkbox" name="continente" value="Goiania" checked>Goiania</label>
+                <label><input type="checkbox" name="continente" value="Aparecida" checked>Aparecida</label>
+                <label><input type="checkbox" name="continente" value="Aragoiania" checked>Aragoiania</label>
+                <label><input type="checkbox" name="continente" value="Hidrolandia" checked>Hidrolandia</label>
+                <label><input type="checkbox" name="continente" value="Guapo" checked>Guapo</label>
+            </div>
+        </div>-->
+    
         
         <table id="tabela-eventos">
             <thead>
@@ -256,7 +299,7 @@
 "PǪ. OESTE INDUSTRIAL;Goiânia;1ª TERÇA-FEIRA;19:30hs;YHdCBYkaxU71zBGE7",
 "PǪ. TREMENDÃO;Goiânia;1º DOMINGO;17:00hs;CnuTJ38U7HaLNMWXA",
 "PRIVÊ DAS OLIVEIRAS;Goiânia;3º DOMINGO;17:00hs;Df5kAjHCistx5kgi8",
-"REAL CONǪUISTA;Goiânia;1º SÁBADO;17:00hs;8nBt4embT9LzsTQ4A",
+"REAL CONǪUISTA;Goiânia;1º SÁBADO;17:00hs;T3PugKZyNpHAMAg56",
 "RECANTO DAS MINAS GERAIS;Goiânia;3ª SEXTA-FEIRA;19:30hs;JjkJRv6RjEYoaJNt7",
 "RES. AMIN CAMARGO;Goiânia;2º SÁBADO;17:00hs;RWAQtMawfi8RNLU59",
 "RES. BARRA VENTO;Goiânia;3º DOMINGO;17:00hs;TBzKpqstmyDFjmw19",
@@ -277,7 +320,7 @@
 "RES. RIO VERDE;Goiânia;2ª ǪUINTA-FEIRA;19:30hs;1nf2TLnCr8z5Szvf9",
 "RES. SOLANGE PARǪUE III;Goiânia;3º DOMINGO;17:00hs;qS3SFE2hJbNeUAns6",
 "RES. VALE DOS SONHOS;Goiânia;3º DOMINGO;17:00hs;URRmxPmYDToKwLjg9",
-"SERRA AZUL;Goiânia;1ª SEGUNDA-FEIRA;19:30hs;tqcKYwegKmKphXhJ9",
+"SERRA AZUL;Goiânia;1ª SEGUNDA-FEIRA;19:30hs;b6RKsb7ZjbWLZsyeA",
 "ST. ALPHAVILLE II;Goiânia;1º DOMINGO;17:00hs;kcbAhsbJHBTmze1e6",
 "ST. ALTO DO VALE;Goiânia;2º DOMINGO;17:00hs;WW5oLYTgxdcMSYts9",
 "ST. BELA VISTA;Goiânia;1º DOMINGO;17:00hs;skBPv1kJXnQgSmJ29",
@@ -354,7 +397,7 @@
 "PAPILLON PARQUE;Aparecida;1ª SEGUNDA-FEIRA;19:30H;YCroEDoHWJp4mBq59",
 "PARQUE FLAMBOYANT;Aparecida;2ª QUARTA-FEIRA;19:30H;eBzbyZjEzkdzzUcXA",
 "PARQUE HAYALA;Aparecida;2ª SEXTA-FEIRA;19:30H;HdfXFEG8f7UbEpTXA",
-"PARQUE IBIRAPUERA;Aparecida;1ª SEXTA-FEIRA;19:30H;hNM5Szn8AjVvCCwr6",
+"PARQUE IBIRAPUERA;Aparecida;1ª SEXTA-FEIRA;19:30H;YBz12uTTvvupg1v16",
 "PARQUE SÃO JORGE;Aparecida;3ª QUINTA-FEIRA;19:30H;Un6mYAaaXeM6GSxs6",
 "PARQUE VEIGA JARDIM II;Aparecida;2ª SEXTA-FEIRA meses ÍMPARES;19:30H;2RgB2GJw237amEYL8",
 "RESIDENCIAL CARAÍBAS;Aparecida;2º DOMINGO;17:00H;y8UTvf7tqXUHj5uu6",
@@ -411,7 +454,7 @@
             select.innerHTML = '';
             
             // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
-            for (let i = 0; i < 35; i++) {
+            for (let i = 0; i < 20; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
@@ -555,7 +598,7 @@
             // Esconde após 1 segundo
             setTimeout(() => {
                 tooltip.classList.remove('visible');
-            }, 1000);
+            }, 2000);
 
 
          }
