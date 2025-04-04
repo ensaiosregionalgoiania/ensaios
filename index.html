@@ -168,37 +168,6 @@
         .visible {
             opacity: 1;
         }
-        .filtros {
-            background-color: #f0f0f0;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .filtros h3 {
-            margin-top: 0;
-            font-size: 1.1rem;
-            text-align: center;
-        }
-        .filtros-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        .filtros label {
-            background-color: #fff;
-            padding: 8px 12px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        .filtros input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 6px;
-        }
     
     </style>
 
@@ -213,18 +182,6 @@
         </div>
         <span id="error-msg" class="error"></span>
         <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
-
-        <!--<div class="filtros">
-            <h3>Filtrar por continente:</h3>
-            <div class="filtros-container">
-                <label><input type="checkbox" name="continente" value="Goiania" checked>Goiania</label>
-                <label><input type="checkbox" name="continente" value="Aparecida" checked>Aparecida</label>
-                <label><input type="checkbox" name="continente" value="Aragoiania" checked>Aragoiania</label>
-                <label><input type="checkbox" name="continente" value="Hidrolandia" checked>Hidrolandia</label>
-                <label><input type="checkbox" name="continente" value="Guapo" checked>Guapo</label>
-            </div>
-        </div>-->
-    
         
         <table id="tabela-eventos">
             <thead>
