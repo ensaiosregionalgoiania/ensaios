@@ -428,7 +428,7 @@
             select.innerHTML = '';
             
             // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
-            for (let i = 0; i < 35; i++) {
+            for (let i = 0; i < 30; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
@@ -574,10 +574,10 @@
             gerarTabela(dataSelecionada);
             
             // Evento do botão "Listar" (mantido para consistência, mas não é mais necessário)
-            document.getElementById('btn-listar').addEventListener('click', () => {
-                const dataSelecionada = document.getElementById('data-select').value;
-                gerarTabela(dataSelecionada);
-            });
+            //document.getElementById('btn-listar').addEventListener('click', () => {
+            //    const dataSelecionada = document.getElementById('data-select').value;
+            //    gerarTabela(dataSelecionada);
+            //});
             
             // Atualiza automaticamente quando muda a seleção
             document.getElementById('data-select').addEventListener('change', (e) => {
