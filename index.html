@@ -350,32 +350,32 @@
         <div class="filtro-grupo">
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia" checked>Goiânia
+                    <input type="checkbox"  name="cidade" value="Goiânia" onclick="AlteraCidade()" checked>Goiânia
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aparecida" checked>Aparecida
+                    <input type="checkbox" name="cidade" value="Aparecida" onclick="AlteraCidade()" checked>Aparecida
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aragoiânia" checked>Aragoiânia
+                    <input type="checkbox" name="cidade" value="Aragoiânia" onclick="AlteraCidade()" checked>Aragoiânia
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Hidrolândia" checked>Hidrolândia
+                    <input type="checkbox" name="cidade" value="Hidrolândia" onclick="AlteraCidade()" checked>Hidrolândia
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Guapó" checked>Guapó
+                    <input type="checkbox" name="cidade" value="Guapó" onclick="AlteraCidade()" checked>Guapó
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Goianira" checked>Goianira
+                    <input type="checkbox" name="cidade" value="Goianira" onclick="AlteraCidade()" checked>Goianira
                 </label>
             </div>
                 </div>
@@ -619,8 +619,10 @@
             });
             
         });
-       
-
+        
+        function AlteraCidade() {
+            gerarTabela(document.getElementById('data-select').value);
+        }
     </script>
 </body>
 </html>

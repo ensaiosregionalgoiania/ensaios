@@ -101,7 +101,7 @@
             "JD. GOIÁS;Goiânia;2ª QUINTA-FEIRA;19:30hs;BbRcFyWtZLCqiRV16",
             "JD. CARAVELAS;Goiânia;2ª QUINTA-FEIRA;19:30hs;5MavwLrtVk6pbALm8",
             "COND. DAS ESMERALDA;Goiânia;2ª QUINTA-FEIRA;19:30hs;ZPVuUDLGJwsHp6jz5",
-            "JARDIM EUROPA;Goiânia;2ª QUINTA-FEIRA;19:30hs;wCXzwnDgT28jsN6B9",
+            "<B>JARDIM EUROPA</B>;Goiânia;2ª QUINTA-FEIRA;19:30hs;wCXzwnDgT28jsN6B9",
             "SETOR EXPANSUL;Aparecida;2ª SEXTA-FEIRA;19:30H;fo5Eb6Vat9R4oTGe8",
             "PARQUE HAYALA;Aparecida;2ª SEXTA-FEIRA;19:30H;HdfXFEG8f7UbEpTXA",
             "JARDIM DOM BOSCO II;Aparecida;2ª SEXTA-FEIRA;19:30H;SgRsvHqwLqXTX7HV6",
