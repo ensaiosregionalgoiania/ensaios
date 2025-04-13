@@ -464,7 +464,8 @@
                 const diaSemana = getDiaSemana(data);
                 const option = document.createElement('option');
                 option.value = dataFormatada + "|" + diaSemana;
-                option.textContent = `${dataFormatada} (${diaSemana})`;
+                option.value = dataFormatada + "|" + diaSemana;
+                option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
                 
                 // Seleciona a data atual por padrão
                 if (i === 0) {
