@@ -425,8 +425,25 @@
 
         // Função para obter o nome do dia da semana
         function getDiaSemana(data) {
-            const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            return dias[data.getDay()];
+           const dias = ['DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA', 'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'];
+           let NumeroSemana = ""
+           if (data.getDate() <= 7) {
+                NumeroSemana = "1";
+           } else if (data.getDate() <= 14) {
+                NumeroSemana = "2";
+           } else if (data.getDate() <= 21) {
+                NumeroSemana = "3";
+           } else if (data.getDate() <= 28) {
+                NumeroSemana = "4";
+           } else {
+                NumeroSemana = "5";
+           }
+           let Ordem = "ª"
+           if (data.getDay() == 0 || data.getDay() == 6) {
+                Ordem = "º";
+           }
+
+            return NumeroSemana + Ordem + " " + dias[data.getDay()];
         }
 
         // Função para preencher o select com as datas
@@ -439,15 +456,14 @@
             select.innerHTML = '';
             
             // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
-            for (let i = 0; i < 30; i++) {
+            for (let i = 77; i < 180; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
                 const dataFormatada = formatarData(data);
                 const diaSemana = getDiaSemana(data);
-                
                 const option = document.createElement('option');
-                option.value = dataFormatada;
+                option.value = dataFormatada + "|" + diaSemana;
                 option.textContent = `${dataFormatada} (${diaSemana})`;
                 
                 // Seleciona a data atual por padrão
@@ -491,7 +507,6 @@
             // Calcula a data correta
             let data = new Date(ano, mes - 1, 1);
             let contador = 0;
-            
             while (data.getMonth() === mes - 1) {
                 if (data.getDay() === diaNum) {
                     contador++;
@@ -500,6 +515,7 @@
                     }
                 }
                 data.setDate(data.getDate() + 1);
+
             }
             
             return null;
@@ -507,7 +523,6 @@
 
         // Função para gerar a tabela
         function gerarTabela(dataInformada) {
-            
             // Seleciona todos os checkboxes com name="opcoes"
             const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
             const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
@@ -515,38 +530,44 @@
             //todosCheckboxes.length;
             //const totalMarcados = checkboxesMarcados.length;
             const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
-            //alert(totalNaoMarcados)
             if (checkboxes.length === 0) {
                 alert("Nenhuma cidade foi selecionada.");
                 return;
             }
-            
             let cidades = "|";
             
             // Percorre todos os checkboxes selecionados
             checkboxes.forEach((checkbox) => {
                 cidades += `|${checkbox.value}|`;
             });
-            //alert(cidades)            
             const tabela = document.querySelector('#tabela-eventos tbody');
             tabela.innerHTML = '';
-
-            const [diaStr, mesStr, anoStr] = dataInformada.split('/');
+            const [DataCompleta, DiaSemana] = dataInformada.split('|');
+            const [diaStr, mesStr, anoStr] = DataCompleta.split('/');
             const dia = parseInt(diaStr);
             const mes = parseInt(mesStr);
             const ano = parseInt(anoStr);
-            
+            let ultimoDia = new Date(ano, mes, 0).getDate();
             let encontrouEventos = false;
 
             dados.forEach(item => {
                 try {
                     const [local, cidade, descricaoDia, horario, localizacao] = item.split(';');
-                    const dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    let dataEvento = ""
+                    if ((dia >= 22 && dia <= 28)) {
+                        if (dia + 7 > ultimoDia) {
+                            dataEvento = calcularDataEvento(descricaoDia.replace("5ª", "4ª").replace("5º", "4º"), mes, ano);
+                        } else {
+                            dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                        }
+                    } else {
+                        dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    }   
+
                     if (dataEvento && 
                         dataEvento.getDate() === dia &&
                         dataEvento.getMonth() === mes - 1 &&
                         dataEvento.getFullYear() === ano) {
-                        //alert(totalNaoMarcados)
                         if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+"|") > 0)  {
                             const dataFormatada = dataInformada;
                             const row = tabela.insertRow();
@@ -558,7 +579,6 @@
                             row.insertCell(0).innerHTML = local;
                             row.insertCell(1).textContent = cidade;
                             row.insertCell(2).textContent = horario;
-                            
                             encontrouEventos = true;
                         }
                     }
@@ -584,12 +604,6 @@
             const dataSelecionada = document.getElementById('data-select').value;
             gerarTabela(dataSelecionada);
             
-            // Evento do botão "Listar" (mantido para consistência, mas não é mais necessário)
-            //document.getElementById('btn-listar').addEventListener('click', () => {
-            //    const dataSelecionada = document.getElementById('data-select').value;
-            //    gerarTabela(dataSelecionada);
-            //});
-            
             // Atualiza automaticamente quando muda a seleção
             document.getElementById('data-select').addEventListener('change', (e) => {
                 gerarTabela(e.target.value);
@@ -606,8 +620,6 @@
             setTimeout(() => {
                 tooltip.classList.remove('visible');
             }, 2000);
-
-
          }
         
          document.addEventListener('DOMContentLoaded', function() {
@@ -628,7 +640,6 @@
             aplicarFiltrosBtn.addEventListener('click', function() {
                 toggleMenu();
             });
-            
         });
         
         function AlteraCidade() {

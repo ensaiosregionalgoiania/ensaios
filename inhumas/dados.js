@@ -6,11 +6,11 @@
             "VILA AMÉRICA;Inhumas;2ª TERÇA-FEIRA;19:30hs;aUi7rgdfKELvWeUi6;",
             "ANA NERY;Inhumas;4ª QUINTA-FEIRA;19:30hs;tQLq6dG3c2kxcWut5;",
             "ARAÇU;Araçu;3º SÁBADO;17:00hs;WLq5AFvPPXZFU1ubA;",
-            "BRAZABRANTES;Brazabrantes;ÚLTIMA TERÇA-FEIRA;19:30hs;jhEdqWi8JcuD8Sy46;",
-            "ITAGUARI;Itaguari;ÚLTIMO SÁBADO;17:00hs;hmkta1jeoTnfJj7RA;",
+            "BRAZABRANTES;Brazabrantes;5ª TERÇA-FEIRA;19:30hs;jhEdqWi8JcuD8Sy46;",
+            "ITAGUARI;Itaguari;5º SÁBADO;17:00hs;hmkta1jeoTnfJj7RA;",
             "ITAGUARU;Itaguaru;2º SÁBADO;17:00hs;dZpBbPpKxgGyZgYy9;",
             "ITAUÇU;Itauçu;3º SÁBADO;17:00hs;KiZHuNZ6jQFGLLaj9;",
-            "ORDALIA;Itauçu;ÚLTIMO SÁBADO;17:00hs;https:AnRSiHpmmBGFzVqo9;",
+            "ORDALIA;Itauçu;5º SÁBADO;17:00hs;https:AnRSiHpmmBGFzVqo9;",
             "SANTA ROSA;Santa Rosa;2º SÁBADO;17:00hs;LXsR8gPeuX97VbsC6;",
             "TAQUARAL;Taquaral;1º SÁBADO;17:00hs;HPudBBd7sQsjMsXJA;"
         ];
