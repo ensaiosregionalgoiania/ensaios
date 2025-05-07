@@ -350,32 +350,52 @@
         <div class="filtro-grupo">
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia" onclick="AlteraCidade()" checked>Goiânia
+                    <input type="checkbox"  name="cidade" value="Goiânia1" onclick="AlteraCidade()" checked>Goiânia-setor 1
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aparecida" onclick="AlteraCidade()" checked>Aparecida
+                    <input type="checkbox"  name="cidade" value="Goiânia2" onclick="AlteraCidade()" checked>Goiânia-setor 2
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aragoiânia" onclick="AlteraCidade()" checked>Aragoiânia
+                    <input type="checkbox"  name="cidade" value="Goiânia3" onclick="AlteraCidade()" checked>Goiânia-setor 3
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Hidrolândia" onclick="AlteraCidade()" checked>Hidrolândia
+                    <input type="checkbox"  name="cidade" value="Goiânia4" onclick="AlteraCidade()" checked>Goiânia-setor 4
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Guapó" onclick="AlteraCidade()" checked>Guapó
+                    <input type="checkbox"  name="cidade" value="Goiânia5" onclick="AlteraCidade()" checked>Goiânia-setor 5
                 </label>
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Goianira" onclick="AlteraCidade()" checked>Goianira
+                    <input type="checkbox" name="cidade" value="Aparecida0" onclick="AlteraCidade()" checked>Aparecida
+                </label>
+            </div>
+            <div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" name="cidade" value="Aragoiânia0" onclick="AlteraCidade()" checked>Aragoiânia
+                </label>
+            </div>
+            <div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" name="cidade" value="Hidrolândia0" onclick="AlteraCidade()" checked>Hidrolândia
+                </label>
+            </div>
+            <div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" name="cidade" value="Guapó0" onclick="AlteraCidade()" checked>Guapó
+                </label>
+            </div>
+            <div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" name="cidade" value="Goianira0" onclick="AlteraCidade()" checked>Goianira
                 </label>
             </div>
                 </div>
@@ -415,7 +435,24 @@
         // Função para obter o nome do dia da semana
         function getDiaSemana(data) {
             const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            return dias[data.getDay()];
+            let NumeroSemana = ""
+           if (data.getDate() <= 7) {
+                NumeroSemana = "1";
+           } else if (data.getDate() <= 14) {
+                NumeroSemana = "2";
+           } else if (data.getDate() <= 21) {
+                NumeroSemana = "3";
+           } else if (data.getDate() <= 28) {
+                NumeroSemana = "4";
+           } else {
+                NumeroSemana = "5";
+           }
+           let Ordem = "ª"
+           if (data.getDay() == 0 || data.getDay() == 6) {
+                Ordem = "º";
+           }
+
+            return NumeroSemana + Ordem + " " + dias[data.getDay()];
         }
 
         // Função para preencher o select com as datas
@@ -436,8 +473,8 @@
                 const diaSemana = getDiaSemana(data);
                 
                 const option = document.createElement('option');
-                option.value = dataFormatada;
-                option.textContent = `${dataFormatada} (${diaSemana})`;
+                option.value = dataFormatada + "|" + diaSemana;
+                option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
                 
                 // Seleciona a data atual por padrão
                 if (i === 0) {
@@ -529,14 +566,23 @@
 
             dados.forEach(item => {
                 try {
-                    const [local, cidade, descricaoDia, horario, localizacao] = item.split(';');
-                    const dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    const [local, cidade, descricaoDia, horario, localizacao, setor] = item.split(';');
+                    let dataEvento = ""
+                    if ((dia >= 22 && dia <= 28)) {
+                        if (dia + 7 > ultimoDia) {
+                            dataEvento = calcularDataEvento(descricaoDia.replace("5ª", "4ª").replace("5º", "4º"), mes, ano);
+                        } else {
+                            dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                        }
+                    } else {
+                        dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    }   
                     if (dataEvento && 
                         dataEvento.getDate() === dia &&
                         dataEvento.getMonth() === mes - 1 &&
                         dataEvento.getFullYear() === ano) {
                         //alert(totalNaoMarcados)
-                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+"|") > 0)  {
+                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
                             const dataFormatada = dataInformada;
                             const row = tabela.insertRow();
                             row.style.cursor = "pointer";
