@@ -561,6 +561,7 @@
             const dia = parseInt(diaStr);
             const mes = parseInt(mesStr);
             const ano = parseInt(anoStr);
+            const ultimoDia = new Date(ano, mes, 0).getDate();
             
             let encontrouEventos = false;
 
