@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Rodízio de Organistas CCB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .mh-co-same {
+            background-color: #f39c12 !important;
+            color: white;
+        }
+        .special-case {
+            background-color: #2ecc71 !important;
+            color: white;
+        }
+        .fixed-case {
+            background-color: #9b59b6 !important;
+            color: white;
+        }
+        .mh-only {
+            background-color: #e74c3c !important;
+            color: white;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        .instructions {
+            background-color: #eaf2f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Rodízio de Organistas CCB</h1>
+    
+    <div class="instructions">
+        <h2>Instruções</h2>
+        <ol>
+            <li><strong>Casos Especiais Fixos:</strong></li>
+            <ul>
+                <li><strong>Marluz</strong>: Sempre MH+CO no mesmo dia</li>
+                <li><strong>Taina</strong>: Sempre MH=Larissa, CO=Taina</li>
+            </ul>
+            <li><strong>Prioridades:</strong> Números menores = maior prioridade</li>
+            <li><strong>Organistas só MH:</strong> São usadas quando necessário para evitar conflitos</li>
+            <li><strong>Ciclos:</strong> Quando acaba a lista, reinicia da primeira organista</li>
+        </ol>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2>Lista de Organistas</h2>
+            <table id="organistsTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Ordem MH</th>
+                        <th>Ordem CO</th>
+                        <th>Observação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filled by JavaScript -->
+                </tbody>
+            </table>
+            
+            <h3>Adicionar/Editar Organista</h3>
+            <div>
+                <input type="text" id="orgName" placeholder="Nome" style="margin: 5px;">
+                <input type="number" id="orgMH" placeholder="Ordem MH" style="margin: 5px; width: 80px;">
+                <input type="number" id="orgCO" placeholder="Ordem CO" style="margin: 5px; width: 80px;">
+                <input type="text" id="orgNote" placeholder="Observação" style="margin: 5px;">
+                <button onclick="addOrganist()">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Gerar Rodízio</h2>
+            <div>
+                <label for="startDate">Data Inicial:</label>
+                <input type="date" id="startDate" style="margin: 5px;">
+                
+                <label for="months">Meses:</label>
+                <input type="number" id="months" value="6" min="1" max="12" style="width: 50px; margin: 5px;">
+                
+                <button onclick="generateSchedule()">Gerar Rodízio</button>
+                <button onclick="exportToExcel()">Exportar para Excel</button>
+            </div>
+            
+            <h3>Rodízio Gerado</h3>
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Dia</th>
+                        <th>Meia Hora</th>
+                        <th>Culto Oficial</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filled by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - can be edited through the interface
+        let organists = [
+            { name: "Celmy", mhOrder: 10, coOrder: 4, note: "" },
+            { name: "Danielly", mhOrder: null, coOrder: 3, note: "Só CO" },
+            { name: "Fabiana", mhOrder: 9, coOrder: 6, note: "" },
+            { name: "Kassia", mhOrder: null, coOrder: 14, note: "Só CO" },
+            { name: "Lucia", mhOrder: 11, coOrder: 2, note: "" },
+            { name: "Taina", mhOrder: null, coOrder: 9, note: "MH=Larissa, CO=Taina" },
+            { name: "Marluz", mhOrder: null, coOrder: 7, note: "MH+CO mesmo dia" },
+            { name: "Geovana", mhOrder: 12, coOrder: 5, note: "" },
+            { name: "Larissa", mhOrder: null, coOrder: null, note: "Só MH para Taina" },
+            { name: "Leticia", mhOrder: 8, coOrder: 12, note: "" },
+            { name: "Patricia", mhOrder: 13, coOrder: 13, note: "" },
+            { name: "Waleria", mhOrder: 14, coOrder: 8, note: "" },
+            { name: "Ana", mhOrder: 15, coOrder: null, note: "Só MH" },
+            { name: "Vanessa", mhOrder: 16, coOrder: null, note: "Só MH" }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOrganistsTable();
+            
+            // Set default date to today
+            const today = new Date();
+            document.getElementById('startDate').valueAsDate = today;
+        });
+
+        // Render organists table
+        function renderOrganistsTable() {
+            const tbody = document.querySelector('#organistsTable tbody');
+            tbody.innerHTML = '';
+            
+            organists.sort((a, b) => {
+                // Sort by CO order, then by MH order
+                const aCO = a.coOrder === null ? 999 : a.coOrder;
+                const bCO = b.coOrder === null ? 999 : b.coOrder;
+                return aCO - bCO || (a.mhOrder || 999) - (b.mhOrder || 999);
+            });
+            
+            organists.forEach(org => {
+                const row = document.createElement('tr');
+                
+                if (org.coOrder === null) {
+                    row.classList.add('mh-only');
+                }
+                
+                row.innerHTML = `
+                    <td>${org.name}</td>
+                    <td>${org.mhOrder === null ? '' : org.mhOrder}</td>
+                    <td>${org.coOrder === null ? '' : org.coOrder}</td>
+                    <td>${org.note}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Add new organist
+        function addOrganist() {
+            const name = document.getElementById('orgName').value.trim();
+            const mhOrder = document.getElementById('orgMH').value;
+            const coOrder = document.getElementById('orgCO').value;
+            const note = document.getElementById('orgNote').value.trim();
+            
+            if (!name) {
+                alert('Por favor, insira o nome da organista');
+                return;
+            }
+            
+            const newOrg = {
+                name,
+                mhOrder: mhOrder === '' ? null : (isNaN(mhOrder) ? mhOrder : parseInt(mhOrder)),
+                coOrder: coOrder === '' ? null : parseInt(coOrder),
+                note
+            };
+            
+            organists.push(newOrg);
+            renderOrganistsTable();
+            
+            // Clear inputs
+            document.getElementById('orgName').value = '';
+            document.getElementById('orgMH').value = '';
+            document.getElementById('orgCO').value = '';
+            document.getElementById('orgNote').value = '';
+        }
+
+        // Generate the schedule
+        function generateSchedule() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const months = parseInt(document.getElementById('months').value);
+            
+            if (isNaN(startDate.getTime())) {
+                alert('Por favor, selecione uma data válida');
+                return;
+            }
+            
+            // Prepare organists lists
+            const mhOrganists = organists
+                .filter(org => org.mhOrder !== null && typeof org.mhOrder === 'number')
+                .sort((a, b) => a.mhOrder - b.mhOrder)
+                .map(org => org.name);
+            
+            const coOrganists = organists
+                .filter(org => org.coOrder !== null)
+                .sort((a, b) => a.coOrder - b.coOrder)
+                .map(org => org.name);
+            
+            // Organistas que só fazem MH
+            const mhOnlyOrganists = organists
+                .filter(org => org.mhOrder !== null && org.coOrder === null)
+                .sort((a, b) => a.mhOrder - b.mhOrder)
+                .map(org => org.name);
+            
+            // Special cases
+            const marluz = organists.find(org => org.name === "Marluz");
+            const taina = organists.find(org => org.name === "Taina");
+            const larissa = organists.find(org => org.name === "Larissa");
+            
+            // Generate all cult dates
+            const schedule = [];
+            const endDate = new Date(startDate);
+            endDate.setMonth(endDate.getMonth() + months);
+            
+            let currentMhIndex = 0;
+            let currentCoIndex = 0;
+            let currentDate = new Date(startDate);
+            
+            while (currentDate < endDate) {
+                // Check if it's Wednesday, Saturday or Sunday (0=Sunday, 3=Wednesday, 6=Saturday)
+                if ([0, 3, 6].includes(currentDate.getDay())) {
+                    const dateStr = formatDate(currentDate);
+                    const day = getDayName(currentDate.getDay());
+                    
+                    // Determine CO first
+                    let co = coOrganists[currentCoIndex % coOrganists.length];
+                    let mh = '';
+                    let note = '';
+                    
+                    // CASOS ESPECIAIS FIXOS (prioridade máxima)
+                    if (co === 'Marluz') {
+                        mh = 'Marluz';
+                        note = marluz.note;
+                    } 
+                    else if (co === 'Taina') {
+                        mh = 'Larissa';
+                        note = taina.note;
+                    }
+                    // Lógica normal para outros casos
+                    else {
+                        // Primeiro tenta com organistas normais (que fazem MH e CO)
+                        mh = mhOrganists[currentMhIndex % mhOrganists.length];
+                        
+                        // Evitar MH=CO não intencional
+                        if (mh === co) {
+                            // Tenta a próxima organista normal
+                            const nextNormal = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
+                            if (nextNormal !== co) {
+                                mh = nextNormal;
+                            } 
+                            // Se ainda conflitar, usa uma organista que só faz MH
+                            else if (mhOnlyOrganists.length > 0) {
+                                const nextMHOnly = mhOnlyOrganists[0];
+                                mh = nextMHOnly;
+                                note = 'Usada organista só MH para evitar conflito';
+                            }
+                        }
+                        
+                        // Avançar índice apenas se não for caso especial
+                        if (note === '') {
+                            currentMhIndex++;
+                        }
+                    }
+                    
+                    // Avançar índice do CO
+                    currentCoIndex++;
+                    
+                    schedule.push({
+                        date: dateStr,
+                        day,
+                        mh,
+                        co,
+                        note
+                    });
+                }
+                
+                // Move to next day
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            renderScheduleTable(schedule);
+        }
+
+        // Render the schedule table
+        function renderScheduleTable(schedule) {
+            const tbody = document.querySelector('#scheduleTable tbody');
+            tbody.innerHTML = '';
+            
+            schedule.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // Highlight special cases
+                if (item.note.includes('MH+CO mesmo dia')) {
+                    row.classList.add('mh-co-same');
+                } else if (item.note.includes('Larissa')) {
+                    row.classList.add('fixed-case');
+                } else if (item.mh === item.co) {
+                    row.classList.add('special-case');
+                } else if (item.note.includes('só MH')) {
+                    row.classList.add('mh-only');
+                }
+                
+                row.innerHTML = `
+                    <td>${item.date}</td>
+                    <td>${item.day}</td>
+                    <td>${item.mh}</td>
+                    <td>${item.co}</td>
+                    <td>${item.note}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            let csv = 'Data,Dia,Meia Hora,Culto Oficial,Observações\n';
+            
+            const rows = document.querySelectorAll('#scheduleTable tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowData = Array.from(cells).map(cell => `"${cell.textContent}"`).join(',');
+                csv += rowData + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'rodizio_organistas.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Helper functions
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function getDayName(dayIndex) {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            return days[dayIndex];
+        }
+    </script>
+</body>
+</html>
