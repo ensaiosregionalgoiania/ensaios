@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Rodízio de Organistas CCB</title>
-    <!-- CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,7 +38,7 @@
             margin: 15px 0;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #020202;
             padding: 8px;
             text-align: left;
         }
@@ -95,9 +96,6 @@
             }
         }
     </style>
-    <!-- JS Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <h1>Sistema de Rodízio de Organistas CCB</h1>
@@ -157,27 +155,27 @@
     </div>
 
     <script>
-        // Dados iniciais
+        // Dados das organistas
         let organists = [
+            { name: "Ana", mhOrder: 15, coOrder: null },
             { name: "Celmy", mhOrder: 10, coOrder: 4 },
             { name: "Danielly", mhOrder: null, coOrder: 3 },
             { name: "Fabiana", mhOrder: 9, coOrder: 6 },
-            { name: "Kassia", mhOrder: null, coOrder: 14 },
-            { name: "Lucia", mhOrder: 11, coOrder: 2 },
-            { name: "Taina", mhOrder: null, coOrder: 9 },
-            { name: "Marluz", mhOrder: null, coOrder: 7 },
+            { name: "Fabline", mhOrder: 18, coOrder: null },
             { name: "Geovana", mhOrder: 12, coOrder: 5 },
+            { name: "Kassia", mhOrder: null, coOrder: 14 },
             { name: "Larissa", mhOrder: null, coOrder: null },
             { name: "Leticia", mhOrder: 8, coOrder: 12 },
-            { name: "Patricia", mhOrder: 13, coOrder: 13 },
-            { name: "Waleria", mhOrder: 14, coOrder: 8 },
-            { name: "Ana", mhOrder: 15, coOrder: null },
-            { name: "Fabline", mhOrder: 18, coOrder: null },
+            { name: "Lucia", mhOrder: 11, coOrder: 2 },
             { name: "Luana", mhOrder: null, coOrder: 11 },
-            { name: "Nelia", mhOrder: 16, coOrder: null },
+            { name: "Marluz", mhOrder: null, coOrder: 7 },
             { name: "Miriana", mhOrder: null, coOrder: 10 },
+            { name: "Nelia", mhOrder: 16, coOrder: null },
+            { name: "Patricia", mhOrder: 13, coOrder: 13 },
             { name: "Priscila", mhOrder: null, coOrder: 15 },
-            { name: "Vanessa", mhOrder: 16, coOrder: null }
+            { name: "Taina", mhOrder: null, coOrder: 9 },
+            { name: "Vanessa", mhOrder: 17, coOrder: null },
+            { name: "Waleria", mhOrder: 14, coOrder: 8 }
         ];
 
         let currentSchedule = {};
@@ -334,7 +332,7 @@
             });
         }
 
-        // Gera PDF
+        // Gera PDF com 3 meses por linha
         function generatePDF() {
             if (Object.keys(currentSchedule).length === 0) {
                 alert('Por favor, gere o rodízio primeiro');
@@ -342,55 +340,81 @@
             }
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            let y = 20;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm'
+            });
+
+            // Configurações de layout
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 10;
+            const tableWidth = (pageWidth - margin * 4) / 3;
+            let yPosition = 20;
             let monthCount = 0;
             
             // Cabeçalho
-            doc.setFontSize(18);
-            doc.text('Rodízio de Organistas CCB', 105, 15, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 105, 22, { align: 'center' });
-            
+            doc.setFontSize(16);
+            doc.setTextColor(40, 40, 40);
+            doc.text('RODÍZIO DE ORGANISTAS - CCB', pageWidth / 2, 15, { align: 'center' });
             doc.setFontSize(10);
-            y = 30;
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, 22, { align: 'center' });
 
-            // Adiciona cada mês
-            Object.entries(currentSchedule).forEach(([monthYear, schedule]) => {
-                if (monthCount > 0 && monthCount % 3 === 0) {
-                    doc.addPage();
-                    y = 20;
+            // Processar cada mês
+            const months = Object.entries(currentSchedule);
+            
+            for (let i = 0; i < months.length; i++) {
+                // Nova página a cada 3 meses
+                if (i > 0 && i % 3 === 0) {
+                    doc.addPage('landscape');
+                    yPosition = 20;
+                    monthCount = 0;
                 }
-                
-                const x = 15 + (monthCount % 3) * 65;
-                
+
+                const [monthYear, schedule] = months[i];
+                const xPosition = margin + (monthCount % 3) * (tableWidth + margin);
+
                 // Título do mês
                 doc.setFontSize(12);
-                doc.text(monthYear, x + 30, y, { align: 'center' });
+                doc.text(monthYear, xPosition + tableWidth/2, yPosition, { align: 'center' });
                 
                 // Dados da tabela
-                const headers = [["Dia", "Dia Sem.", "MH", "CO"]];
+                const headers = [["Dia", "Dia", "MH", "CO"]];
                 const data = schedule.map(item => [
                     String(item.day).padStart(2, '0'),
                     item.dayName.substring(0, 3),
                     item.mh,
                     item.co
                 ]);
-                
+
+                // Tabela com largura fixa
                 doc.autoTable({
-                    startY: y + 5,
+                    startY: yPosition + 5,
                     head: headers,
                     body: data,
-                    margin: { left: x },
-                    tableWidth: 60,
-                    styles: { fontSize: 8 }
+                    startX: xPosition,
+                    tableWidth: tableWidth,
+                    margin: { top: 5 },
+                    styles: {
+                        fontSize: 8,
+                        cellPadding: 2,
+                        overflow: 'linebreak'
+                    },
+                    columnStyles: {
+                        0: { cellWidth: 12 },
+                        1: { cellWidth: 15 },
+                        2: { cellWidth: 25 },
+                        3: { cellWidth: 25 }
+                    },
+                    headStyles: {
+                        fillColor: [44, 62, 80],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    }
                 });
-                
-                y = doc.lastAutoTable.finalY + 10;
+
                 monthCount++;
-            });
+                yPosition = doc.lastAutoTable.finalY + 5;
+            }
 
             doc.save(`Rodizio_Organistas_${new Date().toISOString().slice(0,10)}.pdf`);
         }
