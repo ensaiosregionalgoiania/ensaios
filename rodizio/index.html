@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Rodízio de Organistas CCB</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,7 +36,7 @@
             margin: 15px 0;
         }
         th, td {
-            border: 1px solid #020202;
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
@@ -54,6 +52,10 @@
             color: white;
             font-weight: bold;
             text-align: center;
+        }
+        .next-service {
+            background-color: #fffacd !important;
+            font-weight: bold;
         }
         button {
             background-color: #3498db;
@@ -87,6 +89,85 @@
         .schedule-month {
             margin-bottom: 25px;
         }
+        select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            max-width: 250px;
+        }
+        .selection-group {
+            margin: 15px 0;
+        }
+        .selection-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        /* Estilos para o modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .modal-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .modal-actions button {
+            margin-left: 10px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .modal, .modal * {
+                visibility: visible;
+            }
+            .modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                background-color: white;
+            }
+            .modal-actions {
+                display: none;
+            }
+            .next-service {
+                background-color: #fffacd !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
@@ -109,6 +190,8 @@
                 <li><strong>Taina</strong>: Sempre MH=Larissa, CO=Taina</li>
             </ul>
             <li><strong>Prioridades:</strong> Números menores = maior prioridade</li>
+            <li><strong>Próximo culto:</strong> Destacado em amarelo</li>
+            <li><strong>Iniciar com:</strong> Selecione as organistas iniciais para MH e CO</li>
         </ol>
     </div>
 
@@ -144,12 +227,39 @@
                 <label for="months">Meses:</label>
                 <input type="number" id="months" value="6" min="1" max="12">
                 
+                <div class="selection-group">
+                    <label for="startMH">Iniciar com Meia Hora:</label>
+                    <select id="startMH">
+                        <option value="">-- Selecione --</option>
+                    </select>
+                </div>
+                
+                <div class="selection-group">
+                    <label for="startCO">Iniciar com Culto Oficial:</label>
+                    <select id="startCO">
+                        <option value="">-- Selecione --</option>
+                    </select>
+                </div>
+                
                 <button onclick="generateSchedule()">Gerar Rodízio</button>
-                <button onclick="generatePDF()" class="download-btn">Gerar PDF</button>
+                <button onclick="openScheduleModal()" class="download-btn">Visualizar Rodízio</button>
             </div>
             
             <div id="schedule-view" class="schedule-view">
                 <p>Gere o rodízio para visualizar os meses aqui.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para visualização do rodízio -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="text-align: center;">Rodízio de Organistas</h2>
+            <div id="modalScheduleView"></div>
+            <div class="modal-actions">
+                <button onclick="window.print()">Imprimir</button>
+                <button onclick="closeModal()">Fechar</button>
             </div>
         </div>
     </div>
@@ -179,12 +289,57 @@
         ];
 
         let currentSchedule = {};
+        let nextServiceDate = null;
 
         // Inicializa a página
         document.addEventListener('DOMContentLoaded', function() {
             renderOrganistsTable();
-            document.getElementById('startDate').valueAsDate = new Date();
+            setDefaultStartDate();
+            updateOrganistSelections();
         });
+
+        // Atualiza os combobox de seleção de organistas
+        function updateOrganistSelections() {
+            const mhSelect = document.getElementById('startMH');
+            const coSelect = document.getElementById('startCO');
+            
+            // Limpa as opções atuais
+            mhSelect.innerHTML = '<option value="">-- Selecione --</option>';
+            coSelect.innerHTML = '<option value="">-- Selecione --</option>';
+            
+            // Organistas que tocam MH
+            const mhOrganists = organists
+                .filter(org => org.mhOrder !== null)
+                .sort((a, b) => a.name.localeCompare(b.name));
+            
+            // Organistas que tocam CO
+            const coOrganists = organists
+                .filter(org => org.coOrder !== null)
+                .sort((a, b) => a.name.localeCompare(b.name));
+            
+            // Preenche o combobox de MH
+            mhOrganists.forEach(org => {
+                const option = document.createElement('option');
+                option.value = org.name;
+                option.textContent = org.name;
+                mhSelect.appendChild(option);
+            });
+            
+            // Preenche o combobox de CO
+            coOrganists.forEach(org => {
+                const option = document.createElement('option');
+                option.value = org.name;
+                option.textContent = org.name;
+                coSelect.appendChild(option);
+            });
+        }
+
+        // Define a data inicial como primeiro dia do próximo mês
+        function setDefaultStartDate() {
+            const today = new Date();
+            const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            document.getElementById('startDate').valueAsDate = nextMonth;
+        }
 
         // Renderiza a tabela de organistas
         function renderOrganistsTable() {
@@ -206,6 +361,9 @@
                 `;
                 tbody.appendChild(row);
             });
+            
+            // Atualiza os combobox após mudanças
+            updateOrganistSelections();
         }
 
         // Adiciona novo organista
@@ -235,21 +393,39 @@
         function generateSchedule() {
             const startDate = new Date(document.getElementById('startDate').value);
             const months = parseInt(document.getElementById('months').value);
+            const startMH = document.getElementById('startMH').value;
+            const startCO = document.getElementById('startCO').value;
             
             if (isNaN(startDate.getTime())) {
                 alert('Por favor, selecione uma data válida');
                 return;
             }
             
-            const mhOrganists = organists
+            // Prepara as listas de organistas
+            let mhOrganists = organists
                 .filter(org => org.mhOrder !== null)
                 .sort((a, b) => a.mhOrder - b.mhOrder)
                 .map(org => org.name);
             
-            const coOrganists = organists
+            let coOrganists = organists
                 .filter(org => org.coOrder !== null)
                 .sort((a, b) => a.coOrder - b.coOrder)
                 .map(org => org.name);
+            
+            // Ajusta as listas para começar com as selecionadas
+            if (startMH) {
+                const index = mhOrganists.indexOf(startMH);
+                if (index > -1) {
+                    mhOrganists = [...mhOrganists.slice(index), ...mhOrganists.slice(0, index)];
+                }
+            }
+            
+            if (startCO) {
+                const index = coOrganists.indexOf(startCO);
+                if (index > -1) {
+                    coOrganists = [...coOrganists.slice(index), ...coOrganists.slice(0, index)];
+                }
+            }
             
             const scheduleByMonth = {};
             const endDate = new Date(startDate);
@@ -258,12 +434,21 @@
             let currentMhIndex = 0;
             let currentCoIndex = 0;
             let currentDate = new Date(startDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            nextServiceDate = null;
             
             while (currentDate < endDate) {
                 if ([0, 3, 6].includes(currentDate.getDay())) {
+                    const dateCopy = new Date(currentDate);
                     const monthYear = `${getMonthName(currentDate.getMonth())}/${currentDate.getFullYear()}`;
                     const day = currentDate.getDate();
                     const dayName = getDayName(currentDate.getDay());
+                    
+                    // Encontra o próximo culto após hoje
+                    if (!nextServiceDate && dateCopy >= today) {
+                        nextServiceDate = new Date(dateCopy);
+                    }
                     
                     let co = coOrganists[currentCoIndex % coOrganists.length];
                     let mh = '';
@@ -285,16 +470,24 @@
                         scheduleByMonth[monthYear] = [];
                     }
                     
-                    scheduleByMonth[monthYear].push({ day, dayName, mh, co });
+                    scheduleByMonth[monthYear].push({ 
+                        date: dateCopy,
+                        day, 
+                        dayName, 
+                        mh, 
+                        co,
+                        isNextService: nextServiceDate && dateCopy.getTime() === nextServiceDate.getTime()
+                    });
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
             }
             
             currentSchedule = scheduleByMonth;
             updateScheduleView(scheduleByMonth);
+            updateModalScheduleView(scheduleByMonth);
         }
 
-        // Atualiza a visualização
+        // Atualiza a visualização principal
         function updateScheduleView(scheduleByMonth) {
             const container = document.getElementById('schedule-view');
             container.innerHTML = '';
@@ -308,7 +501,7 @@
                 const monthDiv = document.createElement('div');
                 monthDiv.className = 'schedule-month';
                 
-                monthDiv.innerHTML = `
+                let tableHTML = `
                     <table>
                         <tr><th colspan="4" class="month-header">${monthYear}</th></tr>
                         <tr>
@@ -317,106 +510,91 @@
                             <th>Meia Hora</th>
                             <th>Culto Oficial</th>
                         </tr>
-                        ${schedule.map(item => `
-                            <tr>
-                                <td>${String(item.day).padStart(2, '0')}</td>
-                                <td>${item.dayName}</td>
-                                <td>${item.mh}</td>
-                                <td>${item.co}</td>
-                            </tr>
-                        `).join('')}
-                    </table>
                 `;
                 
+                schedule.forEach(item => {
+                    const rowClass = item.isNextService ? 'next-service' : '';
+                    tableHTML += `
+                        <tr class="${rowClass}">
+                            <td>${String(item.day).padStart(2, '0')}</td>
+                            <td>${item.dayName}</td>
+                            <td>${item.mh}</td>
+                            <td>${item.co}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `</table>`;
+                monthDiv.innerHTML = tableHTML;
                 container.appendChild(monthDiv);
             });
         }
 
-        // Gera PDF com 3 meses por linha
-        function generatePDF() {
+        // Atualiza a visualização no modal
+        function updateModalScheduleView(scheduleByMonth) {
+            const container = document.getElementById('modalScheduleView');
+            container.innerHTML = '';
+            
+            if (Object.keys(scheduleByMonth).length === 0) {
+                container.innerHTML = '<p>Nenhum rodízio gerado ainda.</p>';
+                return;
+            }
+            
+            Object.entries(scheduleByMonth).forEach(([monthYear, schedule]) => {
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'schedule-month';
+                monthDiv.style.marginBottom = '30px';
+                
+                let tableHTML = `
+                    <h3 style="background-color: #2c3e50; color: white; padding: 8px; text-align: center;">
+                        ${monthYear}
+                    </h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <th>Dia</th>
+                            <th>Dia Semana</th>
+                            <th>Meia Hora</th>
+                            <th>Culto Oficial</th>
+                        </tr>
+                `;
+                
+                schedule.forEach(item => {
+                    const rowStyle = item.isNextService ? 'background-color: #fffacd; font-weight: bold;' : '';
+                    tableHTML += `
+                        <tr style="${rowStyle}">
+                            <td>${String(item.day).padStart(2, '0')}</td>
+                            <td>${item.dayName}</td>
+                            <td>${item.mh}</td>
+                            <td>${item.co}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `</table>`;
+                monthDiv.innerHTML = tableHTML;
+                container.appendChild(monthDiv);
+            });
+        }
+
+        // Controla o modal
+        function openScheduleModal() {
             if (Object.keys(currentSchedule).length === 0) {
                 alert('Por favor, gere o rodízio primeiro');
                 return;
             }
+            document.getElementById('scheduleModal').style.display = 'block';
+        }
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm'
-            });
+        function closeModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+        }
 
-            // Configurações de layout
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 10;
-            const tableWidth = (pageWidth - margin * 4) / 3;
-            let yPosition = 20;
-            let monthCount = 0;
-            
-            // Cabeçalho
-            doc.setFontSize(16);
-            doc.setTextColor(40, 40, 40);
-            doc.text('RODÍZIO DE ORGANISTAS - CCB', pageWidth / 2, 15, { align: 'center' });
-            doc.setFontSize(10);
-            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth / 2, 22, { align: 'center' });
-
-            // Processar cada mês
-            const months = Object.entries(currentSchedule);
-            
-            for (let i = 0; i < months.length; i++) {
-                // Nova página a cada 3 meses
-                if (i > 0 && i % 3 === 0) {
-                    doc.addPage('landscape');
-                    yPosition = 20;
-                    monthCount = 0;
-                }
-
-                const [monthYear, schedule] = months[i];
-                const xPosition = margin + (monthCount % 3) * (tableWidth + margin);
-
-                // Título do mês
-                doc.setFontSize(12);
-                doc.text(monthYear, xPosition + tableWidth/2, yPosition, { align: 'center' });
-                
-                // Dados da tabela
-                const headers = [["Dia", "Dia", "MH", "CO"]];
-                const data = schedule.map(item => [
-                    String(item.day).padStart(2, '0'),
-                    item.dayName.substring(0, 3),
-                    item.mh,
-                    item.co
-                ]);
-
-                // Tabela com largura fixa
-                doc.autoTable({
-                    startY: yPosition + 5,
-                    head: headers,
-                    body: data,
-                    startX: xPosition,
-                    tableWidth: tableWidth,
-                    margin: { top: 5 },
-                    styles: {
-                        fontSize: 8,
-                        cellPadding: 2,
-                        overflow: 'linebreak'
-                    },
-                    columnStyles: {
-                        0: { cellWidth: 12 },
-                        1: { cellWidth: 15 },
-                        2: { cellWidth: 25 },
-                        3: { cellWidth: 25 }
-                    },
-                    headStyles: {
-                        fillColor: [44, 62, 80],
-                        textColor: [255, 255, 255],
-                        fontStyle: 'bold'
-                    }
-                });
-
-                monthCount++;
-                yPosition = doc.lastAutoTable.finalY + 5;
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('scheduleModal');
+            if (event.target == modal) {
+                closeModal();
             }
-
-            doc.save(`Rodizio_Organistas_${new Date().toISOString().slice(0,10)}.pdf`);
         }
 
         // Funções auxiliares
