@@ -57,9 +57,9 @@
             background-color: #fffacd !important;
             font-weight: bold;
         }
-        .adjusted-day {
-            font-weight: bold;
+        .adjusted-organist {
             color: #e74c3c;
+            font-weight: bold;
         }
         button {
             background-color: #3498db;
@@ -171,7 +171,7 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
-            .adjusted-day {
+            .adjusted-organist {
                 color: #e74c3c !important;
             }
         }
@@ -191,12 +191,17 @@
     <div class="instructions">
         <h2>Instruções</h2>
         <ol>
-            <li><strong>Restrições por dia:</strong> Organistas com dia sem tocar (dsst) não serão escaladas nesse dia</li>
-            <li><strong>Indicação:</strong> Sábados com ajustes serão marcados com **</li>
+            <li><strong>Substituições:</strong> 
+                - Organistas marcadas com ** foram substituídas devido a restrição de dia<br>
+                - Datas marcadas com *** indicam que a organista estava em período sem tocar
+            </li>
+            <li><strong>Restrições:</strong> 
+                - Organistas com dia sem tocar (dsst) não serão escaladas nesse dia<br>
+                - Períodos sem tocar (idtst/fdtst) impedem a escalação entre as datas informadas
+            </li>
             <li><strong>Parceiras Fixas:</strong> Quando uma organista tem parceira definida, ela será a MH</li>
             <li><strong>Prioridades:</strong> Números menores = maior prioridade</li>
             <li><strong>RJM:</strong> Somente aos domingos, seguindo a ordem do rjmOrder</li>
-            <li><strong>Próximo culto:</strong> Destacado em amarelo</li>
         </ol>
     </div>
 
@@ -212,6 +217,8 @@
                         <th>Parceira MH</th>
                         <th>Ordem RJM</th>
                         <th>Dia sem tocar</th>
+                        <th>Início sem tocar</th>
+                        <th>Fim sem tocar</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -230,6 +237,8 @@
                     <option value="3">Quarta</option>
                     <option value="6">Sábado</option>
                 </select>
+                <input type="text" id="orgIdtst" placeholder="Início sem tocar (dd/mm/aaaa)">
+                <input type="text" id="orgFdtst" placeholder="Fim sem tocar (dd/mm/aaaa)">
                 <button onclick="addOrganist()">Adicionar</button>
             </div>
         </div>
@@ -378,6 +387,8 @@
                     <td>${org.parceira || ''}</td>
                     <td>${org.rjmOrder === null ? '' : org.rjmOrder}</td>
                     <td>${org.dsst === null ? '' : getDayName(org.dsst)}</td>
+                    <td>${org.idtst || ''}</td>
+                    <td>${org.fdtst || ''}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -394,6 +405,8 @@
             const parceira = document.getElementById('orgParceira').value.trim() || null;
             const rjmOrder = document.getElementById('orgRJM').value;
             const dsst = document.getElementById('orgDsst').value || null;
+            const idtst = document.getElementById('orgIdtst').value.trim() || null;
+            const fdtst = document.getElementById('orgFdtst').value.trim() || null;
             
             if (!name) {
                 alert('Por favor, insira o nome da organista');
@@ -407,8 +420,8 @@
                 parceira,
                 rjmOrder: rjmOrder === '' ? null : parseInt(rjmOrder),
                 dsst: dsst === '' ? null : parseInt(dsst),
-                idtst: null,
-                fdtst: null
+                idtst,
+                fdtst
             });
             
             renderOrganistsTable();
@@ -418,6 +431,8 @@
             document.getElementById('orgParceira').value = '';
             document.getElementById('orgRJM').value = '';
             document.getElementById('orgDsst').value = '';
+            document.getElementById('orgIdtst').value = '';
+            document.getElementById('orgFdtst').value = '';
         }
 
         // Gera o rodízio
@@ -489,7 +504,8 @@
                     const monthYear = `${getMonthName(currentDate.getMonth())}/${currentDate.getFullYear()}`;
                     const day = currentDate.getDate();
                     const dayName = getDayName(dayOfWeek);
-                    let adjustedDay = false;
+                    let adjusted = false;
+                    let adjustedPeriod = false;
                     
                     // Encontra o próximo culto após hoje
                     if (!nextServiceDate && dateCopy >= today) {
@@ -499,14 +515,27 @@
                     // Lógica para Culto Oficial
                     let coOrganist = skippedOrganists.co || coOrganists[currentCoIndex % coOrganists.length];
                     let coSkipped = false;
+                    let coDisplay = coOrganist.name;
                     
-                    // Verifica restrição por dia
-                    if (coOrganist.dsst === dayOfWeek) {
+                    // Verifica restrição por dia ou período sem tocar
+                    const isInactivePeriod = coOrganist.idtst && coOrganist.fdtst && 
+                                          isDateInPeriod(dateCopy, coOrganist.idtst, coOrganist.fdtst);
+
+                    if (coOrganist.dsst === dayOfWeek || isInactivePeriod) {
                         skippedOrganists.co = coOrganist;
                         coOrganist = coOrganists[(currentCoIndex + 1) % coOrganists.length];
+                        
+                        // Marca com *** na data quando for por período de inatividade
+                        if (isInactivePeriod) {
+                            adjustedPeriod = true;
+                            coDisplay = `${coOrganist.name}`;
+                        } else {
+                            coDisplay = `${coOrganist.name}**`;
+                        }
+                        
                         currentCoIndex++;
                         coSkipped = true;
-                        adjustedDay = true;
+                        adjusted = true;
                     } else {
                         skippedOrganists.co = null;
                     }
@@ -514,47 +543,65 @@
                     let co = coOrganist.name;
                     
                     // Lógica para Meia Hora
-                    let mh = '';
                     let mhOrganist = skippedOrganists.mh || mhOrganists[currentMhIndex % mhOrganists.length];
+                    let mhDisplay = '';
                     
-                    // Verifica restrição por dia
-                    if (mhOrganist.dsst === dayOfWeek) {
+                    // Verifica restrição por dia ou período
+                    const isMhInactive = mhOrganist.idtst && mhOrganist.fdtst && 
+                                       isDateInPeriod(dateCopy, mhOrganist.idtst, mhOrganist.fdtst);
+
+                    if (mhOrganist.dsst === dayOfWeek || isMhInactive) {
                         skippedOrganists.mh = mhOrganist;
                         mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
-                        currentMhIndex++;
-                        adjustedDay = true;
+                        if (isMhInactive) {
+                            adjustedPeriod = true;
+                        }
+                        adjusted = true;
                     } else {
                         skippedOrganists.mh = null;
                     }
                     
                     // Verifica se a organista do CO tem uma parceira definida
                     if (coOrganist.parceira) {
-                        mh = coOrganist.parceira;
+                        mhDisplay = coOrganist.parceira;
                     } else {
-                        mh = mhOrganist.name;
-                        if (mh === co) {
-                            mh = mhOrganists[(currentMhIndex + 1) % mhOrganists.length].name;
+                        mhDisplay = mhOrganist.name;
+                        if (mhDisplay === co) {
+                            mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
+                            mhDisplay = mhOrganist.name;
                             currentMhIndex++;
+                        }
+                        if (mhOrganist.dsst === dayOfWeek) {
+                            mhDisplay = `${mhDisplay}**`;
+                            adjusted = true;
                         }
                         currentMhIndex++;
                     }
                     
                     // Lógica para RJM (somente domingos)
-                    let rjm = '';
+                    let rjmDisplay = '';
                     if (dayOfWeek === 0 && rjmOrganists.length > 0) {
                         let rjmOrganist = skippedOrganists.rjm || rjmOrganists[currentRjmIndex % rjmOrganists.length];
                         
-                        // Verifica restrição por dia
-                        if (rjmOrganist.dsst === dayOfWeek) {
+                        // Verifica restrição por dia ou período
+                        const isRjmInactive = rjmOrganist.idtst && rjmOrganist.fdtst && 
+                                             isDateInPeriod(dateCopy, rjmOrganist.idtst, rjmOrganist.fdtst);
+                        
+                        if (rjmOrganist.dsst === dayOfWeek || isRjmInactive) {
                             skippedOrganists.rjm = rjmOrganist;
                             rjmOrganist = rjmOrganists[(currentRjmIndex + 1) % rjmOrganists.length];
-                            currentRjmIndex++;
-                            adjustedDay = true;
+                            if (isRjmInactive) {
+                                adjustedPeriod = true;
+                                rjmDisplay = `${rjmOrganist.name}`;
+                            } else {
+                                rjmDisplay = `${rjmOrganist.name}**`;
+                            }
+                            adjusted = true;
                         } else {
                             skippedOrganists.rjm = null;
+                            rjmDisplay = rjmOrganist.name;
                         }
                         
-                        rjm = rjmOrganist.name;
                         currentRjmIndex++;
                     }
                     
@@ -565,19 +612,16 @@
                             scheduleByMonth[monthYear] = [];
                         }
                         
-                        // Marca sábados com ajustes
-                        const displayDayName = (dayOfWeek === 6 && adjustedDay) ? 
-                            `${dayName}**` : dayName;
-                        
                         scheduleByMonth[monthYear].push({ 
                             date: dateCopy,
                             day, 
-                            dayName: displayDayName,
-                            mh, 
-                            co,
-                            rjm,
+                            dayName,
+                            mh: mhDisplay,
+                            co: coDisplay,
+                            rjm: rjmDisplay,
                             isNextService: nextServiceDate && dateCopy.getTime() === nextServiceDate.getTime(),
-                            isAdjusted: adjustedDay
+                            isAdjusted: adjusted,
+                            isAdjustedPeriod: adjustedPeriod
                         });
                     }
                 }
@@ -587,6 +631,23 @@
             currentSchedule = scheduleByMonth;
             updateScheduleView(scheduleByMonth);
             updateModalScheduleView(scheduleByMonth);
+        }
+
+        // Função auxiliar para verificar se a data está no período
+        function isDateInPeriod(date, startDateStr, endDateStr) {
+            const startDateParts = startDateStr.split('/');
+            const endDateParts = endDateStr.split('/');
+            
+            const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+            const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+            const checkDate = new Date(date);
+            
+            // Remove horas para comparar apenas as datas
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(0, 0, 0, 0);
+            checkDate.setHours(0, 0, 0, 0);
+            
+            return checkDate >= startDate && checkDate <= endDate;
         }
 
         // Atualiza a visualização principal
@@ -617,15 +678,17 @@
                 
                 schedule.forEach(item => {
                     const rowClass = item.isNextService ? 'next-service' : '';
-                    const dayNameClass = item.isAdjusted ? 'adjusted-day' : '';
+                    const mhClass = item.mh.includes('**') ? 'adjusted-organist' : '';
+                    const coClass = item.co.includes('**') ? 'adjusted-organist' : '';
+                    const rjmClass = item.rjm.includes('**') ? 'adjusted-organist' : '';
                     
                     tableHTML += `
                         <tr class="${rowClass}">
-                            <td>${String(item.day).padStart(2, '0')}</td>
-                            <td class="${dayNameClass}">${item.dayName}</td>
-                            <td>${item.mh}</td>
-                            <td>${item.co}</td>
-                            <td>${item.rjm || ''}</td>
+                            <td>${String(item.day).padStart(2, '0')}${item.isAdjustedPeriod ? '***' : ''}</td>
+                            <td>${item.dayName}</td>
+                            <td class="${mhClass}">${item.mh}</td>
+                            <td class="${coClass}">${item.co}</td>
+                            <td class="${rjmClass}">${item.rjm || ''}</td>
                         </tr>
                     `;
                 });
@@ -667,15 +730,17 @@
                 
                 schedule.forEach(item => {
                     const rowStyle = item.isNextService ? 'background-color: #fffacd; font-weight: bold;' : '';
-                    const dayNameStyle = item.isAdjusted ? 'font-weight: bold; color: #e74c3c;' : '';
+                    const mhStyle = item.mh.includes('**') ? 'color: #e74c3c; font-weight: bold;' : '';
+                    const coStyle = item.co.includes('**') ? 'color: #e74c3c; font-weight: bold;' : '';
+                    const rjmStyle = item.rjm.includes('**') ? 'color: #e74c3c; font-weight: bold;' : '';
                     
                     tableHTML += `
                         <tr style="${rowStyle}">
-                            <td>${String(item.day).padStart(2, '0')}</td>
-                            <td style="${dayNameStyle}">${item.dayName}</td>
-                            <td>${item.mh}</td>
-                            <td>${item.co}</td>
-                            <td>${item.rjm || ''}</td>
+                            <td>${String(item.day).padStart(2, '0')}${item.isAdjustedPeriod ? '***' : ''}</td>
+                            <td>${item.dayName}</td>
+                            <td style="${mhStyle}">${item.mh}</td>
+                            <td style="${coStyle}">${item.co}</td>
+                            <td style="${rjmStyle}">${item.rjm || ''}</td>
                         </tr>
                     `;
                 });
