@@ -36,7 +36,7 @@
             margin: 15px 0;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #020202;
             padding: 8px;
             text-align: left;
         }
@@ -434,16 +434,14 @@
             }
             
             const scheduleByMonth = {};
-            const endDate = new Date(startDate);
-            endDate.setMonth(endDate.getMonth() + months);
-            
-            let currentMhIndex = 0;
+            //const endDate = new Date(startDate);
+            //endDate.setMonth(endDate.getMonth() + months);
+            const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months + 1, 1);            let currentMhIndex = 0;
             let currentCoIndex = 0;
             let currentDate = new Date(startDate);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             nextServiceDate = null;
-            
             while (currentDate < endDate) {
                 if ([0, 3, 6].includes(currentDate.getDay())) {
                     const dateCopy = new Date(currentDate);
