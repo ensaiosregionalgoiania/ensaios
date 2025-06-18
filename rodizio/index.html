@@ -184,10 +184,10 @@
     <div class="instructions">
         <h2>Instruções</h2>
         <ol>
-            <li><strong>Casos Especiais Fixos:</strong></li>
+            <li><strong>Parceiras Fixas:</strong></li>
             <ul>
-                <li><strong>Marluz</strong>: Sempre MH+CO no mesmo dia</li>
-                <li><strong>Taina</strong>: Sempre MH=Larissa, CO=Taina</li>
+                <li>Quando uma organista tem uma parceira definida, ela será automaticamente escalada para a Meia Hora</li>
+                <li>Exemplos: Marluz (MH=Marluz), Taina (MH=Larissa), Luana (MH=Ana)</li>
             </ul>
             <li><strong>Prioridades:</strong> Números menores = maior prioridade</li>
             <li><strong>Próximo culto:</strong> Destacado em amarelo</li>
@@ -204,6 +204,7 @@
                         <th>Nome</th>
                         <th>Ordem MH</th>
                         <th>Ordem CO</th>
+                        <th>Parceira MH</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -214,6 +215,7 @@
                 <input type="text" id="orgName" placeholder="Nome">
                 <input type="number" id="orgMH" placeholder="Ordem MH">
                 <input type="number" id="orgCO" placeholder="Ordem CO">
+                <input type="text" id="orgParceira" placeholder="Parceira MH">
                 <button onclick="addOrganist()">Adicionar</button>
             </div>
         </div>
@@ -267,25 +269,25 @@
     <script>
         // Dados das organistas
         let organists = [
-            { name: "Ana", mhOrder: 15, coOrder: null },
-            { name: "Celmy", mhOrder: 10, coOrder: 4 },
-            { name: "Danielly", mhOrder: null, coOrder: 3 },
-            { name: "Fabiana", mhOrder: 9, coOrder: 6 },
-            { name: "Fabline", mhOrder: 18, coOrder: null },
-            { name: "Geovana", mhOrder: 12, coOrder: 5 },
-            { name: "Kassia", mhOrder: null, coOrder: 14 },
-            { name: "Larissa", mhOrder: null, coOrder: null },
-            { name: "Leticia", mhOrder: 8, coOrder: 12 },
-            { name: "Lucia", mhOrder: 11, coOrder: 2 },
-            { name: "Luana", mhOrder: null, coOrder: 11 },
-            { name: "Marluz", mhOrder: null, coOrder: 7 },
-            { name: "Miriana", mhOrder: null, coOrder: 10 },
-            { name: "Nelia", mhOrder: 16, coOrder: null },
-            { name: "Patricia", mhOrder: 13, coOrder: 13 },
-            { name: "Priscila", mhOrder: null, coOrder: 15 },
-            { name: "Taina", mhOrder: null, coOrder: 9 },
-            { name: "Vanessa", mhOrder: 17, coOrder: null },
-            { name: "Waleria", mhOrder: 14, coOrder: 8 }
+            { name: "Lucia", mhOrder: 4, coOrder: 1, parceira: null},
+            { name: "Danielly", mhOrder: null, coOrder: 2, parceira: null },
+            { name: "Celmy", mhOrder: 3, coOrder: 3, parceira: null },
+            { name: "Geovana", mhOrder: 5, coOrder: 4, parceira: null },
+            { name: "Fabiana", mhOrder: 2, coOrder: 5, parceira: null },
+            { name: "Marluz", mhOrder: null, coOrder: 6, parceira: "Marluz" },
+            { name: "Waleria", mhOrder: 7, coOrder: 7, parceira: null },
+            { name: "Taina", mhOrder: null, coOrder: 8, parceira: "Larissa" },
+            { name: "Miriana", mhOrder: null, coOrder: 9, parceira: null },
+            { name: "Luana", mhOrder: null, coOrder: 10, parceira: "Ana" },
+            { name: "Leticia", mhOrder: 1, coOrder: 11, parceira: null },
+            { name: "Patricia", mhOrder: 6, coOrder: 12, parceira: null },
+            { name: "Kassia", mhOrder: null, coOrder: 13, parceira: null },
+            { name: "Priscila", mhOrder: null, coOrder: 14, parceira: null },
+            { name: "Ana", mhOrder: null, coOrder: null, parceira: null },
+            { name: "Nelia", mhOrder: 9, coOrder: null, parceira: null },
+            { name: "Vanessa", mhOrder: 10, coOrder: null, parceira: null },
+            { name: "Fabline", mhOrder: 11, coOrder: null, parceira: null },
+            { name: "Larissa", mhOrder: null, coOrder: null, parceira: null }
         ];
 
         let currentSchedule = {};
@@ -358,6 +360,7 @@
                     <td>${org.name}</td>
                     <td>${org.mhOrder === null ? '' : org.mhOrder}</td>
                     <td>${org.coOrder === null ? '' : org.coOrder}</td>
+                    <td>${org.parceira || ''}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -371,6 +374,7 @@
             const name = document.getElementById('orgName').value.trim();
             const mhOrder = document.getElementById('orgMH').value;
             const coOrder = document.getElementById('orgCO').value;
+            const parceira = document.getElementById('orgParceira').value.trim() || null;
             
             if (!name) {
                 alert('Por favor, insira o nome da organista');
@@ -380,13 +384,15 @@
             organists.push({
                 name,
                 mhOrder: mhOrder === '' ? null : parseInt(mhOrder),
-                coOrder: coOrder === '' ? null : parseInt(coOrder)
+                coOrder: coOrder === '' ? null : parseInt(coOrder),
+                parceira
             });
             
             renderOrganistsTable();
             document.getElementById('orgName').value = '';
             document.getElementById('orgMH').value = '';
             document.getElementById('orgCO').value = '';
+            document.getElementById('orgParceira').value = '';
         }
 
         // Gera o rodízio
@@ -453,10 +459,11 @@
                     let co = coOrganists[currentCoIndex % coOrganists.length];
                     let mh = '';
                     
-                    // Casos especiais
-                    if (co === 'Marluz') mh = 'Marluz';
-                    else if (co === 'Taina') mh = 'Larissa';
-                    else {
+                    // Verifica se a organista do CO tem uma parceira definida
+                    const coOrganist = organists.find(org => org.name === co);
+                    if (coOrganist && coOrganist.parceira) {
+                        mh = coOrganist.parceira;
+                    } else {
                         mh = mhOrganists[currentMhIndex % mhOrganists.length];
                         if (mh === co) {
                             mh = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
