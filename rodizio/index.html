@@ -269,6 +269,67 @@
     font-weight: bold;
     background-color: #e6f7ff;
 }
+.import-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.import-btn:hover {
+    background-color: #2980b9;
+}
+
+#organistsData {
+    min-height: 30px;
+    resize: vertical; /* Permite redimensionar verticalmente se necessário */
+    overflow-y: auto; /* Adiciona scroll se o conteúdo for muito grande */
+}
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.action-buttons button {
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+}
+
+.export-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
+.export-btn:hover {
+    background-color: #219653;
+}
+
+.import-txt-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.import-txt-btn:hover {
+    background-color: #2980b9;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
     </style>
 </head>
 <body>
@@ -279,37 +340,38 @@
         <div class="left-panel">
             <h2>Lista de Organistas</h2>
             
-            <div style="margin-bottom: 20px;">
-                <div class="action-buttons">
-                    <button onclick="exportOrganists()" class="export-btn">Exportar Dados</button>
-                    <button onclick="document.getElementById('organistsData').value = generateCSV()">Preencher para Edição</button>
-                </div>
-                <label for="organistsData">Dados das Organistas (CSV):</label><br>
-                <textarea id="organistsData" rows="10" style="width: 100%; font-family: monospace; margin-bottom: 10px;">
-Lucia,4,1,,,,,
-Danielly,13,2,,,,,
-Celmy,3,3,,,,,
-Geovana,5,4,,4,,,
-Fabiana,2,5,,2,,,
-Marluz,,6,"Marluz",,,,
-Waleria,7,7,,,6,,
-Taina,,8,"Larissa",3,,,
-Miriana,14,9,,,,"07/07/2025","07/07/2025"
-Luana,15,10,,,,,
-Leticia,,11,,,,,
-Patricia,6,12,,,,,
-Kassia,16,13,,,,,
-Priscila,17,14,,,,"16/12/2025","31/12/2025"
-Ana,12,,,,,,
-Nelia,9,,,,,,
-Vanessa,10,,,,,,
-Fabline,11,,,,,,
-Larissa,,,,,,,
-Luiza,,,,1,,,
-                </textarea>
-                <button onclick="importOrganists()">Importar Dados</button>
-            </div>
-            
+<div style="margin-bottom: 20px;">
+    <label for="organistsData">Dados das Organistas (CSV):</label><br>
+    <textarea id="organistsData" rows="1" style="width: 100%; font-family: monospace; margin-bottom: 10px; height: 30px;">
+        Lucia,4,1,,,,,
+        Danielly,13,2,,,,,
+        Celmy,3,3,,,,,
+        Geovana,5,4,,4,,,
+        Fabiana,2,5,,2,,,
+        Marluz,,6,"Marluz",,,,
+        Waleria,7,7,,,6,,
+        Taina,,8,"Larissa",3,,,
+        Miriana,14,9,,,,"07/07/2025","07/07/2025"
+        Luana,15,10,,,,,
+        Leticia,,11,,,,,
+        Patricia,6,12,,,,,
+        Kassia,16,13,,,,,
+        Priscila,17,14,,,,"16/12/2025","31/12/2025"
+        Ana,12,,,,,,
+        Nelia,9,,,,,,
+        Vanessa,10,,,,,,
+        Fabline,11,,,,,,
+        Larissa,,,,,,,
+        Luiza,,,,1,,,
+    </textarea>
+    
+    <div class="action-buttons">
+        <button onclick="importOrganists()">Importar Dados</button>
+        <button onclick="document.getElementById('fileInput').click()" class="import-txt-btn">Importar de TXT</button>
+        <button onclick="exportToTxt()" class="export-btn">Exportar para TXT</button>
+        <input type="file" id="fileInput" accept=".txt,.csv" style="display: none;">
+    </div>
+</div>            
             <table id="organistsTable">
                 <thead>
                     <tr>
@@ -408,41 +470,48 @@ Luiza,,,,1,,,
 
         // Importa organistas da textarea
         function importOrganists() {
-            const csvData = document.getElementById('organistsData').value.trim();
-            const lines = csvData.split('\n');
-            
-            organists = []; // Limpa a lista atual
-            
-            lines.forEach(line => {
-                line = line.trim();
-                if (!line) return;
-                
-                // Processa a linha CSV
-                const cells = line.split(',').map(cell => {
-                    cell = cell.trim();
-                    if (cell.startsWith('"') && cell.endsWith('"')) {
-                        return cell.slice(1, -1);
-                    }
-                    return cell === '' ? null : cell;
-                });
-                
-                organists.push({
-                    name: cells[0],
-                    mhOrder: cells[1] ? parseInt(cells[1]) : null,
-                    coOrder: cells[2] ? parseInt(cells[2]) : null,
-                    parceira: cells[3] || null,
-                    rjmOrder: cells[4] ? parseInt(cells[4]) : null,
-                    dsst: cells[5] ? parseInt(cells[5]) : null,
-                    idtst: cells[6] || null,
-                    fdtst: cells[7] || null
-                });
-            });
-            
-            renderOrganistsTable();
-            //updateOrganistSelections();
-            alert(`Dados importados com sucesso! ${organists.length} organistas cadastradas.`);
+    try {
+        const csvData = document.getElementById('organistsData').value.trim();
+        if (!csvData) {
+            alert('Nenhum dado para importar!');
+            return;
         }
 
+        const lines = csvData.split('\n');
+        organists = []; // Limpa a lista atual
+        
+        lines.forEach(line => {
+            line = line.trim();
+            if (!line) return;
+            
+            // Processa a linha CSV (mantém a lógica original)
+            const cells = line.split(',').map(cell => {
+                cell = cell.trim();
+                if (cell.startsWith('"') && cell.endsWith('"')) {
+                    return cell.slice(1, -1);
+                }
+                return cell === '' ? null : cell;
+            });
+            
+            organists.push({
+                name: cells[0],
+                mhOrder: cells[1] ? parseInt(cells[1]) : null,
+                coOrder: cells[2] ? parseInt(cells[2]) : null,
+                parceira: cells[3] || null,
+                rjmOrder: cells[4] ? parseInt(cells[4]) : null,
+                dsst: cells[5] ? parseInt(cells[5]) : null,
+                idtst: cells[6] || null,
+                fdtst: cells[7] || null
+            });
+        });
+        
+        renderOrganistsTable();
+        alert(`Dados importados com sucesso! ${organists.length} organistas cadastradas.`);
+    } catch (error) {
+        alert('Erro ao importar dados: ' + error.message);
+        console.error(error);
+    }
+}
         // Atualiza os combobox de seleção de organistas
         // Define a data inicial como primeiro dia do próximo mês
         function setDefaultStartDate() {
@@ -1026,7 +1095,81 @@ Luiza,,,,1,,,
 
         function getDayName(dayIndex) {
            return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][dayIndex];
-        }  
+        }
+        
+        function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const contents = e.target.result;
+        document.getElementById('organistsData').value = contents;
+        importOrganists(); // Chama a função existente de importação
+    };
+    
+    reader.onerror = function() {
+        alert('Erro ao ler o arquivo');
+    };
+    
+    reader.readAsText(file);
+}      
+
+function exportToTxt() {
+    // Gera o conteúdo no mesmo formato do arquivo importado
+    const content = organists.map(org => {
+        return [
+            org.name,
+            org.mhOrder !== null ? org.mhOrder : '',
+            org.coOrder !== null ? org.coOrder : '',
+            org.parceira ? `"${org.parceira}"` : '',
+            org.rjmOrder !== null ? org.rjmOrder : '',
+            org.dsst !== null ? org.dsst : '',
+            org.idtst || '',
+            org.fdtst || ''
+        ].join(',');
+    }).join('\n');
+
+    // Cria e dispara o download do arquivo
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'organistas_ccb.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// Configura o listener para o input de arquivo
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const contents = e.target.result;
+            // Preenche a textarea com o conteúdo do arquivo
+            document.getElementById('organistsData').value = contents;
+            // Importa automaticamente
+            importOrganists();
+        } catch (error) {
+            alert('Erro ao processar o arquivo: ' + error.message);
+            console.error(error);
+        }
+    };
+    
+    reader.onerror = function() {
+        alert('Erro ao ler o arquivo');
+    };
+    
+    reader.readAsText(file);
+});
+
   </script>
 </body>
 </html>
