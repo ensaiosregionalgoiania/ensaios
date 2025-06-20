@@ -330,6 +330,24 @@
     margin-top: 10px;
     flex-wrap: wrap;
 }
+
+.service-days {
+    margin: 15px 0;
+}
+
+.day-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.day-checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -399,10 +417,22 @@ Luiza,,,,1,,,
                 <label for="months">Meses:</label>
                 <input type="number" id="months" value="6" min="1" max="12">
                 
+                <div class="service-days">
+                    <label>Dias de Culto:</label>
+                    <div class="day-checkboxes">
+                        <label><input type="checkbox" class="day-checkbox" value="0" checked> Domingo</label>
+                        <label><input type="checkbox" class="day-checkbox" value="1"> Segunda</label>
+                        <label><input type="checkbox" class="day-checkbox" value="2"> Terça</label>
+                        <label><input type="checkbox" class="day-checkbox" value="3" checked> Quarta</label>
+                        <label><input type="checkbox" class="day-checkbox" value="4"> Quinta</label>
+                        <label><input type="checkbox" class="day-checkbox" value="5"> Sexta</label>
+                        <label><input type="checkbox" class="day-checkbox" value="6" checked> Sábado</label>
+                    </div>
+                </div>
+                
                 <button onclick="generateSchedule()">Gerar Rodízio</button>
                 <button onclick="openScheduleModal()" class="download-btn">Visualizar Rodízio</button>
             </div>
-            
             <div id="schedule-view" class="schedule-view">
                 <p>Gere o rodízio para visualizar os meses aqui.</p>
             </div>
@@ -760,39 +790,52 @@ Luiza,,,,1,,,
         }
 
         // Gera o rodízio a partir dos dados da tabela
+
         function generateSchedule() {
-    const startDate = new Date(document.getElementById('startDate').value);
+    // 1. OBTER E VALIDAR DADOS DE ENTRADA
+    const startDateInput = document.getElementById('startDate').value;
+    const [year, month, day] = startDateInput.split('-').map(Number);
+    const startDate = new Date(year, month - 1, day); // Mês é 0-based
+    
     const months = parseInt(document.getElementById('months').value);
     
     if (isNaN(startDate.getTime())) {
         alert('Por favor, selecione uma data válida');
         return;
     }
+
+    // 2. OBTER DIAS SELECIONADOS
+    const selectedDays = [];
+    document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
+        selectedDays.push(parseInt(checkbox.value));
+    });
     
-    // Função modificada para ordenar começando pela prioritária e manter sequência
+    if (selectedDays.length === 0) {
+        alert('Selecione pelo menos um dia de culto');
+        return;
+    }
+
+    // 3. CALCULAR PERÍODO CORRETO (DATA INICIAL EXATA + MESES)
+    const endDate = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth() + months,
+        0 // Último dia do mês final
+    );
+
+    // 4. PREPARAR LISTAS DE ORGANISTAS
     const getOrderedOrganists = (organists, orderField, priorityName) => {
-        if (!priorityName) {
-            return organists.sort((a, b) => a[orderField] - b[orderField]);
-        }
+        if (!priorityName) return organists.sort((a, b) => a[orderField] - b[orderField]);
         
         const priorityOrg = organists.find(org => org.name === priorityName);
         if (!priorityOrg) return organists.sort((a, b) => a[orderField] - b[orderField]);
         
-        // Organiza em ordem numérica normal primeiro
         const sortedOrganists = organists.filter(org => org[orderField] !== null)
-                                       .sort((a, b) => a[orderField] - b[orderField]);
-        
-        // Encontra o índice da organista prioritária
+                                     .sort((a, b) => a[orderField] - b[orderField]);
         const priorityIndex = sortedOrganists.findIndex(org => org.name === priorityName);
         
-        // Reorganiza o array para começar pela prioritária e manter a sequência
-        return [
-            ...sortedOrganists.slice(priorityIndex), // Começa pela prioritária até o final
-            ...sortedOrganists.slice(0, priorityIndex) // Depois do final, volta ao início
-        ];
+        return [...sortedOrganists.slice(priorityIndex), ...sortedOrganists.slice(0, priorityIndex)];
     };
     
-    // Prepara as listas de organistas com prioridade
     let mhOrganists = getOrderedOrganists(
         organists.filter(org => org.mhOrder !== null),
         'mhOrder',
@@ -811,27 +854,24 @@ Luiza,,,,1,,,
         priorityOrganists.rjm
     ).map(org => ({...org}));
 
+    // 5. GERAR RODÍZIO DIA A DIA
     const scheduleByMonth = {};
-    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months + 1, 1);
-    
-    let currentMhIndex = 0;
-    let currentCoIndex = 0;
-    let currentRjmIndex = 0;
     let currentDate = new Date(startDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     nextServiceDate = null;
     
-    // Objeto para guardar organistas que foram puladas
-    const skippedOrganists = {
-        mh: null,
-        co: null,
-        rjm: null
-    };
+    let currentMhIndex = 0;
+    let currentCoIndex = 0;
+    let currentRjmIndex = 0;
+    const skippedOrganists = { mh: null, co: null, rjm: null };
     
-    while (currentDate < endDate) {
+    while (currentDate <= endDate) {
         const dayOfWeek = currentDate.getDay();
-        if ([0, 3, 6].includes(dayOfWeek)) {
+        const isSunday = dayOfWeek === 0;
+        const isSelectedDay = selectedDays.includes(dayOfWeek);
+        
+        if (isSelectedDay || isSunday) {
             const dateCopy = new Date(currentDate);
             const monthYear = `${getMonthName(currentDate.getMonth())}/${currentDate.getFullYear()}`;
             const day = currentDate.getDate();
@@ -842,102 +882,91 @@ Luiza,,,,1,,,
             if (!nextServiceDate && dateCopy >= today) {
                 nextServiceDate = new Date(dateCopy);
             }
-            
-            // Lógica para Culto Oficial
-            let coOrganist = skippedOrganists.co || coOrganists[currentCoIndex % coOrganists.length];
-            let coSkipped = false;
-            let coDisplay = coOrganist.name;
-            
-            const isInactivePeriod = coOrganist.idtst && coOrganist.fdtst && 
-                                  isDateInPeriod(dateCopy, coOrganist.idtst, coOrganist.fdtst);
 
-            if (coOrganist.dsst === dayOfWeek || isInactivePeriod) {
-                skippedOrganists.co = coOrganist;
-                coOrganist = coOrganists[(currentCoIndex + 1) % coOrganists.length];
-                
-                if (isInactivePeriod) {
-                    adjustedPeriod = true;
-                    coDisplay = `${coOrganist.name}`;
-                } else {
-                    coDisplay = `${coOrganist.name}**`;
-                }
-                
-                currentCoIndex++;
-                coSkipped = true;
-                adjusted = true;
-            } else {
-                skippedOrganists.co = null;
-            }
-            
-            let co = coOrganist.name;
-            
-            // Lógica para Meia Hora
-            let mhOrganist = skippedOrganists.mh || mhOrganists[currentMhIndex % mhOrganists.length];
             let mhDisplay = '';
-            
-            const isMhInactive = mhOrganist.idtst && mhOrganist.fdtst && 
-                               isDateInPeriod(dateCopy, mhOrganist.idtst, mhOrganist.fdtst);
+            let coDisplay = '';
+            let rjmDisplay = '';
 
-            if (mhOrganist.dsst === dayOfWeek || isMhInactive) {
-                skippedOrganists.mh = mhOrganist;
-                mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
-                if (isMhInactive) {
-                    adjustedPeriod = true;
+            // LÓGICA PARA DIAS SELECIONADOS (NÃO DOMINGO OU DOMINGO SELECIONADO)
+            if (isSelectedDay) {
+                // CULTO OFICIAL
+                let coOrganist = skippedOrganists.co || coOrganists[currentCoIndex % coOrganists.length];
+                let coSkipped = false;
+                coDisplay = coOrganist.name;
+                
+                const isInactivePeriod = coOrganist.idtst && coOrganist.fdtst && 
+                                      isDateInPeriod(dateCopy, coOrganist.idtst, coOrganist.fdtst);
+
+                if (coOrganist.dsst === dayOfWeek || isInactivePeriod) {
+                    skippedOrganists.co = coOrganist;
+                    coOrganist = coOrganists[(currentCoIndex + 1) % coOrganists.length];
+                    coDisplay = isInactivePeriod ? `${coOrganist.name}` : `${coOrganist.name}**`;
+                    currentCoIndex++;
+                    coSkipped = true;
+                    adjusted = true;
+                    if (isInactivePeriod) adjustedPeriod = true;
+                } else {
+                    skippedOrganists.co = null;
                 }
-                adjusted = true;
-            } else {
-                skippedOrganists.mh = null;
-            }
-            
-            if (coOrganist.parceira) {
-                mhDisplay = coOrganist.parceira;
-            } else {
-                mhDisplay = mhOrganist.name;
-                if (mhDisplay === co) {
+                
+                // MEIA HORA
+                let mhOrganist = skippedOrganists.mh || mhOrganists[currentMhIndex % mhOrganists.length];
+                const isMhInactive = mhOrganist.idtst && mhOrganist.fdtst && 
+                                   isDateInPeriod(dateCopy, mhOrganist.idtst, mhOrganist.fdtst);
+
+                if (mhOrganist.dsst === dayOfWeek || isMhInactive) {
+                    skippedOrganists.mh = mhOrganist;
                     mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
-                    mhDisplay = mhOrganist.name;
+                    if (isMhInactive) adjustedPeriod = true;
+                    adjusted = true;
+                } else {
+                    skippedOrganists.mh = null;
+                }
+                
+                mhDisplay = coOrganist.parceira || mhOrganist.name;
+                if (!coOrganist.parceira) {
+                    if (mhDisplay === coOrganist.name) {
+                        mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
+                        mhDisplay = mhOrganist.name;
+                        currentMhIndex++;
+                    }
+                    if (mhOrganist.dsst === dayOfWeek) {
+                        mhDisplay = `${mhDisplay}**`;
+                        adjusted = true;
+                    }
                     currentMhIndex++;
                 }
-                if (mhOrganist.dsst === dayOfWeek) {
-                    mhDisplay = `${mhDisplay}**`;
-                    adjusted = true;
+                
+                if (!coSkipped) {
+                    currentCoIndex++;
                 }
-                currentMhIndex++;
             }
             
-            // Lógica para RJM (somente domingos)
-            let rjmDisplay = '';
-            if (dayOfWeek === 0 && rjmOrganists.length > 0) {
+            // RJM (SEMPRE AOS DOMINGOS, MESMO NÃO SELECIONADO)
+            if (isSunday && rjmOrganists.length > 0) {
                 let rjmOrganist = skippedOrganists.rjm || rjmOrganists[currentRjmIndex % rjmOrganists.length];
-                
                 const isRjmInactive = rjmOrganist.idtst && rjmOrganist.fdtst && 
                                      isDateInPeriod(dateCopy, rjmOrganist.idtst, rjmOrganist.fdtst);
                 
                 if (rjmOrganist.dsst === dayOfWeek || isRjmInactive) {
                     skippedOrganists.rjm = rjmOrganist;
                     rjmOrganist = rjmOrganists[(currentRjmIndex + 1) % rjmOrganists.length];
-                    if (isRjmInactive) {
-                        adjustedPeriod = true;
-                        rjmDisplay = `${rjmOrganist.name}`;
-                    } else {
-                        rjmDisplay = `${rjmOrganist.name}**`;
-                    }                           
-                   adjusted = true;
+                    rjmDisplay = isRjmInactive ? `${rjmOrganist.name}` : `${rjmOrganist.name}**`;
+                    adjusted = true;
+                    if (isRjmInactive) adjustedPeriod = true;
                 } else {
                     skippedOrganists.rjm = null;
                     rjmDisplay = rjmOrganist.name;
                 }
-                
                 currentRjmIndex++;
             }
             
-            currentCoIndex++;
+            // ADICIONAR À GRADE
+            if (!scheduleByMonth[monthYear]) {
+                scheduleByMonth[monthYear] = [];
+            }
             
-            if (!coSkipped) {
-                if (!scheduleByMonth[monthYear]) {
-                    scheduleByMonth[monthYear] = [];
-                }
-                
+            if (rjmDisplay || isSelectedDay) {
                 scheduleByMonth[monthYear].push({ 
                     date: dateCopy,
                     day, 
@@ -954,6 +983,7 @@ Luiza,,,,1,,,
         currentDate.setDate(currentDate.getDate() + 1);
     }
     
+    // 6. ATUALIZAR VISUALIZAÇÃO
     currentSchedule = scheduleByMonth;
     updateScheduleView(scheduleByMonth);
     updateModalScheduleView(scheduleByMonth);
@@ -1105,9 +1135,10 @@ Luiza,,,,1,,,
         }
 
         function getDayName(dayIndex) {
-           return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][dayIndex];
+           const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+           return days[dayIndex];
         }
-        
+
 // Configura o evento para o input de arquivo
 document.getElementById('fileInput').addEventListener('change', handleFileSelect);
 
