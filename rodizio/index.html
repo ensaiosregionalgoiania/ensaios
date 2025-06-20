@@ -342,29 +342,28 @@
             
 <div style="margin-bottom: 20px;">
     <label for="organistsData">Dados das Organistas (CSV):</label><br>
-    <textarea id="organistsData" rows="1" style="width: 100%; font-family: monospace; margin-bottom: 10px; height: 30px;">
-        Lucia,4,1,,,,,
-        Danielly,13,2,,,,,
-        Celmy,3,3,,,,,
-        Geovana,5,4,,4,,,
-        Fabiana,2,5,,2,,,
-        Marluz,,6,"Marluz",,,,
-        Waleria,7,7,,,6,,
-        Taina,,8,"Larissa",3,,,
-        Miriana,14,9,,,,"07/07/2025","07/07/2025"
-        Luana,15,10,,,,,
-        Leticia,,11,,,,,
-        Patricia,6,12,,,,,
-        Kassia,16,13,,,,,
-        Priscila,17,14,,,,"16/12/2025","31/12/2025"
-        Ana,12,,,,,,
-        Nelia,9,,,,,,
-        Vanessa,10,,,,,,
-        Fabline,11,,,,,,
-        Larissa,,,,,,,
-        Luiza,,,,1,,,
-    </textarea>
-    
+<textarea id="organistsData" rows="1" style="width: 100%; font-family: monospace; margin-bottom: 10px; height: 30px;">
+Lucia,4,1,,,,,
+Danielly,13,2,,,,,
+Celmy,3,3,,,,,
+Geovana,5,4,,4,,,
+Fabiana,2,5,,2,,,
+Marluz,,6,"Marluz",,,,
+Waleria,7,7,,,6,,
+Taina,,8,"Larissa",3,,,
+Miriana,14,9,,,,"07/07/2025","07/07/2025"
+Luana,15,10,,,,,
+Leticia,,11,,,,,
+Patricia,6,12,,,,,
+Kassia,16,13,,,,,
+Priscila,17,14,,,,"16/12/2025","31/12/2025"
+Ana,12,,,,,,
+Nelia,9,,,,,,
+Vanessa,10,,,,,,
+Fabline,11,,,,,,
+Larissa,,,,,,,
+Luiza,,,,1,,,
+</textarea>    
     <div class="action-buttons">
         <button onclick="importOrganists()">Importar Dados</button>
         <button onclick="document.getElementById('fileInput').click()" class="import-txt-btn">Importar de TXT</button>
@@ -762,7 +761,7 @@
 
         // Gera o rodízio a partir dos dados da tabela
         function generateSchedule() {
-            const startDate = new Date(document.getElementById('startDate').value);
+    const startDate = new Date(document.getElementById('startDate').value);
     const months = parseInt(document.getElementById('months').value);
     
     if (isNaN(startDate.getTime())) {
@@ -770,36 +769,47 @@
         return;
     }
     
-    // Prepara as listas de organistas, começando pelas prioritárias
-    let mhOrganists = organists
-        .filter(org => org.mhOrder !== null)
-        .sort((a, b) => {
-            // Organista prioritária primeiro
-            if (a.name === priorityOrganists.mh) return -1;
-            if (b.name === priorityOrganists.mh) return 1;
-            // Depois ordena normalmente
-            return a.mhOrder - b.mhOrder;
-        })
-        .map(org => ({...org}));
-         
-    let coOrganists = organists
-        .filter(org => org.coOrder !== null)
-        .sort((a, b) => {
-            if (a.name === priorityOrganists.co) return -1;
-            if (b.name === priorityOrganists.co) return 1;
-            return a.coOrder - b.coOrder;
-        })
-        .map(org => ({...org}));
+    // Função modificada para ordenar começando pela prioritária e manter sequência
+    const getOrderedOrganists = (organists, orderField, priorityName) => {
+        if (!priorityName) {
+            return organists.sort((a, b) => a[orderField] - b[orderField]);
+        }
+        
+        const priorityOrg = organists.find(org => org.name === priorityName);
+        if (!priorityOrg) return organists.sort((a, b) => a[orderField] - b[orderField]);
+        
+        // Organiza em ordem numérica normal primeiro
+        const sortedOrganists = organists.filter(org => org[orderField] !== null)
+                                       .sort((a, b) => a[orderField] - b[orderField]);
+        
+        // Encontra o índice da organista prioritária
+        const priorityIndex = sortedOrganists.findIndex(org => org.name === priorityName);
+        
+        // Reorganiza o array para começar pela prioritária e manter a sequência
+        return [
+            ...sortedOrganists.slice(priorityIndex), // Começa pela prioritária até o final
+            ...sortedOrganists.slice(0, priorityIndex) // Depois do final, volta ao início
+        ];
+    };
+    
+    // Prepara as listas de organistas com prioridade
+    let mhOrganists = getOrderedOrganists(
+        organists.filter(org => org.mhOrder !== null),
+        'mhOrder',
+        priorityOrganists.mh
+    ).map(org => ({...org}));
+        
+    let coOrganists = getOrderedOrganists(
+        organists.filter(org => org.coOrder !== null),
+        'coOrder',
+        priorityOrganists.co
+    ).map(org => ({...org}));
 
-    let rjmOrganists = organists
-        .filter(org => org.rjmOrder !== null)
-        .sort((a, b) => {
-            if (a.name === priorityOrganists.rjm) return -1;
-            if (b.name === priorityOrganists.rjm) return 1;
-            return a.rjmOrder - b.rjmOrder;
-        })
-        .map(org => ({...org}));
-
+    let rjmOrganists = getOrderedOrganists(
+        organists.filter(org => org.rjmOrder !== null),
+        'rjmOrder',
+        priorityOrganists.rjm
+    ).map(org => ({...org}));
 
     const scheduleByMonth = {};
     const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months + 1, 1);
@@ -947,8 +957,9 @@
     currentSchedule = scheduleByMonth;
     updateScheduleView(scheduleByMonth);
     updateModalScheduleView(scheduleByMonth);
-    }
-        // Função auxiliar para verificar se a data está no período
+}
+
+// Função auxiliar para verificar se a data está no período
         function isDateInPeriod(date, startDateStr, endDateStr) {
             const startDateParts = startDateStr.split('/');
             const endDateParts = endDateStr.split('/');
@@ -1097,16 +1108,56 @@
            return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][dayIndex];
         }
         
-        function handleFileSelect(event) {
+// Configura o evento para o input de arquivo
+document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
     
     reader.onload = function(e) {
-        const contents = e.target.result;
-        document.getElementById('organistsData').value = contents;
-        importOrganists(); // Chama a função existente de importação
+        try {
+            const contents = e.target.result;
+            
+            // Processa o conteúdo exatamente como na importação normal
+            const lines = contents.split('\n');
+            organists = []; // Limpa a lista atual
+            
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                
+                // Processa a linha CSV (mesma lógica do botão Importar)
+                const cells = line.split(',').map(cell => {
+                    cell = cell.trim();
+                    if (cell.startsWith('"') && cell.endsWith('"')) {
+                        return cell.slice(1, -1);
+                    }
+                    return cell === '' ? null : cell;
+                });
+                
+                organists.push({
+                    name: cells[0],
+                    mhOrder: cells[1] ? parseInt(cells[1]) : null,
+                    coOrder: cells[2] ? parseInt(cells[2]) : null,
+                    parceira: cells[3] || null,
+                    rjmOrder: cells[4] ? parseInt(cells[4]) : null,
+                    dsst: cells[5] ? parseInt(cells[5]) : null,
+                    idtst: cells[6] || null,
+                    fdtst: cells[7] || null
+                });
+            });
+            
+            // Atualiza a textarea e a tabela (igual ao botão Importar)
+            document.getElementById('organistsData').value = contents;
+            renderOrganistsTable();
+            alert(`Dados importados com sucesso do arquivo! ${organists.length} organistas cadastradas.`);
+        } catch (error) {
+            alert('Erro ao importar dados do arquivo: ' + error.message);
+            console.error(error);
+        }
     };
     
     reader.onerror = function() {
@@ -1114,7 +1165,10 @@
     };
     
     reader.readAsText(file);
-}      
+    
+    // Limpa o input para permitir nova seleção do mesmo arquivo
+    event.target.value = '';
+}
 
 async function exportToTxt() {
     const content = organists.map(org => {
