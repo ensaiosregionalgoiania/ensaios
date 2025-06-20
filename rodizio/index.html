@@ -432,8 +432,8 @@ Luiza,,,,1,,,
                 
                 <button onclick="generateSchedule()">Gerar Rodízio</button>
                 <button onclick="openScheduleModal()" class="download-btn">Visualizar Rodízio</button>
-            </div>
-            <div id="schedule-view" class="schedule-view">
+                <button onclick="saveScheduleToFile()" class="export-btn">Salvar Rodízio</button>            </div>
+                <div id="schedule-view" class="schedule-view">
                 <p>Gere o rodízio para visualizar os meses aqui.</p>
             </div>
         </div>
@@ -1256,6 +1256,93 @@ function fallbackExport(content) {
     document.body.removeChild(link);
     setTimeout(() => URL.revokeObjectURL(url), 100);
 }
+
+async function saveScheduleToFile() {
+    if (!currentSchedule || Object.keys(currentSchedule).length === 0) {
+        alert('Gere o rodízio primeiro antes de salvar');
+        return;
+    }
+
+    // Criar um clone do modal para salvar
+    const modalClone = document.getElementById('scheduleModal').cloneNode(true);
+    modalClone.style.display = 'block';
+    modalClone.style.position = 'static';
+    modalClone.style.background = 'white';
+    
+    // Remover botões do clone
+    const modalActions = modalClone.querySelector('.modal-actions');
+    if (modalActions) modalActions.remove();
+
+    // Criar HTML completo
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rodízio de Organistas CCB</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { text-align: center; color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th, td { border: 1px solid #020202; padding: 8px; text-align: left; }
+        th { background-color: #3498db; color: white; }
+        .month-header { background-color: #2c3e50 !important; color: white; text-align: center; }
+        .next-service { background-color: #fffacd !important; font-weight: bold; }
+        .adjusted-organist { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Rodízio de Organistas CCB</h2>
+    <p>Gerado em ${new Date().toLocaleDateString()}</p>
+    ${modalClone.querySelector('#modalScheduleView').innerHTML}
+</body>
+</html>
+    `;
+
+    // Criar blob
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+
+    // Criar nome de arquivo padrão
+    const defaultFileName = `rodizio_organistas_${new Date().toISOString().slice(0,10)}.html`;
+
+    // Usar a API moderna se disponível
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: defaultFileName,
+                types: [{
+                    description: 'Arquivo HTML',
+                    accept: { 'text/html': ['.html'] }
+                }]
+            });
+            
+            const writable = await handle.createWritable();
+            await writable.write(htmlContent);
+            await writable.close();
+            alert('Rodízio salvo com sucesso!');
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error(err);
+                fallbackSave(blob, defaultFileName);
+            }
+        }
+    } else {
+        fallbackSave(blob, defaultFileName);
+    }
+}
+
+// Método alternativo para navegadores antigos
+function fallbackSave(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
   </script>
 </body>
 </html>
