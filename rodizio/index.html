@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <title>Sistema de Rodízio de Organistas CCB</title>
     <style>
         body {
@@ -184,13 +186,6 @@
         .editable-cell.editing input {
             display: block;
         }
-        .dsst-select {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            display: none;
-        }
         .add-organist-btn {
             background-color: #2ecc71;
             margin-top: 10px;
@@ -348,6 +343,112 @@
     gap: 5px;
     cursor: pointer;
 }
+
+.dsst-multiselect {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dsst-multiselect label {
+    display: block;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.dsst-multiselect label:hover {
+    background-color: #f0f0f0;
+}
+
+.editable-cell[data-field="dsst"] {
+    position: relative;
+}
+
+.dsst-multiselect {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: none;
+}
+
+.priority-cell {
+    background-color: #e6f7ff !important;
+    border: 2px solid #1890ff !important;
+    font-weight: bold;
+}
+
+.dsst-select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.dsst-select option {
+    padding: 5px;
+}
+
+.dsst-editor {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 8px;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dsst-editor label {
+    display: block;
+    padding: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dsst-editor label:hover {
+    background-color: #f5f5f5;
+}
+
+/* Remove os checkboxes padrão e cria visualização personalizada */
+.dsst-editor input[type="checkbox"] {
+    display: none; /* Esconde o checkbox padrão */
+}
+
+.dsst-editor label {
+    display: block;
+    padding: 5px 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    transition: all 0.2s;
+}
+
+.dsst-editor input[type="checkbox"]:checked + label {
+    background-color: #3498db;
+    color: white;
+}
+
+.dsst-editor label:hover {
+    background-color: #e0e0e0;
+}
+
+.dsst-editor input[type="checkbox"]:checked + label:hover {
+    background-color: #2980b9;
+}
+
     </style>
 </head>
 <body>
@@ -359,29 +460,28 @@
             <h2>Lista de Organistas</h2>
             
 <div style="margin-bottom: 20px;">
-    <label for="organistsData">Dados das Organistas (CSV):</label><br>
-<textarea id="organistsData" rows="1" style="width: 100%; font-family: monospace; margin-bottom: 10px; height: 30px;">
-Lucia,4,1,,,,,
-Danielly,13,2,,,,,
-Celmy,3,3,,,,,
-Geovana,5,4,,4,,,
-Fabiana,2,5,,2,,,
-Marluz,,6,"Marluz",,,,
-Waleria,7,7,,,6,,
-Taina,,8,"Larissa",3,,,
-Miriana,14,9,,,,"07/07/2025","07/07/2025"
-Luana,15,10,,,,,
-Leticia,,11,,,,,
-Patricia,6,12,,,,,
-Kassia,16,13,,,,,
-Priscila,17,14,,,,"16/12/2025","31/12/2025"
-Ana,12,,,,,,
-Nelia,9,,,,,,
-Vanessa,10,,,,,,
-Fabline,11,,,,,,
-Larissa,,,,,,,
-Luiza,,,,1,,,
-</textarea>    
+    <label for="organistsData" style="display: none;">Dados das Organistas (CSV):</label><br>
+<textarea id="organistsData" rows="1" style="display: none; width: 100%; font-family: monospace; margin-bottom: 10px; height: 30px;">
+    Lucia,,1,,,,,
+    Danielly,13,2,,,,,
+    Celmy,3,3,,,,,
+    Geovana,5,4,,4,,,
+    Fabiana,2,5,,2,3,,
+    Marluz,,6,"Marluz",,,,
+    Waleria,7,7,,,6,,
+    Taina,,8,"Larissa",3,,,
+    Miriana,,9,,,6,07/07/2025,19/07/2025
+    Luana,15,10,,,,,
+    Leticia,,11,,,,,
+    Patricia,6,12,,,,,
+    Kassia,16,13,,,,,
+    Priscila,17,14,,,,16/12/2025,31/12/2025
+    Nelia,9,,,,,,
+    Vanessa,10,,,,0|6,,
+    Fabline,11,,,,,,
+    Ana,12,,,,,,
+    Luiza,14,,,1,3,,
+    Larissa,,,,,,,</textarea>    
     <div class="action-buttons">
         <button onclick="importOrganists()">Importar Dados</button>
         <button onclick="document.getElementById('fileInput').click()" class="import-txt-btn">Importar de TXT</button>
@@ -432,7 +532,7 @@ Luiza,,,,1,,,
                 
                 <button onclick="generateSchedule()">Gerar Rodízio</button>
                 <button onclick="openScheduleModal()" class="download-btn">Visualizar Rodízio</button>
-                <button onclick="saveScheduleToFile()" class="export-btn">Salvar Rodízio</button>            </div>
+                <button onclick="saveScheduleToPDF()" class="export-btn">Salvar Rodízio</button>            </div>
                 <div id="schedule-view" class="schedule-view">
                 <p>Gere o rodízio para visualizar os meses aqui.</p>
             </div>
@@ -451,716 +551,80 @@ Luiza,,,,1,,,
         </div>
     </div>
 
-    <script>
-        // Variável global para armazenar as organistas
-        let organists = [];
-        let currentSchedule = {};
-        let nextServiceDate = null;
-        let priorityOrganists = {
-              mh: null,
-              co: null,
-              rjm: null
-        };
-        
-        // Inicializa a página
-        document.addEventListener('DOMContentLoaded', function() {
-            renderOrganistsTable();
-            setDefaultStartDate(); // Esta linha já deve existir
-        });
-        // Gera CSV a partir dos dados atuais
-        function generateCSV() {
-            return organists.map(org => {
-                return [
-                    org.name,
-                    org.mhOrder !== null ? org.mhOrder : '',
-                    org.coOrder !== null ? org.coOrder : '',
-                    org.parceira !== null ? `"${org.parceira}"` : '',
-                    org.rjmOrder !== null ? org.rjmOrder : '',
-                    org.dsst !== null ? org.dsst : '',
-                    org.idtst !== null ? org.idtst : '',
-                    org.fdtst !== null ? org.fdtst : ''
-                ].join(',');
-            }).join('\n');
-        }
-
-        // Exporta dados para CSV
-        function exportOrganists() {
-            const csvData = generateCSV();
-            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'organistas_ccb.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Importa organistas da textarea
-        function importOrganists() {
-    try {
-        const csvData = document.getElementById('organistsData').value.trim();
-        if (!csvData) {
-            alert('Nenhum dado para importar!');
-            return;
-        }
-
-        const lines = csvData.split('\n');
-        organists = []; // Limpa a lista atual
-        
-        lines.forEach(line => {
-            line = line.trim();
-            if (!line) return;
-            
-            // Processa a linha CSV (mantém a lógica original)
-            const cells = line.split(',').map(cell => {
-                cell = cell.trim();
-                if (cell.startsWith('"') && cell.endsWith('"')) {
-                    return cell.slice(1, -1);
-                }
-                return cell === '' ? null : cell;
-            });
-            
-            organists.push({
-                name: cells[0],
-                mhOrder: cells[1] ? parseInt(cells[1]) : null,
-                coOrder: cells[2] ? parseInt(cells[2]) : null,
-                parceira: cells[3] || null,
-                rjmOrder: cells[4] ? parseInt(cells[4]) : null,
-                dsst: cells[5] ? parseInt(cells[5]) : null,
-                idtst: cells[6] || null,
-                fdtst: cells[7] || null
-            });
-        });
-        
-        renderOrganistsTable();
-        alert(`Dados importados com sucesso! ${organists.length} organistas cadastradas.`);
-    } catch (error) {
-        alert('Erro ao importar dados: ' + error.message);
-        console.error(error);
-    }
-}
-        // Atualiza os combobox de seleção de organistas
-        // Define a data inicial como primeiro dia do próximo mês
-        function setDefaultStartDate() {
-            const today = new Date();
-            const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-    
-            // Formata a data como YYYY-MM-DD para o input type="date"
-            const formattedDate = nextMonth.toISOString().split('T')[0];
-            document.getElementById('startDate').value = formattedDate;
-        }
-        // Renderiza a tabela de organistas com células editáveis
-        function renderOrganistsTable() {
-    const tbody = document.querySelector('#organistsTable tbody');
-    tbody.innerHTML = '';
-    
-    organists.sort((a, b) => {
-        const aCO = a.coOrder === null ? 999 : a.coOrder;
-        const bCO = b.coOrder === null ? 999 : b.coOrder;
-        return aCO - bCO || (a.mhOrder || 999) - (b.mhOrder || 999);
-    });
-    
-    organists.forEach((org, index) => {
-        const row = document.createElement('tr');
-        const isPriorityMH = org.name === priorityOrganists.mh;
-        const isPriorityCO = org.name === priorityOrganists.co;
-        const isPriorityRJM = org.name === priorityOrganists.rjm;
-
-        row.innerHTML = `
-            <td class="editable-cell" data-field="name">
-                <span class="cell-value">${org.name}</span>
-                <input type="text" value="${org.name}">
-            </td>
-            <td class="editable-cell" data-field="mhOrder">
-                <span class="cell-value ${isPriorityMH ? 'priority-cell' : ''}">${org.mhOrder === null ? '' : org.mhOrder}</span>
-            </td>
-            <td class="editable-cell" data-field="coOrder">
-                <span class="cell-value ${isPriorityCO ? 'priority-cell' : ''}">${org.coOrder === null ? '' : org.coOrder}</span>
-            </td>
-            <td class="editable-cell" data-field="parceira">
-                <span class="cell-value">${org.parceira || ''}</span>
-                <input type="text" value="${org.parceira || ''}">
-            </td>
-            <td class="editable-cell" data-field="rjmOrder">
-                <span class="cell-value ${isPriorityRJM ? 'priority-cell' : ''}">${org.rjmOrder === null ? '' : org.rjmOrder}</span>
-            </td>
-            <td class="editable-cell" data-field="dsst">
-                <span class="cell-value">${org.dsst === null ? '' : getDayName(org.dsst)}</span>
-                <select class="dsst-select">
-                    <option value="">Dia sem tocar</option>
-                    <option value="0" ${org.dsst === 0 ? 'selected' : ''}>Domingo</option>
-                    <option value="3" ${org.dsst === 3 ? 'selected' : ''}>Quarta</option>
-                    <option value="6" ${org.dsst === 6 ? 'selected' : ''}>Sábado</option>
-                </select>
-            </td>
-            <td class="editable-cell" data-field="idtst">
-                <span class="cell-value">${org.idtst || ''}</span>
-                <input type="text" value="${org.idtst || ''}" placeholder="dd/mm/aaaa">
-            </td>
-            <td class="editable-cell" data-field="fdtst">
-                <span class="cell-value">${org.fdtst || ''}</span>
-                <input type="text" value="${org.fdtst || ''}" placeholder="dd/mm/aaaa">
-            </td>
-        `;
-        
-        tbody.appendChild(row);
-    });
-    
-    setupEditableCells();
-}
-        // Configura os eventos para as células editáveis
-        function setupEditableCells() {
-    // Configura células normais (nome, parceira, datas)
-    document.querySelectorAll('.editable-cell:not([data-field$="Order"])').forEach(cell => {
-        cell.addEventListener('click', function(e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-            if (this.classList.contains('editing')) return;
-            
-            this.classList.add('editing');
-            const input = this.querySelector('input, select');
-            if (input) {
-                input.focus();
-                if (input.tagName === 'SELECT') {
-                    input.style.display = 'block';
-                }
-            }
-        });
-        
-        const input = cell.querySelector('input');
-        const select = cell.querySelector('select');
-        
-        if (input) {
-            input.addEventListener('blur', function() { saveCellEdit(cell); });
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') saveCellEdit(cell);
-            });
-        }
-        
-        if (select) {
-            select.addEventListener('blur', function() { saveCellEdit(cell); });
-            select.addEventListener('change', function() { saveCellEdit(cell); });
-        }
-    });
-    
-    // Configura células de ordem (MH, CO, RJM) com dropdown
-    document.querySelectorAll('.editable-cell[data-field$="Order"]').forEach(cell => {
-        // Cria o dropdown
-        const select = document.createElement('div');
-        select.className = 'order-select';
-        
-        // Adiciona opções de 1 a 20
-        for (let i = 1; i <= 20; i++) {
-            const option = document.createElement('div');
-            option.className = 'order-option';
-            option.textContent = i;
-            option.dataset.value = i;
-            select.appendChild(option);
-        }
-        
-        // Adiciona opção "Início"
-        const inicioOption = document.createElement('div');
-        inicioOption.className = 'order-option inicio';
-        inicioOption.textContent = 'Início';
-        inicioOption.dataset.value = '0';
-        select.appendChild(inicioOption);
-        
-        cell.appendChild(select);
-        cell.style.position = 'relative';
-
-        // Clicar na célula para mostrar o dropdown
-        cell.addEventListener('click', function(e) {
-            if (e.target.classList.contains('order-option')) return;
-            
-            // Esconde todos os outros dropdowns
-            document.querySelectorAll('.order-select').forEach(s => {
-                s.classList.remove('show');
-            });
-            
-            // Mostra este dropdown
-            select.classList.add('show');
-            e.stopPropagation();
-        });
-
-        // Selecionar uma opção
-        select.addEventListener('click', function(e) {
-            if (e.target.classList.contains('order-option')) {
-                const value = e.target.dataset.value;
-                const field = cell.getAttribute('data-field').replace('Order', ''); // 'mh', 'co' ou 'rjm'
-                const row = cell.parentNode;
-                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-                
-                if (value === '0') {
-                    // Apenas marca como prioritária (não altera a ordem)
-                    priorityOrganists[field] = organists[rowIndex].name;
-                } else {
-                    // Atualiza o valor numérico normal
-                    organists[rowIndex][`${field}Order`] = parseInt(value);
-                    // Se estava marcada como prioritária, desmarca
-                    if (priorityOrganists[field] === organists[rowIndex].name) {
-                        priorityOrganists[field] = null;
-                    }
-                }
-                
-                select.classList.remove('show');
-                renderOrganistsTable();
-            }
-        });
-    });
-
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.editable-cell[data-field$="Order"]')) {
-            document.querySelectorAll('.order-select').forEach(s => {
-                s.classList.remove('show');
-            });
-        }
-    });
-}
-        // Salva a edição de uma célula
-        function saveCellEdit(cell) {
-            const row = cell.parentNode;
-            const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-            const field = cell.getAttribute('data-field');
-            let value;
-            
-            const input = cell.querySelector('input');
-            const select = cell.querySelector('select');
-            
-            if (input) {
-                value = input.value.trim();
-                
-                // Conversão para números quando aplicável
-                if (field === 'mhOrder' || field === 'coOrder' || field === 'rjmOrder') {
-                    value = value === '' ? null : parseInt(value);
-                }
-                
-                // Para campos de data, verifica o formato
-                if ((field === 'idtst' || field === 'fdtst') && value !== '' && !isValidDate(value)) {
-                    alert('Formato de data inválido. Use dd/mm/aaaa');
-                    return;
-                }
-            } else if (select) {
-                value = select.value === '' ? null : parseInt(select.value);
-            }
-            
-            // Atualiza o objeto organista
-            organists[rowIndex][field] = value;
-            
-            // Atualiza o valor exibido
-            const cellValue = cell.querySelector('.cell-value');
-            if (field === 'dsst') {
-                cellValue.textContent = value === null ? '' : getDayName(value);
-            } else {
-                cellValue.textContent = value === null ? '' : value;
-            }
-            
-            // Sai do modo edição
-            cell.classList.remove('editing');
-            if (select) select.style.display = 'none';
-            
-            // Atualiza os selects de organistas
-            //updateOrganistSelections();
-        }
-
-        // Valida o formato da data
-        function isValidDate(dateString) {
-           return /^\d{2}\/\d{2}\/\d{4}$/.test(dateString);
-        }
-        // Adiciona uma nova organista
-        function addNewOrganist() {
-            organists.push({
-                name: "Nova Organista",
-                mhOrder: null,
-                coOrder: null,
-                parceira: null,
-                rjmOrder: null,
-                dsst: null,
-                idtst: null,
-                fdtst: null
-            });
-            
-            renderOrganistsTable();
-            
-            // Rola até a última linha e inicia a edição do nome
-            const lastRow = document.querySelector('#organistsTable tbody tr:last-child');
-            const nameCell = lastRow.querySelector('td[data-field="name"]');
-            nameCell.click();
-        }
-
-        // Gera o rodízio a partir dos dados da tabela
-
-        function generateSchedule() {
-    // 1. OBTER E VALIDAR DADOS DE ENTRADA
-    const startDateInput = document.getElementById('startDate').value;
-    const [year, month, day] = startDateInput.split('-').map(Number);
-    const startDate = new Date(year, month - 1, day); // Mês é 0-based
-    
-    const months = parseInt(document.getElementById('months').value);
-    
-    if (isNaN(startDate.getTime())) {
-        alert('Por favor, selecione uma data válida');
-        return;
-    }
-
-    // 2. OBTER DIAS SELECIONADOS
-    const selectedDays = [];
-    document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
-        selectedDays.push(parseInt(checkbox.value));
-    });
-    
-    if (selectedDays.length === 0) {
-        alert('Selecione pelo menos um dia de culto');
-        return;
-    }
-
-    // 3. CALCULAR PERÍODO CORRETO (DATA INICIAL EXATA + MESES)
-    const endDate = new Date(
-        startDate.getFullYear(),
-        startDate.getMonth() + months,
-        0 // Último dia do mês final
-    );
-
-    // 4. PREPARAR LISTAS DE ORGANISTAS
-    const getOrderedOrganists = (organists, orderField, priorityName) => {
-        if (!priorityName) return organists.sort((a, b) => a[orderField] - b[orderField]);
-        
-        const priorityOrg = organists.find(org => org.name === priorityName);
-        if (!priorityOrg) return organists.sort((a, b) => a[orderField] - b[orderField]);
-        
-        const sortedOrganists = organists.filter(org => org[orderField] !== null)
-                                     .sort((a, b) => a[orderField] - b[orderField]);
-        const priorityIndex = sortedOrganists.findIndex(org => org.name === priorityName);
-        
-        return [...sortedOrganists.slice(priorityIndex), ...sortedOrganists.slice(0, priorityIndex)];
+<script>
+    // Variável global para armazenar as organistas
+    let organists = [];
+    let currentSchedule = {};
+    let nextServiceDate = null;
+    let priorityOrganists = {
+        mh: null,
+        co: null,
+        rjm: null
     };
-    
-    let mhOrganists = getOrderedOrganists(
-        organists.filter(org => org.mhOrder !== null),
-        'mhOrder',
-        priorityOrganists.mh
-    ).map(org => ({...org}));
-        
-    let coOrganists = getOrderedOrganists(
-        organists.filter(org => org.coOrder !== null),
-        'coOrder',
-        priorityOrganists.co
-    ).map(org => ({...org}));
 
-    let rjmOrganists = getOrderedOrganists(
-        organists.filter(org => org.rjmOrder !== null),
-        'rjmOrder',
-        priorityOrganists.rjm
-    ).map(org => ({...org}));
+    // Inicializa a página
+    document.addEventListener('DOMContentLoaded', function() {
+        renderOrganistsTable();
+        setDefaultStartDate();
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+    });
 
-    // 5. GERAR RODÍZIO DIA A DIA
-    const scheduleByMonth = {};
-    let currentDate = new Date(startDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    nextServiceDate = null;
-    
-    let currentMhIndex = 0;
-    let currentCoIndex = 0;
-    let currentRjmIndex = 0;
-    const skippedOrganists = { mh: null, co: null, rjm: null };
-    
-    while (currentDate <= endDate) {
-        const dayOfWeek = currentDate.getDay();
-        const isSunday = dayOfWeek === 0;
-        const isSelectedDay = selectedDays.includes(dayOfWeek);
-        
-        if (isSelectedDay || isSunday) {
-            const dateCopy = new Date(currentDate);
-            const monthYear = `${getMonthName(currentDate.getMonth())}/${currentDate.getFullYear()}`;
-            const day = currentDate.getDate();
-            const dayName = getDayName(dayOfWeek);
-            let adjusted = false;
-            let adjustedPeriod = false;
-            
-            if (!nextServiceDate && dateCopy >= today) {
-                nextServiceDate = new Date(dateCopy);
-            }
-
-            let mhDisplay = '';
-            let coDisplay = '';
-            let rjmDisplay = '';
-
-            // LÓGICA PARA DIAS SELECIONADOS (NÃO DOMINGO OU DOMINGO SELECIONADO)
-            if (isSelectedDay) {
-                // CULTO OFICIAL
-                let coOrganist = skippedOrganists.co || coOrganists[currentCoIndex % coOrganists.length];
-                let coSkipped = false;
-                coDisplay = coOrganist.name;
-                
-                const isInactivePeriod = coOrganist.idtst && coOrganist.fdtst && 
-                                      isDateInPeriod(dateCopy, coOrganist.idtst, coOrganist.fdtst);
-
-                if (coOrganist.dsst === dayOfWeek || isInactivePeriod) {
-                    skippedOrganists.co = coOrganist;
-                    coOrganist = coOrganists[(currentCoIndex + 1) % coOrganists.length];
-                    coDisplay = isInactivePeriod ? `${coOrganist.name}` : `${coOrganist.name}**`;
-                    currentCoIndex++;
-                    coSkipped = true;
-                    adjusted = true;
-                    if (isInactivePeriod) adjustedPeriod = true;
-                } else {
-                    skippedOrganists.co = null;
-                }
-                
-                // MEIA HORA
-                let mhOrganist = skippedOrganists.mh || mhOrganists[currentMhIndex % mhOrganists.length];
-                const isMhInactive = mhOrganist.idtst && mhOrganist.fdtst && 
-                                   isDateInPeriod(dateCopy, mhOrganist.idtst, mhOrganist.fdtst);
-
-                if (mhOrganist.dsst === dayOfWeek || isMhInactive) {
-                    skippedOrganists.mh = mhOrganist;
-                    mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
-                    if (isMhInactive) adjustedPeriod = true;
-                    adjusted = true;
-                } else {
-                    skippedOrganists.mh = null;
-                }
-                
-                mhDisplay = coOrganist.parceira || mhOrganist.name;
-                if (!coOrganist.parceira) {
-                    if (mhDisplay === coOrganist.name) {
-                        mhOrganist = mhOrganists[(currentMhIndex + 1) % mhOrganists.length];
-                        mhDisplay = mhOrganist.name;
-                        currentMhIndex++;
-                    }
-                    if (mhOrganist.dsst === dayOfWeek) {
-                        mhDisplay = `${mhDisplay}**`;
-                        adjusted = true;
-                    }
-                    currentMhIndex++;
-                }
-                
-                if (!coSkipped) {
-                    currentCoIndex++;
-                }
-            }
-            
-            // RJM (SEMPRE AOS DOMINGOS, MESMO NÃO SELECIONADO)
-            if (isSunday && rjmOrganists.length > 0) {
-                let rjmOrganist = skippedOrganists.rjm || rjmOrganists[currentRjmIndex % rjmOrganists.length];
-                const isRjmInactive = rjmOrganist.idtst && rjmOrganist.fdtst && 
-                                     isDateInPeriod(dateCopy, rjmOrganist.idtst, rjmOrganist.fdtst);
-                
-                if (rjmOrganist.dsst === dayOfWeek || isRjmInactive) {
-                    skippedOrganists.rjm = rjmOrganist;
-                    rjmOrganist = rjmOrganists[(currentRjmIndex + 1) % rjmOrganists.length];
-                    rjmDisplay = isRjmInactive ? `${rjmOrganist.name}` : `${rjmOrganist.name}**`;
-                    adjusted = true;
-                    if (isRjmInactive) adjustedPeriod = true;
-                } else {
-                    skippedOrganists.rjm = null;
-                    rjmDisplay = rjmOrganist.name;
-                }
-                currentRjmIndex++;
-            }
-            
-            // ADICIONAR À GRADE
-            if (!scheduleByMonth[monthYear]) {
-                scheduleByMonth[monthYear] = [];
-            }
-            
-            if (rjmDisplay || isSelectedDay) {
-                scheduleByMonth[monthYear].push({ 
-                    date: dateCopy,
-                    day, 
-                    dayName,
-                    mh: mhDisplay,
-                    co: coDisplay,
-                    rjm: rjmDisplay,
-                    isNextService: nextServiceDate && dateCopy.getTime() === nextServiceDate.getTime(),
-                    isAdjusted: adjusted,
-                    isAdjustedPeriod: adjustedPeriod
-                });
-            }
-        }
-        currentDate.setDate(currentDate.getDate() + 1);
+    // Funções auxiliares
+    function getMonthName(monthIndex) {
+        const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        return months[monthIndex];
     }
-    
-    // 6. ATUALIZAR VISUALIZAÇÃO
-    currentSchedule = scheduleByMonth;
-    updateScheduleView(scheduleByMonth);
-    updateModalScheduleView(scheduleByMonth);
-}
 
-// Função auxiliar para verificar se a data está no período
-        function isDateInPeriod(date, startDateStr, endDateStr) {
-            const startDateParts = startDateStr.split('/');
-            const endDateParts = endDateStr.split('/');
-            
-            const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
-            const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
-            const checkDate = new Date(date);
-            
-            // Remove horas para comparar apenas as datas
-            startDate.setHours(0, 0, 0, 0);
-            endDate.setHours(0, 0, 0, 0);
-            checkDate.setHours(0, 0, 0, 0);
-            
-            return checkDate >= startDate && checkDate <= endDate;
-        }
+    function getDayName(dayIndex) {
+        const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        return days[dayIndex];
+    }
 
-        // Atualiza a visualização principal
-        function updateScheduleView(scheduleByMonth) {
-            const container = document.getElementById('schedule-view');
-            container.innerHTML = '';
-            
-            if (Object.keys(scheduleByMonth).length === 0) {
-                container.innerHTML = '<p>Gere o rodízio para visualizar os meses aqui.</p>';
-                return;
-            }
-            
-            Object.entries(scheduleByMonth).forEach(([monthYear, schedule]) => {
-                const monthDiv = document.createElement('div');
-                monthDiv.className = 'schedule-month';
-                
-                let tableHTML = `
-                    <table>
-                        <tr><th colspan="5" class="month-header">${monthYear}</th></tr>
-                        <tr>
-                            <th>Dia</th>
-                            <th>Dia Semana</th>
-                            <th>Meia Hora</th>
-                            <th>Culto Oficial</th>
-                            <th>RJM</th>
-                        </tr>
-                `;
-                
-                schedule.forEach(item => {
-                    const rowClass = item.isNextService ? 'next-service' : '';
-                    const mhClass = item.mh.includes('**') ? 'adjusted-organist' : '';
-                    const coClass = item.co.includes('**') ? 'adjusted-organist' : '';
-                    const rjmClass = item.rjm.includes('**') ? 'adjusted-organist' : '';
-                    
-                    tableHTML += `
-        <tr class="${rowClass}">
-            <td>${String(item.day).padStart(2, '0')}${item.isAdjustedPeriod ? '***' : ''}</td>
-            <td>${item.dayName}</td>
-            <td class="${mhClass} ${item.mhPriority ? 'priority-cell' : ''}">${item.mh}</td>
-            <td class="${coClass} ${item.coPriority ? 'priority-cell' : ''}">${item.co}</td>
-            <td class="${rjmClass} ${item.rjmPriority ? 'priority-cell' : ''}">${item.rjm || ''}</td>
-        </tr>
-    `;
-});                
-                tableHTML += `</table>`;
-                monthDiv.innerHTML = tableHTML;
-                container.appendChild(monthDiv);
-            });
-        }
+    function isValidDate(dateString) {
+        return /^\d{2}\/\d{2}\/\d{4}$/.test(dateString);
+    }
 
-        // Atualiza a visualização no modal
-        function updateModalScheduleView(scheduleByMonth) {
-            const container = document.getElementById('modalScheduleView');
-            container.innerHTML = '';
-            
-            if (Object.keys(scheduleByMonth).length === 0) {
-                container.innerHTML = '<p>Nenhum rodízio gerado ainda.</p>';
-                return;
-            }
-            
-            Object.entries(scheduleByMonth).forEach(([monthYear, schedule]) => {
-                const monthDiv = document.createElement('div');
-                monthDiv.className = 'schedule-month';
-                monthDiv.style.marginBottom = '30px';
-                
-                let tableHTML = `
-                    <h3 style="background-color: #2c3e50; color: white; padding: 8px; text-align: center;">
-                        ${monthYear}
-                    </h3>
-                    <table style="width: 100%;">
-                        <tr>
-                            <th>Dia</th>
-                            <th>Dia Semana</th>
-                            <th>Meia Hora</th>
-                            <th>Culto Oficial</th>
-                            <th>RJM</th>
-                        </tr>
-                `;
-                
-                schedule.forEach(item => {
-                    const rowStyle = item.isNextService ? 'background-color: #fffacd; font-weight: bold;' : '';
-                    const mhStyle = item.mh.includes('**') ? 'color: #e74c3c; font-weight: bold;' : '';
-                    const coStyle = item.co.includes('**') ? 'color: #e74c3c; font-weight: bold;' : '';
-                    const rjmStyle = item.rjm.includes('**') ? 'color: #e74c3c; font-weight: bold;' : '';
-                    
-                    tableHTML += `
-                        <tr style="${rowStyle}">
-                            <td>${String(item.day).padStart(2, '0')}${item.isAdjustedPeriod ? '***' : ''}</td>
-                            <td>${item.dayName}</td>
-                            <td style="${mhStyle}">${item.mh}</td>
-                            <td style="${coStyle}">${item.co}</td>
-                            <td style="${rjmStyle}">${item.rjm || ''}</td>
-                        </tr>
-                    `;
-                });
-                
-                tableHTML += `</table>`;
-                monthDiv.innerHTML = tableHTML;
-                container.appendChild(monthDiv);
-            });
-        }
+    function setDefaultStartDate() {
+        const today = new Date();
+        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+        const formattedDate = nextMonth.toISOString().split('T')[0];
+        document.getElementById('startDate').value = formattedDate;
+    }
 
-        // Controla o modal
-        function openScheduleModal() {
-            if (Object.keys(currentSchedule).length === 0) {
-                alert('Por favor, gere o rodízio primeiro');
-                return;
-            }
-            document.getElementById('scheduleModal').style.display = 'block';
-        }
+    // Funções para DSST simplificado
+    function formatDsstValue(dsst) {
+        if (!dsst) return '';
+        const days = Array.isArray(dsst) ? dsst : [dsst];
+        return days.map(d => {
+            if (d === 0) return 'Dom';
+            if (d === 3) return 'Qua';
+            if (d === 6) return 'Sáb';
+            return '';
+        }).filter(Boolean).join(' | ');
+    }
 
-        function closeModal() {
-            document.getElementById('scheduleModal').style.display = 'none';
-        }
+    function isDsstSelected(dsst, day) {
+        if (!dsst) return '';
+        return (Array.isArray(dsst) ? dsst.includes(day) : dsst === day) ? 'checked' : '';
+    }
 
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
-            const modal = document.getElementById('scheduleModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-
-        // Funções auxiliares
-        function getMonthName(monthIndex) {
-            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            return months[monthIndex];
-        }
-
-        function getDayName(dayIndex) {
-           const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-           return days[dayIndex];
-        }
-
-// Configura o evento para o input de arquivo
-document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
+    // Funções de manipulação de dados
+    function importOrganists() {
         try {
-            const contents = e.target.result;
-            
-            // Processa o conteúdo exatamente como na importação normal
-            const lines = contents.split('\n');
-            organists = []; // Limpa a lista atual
+            const csvData = document.getElementById('organistsData').value.trim();
+            if (!csvData) {
+                alert('Nenhum dado para importar!');
+                return;
+            }
+
+            const lines = csvData.split('\n');
+            organists = [];
             
             lines.forEach(line => {
                 line = line.trim();
                 if (!line) return;
                 
-                // Processa a linha CSV (mesma lógica do botão Importar)
                 const cells = line.split(',').map(cell => {
                     cell = cell.trim();
                     if (cell.startsWith('"') && cell.endsWith('"')) {
@@ -1175,174 +639,1083 @@ function handleFileSelect(event) {
                     coOrder: cells[2] ? parseInt(cells[2]) : null,
                     parceira: cells[3] || null,
                     rjmOrder: cells[4] ? parseInt(cells[4]) : null,
-                    dsst: cells[5] ? parseInt(cells[5]) : null,
+                    dsst: cells[5] ? (cells[5].includes('|') ? 
+                        cells[5].split('|').map(Number) : 
+                        parseInt(cells[5])) : null,
                     idtst: cells[6] || null,
                     fdtst: cells[7] || null
                 });
             });
             
-            // Atualiza a textarea e a tabela (igual ao botão Importar)
-            document.getElementById('organistsData').value = contents;
             renderOrganistsTable();
-            alert(`Dados importados com sucesso do arquivo! ${organists.length} organistas cadastradas.`);
+            alert(`Dados importados com sucesso! ${organists.length} organistas cadastradas.`);
         } catch (error) {
-            alert('Erro ao importar dados do arquivo: ' + error.message);
+            alert('Erro ao importar dados: ' + error.message);
             console.error(error);
         }
-    };
-    
-    reader.onerror = function() {
-        alert('Erro ao ler o arquivo');
-    };
-    
-    reader.readAsText(file);
-    
-    // Limpa o input para permitir nova seleção do mesmo arquivo
-    event.target.value = '';
-}
+    }
 
-async function exportToTxt() {
-    const content = organists.map(org => {
-        return [
-            org.name,
-            org.mhOrder !== null ? org.mhOrder : '',
-            org.coOrder !== null ? org.coOrder : '',
-            org.parceira ? `"${org.parceira}"` : '',
-            org.rjmOrder !== null ? org.rjmOrder : '',
-            org.dsst !== null ? org.dsst : '',
-            org.idtst || '',
-            org.fdtst || ''
-        ].join(',');
-    }).join('\n');
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-    // Verifica se a API moderna está disponível
-    if ('showSaveFilePicker' in window) {
-        try {
-            const dateStr = new Date().toISOString().replace(/[:.]/g, '-');
-            const suggestedName = `organistas-ccb-${dateStr.slice(0, 19)}.txt`;
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('organistsData').value = e.target.result;
+            importOrganists();
+        };
+        
+        reader.onerror = function() {
+            alert('Erro ao ler o arquivo');
+        };
+        
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function exportToTxt() {
+        const content = organists.map(org => {
+            return [
+                org.name,
+                org.mhOrder !== null ? org.mhOrder : '',
+                org.coOrder !== null ? org.coOrder : '',
+                org.parceira ? `"${org.parceira}"` : '',
+                org.rjmOrder !== null ? org.rjmOrder : '',
+                org.dsst !== null ? (Array.isArray(org.dsst) ? org.dsst.join('|') : org.dsst) : '',
+                org.idtst || '',
+                org.fdtst || ''
+            ].join(',');
+        }).join('\n');
+
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `organistas-ccb-${new Date().toISOString().slice(0, 10)}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    // Funções de renderização
+    function renderOrganistsTable() {
+        const tbody = document.querySelector('#organistsTable tbody');
+        tbody.innerHTML = '';
+        
+        organists.sort((a, b) => {
+            const aCO = a.coOrder === null ? 999 : a.coOrder;
+            const bCO = b.coOrder === null ? 999 : b.coOrder;
+            return aCO - bCO || (a.mhOrder || 999) - (b.mhOrder || 999);
+        });
+        
+        organists.forEach((org, index) => {
+            const row = document.createElement('tr');
+            const isPriorityMH = org.name === priorityOrganists.mh;
+            const isPriorityCO = org.name === priorityOrganists.co;
+            const isPriorityRJM = org.name === priorityOrganists.rjm;
+
+            row.innerHTML = `
+                <td class="editable-cell" data-field="name">
+                    <span class="cell-value">${org.name}</span>
+                    <input type="text" value="${org.name}">
+                </td>
+                <td class="editable-cell" data-field="mhOrder">
+                    <span class="cell-value ${isPriorityMH ? 'priority-cell' : ''}">${org.mhOrder === null ? '' : org.mhOrder}</span>
+                </td>
+                <td class="editable-cell" data-field="coOrder">
+                    <span class="cell-value ${isPriorityCO ? 'priority-cell' : ''}">${org.coOrder === null ? '' : org.coOrder}</span>
+                </td>
+                <td class="editable-cell" data-field="parceira">
+                    <span class="cell-value">${org.parceira || ''}</span>
+                    <input type="text" value="${org.parceira || ''}">
+                </td>
+                <td class="editable-cell" data-field="rjmOrder">
+                    <span class="cell-value ${isPriorityRJM ? 'priority-cell' : ''}">${org.rjmOrder === null ? '' : org.rjmOrder}</span>
+                </td>
+                <td class="editable-cell" data-field="dsst">
+                    <span class="cell-value">${formatDsstValue(org.dsst)}</span>
+                    <div class="dsst-editor" style="display: none;">
+                        <input type="checkbox" value="0" id="dsst-${index}-0" ${isDsstSelected(org.dsst, 0)}>
+                        <label for="dsst-${index}-0">Dom</label>
+                        
+                        <input type="checkbox" value="3" id="dsst-${index}-3" ${isDsstSelected(org.dsst, 3)}>
+                        <label for="dsst-${index}-3">Qua</label>
+                        
+                        <input type="checkbox" value="6" id="dsst-${index}-6" ${isDsstSelected(org.dsst, 6)}>
+                        <label for="dsst-${index}-6">Sáb</label>
+                    </div>
+                </td>
+                <td class="editable-cell" data-field="idtst">
+                    <span class="cell-value">${org.idtst || ''}</span>
+                    <input type="text" value="${org.idtst || ''}" placeholder="dd/mm/aaaa">
+                </td>
+                <td class="editable-cell" data-field="fdtst">
+                    <span class="cell-value">${org.fdtst || ''}</span>
+                    <input type="text" value="${org.fdtst || ''}" placeholder="dd/mm/aaaa">
+                </td>
+            `;
             
-            const handle = await window.showSaveFilePicker({
-                suggestedName: suggestedName,
-                types: [{
-                    description: 'Arquivos de Texto',
-                    accept: {'text/plain': ['.txt']}
-                }]
+            tbody.appendChild(row);
+        });
+        
+        setupEditableCells();
+    }
+
+    function setupEditableCells() {
+        // Células de texto simples
+        document.querySelectorAll('.editable-cell:not([data-field$="Order"]):not([data-field="dsst"])').forEach(cell => {
+            cell.addEventListener('click', function(e) {
+                if (e.target.tagName === 'INPUT') return;
+                if (this.classList.contains('editing')) return;
+                
+                this.classList.add('editing');
+                const input = this.querySelector('input');
+                input.focus();
             });
             
-            const writable = await handle.createWritable();
-            await writable.write(content);
-            await writable.close();
-            alert('Arquivo salvo com sucesso!');
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.error(err);
-                fallbackExport(content); // Chama o método antigo se falhar
+            const input = cell.querySelector('input');
+            input.addEventListener('blur', () => saveCellEdit(cell));
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') saveCellEdit(cell);
+            });
+        });
+
+        // Células de dias sem tocar (DSST)
+        document.querySelectorAll('.editable-cell[data-field="dsst"]').forEach(cell => {
+            cell.addEventListener('click', function(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
+                if (this.classList.contains('editing')) return;
+                
+                this.classList.add('editing');
+                const editor = this.querySelector('.dsst-editor');
+                editor.style.display = 'block';
+                
+                // Fecha ao clicar fora
+                const clickOutside = (e) => {
+                    if (!cell.contains(e.target)) {
+                        saveCellEdit(cell);
+                        document.removeEventListener('click', clickOutside);
+                    }
+                };
+                setTimeout(() => document.addEventListener('click', clickOutside), 10);
+            });
+        });
+
+        // Células de ordem (dropdown numérico)
+        document.querySelectorAll('.editable-cell[data-field$="Order"]').forEach(cell => {
+            const select = document.createElement('div');
+            select.className = 'order-select';
+            
+            for (let i = 1; i <= 20; i++) {
+                const option = document.createElement('div');
+                option.className = 'order-option';
+                option.textContent = i;
+                option.dataset.value = i;
+                select.appendChild(option);
+            }
+            
+            const inicioOption = document.createElement('div');
+            inicioOption.className = 'order-option inicio';
+            inicioOption.textContent = 'Início';
+            inicioOption.dataset.value = '0';
+            select.appendChild(inicioOption);
+            
+            cell.appendChild(select);
+            cell.style.position = 'relative';
+
+            cell.addEventListener('click', function(e) {
+                if (e.target.classList.contains('order-option')) return;
+                
+                document.querySelectorAll('.order-select').forEach(s => {
+                    s.classList.remove('show');
+                });
+                
+                select.classList.add('show');
+                e.stopPropagation();
+            });
+
+            select.addEventListener('click', function(e) {
+                if (e.target.classList.contains('order-option')) {
+                    const value = e.target.dataset.value;
+                    const field = cell.getAttribute('data-field').replace('Order', '');
+                    const row = cell.parentNode;
+                    const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+                    
+                    if (value === '0') {
+                        priorityOrganists[field] = organists[rowIndex].name;
+                    } else {
+                        organists[rowIndex][`${field}Order`] = parseInt(value);
+                        if (priorityOrganists[field] === organists[rowIndex].name) {
+                            priorityOrganists[field] = null;
+                        }
+                    }
+                    
+                    select.classList.remove('show');
+                    renderOrganistsTable();
+                }
+            });
+        });
+
+        // Fechar editáveis ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.editable-cell')) {
+                document.querySelectorAll('.editable-cell.editing').forEach(cell => {
+                    saveCellEdit(cell);
+                });
+                document.querySelectorAll('.order-select').forEach(s => {
+                    s.classList.remove('show');
+                });
+            }
+        });
+    }
+
+    function saveCellEdit(cell) {
+        const row = cell.parentNode;
+        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+        const field = cell.getAttribute('data-field');
+        
+        if (field === 'dsst') {
+            const checkboxes = cell.querySelectorAll('.dsst-editor input:checked');
+            const values = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            organists[rowIndex][field] = values.length > 0 ? (values.length === 1 ? values[0] : values) : null;
+            cell.querySelector('.cell-value').textContent = formatDsstValue(organists[rowIndex][field]);
+        } else {
+            const input = cell.querySelector('input');
+            if (!input) return;
+            
+            let value = input.value.trim();
+            
+            if (field === 'mhOrder' || field === 'coOrder' || field === 'rjmOrder') {
+                value = value === '' ? null : parseInt(value);
+            } else if ((field === 'idtst' || field === 'fdtst') && value !== '' && !isValidDate(value)) {
+                alert('Formato de data inválido. Use dd/mm/aaaa');
+                return;
+            }
+            
+            organists[rowIndex][field] = value;
+            cell.querySelector('.cell-value').textContent = value || '';
+        }
+        
+        cell.classList.remove('editing');
+        const editor = cell.querySelector('.dsst-editor');
+        if (editor) editor.style.display = 'none';
+    }
+
+    function addNewOrganist() {
+        organists.push({
+            name: "Nova Organista",
+            mhOrder: null,
+            coOrder: null,
+            parceira: null,
+            rjmOrder: null,
+            dsst: null,
+            idtst: null,
+            fdtst: null
+        });
+        
+        renderOrganistsTable();
+        
+        const lastRow = document.querySelector('#organistsTable tbody tr:last-child');
+        const nameCell = lastRow.querySelector('td[data-field="name"]');
+        nameCell.click();
+    }
+
+    // Função principal refatorada
+    function generateSchedule() {
+        if (!validateInputs()) return;
+        
+        const { startDate, endDate, selectedDays } = getScheduleParameters();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Criar estrutura vazia
+        const scheduleByMonth = createEmptyCalendar(startDate, endDate, selectedDays, today);
+        
+        // Preencher com organistas - agora em 3 etapas separadas
+        //aqui
+        fillCultoOficialSchedule(scheduleByMonth);
+        fillParceirasMH(scheduleByMonth); // Depois preenche as parceiras MH
+        fillMeiaHoraSchedule(scheduleByMonth);
+        fillRJMSchedule(scheduleByMonth);
+        
+        // Atualizar views
+        currentSchedule = scheduleByMonth;
+        updateScheduleView(scheduleByMonth);
+        updateModalScheduleView(scheduleByMonth);
+    }
+
+    function fillRJMSchedule(scheduleByMonth) {
+        // 1. Filtra APENAS organistas que tocam na RJM
+        const rjmOrganists = organists.filter(org => 
+            org?.rjmOrder !== null && 
+            org.name !== 'Danielly' // Exclui especificamente a Danielly
+        ).sort((a, b) => a.rjmOrder - b.rjmOrder);
+
+        let currentIndex = 0;
+
+        Object.values(scheduleByMonth).forEach(monthSchedule => {
+            monthSchedule.forEach(item => {
+                if (item.date.getDay() === 0) { // Apenas domingos
+                    // 2. Encontra todas disponíveis nesta data
+                    const availableToday = rjmOrganists.filter(org => 
+                        isOrganistAvailableForRJM(org, item.date)
+                    );
+
+                    if (availableToday.length === 0) {
+                        item.rjm = 'N/D';
+                        item.isAdjusted = true;
+                        return;
+                    }
+
+                    // 3. Encontra a próxima na ordem considerando apenas disponíveis
+                    let selectedOrganist = null;
+                    let adjusted = false;
+                    
+                    // Procura na ordem normal
+                    for (let i = 0; i < rjmOrganists.length; i++) {
+                        const candidate = rjmOrganists[(currentIndex + i) % rjmOrganists.length];
+                        if (availableToday.includes(candidate)) {
+                            selectedOrganist = candidate;
+                            adjusted = i > 0;
+                            currentIndex = (currentIndex + i + 1) % rjmOrganists.length;
+                            break;
+                        }
+                    }
+
+                    item.rjm = selectedOrganist ? 
+                        `${selectedOrganist.name}${adjusted ? ' **' : ''}` : 
+                        'N/D';
+                    item.isAdjusted = adjusted;
+                }
+            });
+        });
+    }
+
+    isOrganistAvailableForRJM
+    // Função específica para RJM
+    function isOrganistAvailableForRJM(org, date) {
+        // 1. Verifica período sem tocar
+        if (org.idtst && isDateInRange(date, org.idtst, org.fdtst)) {
+            return false;
+        }
+
+        // 2. Verifica dias sem tocar (RJM sempre domingo - day 0)
+        if (org.dsst) {
+            const forbiddenDays = Array.isArray(org.dsst) ? org.dsst : [org.dsst];
+            if (forbiddenDays.includes(0)) return false; // 0 = Domingo
+        }
+
+        return true;
+    }
+
+    function isDateInRange(date, startDateStr, endDateStr) {
+        if (!startDateStr) return false;
+        
+        const [startDay, startMonth, startYear] = startDateStr.split('/').map(Number);
+        const start = new Date(startYear, startMonth - 1, startDay);
+        
+        if (!endDateStr) {
+            return date.getTime() === start.getTime();
+        }
+        
+        const [endDay, endMonth, endYear] = endDateStr.split('/').map(Number);
+        const end = new Date(endYear, endMonth - 1, endDay);
+        
+        return date >= start && date <= end;
+    }
+
+    function isOrganistAvailable(org, dayOfWeek, currentDate, type) {
+        if (!org) return false;
+        
+        // Verifica período sem tocar
+        if (org.idtst && isDateInRange(currentDate, org.idtst, org.fdtst)) {
+            return false;
+        }
+        
+        // Verifica dias sem tocar (DSST)
+        if (org.dsst) {
+            let forbiddenDays = [];
+            if (Array.isArray(org.dsst)) {
+                forbiddenDays = org.dsst;
+            } else if (typeof org.dsst === 'number') {
+                forbiddenDays = [org.dsst];
+            }
+            
+            if (forbiddenDays.includes(dayOfWeek)) {
+                return false;
             }
         }
-    } else {
-        fallbackExport(content);
-    }
-}
-
-// Método alternativo para navegadores antigos
-function fallbackExport(content) {
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `organistas-ccb-${new Date().toISOString().slice(0, 10)}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => URL.revokeObjectURL(url), 100);
-}
-
-async function saveScheduleToFile() {
-    if (!currentSchedule || Object.keys(currentSchedule).length === 0) {
-        alert('Gere o rodízio primeiro antes de salvar');
-        return;
+        
+        // Verifica se a organista tem ordem definida para este tipo de culto
+        if (type === 'mh' && org.mhOrder === null) return false;
+        if (type === 'co' && org.coOrder === null) return false;
+        if (type === 'rjm' && org.rjmOrder === null) return false;
+        
+        return true;
     }
 
-    // Criar um clone do modal para salvar
-    const modalClone = document.getElementById('scheduleModal').cloneNode(true);
-    modalClone.style.display = 'block';
-    modalClone.style.position = 'static';
-    modalClone.style.background = 'white';
-    
-    // Remover botões do clone
-    const modalActions = modalClone.querySelector('.modal-actions');
-    if (modalActions) modalActions.remove();
+    // Funções de visualização e modal
+    function openScheduleModal() {
+        if (Object.keys(currentSchedule).length === 0) {
+            alert('Por favor, gere o rodízio primeiro');
+            return;
+        }
+        document.getElementById('scheduleModal').style.display = 'block';
+    }
 
-    // Criar HTML completo
-    const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Rodízio de Organistas CCB</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h2 { text-align: center; color: #2c3e50; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        th, td { border: 1px solid #020202; padding: 8px; text-align: left; }
-        th { background-color: #3498db; color: white; }
-        .month-header { background-color: #2c3e50 !important; color: white; text-align: center; }
-        .next-service { background-color: #fffacd !important; font-weight: bold; }
-        .adjusted-organist { color: #e74c3c; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <h2>Rodízio de Organistas CCB</h2>
-    <p>Gerado em ${new Date().toLocaleDateString()}</p>
-    ${modalClone.querySelector('#modalScheduleView').innerHTML}
-</body>
-</html>
-    `;
+    function closeModal() {
+        document.getElementById('scheduleModal').style.display = 'none';
+    }
 
-    // Criar blob
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-
-    // Criar nome de arquivo padrão
-    const defaultFileName = `rodizio_organistas_${new Date().toISOString().slice(0,10)}.html`;
-
-    // Usar a API moderna se disponível
-    if (window.showSaveFilePicker) {
-        try {
-            const handle = await window.showSaveFilePicker({
-                suggestedName: defaultFileName,
-                types: [{
-                    description: 'Arquivo HTML',
-                    accept: { 'text/html': ['.html'] }
-                }]
+    function updateScheduleView(scheduleByMonth) {
+        const container = document.getElementById('schedule-view');
+        container.innerHTML = '';
+        
+        if (!scheduleByMonth || Object.keys(scheduleByMonth).length === 0) {
+            container.innerHTML = '<p>Gere o rodízio para visualizar os meses aqui.</p>';
+            return;
+        }
+        
+        Object.entries(scheduleByMonth).forEach(([monthYear, schedule], monthIndex) => {
+            if (!schedule || !Array.isArray(schedule)) return;
+            
+            const monthDiv = document.createElement('div');
+            monthDiv.className = 'schedule-month';
+            monthDiv.id = `month-${monthIndex}`;
+            
+            let tableHTML = `
+                <table id="table-${monthIndex}">
+                    <tr><th colspan="5" class="month-header">${monthYear}</th></tr>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Dia Semana</th>
+                        <th>Meia Hora</th>
+                        <th>Culto Oficial</th>
+                        <th>RJM</th>
+                    </tr>
+            `;
+            
+            schedule.forEach((item, dayIndex) => {
+                if (!item) return;
+                
+                const dateStr = formatDate(item.date);
+                const safeMh = item.mh || '';
+                const safeCo = item.co || '';
+                const safeRjm = item.rjm || '';
+                
+                const rowClass = item.isNextService ? 'next-service' : '';
+                const mhClass = safeMh.includes('**') ? 'adjusted-organist' : '';
+                const coClass = safeCo.includes('**') ? 'adjusted-organist' : '';
+                const rjmClass = safeRjm.includes('**') ? 'adjusted-organist' : '';
+                
+                tableHTML += `
+                    <tr class="${rowClass}" id="row-${monthIndex}-${dayIndex}">
+                        <td id="day-${monthIndex}-${dayIndex}">${String(item.day).padStart(2, '0')}</td>
+                        <td id="weekday-${monthIndex}-${dayIndex}">${item.dayName}</td>
+                        <td class="${mhClass}" id="mh-${monthIndex}-${dayIndex}" data-date="${dateStr}">${safeMh}</td>
+                        <td class="${coClass}" id="co-${monthIndex}-${dayIndex}" data-date="${dateStr}">${safeCo}</td>
+                        <td class="${rjmClass}" id="rjm-${monthIndex}-${dayIndex}" data-date="${dateStr}">${safeRjm}</td>
+                    </tr>
+                `;
             });
             
-            const writable = await handle.createWritable();
-            await writable.write(htmlContent);
-            await writable.close();
-            alert('Rodízio salvo com sucesso!');
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.error(err);
-                fallbackSave(blob, defaultFileName);
+            tableHTML += `</table>`;
+            monthDiv.innerHTML = tableHTML;
+            container.appendChild(monthDiv);
+        });
+    }
+
+    function updateModalScheduleView(scheduleByMonth) {
+        const container = document.getElementById('modalScheduleView');
+        container.innerHTML = '';
+        
+        if (!scheduleByMonth || Object.keys(scheduleByMonth).length === 0) return;
+        
+        Object.entries(scheduleByMonth).forEach(([monthYear, schedule]) => {
+            if (!schedule || !Array.isArray(schedule)) return;
+            
+            const monthDiv = document.createElement('div');
+            monthDiv.className = 'schedule-month';
+            
+            let tableHTML = `
+                <table>
+                    <tr><th colspan="5" class="month-header">${monthYear}</th></tr>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Dia Semana</th>
+                        <th>Meia Hora</th>
+                        <th>Culto Oficial</th>
+                        <th>RJM</th>
+                    </tr>
+            `;
+            
+            schedule.forEach(item => {
+                if (!item) return;
+                
+                const safeMh = item.mh || '';
+                const safeCo = item.co || '';
+                const safeRjm = item.rjm || '';
+                
+                const rowClass = item.isNextService ? 'next-service' : '';
+                const mhClass = typeof safeMh === 'string' && safeMh.includes('**') ? 'adjusted-organist' : '';
+                const coClass = typeof safeCo === 'string' && safeCo.includes('**') ? 'adjusted-organist' : '';
+                const rjmClass = typeof safeRjm === 'string' && safeRjm.includes('**') ? 'adjusted-organist' : '';
+                
+                tableHTML += `
+                    <tr class="${rowClass}">
+                        <td>${item.day ? String(item.day).padStart(2, '0') : ''}${item.isAdjustedPeriod ? '***' : ''}</td>
+                        <td>${item.dayName || ''}</td>
+                        <td class="${mhClass}">${safeMh}</td>
+                        <td class="${coClass}">${safeCo}</td>
+                        <td class="${rjmClass}">${safeRjm}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `</table>`;
+            monthDiv.innerHTML = tableHTML;
+            container.appendChild(monthDiv);
+        });
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('scheduleModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
+
+    // Funções auxiliares
+    function validateInputs() {
+        if (!organists || organists.length === 0) {
+            alert('Por favor, importe a lista de organistas primeiro');
+            return false;
+        }
+
+        const startDateInput = document.getElementById('startDate').value;
+        if (!startDateInput) {
+            alert('Por favor, selecione uma data válida');
+            return false;
+        }
+        
+        const selectedDays = [];
+        document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
+            const dayValue = parseInt(checkbox.value);
+            if (!isNaN(dayValue)) {
+                selectedDays.push(dayValue);
+            }
+        });
+        
+        if (selectedDays.length === 0) {
+            alert('Selecione pelo menos um dia de culto');
+            return false;
+        }
+        
+        return true;
+    }
+
+    function getScheduleParameters() {
+        const [year, month, day] = document.getElementById('startDate').value.split('-').map(Number);
+        const startDate = new Date(year, month - 1, day);
+        const months = parseInt(document.getElementById('months').value) || 6;
+        const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, 0);
+        
+        const selectedDays = [];
+        document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
+            selectedDays.push(parseInt(checkbox.value));
+        });
+        
+        return { startDate, endDate, selectedDays };
+    }
+
+    function createEmptyCalendar(startDate, endDate, selectedDays, today) {
+        const scheduleByMonth = {};
+        let currentDate = new Date(startDate);
+        nextServiceDate = null;
+
+        while (currentDate <= endDate) {
+            const dayOfWeek = currentDate.getDay();
+            
+            if (selectedDays.includes(dayOfWeek)) {
+                const monthYear = `${getMonthName(currentDate.getMonth())} ${currentDate.getFullYear()}`;
+                if (!scheduleByMonth[monthYear]) {
+                    scheduleByMonth[monthYear] = [];
+                }
+
+                const isNextService = !nextServiceDate && currentDate >= today;
+                if (isNextService) {
+                    nextServiceDate = currentDate;
+                }
+
+                scheduleByMonth[monthYear].push({
+                    date: new Date(currentDate),
+                    day: currentDate.getDate(),
+                    dayName: getDayName(dayOfWeek),
+                    mh: '', // Será preenchido depois
+                    co: '', // Será preenchido depois
+                    rjm: (dayOfWeek === 0) ? '' : null, // Apenas domingos
+                    isNextService,
+                    isAdjusted: false
+                });
+            }
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return scheduleByMonth;
+    }
+
+    function assignOrganist(organistList, scheduleItem, type, currentIndex, lastOrganistName = null, pendingOrganists = []) {
+        const dayOfWeek = scheduleItem.date.getDay();
+        const currentDate = scheduleItem.date;
+        
+        // Tenta usar organistas pendentes primeiro (apenas para MH)
+        if (type === 'mh' && pendingOrganists.length > 0) {
+            for (let i = 0; i < pendingOrganists.length; i++) {
+                const candidate = pendingOrganists[i];
+                if (isOrganistAvailable(candidate, dayOfWeek, currentDate, type) && 
+                    candidate.name !== lastOrganistName) {
+                    pendingOrganists.splice(i, 1);
+                    return {
+                        organist: candidate,
+                        adjusted: true,
+                        newIndex: currentIndex,
+                        pendingOrganists
+                    };
+                }
             }
         }
-    } else {
-        fallbackSave(blob, defaultFileName);
+
+        // Busca na ordem normal
+        let attempts = 0;
+        let adjusted = false;
+        let index = currentIndex;
+        let selectedOrganist = null;
+
+        do {
+            const candidate = organistList[index % organistList.length];
+            
+            if (isOrganistAvailable(candidate, dayOfWeek, currentDate, type) && 
+                (type !== 'mh' || candidate.name !== lastOrganistName)) {
+                selectedOrganist = candidate;
+                break;
+            }
+            
+            // Adiciona às pendentes se não estiver já na lista (apenas para MH)
+            if (type === 'mh' && !pendingOrganists.some(o => o.name === candidate.name)) {
+                pendingOrganists.push(candidate);
+            }
+            
+            index = (index + 1) % organistList.length;
+            attempts++;
+            adjusted = attempts > 0;
+        } while (attempts < organistList.length);
+
+        // Se não encontrou, procura qualquer disponível
+        if (!selectedOrganist) {
+            for (const org of organistList) {
+                if (isOrganistAvailable(org, dayOfWeek, currentDate, type) && 
+                    (type !== 'mh' || org.name !== lastOrganistName)) {
+                    selectedOrganist = org;
+                    adjusted = true;
+                    break;
+                }
+            }
+        }
+
+        return {
+            organist: selectedOrganist,
+            adjusted,
+            newIndex: (selectedOrganist && !adjusted) ? (index + 1) % organistList.length : currentIndex,
+            pendingOrganists
+        };
     }
-}
 
-// Método alternativo para navegadores antigos
-function fallbackSave(blob, fileName) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 100);
-}
+    function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
 
-  </script>
+    // 1. Função específica para Meia Hora
+    function fillMeiaHoraSchedule(scheduleByMonth) {
+        // 1. Filtra organistas válidas para MH (exceto as que são parceiras de CO)
+        const mhOrganists = organists
+            .filter(org => org.mhOrder !== null && !isParceiraDeCO(org))
+            .sort((a, b) => a.mhOrder - b.mhOrder);
+
+        let mhIndex = 0;
+        let pendingSwaps = []; // Armazena trocas pendentes de DSST
+
+        Object.values(scheduleByMonth).forEach(monthSchedule => {
+            monthSchedule.forEach(item => {
+                // 2. Não mexe em MH já preenchido (respeita parceiras do CO)
+                if (item.mh && item.mh.trim() !== '' && item.mh !== 'N/D') {
+                    return;
+                }
+
+                // 3. Processa a organista da MH
+                const result = processOrganistMH(item, mhOrganists, mhIndex, pendingSwaps);
+                
+                item.mh = result.organist ? `${result.organist.name}${result.adjusted ? ' **' : ''}` : 'N/D';
+                item.isAdjusted = item.isAdjusted || result.adjusted;
+                mhIndex = result.newIndex;
+            });
+        });
+    }
+
+    // 2. Função específica para Culto Oficial
+    function fillCultoOficialSchedule(scheduleByMonth) {
+        // 1. Filtra e ordena as organistas válidas para CO
+        const coOrganists = organists
+            .filter(org => org.coOrder !== null)
+            .sort((a, b) => a.coOrder - b.coOrder);
+
+        let coIndex = 0;
+        let pendingSwaps = []; // Armazena trocas pendentes de DSST
+
+        // 2. Processa todos os dias (incluindo domingos)
+        Object.values(scheduleByMonth).forEach(monthSchedule => {
+            monthSchedule.forEach(item => {
+                // 3. Tenta resolver trocas pendentes primeiro
+                const resolvedSwap = resolvePendingSwap(item, pendingSwaps);
+                if (resolvedSwap.success) {
+                    item.co = resolvedSwap.organist.name;
+                    item.isAdjusted = true;
+                    return;
+                }
+
+                // 4. Processa a organista atual do CO
+                const result = processOrganistCO(item, coOrganists, coIndex, pendingSwaps);
+                
+                // 5. Atualiza os dados do culto oficial
+                item.co = result.organist ? `${result.organist.name}${result.adjusted ? ' **' : ''}` : 'N/D';
+                item.isAdjusted = result.adjusted;
+                coIndex = result.newIndex;
+            });
+        });
+    }
+
+    function isInNoPlayPeriod(org, date) {
+        if (!org.idtst) return false;
+        
+        // Converte strings de data para objetos Date
+        const [startDay, startMonth, startYear] = org.idtst.split('/').map(Number);
+        const startDate = new Date(startYear, startMonth - 1, startDay);
+        
+        if (!org.fdtst) {
+            return date.getTime() === startDate.getTime();
+        }
+        
+        const [endDay, endMonth, endYear] = org.fdtst.split('/').map(Number);
+        const endDate = new Date(endYear, endMonth - 1, endDay);
+        
+        return date >= startDate && date <= endDate;
+    }
+
+    function hasDSST(org, date) {
+        if (!org.dsst) return false;
+        const dayOfWeek = date.getDay();
+        const forbiddenDays = Array.isArray(org.dsst) ? org.dsst : [org.dsst];
+        return forbiddenDays.includes(dayOfWeek);
+    }
+
+    function isOrganistAvailableForCO(org, date, ignoreDSST = false) {
+        // 1. Verifica período sem tocar
+        if (isInNoPlayPeriod(org, date)) return false;
+        
+        // 2. Verifica DSST (a menos que seja ignorado para trocas)
+        if (!ignoreDSST && hasDSST(org, date)) return false;
+        
+        return true;
+    }
+
+    function processPendingDSST(item, pendingDSST) {
+        for (let i = 0; i < pendingDSST.length; i++) {
+            const swap = pendingDSST[i];
+            if (isOrganistAvailableForCO(swap.organist, item.date, true)) { // Ignora DSST para trocas
+                pendingDSST.splice(i, 1); // Remove da lista de pendentes
+                return {
+                    success: true,
+                    organist: swap.organist
+                };
+            }
+        }
+        return { success: false };
+    }
+
+    // Encontra a próxima organista disponível (para troca de DSST)
+    function findNextAvailable(item, coOrganists, startIndex) {
+        for (let i = 1; i <= coOrganists.length; i++) {
+            const candidate = coOrganists[(startIndex + i) % coOrganists.length];
+            if (!isInNoPlayPeriod(candidate, item.date) && !hasDSST(candidate, item.date)) {
+                return {
+                    organist: candidate,
+                    newIndex: (startIndex + i + 1) % coOrganists.length
+                };
+            }
+        }
+        return null;
+    }
+
+    // Função auxiliar 3: Atribui parceira MH
+    function assignParceiraMH(item, coOrganist) {
+        const parceira = organists.find(org => org.name === coOrganist.parceira);
+        if (parceira && isOrganistAvailable(parceira, item.date.getDay(), item.date, 'mh')) {
+            item.mh = parceira.name;
+        } else {
+            item.mh = 'N/D';
+            item.isAdjusted = true;
+        }
+    }
+
+    // Função auxiliar 1: Resolve trocas pendentes de DSST
+    function resolvePendingSwap(item, pendingSwaps) {
+        for (let i = 0; i < pendingSwaps.length; i++) {
+            const swap = pendingSwaps[i];
+            if (isOrganistAvailable(swap.organist, item.date.getDay(), item.date, 'co')) {
+                pendingSwaps.splice(i, 1);
+                return { success: true, organist: swap.organist };
+            }
+        }
+        return { success: false };
+    }
+
+    // Função auxiliar 2: Lógica principal do CO
+    function processOrganistCO(item, coOrganists, currentIndex, pendingSwaps) {
+        const maxAttempts = coOrganists.length * 2;
+        let attempts = 0;
+        let adjusted = false;
+
+        while (attempts < maxAttempts) {
+            const candidate = coOrganists[currentIndex % coOrganists.length];
+            currentIndex = (currentIndex + 1) % coOrganists.length;
+            attempts++;
+
+            // Situação 1: Período sem tocar (pula e mantém ordem)
+            if (isInNoPlayPeriod(candidate, item.date)) {
+                continue;
+            }
+
+            // Situação 2: DSST (marca para troca)
+            if (hasDSST(candidate, item.date)) {
+                pendingSwaps.push({
+                    organist: candidate,
+                    originalDate: item.date
+                });
+                adjusted = true;
+                continue;
+            }
+
+            // Situação 3: Organista disponível
+            return {
+                organist: candidate,
+                adjusted,
+                newIndex: currentIndex
+            };
+        }
+
+        // Fallback: nenhuma organista disponível
+        return { organist: null, adjusted: true, newIndex: currentIndex };
+    }
+
+    function fillParceirasMH(scheduleByMonth) {
+        Object.values(scheduleByMonth).forEach(monthSchedule => {
+            monthSchedule.forEach(item => {
+                // Só preenche se MH estiver vazio/não definido
+                if (!item.mh || item.mh.trim() === '') {
+                    // Extrai o nome limpo da organista CO (remove ** e espaços)
+                    const coName = item.co?.replace(/\*\*/g, '').trim() || '';
+                    
+                    if (coName && coName !== 'N/D') {
+                        // Encontra a organista CO com correspondência flexível
+                        const coOrganist = organists.find(org => 
+                            org.name.trim().toLowerCase() === coName.toLowerCase()
+                        );
+                        
+                        // Se encontrou e tem parceira definida
+                        if (coOrganist?.parceira) {
+                            const parceiraName = coOrganist.parceira.trim();
+                            const parceira = organists.find(org => 
+                                org.name.trim().toLowerCase() === parceiraName.toLowerCase()
+                            );
+                            
+                            // Verificação simplificada de disponibilidade
+                            if (parceira) {
+                                item.mh = parceira.name;
+                            } else {
+                                item.mh = 'N/D';
+                                item.isAdjusted = true;
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    // Função auxiliar 1: Verifica se é parceira de CO
+    function isParceiraDeCO(organist) {
+        return organists.some(org => org.parceira === organist.name);
+    }
+
+    // Função auxiliar 2: Lógica principal da MH
+    function processOrganistMH(item, mhOrganists, currentIndex, pendingSwaps) {
+        // A. Tenta resolver trocas pendentes primeiro
+        const resolvedSwap = resolvePendingSwapMH(item, pendingSwaps);
+        if (resolvedSwap.success) {
+            return {
+                organist: resolvedSwap.organist,
+                adjusted: true,
+                newIndex: currentIndex // Mantém o índice atual
+            };
+        }
+
+        // B. Procura próxima organista disponível
+        const maxAttempts = mhOrganists.length * 2;
+        let attempts = 0;
+        let adjusted = false;
+
+        while (attempts < maxAttempts) {
+            const candidate = mhOrganists[currentIndex % mhOrganists.length];
+            currentIndex = (currentIndex + 1) % mhOrganists.length;
+            attempts++;
+
+            // Situação 1: Período sem tocar (pula e mantém ordem)
+            if (isInNoPlayPeriod(candidate, item.date)) {
+                continue;
+            }
+
+            // Situação 2: DSST (marca para troca)
+            if (hasDSST(candidate, item.date)) {
+                pendingSwaps.push({
+                    organist: candidate,
+                    originalDate: item.date
+                });
+                adjusted = true;
+                continue;
+            }
+
+            // Situação 3: Organista disponível
+            return {
+                organist: candidate,
+                adjusted,
+                newIndex: currentIndex
+            };
+        }
+
+        // Fallback: nenhuma organista disponível
+        return { organist: null, adjusted: true, newIndex: currentIndex };
+    }
+
+    // Função auxiliar 3: Resolve trocas pendentes de DSST para MH
+    function resolvePendingSwapMH(item, pendingSwaps) {
+        for (let i = 0; i < pendingSwaps.length; i++) {
+            const swap = pendingSwaps[i];
+            if (isOrganistAvailable(swap.organist, item.date.getDay(), item.date, 'mh')) {
+                pendingSwaps.splice(i, 1);
+                return { success: true, organist: swap.organist };
+            }
+        }
+        return { success: false };
+    }
+
+    function saveScheduleToPDF() {
+        // Verifica se há dados para exportar
+        if (Object.keys(currentSchedule).length === 0) {
+            alert('Por favor, gere o rodízio primeiro');
+            return;
+        }
+
+        // Cria novo documento PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm'
+        });
+
+        // Configurações do documento
+        let yPosition = 15;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 10;
+
+        // Adiciona título
+        doc.setFontSize(16);
+        doc.setTextColor(40);
+        doc.text('RODÍZIO DE ORGANISTAS CCB', pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 10;
+
+        // Configurações da tabela
+        const headers = [['Dia', 'Dia Semana', 'Meia Hora', 'Culto Oficial', 'RJM']];
+        const tableConfig = {
+            startY: yPosition,
+            head: headers,
+            theme: 'grid',
+            headStyles: {
+                fillColor: [41, 128, 185],
+                textColor: 255,
+                fontStyle: 'bold'
+            },
+            columnStyles: {
+                0: { cellWidth: 15 },
+                1: { cellWidth: 25 },
+                2: { cellWidth: 35 },
+                3: { cellWidth: 35 },
+                4: { cellWidth: 35 }
+            },
+            didDrawPage: function(data) {
+                // Adiciona número de página
+                doc.setFontSize(10);
+                doc.setTextColor(100);
+                doc.text(
+                    `Página ${data.pageCount}`,
+                    pageWidth - margin,
+                    doc.internal.pageSize.getHeight() - 10,
+                    { align: 'right' }
+                );
+            }
+        };
+
+        // Adiciona cada mês ao PDF
+        Object.entries(currentSchedule).forEach(([monthYear, schedule]) => {
+            // Adiciona cabeçalho do mês
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text(monthYear.toUpperCase(), margin, yPosition);
+            yPosition += 10;
+
+            // Prepara dados da tabela
+            const tableData = schedule.map(item => [
+                item.day.toString().padStart(2, '0'),
+                item.dayName,
+                item.mh || '',
+                item.co || '',
+                item.rjm || ''
+            ]);
+
+            // Adiciona tabela ao documento
+            doc.autoTable({
+                ...tableConfig,
+                body: tableData,
+                startY: yPosition
+            });
+
+            // Atualiza posição Y e adiciona nova página se necessário
+            yPosition = doc.lastAutoTable.finalY + 10;
+            if (yPosition > doc.internal.pageSize.getHeight() - 20) {
+                doc.addPage();
+                yPosition = 15;
+            }
+        });
+
+        // Salva o PDF
+        doc.save(`Rodizio_Organistas_CCB_${new Date().toLocaleDateString('pt-BR')}.pdf`);
+    }
+
+
+</script>
 </body>
 </html>
