@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Alunos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input, select {
+            padding: 8px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.secondary {
+            background-color: #2196F3;
+        }
+        button.secondary:hover {
+            background-color: #0b7dda;
+        }
+        button.print {
+            background-color: #ff9800;
+        }
+        button.print:hover {
+            background-color: #e68a00;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        #saveDialog, #searchDialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .dialog-buttons {
+            margin-top: 15px;
+            text-align: right;
+        }
+        .search-results {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .highlight {
+            background-color: #ffff99;
+        }
+        
+        /* Estilos para impressão */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printSection, #printSection * {
+                visibility: visible;
+            }
+            #printSection {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #000;
+                padding: 8px;
+            }
+            th {
+                background-color: #f2f2f2 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastro de Alunos</h1>
+    
+    <div class="form-group">
+        <label for="nome">Nome do Aluno:</label>
+        <input type="text" id="nome" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="pai">Nome do Pai:</label>
+        <input type="text" id="pai">
+    </div>
+    
+    <div class="form-group">
+        <label for="mae">Nome da Mãe:</label>
+        <input type="text" id="mae">
+    </div>
+    
+    <div class="form-group">
+        <label for="serie">Série:</label>
+        <select id="serie">
+            <optgroup label="Educação Infantil">
+            <option value="Berçário">Berçário</option>
+            <option value="Maternal">Maternal</option>
+            <option value="Jardim 1">Jardim 1</option>
+            <option value="Jardim 2">Jardim 2</option>
+            </optgroup>
+            <optgroup label="Ensino Fundamental">
+            <option value="1º Ano">1º Ano</option>
+            <option value="2º Ano">2º Ano</option>
+            <option value="3º Ano">3º Ano</option>
+            <option value="4º Ano">4º Ano</option>
+            <option value="5º Ano">5º Ano</option>
+            </optgroup>
+        </select>
+    </div>
+    
+    <button onclick="adicionarAluno()">Adicionar Aluno</button>
+    <button class="secondary" onclick="mostrarDialogConsulta()">Consultar Aluno</button>
+    <button class="print" onclick="prepararImpressao()">Imprimir Lista</button>
+    
+    <h2>Lista de Alunos</h2>
+    <table id="tabelaAlunos">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Pai</th>
+                <th>Mãe</th>
+                <th>Série</th>
+                <th class="no-print">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpoTabela">
+            <!-- Alunos serão adicionados aqui -->
+        </tbody>
+    </table>
+    
+    <div class="actions">
+        <button onclick="mostrarDialogSalvar()">Salvar Lista</button>
+        <button onclick="carregarDados()">Carregar Lista</button>
+        <button onclick="limparLista()">Limpar Lista</button>
+    </div>
+    
+    <div id="saveDialog">
+        <h3>Salvar Lista de Alunos</h3>
+        <div class="form-group">
+            <label for="nomeArquivo">Nome do arquivo:</label>
+            <input type="text" id="nomeArquivo" value="lista_alunos">
+        </div>
+        <div class="dialog-buttons">
+            <button onclick="fecharDialogSalvar()">Cancelar</button>
+            <button onclick="confirmarSalvar()">Salvar</button>
+        </div>
+    </div>
+    
+    <div id="searchDialog">
+        <h3>Consultar Aluno</h3>
+        <div class="form-group">
+            <label for="termoBusca">Termo de busca:</label>
+            <input type="text" id="termoBusca" placeholder="Nome, pai, mãe ou série">
+        </div>
+        <div class="dialog-buttons">
+            <button onclick="fecharDialogConsulta()">Cancelar</button>
+            <button onclick="executarConsulta()">Buscar</button>
+        </div>
+        <div id="resultadosConsulta" class="search-results">
+            <!-- Resultados da consulta serão exibidos aqui -->
+        </div>
+    </div>
+    
+    <!-- Seção oculta para impressão -->
+    <div id="printSection" style="display: none;">
+        <h2>Lista de Alunos - Impressão</h2>
+        <p>Data: <span id="printDate"></span></p>
+        <table id="printTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Pai</th>
+                    <th>Mãe</th>
+                    <th>Série</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody">
+                <!-- Conteúdo será preenchido antes da impressão -->
+            </tbody>
+        </table>
+        <p>Total de alunos: <span id="printTotal"></span></p>
+    </div>
+    
+    <script>
+        let alunos = [];
+        let alunosOriginal = [];
+        
+        function adicionarAluno() {
+            const nome = document.getElementById('nome').value;
+            const pai = document.getElementById('pai').value;
+            const mae = document.getElementById('mae').value;
+            const serie = document.getElementById('serie').value;
+            
+            if (!nome) {
+                alert('Por favor, informe o nome do aluno');
+                return;
+            }
+            
+            const aluno = {
+                nome: nome,
+                pai: pai,
+                mae: mae,
+                serie: serie
+            };
+            
+            alunos.push(aluno);
+            atualizarTabela();
+            
+            document.getElementById('nome').value = '';
+            document.getElementById('pai').value = '';
+            document.getElementById('mae').value = '';
+            document.getElementById('nome').focus();
+        }
+        
+        function atualizarTabela() {
+            const corpoTabela = document.getElementById('corpoTabela');
+            corpoTabela.innerHTML = '';
+            
+            alunos.forEach((aluno, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${aluno.nome}</td>
+                    <td>${aluno.pai}</td>
+                    <td>${aluno.mae}</td>
+                    <td>${aluno.serie}</td>
+                    <td class="no-print">
+                        <button onclick="removerAluno(${index})">Remover</button>
+                    </td>
+                `;
+                
+                corpoTabela.appendChild(row);
+            });
+        }
+        
+        function removerAluno(index) {
+            if (confirm('Tem certeza que deseja remover este aluno?')) {
+                alunos.splice(index, 1);
+                atualizarTabela();
+            }
+        }
+        
+        function mostrarDialogSalvar() {
+            if (alunos.length === 0) {
+                alert('Não há alunos para salvar');
+                return;
+            }
+            document.getElementById('saveDialog').style.display = 'block';
+        }
+        
+        function fecharDialogSalvar() {
+            document.getElementById('saveDialog').style.display = 'none';
+        }
+        
+        function confirmarSalvar() {
+            const nomeArquivo = document.getElementById('nomeArquivo').value || 'lista_alunos';
+            salvarDados(nomeArquivo);
+            fecharDialogSalvar();
+        }
+        
+        function salvarDados(nomeArquivo) {
+            const dados = JSON.stringify(alunos, null, 2);
+            const blob = new Blob([dados], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nomeArquivo + '.txt';
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+        
+        function carregarDados() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const dados = JSON.parse(event.target.result);
+                        if (Array.isArray(dados)) {
+                            alunos = dados;
+                            alunosOriginal = [...alunos];
+                            atualizarTabela();
+                            alert('Lista de alunos carregada com sucesso!');
+                        } else {
+                            alert('O arquivo não contém uma lista válida de alunos');
+                        }
+                    } catch (error) {
+                        alert('Erro ao ler o arquivo: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function limparLista() {
+            if (confirm('Tem certeza que deseja limpar toda a lista de alunos?')) {
+                alunos = [];
+                alunosOriginal = [];
+                atualizarTabela();
+            }
+        }
+        
+        function mostrarDialogConsulta() {
+            if (alunos.length === 0) {
+                alert('Não há alunos cadastrados para consulta');
+                return;
+            }
+            document.getElementById('searchDialog').style.display = 'block';
+            document.getElementById('termoBusca').focus();
+        }
+        
+        function fecharDialogConsulta() {
+            document.getElementById('searchDialog').style.display = 'none';
+            document.getElementById('resultadosConsulta').innerHTML = '';
+            
+            if (alunosOriginal.length > 0) {
+                alunos = [...alunosOriginal];
+                atualizarTabela();
+            }
+        }
+        
+        function executarConsulta() {
+            const termo = document.getElementById('termoBusca').value.toLowerCase();
+            
+            if (!termo) {
+                alert('Por favor, informe um termo para busca');
+                return;
+            }
+            
+            if (alunosOriginal.length === 0) {
+                alunosOriginal = [...alunos];
+            }
+            
+            const resultados = alunosOriginal.filter(aluno => 
+                aluno.nome.toLowerCase().includes(termo) ||
+                (aluno.pai && aluno.pai.toLowerCase().includes(termo)) ||
+                (aluno.mae && aluno.mae.toLowerCase().includes(termo)) ||
+                aluno.serie.toLowerCase().includes(termo)
+            );
+            
+            alunos = resultados;
+            atualizarTabela();
+            
+            const resultadosDiv = document.getElementById('resultadosConsulta');
+            if (resultados.length > 0) {
+                resultadosDiv.innerHTML = `<p>${resultados.length} aluno(s) encontrado(s):</p>`;
+                
+                resultados.forEach(aluno => {
+                    resultadosDiv.innerHTML += `
+                        <div class="aluno-resultado">
+                            <p><strong>Nome:</strong> ${aluno.nome}</p>
+                            <p><strong>Pai:</strong> ${aluno.pai || 'Não informado'}</p>
+                            <p><strong>Mãe:</strong> ${aluno.mae || 'Não informado'}</p>
+                            <p><strong>Série:</strong> ${aluno.serie}</p>
+                            <hr>
+                        </div>
+                    `;
+                });
+            } else {
+                resultadosDiv.innerHTML = '<p>Nenhum aluno encontrado com o termo buscado.</p>';
+            }
+        }
+        
+        // Funções para impressão
+        function prepararImpressao() {
+            if (alunos.length === 0) {
+                alert('Não há alunos para imprimir');
+                return;
+            }
+            
+            // Atualiza a data de impressão
+            const now = new Date();
+            document.getElementById('printDate').textContent = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            
+            // Preenche a tabela de impressão
+            const printTableBody = document.getElementById('printTableBody');
+            printTableBody.innerHTML = '';
+            
+            alunos.forEach(aluno => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${aluno.nome}</td>
+                    <td>${aluno.pai || '-'}</td>
+                    <td>${aluno.mae || '-'}</td>
+                    <td>${aluno.serie}</td>
+                `;
+                printTableBody.appendChild(row);
+            });
+            
+            // Atualiza o total
+            document.getElementById('printTotal').textContent = alunos.length;
+            
+            // Chama a impressão
+            imprimirLista();
+        }
+        
+        function imprimirLista() {
+            // Mostra a seção de impressão temporariamente
+            const printSection = document.getElementById('printSection');
+            printSection.style.display = 'block';
+            
+            // Chama a impressão
+            window.print();
+            
+            // Oculta novamente após impressão
+            setTimeout(() => {
+                printSection.style.display = 'none';
+            }, 100);
+        }
+    </script>
+</body>
+</html>
