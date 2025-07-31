@@ -1,675 +1,813 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ensaio Local por Data</title>
+    <title>Ritmos Iniciais dos Hinos da CCB</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 100%;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 10px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            color: #2c3e50;
+            padding: 20px;
             text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
         }
-        
-        .input-group {
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .options {
             display: flex;
             flex-direction: column;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        
-        label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        #data-select {
+        button {
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        
-        #btn-listar {
-            padding: 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            font-size: 1em;
             cursor: pointer;
-            transition: background-color 0.3s;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        
-        #btn-listar:hover {
-            background-color: #2980b9;
+        button:hover {
+            background-color: #e0e0e0;
         }
-        
-        .error {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .result {
+            font-size: 1.1em;
             margin-top: 20px;
-            font-size: 0.9rem;
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            background-color: #3498db;
-            color: white;
-            position: sticky;
-            top: 0;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        
-        .no-events {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-            font-style: italic;
-        }
-        
-        @media (min-width: 600px) {
-            .container {
-                max-width: 800px;
-                padding: 20px;
-            }
-            
-            .input-group {
-                flex-direction: row;
-                align-items: center;
-            }
-            
-            label {
-                margin-right: 10px;
-                margin-bottom: 0;
-                width: 120px;
-            }
-            
-            #data-select {
-                flex-grow: 1;
-                margin-right: 10px;
-                margin-bottom: 0;
-            }
-            
-            #btn-listar {
-                width: auto;
-            }
-        }
-    
-         .tooltip {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 10px 15px;
+            padding: 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
         }
-        .visible {
-            opacity: 1;
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
         }
-        
-        /* Menu Lateral */
-        .menu-lateral {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 200px;
-            height: 100vh;
-            background-color: #343a40;
-            color: #f8f9fa;
-            padding: 20px 15px;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
         }
-        
-        .menu-aberto .menu-lateral {
-            transform: translateX(0);
-        }
-        
-        .menu-aberto body {
-            overflow: hidden;
-        }
-        
-        .menu-lateral h2 {
-            color: #fff;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 1.4rem;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #495057;
-        }
-        
-        .filtro-grupo {
-            margin-bottom: 25px;
-        }
-        
-        .filtro-grupo h3 {
-            color: #adb5bd;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .filtro-grupo h3::before {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #6c757d;
-            margin-right: 10px;
-            border-radius: 50%;
-
-        }
-        
-        .filtro-opcao {
-            margin-bottom: 12px;
-            position: relative;
-        }
-        
-        .filtro-opcao label {
-            display: flex;
-            align-items: center;
-            color: #e9ecef;
-            cursor: pointer;
-            padding: 8px 10px;
-            border-radius: 5px;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        
-        .filtro-opcao label:hover {
-            background-color: #495057;
-        }
-
-        .menu-aberto .conteudo-principal {
-                transform: translateX(85%);
-            }
-        
-        .filtro-opcao input {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        
-        /* Botão do Menu */
-        .menu-btn {
-            position: fixed;
-            left: 15px;
-            top: 15px;
+        .next-btn {
             background-color: #007bff;
             color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            transition: all 0.3s;
+            margin-top: 20px;
         }
-        
-        .menu-btn:hover {
+        .next-btn:hover {
             background-color: #0069d9;
         }
-        
-        .menu-btn:focus {
-            outline: none;
+        .stats {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
         }
-        
-        /* Conteúdo Principal */
-        .conteudo-principal {
-            padding: 80px 20px 20px;
-            transition: all 0.3s ease;
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
-        
-        .menu-aberto .conteudo-principal {
-            transform: translateX(280px);
-            opacity: 0.7;
-            filter: blur(2px);
-            pointer-events: none;
+        .help-btn {
+            background-color: #ffc107;
+            color: #212529;
         }
-        
-        h1 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 600;
+        .exit-btn {
+            background-color: #dc3545;
+            color: white;
         }
-
-        /* Overlay para fechar o menu */
-        .overlay {
+        .modal {
+            display: none;
             position: fixed;
-            top: 0;
+            z-index: 1;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
         }
-        /* Animação de carregamento */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
         }
-        
-        .filtro-opcao {
-            animation: fadeIn 0.3s ease forwards;
-            opacity: 0;
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
         }
-        
-        .filtro-opcao:nth-child(1) { animation-delay: 0.1s; }
-        .filtro-opcao:nth-child(2) { animation-delay: 0.2s; }
-        .filtro-opcao:nth-child(3) { animation-delay: 0.3s; }
-        .filtro-opcao:nth-child(4) { animation-delay: 0.4s; }
-        .filtro-opcao:nth-child(5) { animation-delay: 0.5s; }
-
-        /* Correções para o menu lateral */
-       .menu-aberto .overlay {
-            opacity: 1;
-            visibility: visible;
+        .close:hover {
+            color: black;
         }
-
-        .menu-aberto .conteudo-principal {
-            transform: translateX(280px);
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .container {
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }    
     </style>
-
 </head>
 <body>
-    <!-- Botão para abrir o menu -->
-    <button class="menu-btn" id="menu-btn">☰</button>
-    
-    <!-- Overlay para fechar o menu -->
-    <div class="overlay" id="overlay"></div>
-    
-    <!-- Menu Lateral -->
-    <div class="menu-lateral" id="menu-lateral">
-        <h2>Filtrar Cidades</h2>
+    <h1>Ritmos Iniciais dos Hinos da CCB</h1>
+    <div id="quiz-container">
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div id="result"></div>
+        <button id="next-btn" class="next-btn" style="display: none;">Próxima Pergunta</button>
         
-        <div class="filtro-grupo">
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia1" onclick="AlteraCidade()" checked>Goiânia-setor 1
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia2" onclick="AlteraCidade()" checked>Goiânia-setor 2
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia3" onclick="AlteraCidade()" checked>Goiânia-setor 3
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia4" onclick="AlteraCidade()" checked>Goiânia-setor 4
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia5" onclick="AlteraCidade()" checked>Goiânia-setor 5
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aparecida0" onclick="AlteraCidade()" checked>Aparecida
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aragoiânia0" onclick="AlteraCidade()" checked>Aragoiânia
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Hidrolândia0" onclick="AlteraCidade()" checked>Hidrolândia
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Guapó0" onclick="AlteraCidade()" checked>Guapó
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Goianira0" onclick="AlteraCidade()" checked>Goianira
-                </label>
-            </div>
-                </div>
+        <div class="stats" id="stats">
+            Perguntas: 0 | Acertos: 0 | Erros: 0
+        </div>
+        
+        <div class="action-buttons">
+            <button id="help-btn" class="help-btn">Ajuda</button>
+            <button id="exit-btn" class="exit-btn">Encerrar</button>
+        </div>
     </div>
 
-    <div class="container">
-        <h1>Ensaio Local por Data</h1>
-        <div class="input-group">
-            <select id="data-select"></select>
+    <!-- Modal de Ajuda -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ajuda - Definições dos Ritmos</h2>
+            <p><strong>TÉTICO</strong>: O hino começa no tempo forte do compasso, ou seja, a primeira sílaba do texto coincide com o primeiro tempo do compasso. Exemplo: "Lou-va-rei ao Se-nhor" (o "Lou" cai no tempo forte).</p>
+            <p><strong>ANACRÚSICO</strong>: O hino começa com uma ou mais sílabas antes do tempo forte (notas em anacruse). Exemplo: "A-mi-sto-so Je-sus" (o "A" é antes do tempo forte).</p>
+            <p><strong>ACÉFALO</strong>: O hino começa com uma pausa, ou seja, o primeiro tempo do compasso é silencioso e a primeira sílaba vem depois. Exemplo: "(pausa) Mi-nha vi-da en-tre-go" (o "Mi" vem após a pausa inicial).</p>
         </div>
-        <span id="error-msg" class="error"></span>
-        <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
-        
-        <table id="tabela-eventos">
-            <thead>
-                <tr>
-                    <th>Local</th>
-                    <th>Cidade</th>
-                    <th>Horário</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
     </div>
-    <script src="dados.js"></script>
+
+    <!-- Modal de Encerramento -->
+    <div id="exit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Resultados do Quiz</h2>
+            <div id="exit-stats"></div>
+            <p>Obrigado por participar!</p>
+            <button id="confirm-exit" class="exit-btn">Fechar Página</button>
+        </div>
+    </div>
 
     <script>
+// Elementos da página
+const questionElement = document.getElementById('question');
+const optionsElement = document.getElementById('options');
+const resultElement = document.getElementById('result');
+const nextButton = document.getElementById('next-btn');
+const statsElement = document.getElementById('stats');
+const helpButton = document.getElementById('help-btn');
+const exitButton = document.getElementById('exit-btn');
+const helpModal = document.getElementById('help-modal');
+const exitModal = document.getElementById('exit-modal');
+const exitStatsElement = document.getElementById('exit-stats');
+const confirmExitButton = document.getElementById('confirm-exit');
+const closeButtons = document.getElementsByClassName('close');
 
-        // Função para formatar data como dd/mm/aaaa
-        function formatarData(data) {
-            const dia = String(data.getDate()).padStart(2, '0');
-            const mes = String(data.getMonth() + 1).padStart(2, '0');
-            const ano = data.getFullYear();
-            return `${dia}/${mes}/${ano}`;
-        }
+// Variáveis do quiz
+let currentHino;
+let correctAnswer;
+let totalQuestions = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+let currentIndex = 0;
+let hinoSequence = [];
 
-        // Função para obter o nome do dia da semana
-        function getDiaSemana(data) {
-            const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            let NumeroSemana = ""
-           if (data.getDate() <= 7) {
-                NumeroSemana = "1";
-           } else if (data.getDate() <= 14) {
-                NumeroSemana = "2";
-           } else if (data.getDate() <= 21) {
-                NumeroSemana = "3";
-           } else if (data.getDate() <= 28) {
-                NumeroSemana = "4";
-           } else {
-                NumeroSemana = "5";
-           }
-           let Ordem = "ª"
-           if (data.getDay() == 0 || data.getDay() == 6) {
-                Ordem = "º";
-           }
+// Simulação de dados dos hinos (na implementação real, substitua por seus dados completos)
+const hinos = {
+    "1": "TÉTICO",
+    "2": "ANACRÚSICO",
+    "3": "TÉTICO",
+    "4": "TÉTICO",
+    "5": "TÉTICO",
+    "6": "ANACRÚSICO",
+    "7": "ANACRÚSICO",
+    "8": "TÉTICO",
+    "9": "ANACRÚSICO",
+    "10": "ANACRÚSICO",
+    "11": "ANACRÚSICO",
+    "12": "ANACRÚSICO",
+    "13": "ANACRÚSICO",
+    "14": "TÉTICO",
+    "15": "TÉTICO",
+    "16": "ANACRÚSICO",
+    "17": "ANACRÚSICO",
+    "18": "ANACRÚSICO",
+    "19": "ANACRÚSICO",
+    "20": "ANACRÚSICO",
+    "21": "ANACRÚSICO",
+    "22": "TÉTICO",
+    "23": "TÉTICO",
+    "24": "ANACRÚSICO",
+    "25": "ANACRÚSICO",
+    "26": "TÉTICO",
+    "27": "ANACRÚSICO",
+    "28": "TÉTICO",
+    "29": "ANACRÚSICO",
+    "30": "TÉTICO",
+    "31": "TÉTICO",
+    "32": "TÉTICO",
+    "33": "TÉTICO",
+    "34": "ANACRÚSICO",
+    "35": "ANACRÚSICO",
+    "36": "ANACRÚSICO",
+    "37": "TÉTICO",
+    "38": "TÉTICO",
+    "39": "ANACRÚSICO",
+    "40": "ANACRÚSICO",
+    "41": "ANACRÚSICO",
+    "42": "ANACRÚSICO",
+    "43": "ANACRÚSICO",
+    "44": "ANACRÚSICO",
+    "45": "TÉTICO",
+    "46": "TÉTICO",
+    "47": "ANACRÚSICO",
+    "48": "ANACRÚSICO",
+    "49": "TÉTICO",
+    "50": "TÉTICO",
+    "51": "TÉTICO",
+    "52": "TÉTICO",
+    "53": "TÉTICO",
+    "54": "ANACRÚSICO",
+    "55": "TÉTICO",
+    "56": "TÉTICO",
+    "57": "TÉTICO",
+    "58": "ANACRÚSICO",
+    "59": "ANACRÚSICO",
+    "60": "ANACRÚSICO",
+    "61": "ANACRÚSICO",
+    "62": "ANACRÚSICO",
+    "63": "ANACRÚSICO",
+    "64": "TÉTICO",
+    "65": "TÉTICO",
+    "66": "ANACRÚSICO",
+    "67": "ANACRÚSICO",
+    "68": "ANACRÚSICO",
+    "69": "ANACRÚSICO",
+    "70": "ANACRÚSICO",
+    "71": "ANACRÚSICO",
+    "72": "TÉTICO",
+    "73": "ANACRÚSICO",
+    "74": "TÉTICO",
+    "75": "TÉTICO",
+    "76": "TÉTICO",
+    "77": "TÉTICO",
+    "78": "TÉTICO",
+    "79": "ANACRÚSICO",
+    "80": "TÉTICO",
+    "81": "ANACRÚSICO",
+    "82": "ANACRÚSICO",
+    "83": "ANACRÚSICO",
+    "84": "TÉTICO",
+    "85": "TÉTICO",
+    "86": "ANACRÚSICO",
+    "87": "ANACRÚSICO",
+    "88": "ANACRÚSICO",
+    "89": "TÉTICO",
+    "90": "ANACRÚSICO",
+    "91": "TÉTICO",
+    "92": "ANACRÚSICO",
+    "93": "ANACRÚSICO",
+    "94": "ANACRÚSICO",
+    "95": "ANACRÚSICO",
+    "96": "TÉTICO",
+    "97": "TÉTICO",
+    "98": "TÉTICO",
+    "99": "ANACRÚSICO",
+    "100": "ANACRÚSICO",
+    "101": "ANACRÚSICO",
+    "102": "TÉTICO",
+    "103": "TÉTICO",
+    "104": "ANACRÚSICO",
+    "105": "TÉTICO",
+    "106": "ANACRÚSICO",
+    "107": "ANACRÚSICO",
+    "108": "ANACRÚSICO",
+    "109": "TÉTICO",
+    "110": "ANACRÚSICO",
+    "111": "ANACRÚSICO",
+    "112": "ANACRÚSICO",
+    "113": "TÉTICO",
+    "114": "TÉTICO",
+    "115": "TÉTICO",
+    "116": "TÉTICO",
+    "117": "ANACRÚSICO",
+    "118": "ANACRÚSICO",
+    "119": "TÉTICO",
+    "120": "TÉTICO",
+    "121": "ANACRÚSICO",
+    "122": "ANACRÚSICO",
+    "123": "TÉTICO",
+    "124": "TÉTICO",
+    "125": "ANACRÚSICO",
+    "126": "ANACRÚSICO",
+    "127": "TÉTICO",
+    "128": "ANACRÚSICO",
+    "129": "ANACRÚSICO",
+    "130": "TÉTICO",
+    "131": "TÉTICO",
+    "132": "TÉTICO",
+    "133": "ANACRÚSICO",
+    "134": "ANACRÚSICO",
+    "135": "TÉTICO",
+    "136": "TÉTICO",
+    "137": "TÉTICO",
+    "138": "ANACRÚSICO",
+    "139": "ANACRÚSICO",
+    "140": "TÉTICO",
+    "141": "ANACRÚSICO",
+    "142": "ANACRÚSICO",
+    "143": "ANACRÚSICO",
+    "144": "TÉTICO",
+    "145": "TÉTICO",
+    "146": "ANACRÚSICO",
+    "147": "ANACRÚSICO",
+    "148": "ANACRÚSICO",
+    "149": "TÉTICO",
+    "150": "ANACRÚSICO",
+    "151": "TÉTICO",
+    "152": "ANACRÚSICO",
+    "153": "ANACRÚSICO",
+    "154": "ANACRÚSICO",
+    "155": "TÉTICO",
+    "156": "TÉTICO",
+    "157": "ANACRÚSICO",
+    "158": "TÉTICO",
+    "159": "TÉTICO",
+    "160": "TÉTICO",
+    "161": "ANACRÚSICO",
+    "162": "ANACRÚSICO",
+    "163": "TÉTICO",
+    "164": "ANACRÚSICO",
+    "165": "TÉTICO",
+    "166": "ANACRÚSICO",
+    "167": "ANACRÚSICO",
+    "168": "ANACRÚSICO",
+    "169": "TÉTICO",
+    "170": "ANACRÚSICO",
+    "171": "ANACRÚSICO",
+    "172": "ANACRÚSICO",
+    "173": "TÉTICO",
+    "174": "ANACRÚSICO",
+    "175": "TÉTICO",
+    "176": "ANACRÚSICO",
+    "177": "TÉTICO",
+    "178": "ANACRÚSICO",
+    "179": "ANACRÚSICO",
+    "180": "ANACRÚSICO",
+    "181": "ANACRÚSICO",
+    "182": "ANACRÚSICO",
+    "183": "TÉTICO",
+    "184": "TÉTICO",
+    "185": "TÉTICO",
+    "186": "TÉTICO",
+    "187": "ANACRÚSICO",
+    "188": "ANACRÚSICO",
+    "189": "TÉTICO",
+    "190": "ANACRÚSICO",
+    "191": "ANACRÚSICO",
+    "192": "ANACRÚSICO",
+    "193": "ANACRÚSICO",
+    "194": "ANACRÚSICO",
+    "195": "ANACRÚSICO",
+    "196": "TÉTICO",
+    "197": "ANACRÚSICO",
+    "198": "ANACRÚSICO",
+    "199": "ANACRÚSICO",
+    "200": "ANACRÚSICO",
+    "201": "TÉTICO",
+    "202": "ANACRÚSICO",
+    "203": "ANACRÚSICO",
+    "204": "ANACRÚSICO",
+    "205": "ANACRÚSICO",
+    "206": "ANACRÚSICO",
+    "207": "TÉTICO",
+    "208": "ACÉFALO",
+    "209": "TÉTICO",
+    "210": "TÉTICO",
+    "211": "ANACRÚSICO",
+    "212": "ANACRÚSICO",
+    "213": "TÉTICO",
+    "214": "ANACRÚSICO",
+    "215": "ANACRÚSICO",
+    "216": "ANACRÚSICO",
+    "217": "TÉTICO",
+    "218": "ANACRÚSICO",
+    "219": "TÉTICO",
+    "220": "TÉTICO",
+    "221": "TÉTICO",
+    "222": "ANACRÚSICO",
+    "223": "TÉTICO",
+    "224": "TÉTICO",
+    "225": "ANACRÚSICO",
+    "226": "ANACRÚSICO",
+    "227": "ANACRÚSICO",
+    "228": "ANACRÚSICO",
+    "229": "ANACRÚSICO",
+    "230": "ANACRÚSICO",
+    "231": "ANACRÚSICO",
+    "232": "ANACRÚSICO",
+    "233": "ANACRÚSICO",
+    "234": "TÉTICO",
+    "235": "TÉTICO",
+    "236": "ANACRÚSICO",
+    "237": "TÉTICO",
+    "238": "ANACRÚSICO",
+    "239": "ANACRÚSICO",
+    "240": "ANACRÚSICO",
+    "241": "TÉTICO",
+    "242": "ANACRÚSICO",
+    "243": "ANACRÚSICO",
+    "244": "TÉTICO",
+    "245": "TÉTICO",
+    "246": "ANACRÚSICO",
+    "247": "TÉTICO",
+    "248": "ANACRÚSICO",
+    "249": "ANACRÚSICO",
+    "250": "ANACRÚSICO",
+    "251": "TÉTICO",
+    "252": "TÉTICO",
+    "253": "ANACRÚSICO",
+    "254": "TÉTICO",
+    "255": "ANACRÚSICO",
+    "256": "TÉTICO",
+    "257": "ANACRÚSICO",
+    "258": "ANACRÚSICO",
+    "259": "TÉTICO",
+    "260": "TÉTICO",
+    "261": "TÉTICO",
+    "262": "ANACRÚSICO",
+    "263": "TÉTICO",
+    "264": "TÉTICO",
+    "265": "TÉTICO",
+    "266": "TÉTICO",
+    "267": "TÉTICO",
+    "268": "TÉTICO",
+    "269": "ANACRÚSICO",
+    "270": "ANACRÚSICO",
+    "271": "TÉTICO",
+    "272": "TÉTICO",
+    "273": "ANACRÚSICO",
+    "274": "ANACRÚSICO",
+    "275": "ANACRÚSICO",
+    "276": "TÉTICO",
+    "277": "TÉTICO",
+    "278": "TÉTICO",
+    "279": "ANACRÚSICO",
+    "280": "ANACRÚSICO",
+    "281": "ANACRÚSICO",
+    "282": "TÉTICO",
+    "283": "ANACRÚSICO",
+    "284": "ANACRÚSICO",
+    "285": "TÉTICO",
+    "286": "ANACRÚSICO",
+    "287": "ANACRÚSICO",
+    "288": "ANACRÚSICO",
+    "289": "ANACRÚSICO",
+    "290": "TÉTICO",
+    "291": "ANACRÚSICO",
+    "292": "ANACRÚSICO",
+    "293": "ANACRÚSICO",
+    "294": "ANACRÚSICO",
+    "295": "ANACRÚSICO",
+    "296": "ANACRÚSICO",
+    "297": "ANACRÚSICO",
+    "298": "ANACRÚSICO",
+    "299": "TÉTICO",
+    "300": "TÉTICO",
+    "301": "TÉTICO",
+    "302": "ANACRÚSICO",
+    "303": "ANACRÚSICO",
+    "304": "TÉTICO",
+    "305": "ANACRÚSICO",
+    "306": "ANACRÚSICO",
+    "307": "ANACRÚSICO",
+    "308": "TÉTICO",
+    "309": "TÉTICO",
+    "310": "TÉTICO",
+    "311": "ANACRÚSICO",
+    "312": "ANACRÚSICO",
+    "313": "ANACRÚSICO",
+    "314": "ANACRÚSICO",
+    "315": "ANACRÚSICO",
+    "316": "TÉTICO",
+    "317": "TÉTICO",
+    "318": "ANACRÚSICO",
+    "319": "ANACRÚSICO",
+    "320": "ANACRÚSICO",
+    "321": "ANACRÚSICO",
+    "322": "TÉTICO",
+    "323": "TÉTICO",
+    "324": "ANACRÚSICO",
+    "325": "ANACRÚSICO",
+    "326": "ANACRÚSICO",
+    "327": "ANACRÚSICO",
+    "328": "ANACRÚSICO",
+    "329": "TÉTICO",
+    "330": "ANACRÚSICO",
+    "331": "ANACRÚSICO",
+    "332": "TÉTICO",
+    "333": "ANACRÚSICO",
+    "334": "ANACRÚSICO",
+    "335": "TÉTICO",
+    "336": "TÉTICO",
+    "337": "ANACRÚSICO",
+    "338": "TÉTICO",
+    "339": "TÉTICO",
+    "340": "TÉTICO",
+    "341": "ANACRÚSICO",
+    "342": "ANACRÚSICO",
+    "343": "TÉTICO",
+    "344": "TÉTICO",
+    "345": "ANACRÚSICO",
+    "346": "TÉTICO",
+    "347": "TÉTICO",
+    "348": "ANACRÚSICO",
+    "349": "ANACRÚSICO",
+    "350": "ANACRÚSICO",
+    "351": "ANACRÚSICO",
+    "352": "ANACRÚSICO",
+    "353": "ANACRÚSICO",
+    "354": "ANACRÚSICO",
+    "355": "TÉTICO",
+    "356": "ANACRÚSICO",
+    "357": "ANACRÚSICO",
+    "358": "TÉTICO",
+    "359": "ANACRÚSICO",
+    "360": "ANACRÚSICO",
+    "361": "TÉTICO",
+    "362": "ANACRÚSICO",
+    "363": "ANACRÚSICO",
+    "364": "ANACRÚSICO",
+    "365": "ANACRÚSICO",
+    "366": "TÉTICO",
+    "367": "ANACRÚSICO",
+    "368": "TÉTICO",
+    "369": "TÉTICO",
+    "370": "ANACRÚSICO",
+    "371": "ANACRÚSICO",
+    "372": "ANACRÚSICO",
+    "373": "TÉTICO",
+    "374": "TÉTICO",
+    "375": "ANACRÚSICO",
+    "376": "TÉTICO",
+    "377": "ACÉFALO",
+    "378": "ANACRÚSICO",
+    "379": "ANACRÚSICO",
+    "380": "ANACRÚSICO",
+    "381": "TÉTICO",
+    "382": "TÉTICO",
+    "383": "TÉTICO",
+    "384": "ANACRÚSICO",
+    "385": "TÉTICO",
+    "386": "TÉTICO",
+    "387": "TÉTICO",
+    "388": "TÉTICO",
+    "389": "TÉTICO",
+    "390": "ANACRÚSICO",
+    "391": "ANACRÚSICO",
+    "392": "ANACRÚSICO",
+    "393": "TÉTICO",
+    "394": "ANACRÚSICO",
+    "395": "TÉTICO",
+    "396": "ANACRÚSICO",
+    "397": "TÉTICO",
+    "398": "ANACRÚSICO",
+    "399": "ANACRÚSICO",
+    "400": "ANACRÚSICO",
+    "401": "ANACRÚSICO",
+    "402": "TÉTICO",
+    "403": "ANACRÚSICO",
+    "404": "ANACRÚSICO",
+    "405": "ANACRÚSICO",
+    "406": "ANACRÚSICO",
+    "407": "ANACRÚSICO",
+    "408": "ANACRÚSICO",
+    "409": "ANACRÚSICO",
+    "410": "ANACRÚSICO",
+    "411": "ANACRÚSICO",
+    "412": "ANACRÚSICO",
+    "413": "ANACRÚSICO",
+    "414": "TÉTICO",
+    "415": "TÉTICO",
+    "416": "ANACRÚSICO",
+    "417": "ANACRÚSICO",
+    "418": "ANACRÚSICO",
+    "419": "TÉTICO",
+    "420": "ANACRÚSICO",
+    "421": "ANACRÚSICO",
+    "422": "ANACRÚSICO",
+    "423": "ANACRÚSICO",
+    "424": "ANACRÚSICO",
+    "425": "ANACRÚSICO",
+    "426": "ANACRÚSICO",
+    "427": "TÉTICO",
+    "428": "ANACRÚSICO",
+    "429": "TÉTICO",
+    "430": "TÉTICO",
+    "431": "ANACRÚSICO",
+    "432": "ANACRÚSICO",
+    "433": "ANACRÚSICO",
+    "434": "ANACRÚSICO",
+    "435": "ANACRÚSICO",
+    "436": "ANACRÚSICO",
+    "437": "TÉTICO",
+    "438": "ANACRÚSICO",
+    "439": "ANACRÚSICO",
+    "440": "TÉTICO",
+    "441": "ANACRÚSICO",
+    "442": "TÉTICO",
+    "443": "TÉTICO",
+    "444": "ANACRÚSICO",
+    "445": "TÉTICO",
+    "446": "ANACRÚSICO",
+    "447": "ANACRÚSICO",
+    "448": "ANACRÚSICO",
+    "449": "ANACRÚSICO",
+    "450": "TÉTICO",
+    "451": "TÉTICO",
+    "452": "ANACRÚSICO",
+    "453": "ANACRÚSICO",
+    "454": "TÉTICO",
+    "455": "TÉTICO",
+    "456": "ANACRÚSICO",
+    "457": "ANACRÚSICO",
+    "458": "TÉTICO",
+    "459": "ANACRÚSICO",
+    "460": "TÉTICO",
+    "461": "ANACRÚSICO",
+    "462": "ANACRÚSICO",
+    "463": "TÉTICO",
+    "464": "ANACRÚSICO",
+    "465": "ANACRÚSICO",
+    "466": "ANACRÚSICO",
+    "467": "ANACRÚSICO",
+    "468": "TÉTICO",
+    "469": "ANACRÚSICO",
+    "470": "TÉTICO",
+    "471": "ANACRÚSICO",
+    "472": "TÉTICO",
+    "473": "ANACRÚSICO",
+    "474": "TÉTICO",
+    "475": "ANACRÚSICO",
+    "476": "ANACRÚSICO",
+    "477": "TÉTICO",
+    "478": "ANACRÚSICO",
+    "479": "ANACRÚSICO",
+    "480": "TÉTICO",
+    "C-1": "ANACRÚSICO",
+    "C-2": "TÉTICO",
+    "C-3": "ANACRÚSICO",
+    "C-4": "TÉTICO",
+    "C-5": "ANACRÚSICO",
+    "C-6": "TÉTICO"
+};
+// Função para formatar o texto do hino
+function formatHinoText(hinoNumber) {
+    if (hinoNumber.startsWith("C-")) {
+        return `Coro ${hinoNumber.substring(2)}`;
+    }
+    return `Hino ${hinoNumber}`;
+}
 
-            return NumeroSemana + Ordem + " " + dias[data.getDay()];
-        }
+// Função para embaralhar array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
-        // Função para preencher o select com as datas
-        function preencherSelectDatas() {
-            const select = document.getElementById('data-select');
-            const hoje = new Date();
-            //hoje.setDate(hoje.getDate() + 25);
-            
-            // Limpa o select
-            select.innerHTML = '';
-            
-            // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
-            for (let i = 0; i < 30; i++) {
-                const data = new Date(hoje);
-                data.setDate(hoje.getDate() + i);
-                
-                const dataFormatada = formatarData(data);
-                const diaSemana = getDiaSemana(data);
-                
-                const option = document.createElement('option');
-                option.value = dataFormatada + "|" + diaSemana;
-                option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
-                
-                // Seleciona a data atual por padrão
-                if (i === 0) {
-                    option.selected = true;
-                }
-                
-                select.appendChild(option);
-            }
-        }
+// Função para gerar a sequência de hinos
+function generateHinoSequence() {
+    const hinoNumbers = Object.keys(hinos);
+    
+    // Primeiro hino aleatório
+    const randomIndex = Math.floor(Math.random() * hinoNumbers.length);
+    const firstHino = hinoNumbers[randomIndex];
+    
+    // Encontrar o índice do primeiro hino na lista completa
+    const startIndex = hinoNumbers.indexOf(firstHino);
+    
+    // Criar sequência a partir do hino sorteado
+    hinoSequence = hinoNumbers.slice(startIndex).concat(hinoNumbers.slice(0, startIndex));
+    
+    currentIndex = 0;
+}
 
-        // Função CORRIGIDA para calcular a data do evento
-        function calcularDataEvento(descricao, mes, ano) {
-            // Extrai a ordem (1º, 2º, etc.) e o dia da semana
-            const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
-            if (!match) return null;
-            
-            const ordem = parseInt(match[1]);
-            let diaSemana = match[2].trim().toUpperCase();
-            
-            // Padroniza o nome do dia da semana
-            diaSemana = diaSemana
-                .replace(/-/g, ' ')
-                .replace(/FEIRA/g, '')
-                .trim();
-            
-            // Mapeamento dos dias da semana
-            const diasMap = {
-                'DOMINGO': 0,
-                'SEGUNDA': 1,
-                'TERÇA': 2, 'TERCA': 2,
-                'QUARTA': 3,
-                'QUINTA': 4,
-                'SEXTA': 5,
-                'SÁBADO': 6, 'SABADO': 6
-            };
+// Atualizar estatísticas
+function updateStats() {
+    statsElement.textContent = `Perguntas: ${totalQuestions} | Acertos: ${correctAnswers} | Erros: ${wrongAnswers}`;
+}
 
-            const diaNum = diasMap[diaSemana];
-            if (diaNum === undefined) return null;
+// Iniciar o quiz
+function startQuiz() {
+    // Se for a primeira pergunta ou terminou a sequência, gera nova
+    if (currentIndex === 0 || currentIndex >= hinoSequence.length) {
+        generateHinoSequence();
+    }
+    
+    currentHino = hinoSequence[currentIndex];
+    correctAnswer = hinos[currentHino];
+    currentIndex++;
 
-            // Calcula a data correta
-            let data = new Date(ano, mes - 1, 1);
-            let contador = 0;
-            
-            while (data.getMonth() === mes - 1) {
-                if (data.getDay() === diaNum) {
-                    contador++;
-                    if (contador === ordem) {
-                        return new Date(data);
-                    }
-                }
-                data.setDate(data.getDate() + 1);
-            }
-            
-            return null;
-        }
+    // Exibir a pergunta com o texto formatado
+    questionElement.textContent = `Qual é o ritmo inicial do ${formatHinoText(currentHino)}?`;
 
-        // Função para gerar a tabela
-        function gerarTabela(dataInformada) {
-            
-            // Seleciona todos os checkboxes com name="opcoes"
-            const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
-            const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    // Criar opções de resposta (sempre as três, em ordem aleatória)
+    const options = ["ACÉFALO", "ANACRÚSICO", "TÉTICO"];
+    const shuffledOptions = shuffleArray([...options]);
 
-            //todosCheckboxes.length;
-            //const totalMarcados = checkboxesMarcados.length;
-            const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
-            //alert(totalNaoMarcados)
-            if (checkboxes.length === 0) {
-                alert("Nenhuma cidade foi selecionada.");
-                return;
-            }
-            
-            let cidades = "|";
-            
-            // Percorre todos os checkboxes selecionados
-            checkboxes.forEach((checkbox) => {
-                cidades += `|${checkbox.value}|`;
-            });
-            //alert(cidades)            
-            const tabela = document.querySelector('#tabela-eventos tbody');
-            tabela.innerHTML = '';
+    // Limpar opções anteriores
+    optionsElement.innerHTML = '';
 
-            const [diaStr, mesStr, anoStr] = dataInformada.split('/');
-            const dia = parseInt(diaStr);
-            const mes = parseInt(mesStr);
-            const ano = parseInt(anoStr);
-            const ultimoDia = new Date(ano, mes, 0).getDate();
-            
-            let encontrouEventos = false;
+    // Adicionar as novas opções
+    shuffledOptions.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.addEventListener('click', () => checkAnswer(option));
+        optionsElement.appendChild(button);
+    });
 
-            dados.forEach(item => {
-                try {
-                    const [local, cidade, descricaoDia, horario, localizacao, setor] = item.split(';');
-                    let dataEvento = ""
-                    if ((dia >= 22 && dia <= 28)) {
-                        if (dia + 7 > ultimoDia) {
-                            dataEvento = calcularDataEvento(descricaoDia.replace("5ª", "4ª").replace("5º", "4º"), mes, ano);
-                        } else {
-                            dataEvento = calcularDataEvento(descricaoDia, mes, ano);
-                        }
-                    } else {
-                        dataEvento = calcularDataEvento(descricaoDia, mes, ano);
-                    }   
-                    if (dataEvento && 
-                        dataEvento.getDate() === dia &&
-                        dataEvento.getMonth() === mes - 1 &&
-                        dataEvento.getFullYear() === ano) {
-                        //alert(totalNaoMarcados)
-                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
-                            const dataFormatada = dataInformada;
-                            const row = tabela.insertRow();
-                            row.style.cursor = "pointer";
+    // Esconder o resultado e o botão de próxima pergunta
+    resultElement.textContent = '';
+    resultElement.className = 'result';
+    nextButton.style.display = 'none';
+}
 
-                            //row.className = "clickable"; // Adiciona a classe para o cursor
-                            row.onclick = () => window.open("https://maps.app.goo.gl/" + localizacao, "_blank"); // Redireciona ao clicar
+// Verificar a resposta
+function checkAnswer(selectedOption) {
+    // Desabilitar todos os botões de opção
+    const buttons = optionsElement.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
 
-                            row.insertCell(0).innerHTML = local;
-                            row.insertCell(1).textContent = cidade;
-                            row.insertCell(2).textContent = horario;
-                            
-                            encontrouEventos = true;
-                        }
-                    }
-                } catch (e) {
-                    console.error("Erro ao processar item:", item, e);
-                }
-            });
+    // Atualizar estatísticas
+    totalQuestions++;
+    if (selectedOption === correctAnswer) {
+        correctAnswers++;
+        resultElement.textContent = 'Correto!';
+        resultElement.className = 'result correct';
+    } else {
+        wrongAnswers++;
+        resultElement.textContent = `Incorreto! O correto é ${correctAnswer}.`;
+        resultElement.className = 'result incorrect';
+    }
 
-            if (!encontrouEventos) {
-                const row = tabela.insertRow();
-                const cell = row.insertCell(0);
-                cell.colSpan = 4;
-                cell.textContent = "Nenhum ensaio encontrado para esta data.";
-                cell.className = "no-events";
-            } else {
-                MostrarMsg()
-            }
-        }
+    updateStats();
 
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            preencherSelectDatas();
-            const dataSelecionada = document.getElementById('data-select').value;
-            gerarTabela(dataSelecionada);
-            
-            // Evento do botão "Listar" (mantido para consistência, mas não é mais necessário)
-            //document.getElementById('btn-listar').addEventListener('click', () => {
-            //    const dataSelecionada = document.getElementById('data-select').value;
-            //    gerarTabela(dataSelecionada);
-            //});
-            
-            // Atualiza automaticamente quando muda a seleção
-            document.getElementById('data-select').addEventListener('change', (e) => {
-                gerarTabela(e.target.value);
-            });
-        });
+    // Mostrar o botão de próxima pergunta
+    nextButton.style.display = 'block';
+}
 
-        function MostrarMsg()  { 
-            const tooltip = document.getElementById('infoTooltip');
-            
-            // Mostra o tooltip
-            tooltip.classList.add('visible');
-            
-            // Esconde após 1 segundo
-            setTimeout(() => {
-                tooltip.classList.remove('visible');
-            }, 2000);
+// Mostrar modal de ajuda
+helpButton.addEventListener('click', () => {
+    helpModal.style.display = 'block';
+});
 
+// Mostrar modal de encerramento
+exitButton.addEventListener('click', () => {
+    exitStatsElement.innerHTML = `
+        <p>Total de perguntas: ${totalQuestions}</p>
+        <p>Respostas corretas: ${correctAnswers}</p>
+        <p>Respostas incorretas: ${wrongAnswers}</p>
+        <p>Taxa de acerto: ${totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0}%</p>
+    `;
+    exitModal.style.display = 'block';
+});
 
-         }
-        
-         document.addEventListener('DOMContentLoaded', function() {
-            // Elementos do menu
-            const menuBtn = document.getElementById('menu-btn');
-            const menuLateral = document.getElementById('menu-lateral');
-            const overlay = document.getElementById('overlay');
-            const conteudoPrincipal = document.getElementById('conteudo-principal');
-            const aplicarFiltrosBtn = document.getElementById('aplicar-filtros');
-            
-            // Controles do menu
-            function toggleMenu() {
-                document.body.classList.toggle('menu-aberto');
-            }
-            
-            menuBtn.addEventListener('click', toggleMenu);
-            overlay.addEventListener('click', toggleMenu);
-            aplicarFiltrosBtn.addEventListener('click', function() {
-                toggleMenu();
-            });
-            
-        });
-        
-        function AlteraCidade() {
-            gerarTabela(document.getElementById('data-select').value);
-        }
+// Fechar modais
+for (let i = 0; i < closeButtons.length; i++) {
+    closeButtons[i].addEventListener('click', function() {
+        helpModal.style.display = 'none';
+        exitModal.style.display = 'none';
+    });
+}
+
+// Fechar a página
+confirmExitButton.addEventListener('click', () => {
+    window.close();
+});
+
+// Fechar modais ao clicar fora
+window.addEventListener('click', (event) => {
+    if (event.target === helpModal) {
+        helpModal.style.display = 'none';
+    }
+    if (event.target === exitModal) {
+        exitModal.style.display = 'none';
+    }
+});
+
+// Event listener para o botão de próxima pergunta
+nextButton.addEventListener('click', startQuiz);
+
+// Iniciar o quiz quando a página carregar
+window.addEventListener('load', () => {
+    generateHinoSequence();
+    startQuiz();
+    updateStats();
+});
     </script>
 </body>
 </html>
