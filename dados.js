@@ -13,7 +13,7 @@
             "ST. URIAS MAGALHÃES;Goiânia;1º DOMINGO;17:00hs;fYH4domMCTcszBZc7;5",
             "ST. NORTE FERROVIÁRIO II;Goiânia;1º DOMINGO;17:00hs;fyt967DQ1EgXkji18;5",
             "ST. MADRE GERMANA;Goiânia;1º DOMINGO;17:00hs;pLUuFLWU1AqApnx56;2",
-            "ST. ESTRELA DALVA;Goiânia;1º DOMINGO;17:00hs;DJJ1EU8izHd3iVkh6;4",
+            "ST. ESTRELA DALVA;Goiânia;1ª SEXTA-FEIRA;19:30hs;DJJ1EU8izHd3iVkh6;4",
             "ST. FAIÇALVILLE;Goiânia;1º DOMINGO;17:00hs;BnQwHq2mhdCuNmsf7;2",
             "ST. BELA VISTA;Goiânia;1º DOMINGO;17:00hs;6FfuP1QrYMLrrHXm8;1",
             "ST. COIMBRA;Goiânia;1º DOMINGO;17:00hs;AHA4PNhtdDhWqMP76;4",
