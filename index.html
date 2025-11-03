@@ -380,6 +380,16 @@
             </div>
             <div class="filtro-opcao">
                 <label class="combobox-option">
+                    <input type="checkbox" name="cidade" value="Trindade0" onclick="AlteraCidade()" checked>Trindade
+                </label>
+            </div>
+            <div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" name="cidade" value="Senador Canedo0" onclick="AlteraCidade()" checked>Senador Canedo
+                </label>
+            </div>
+            <div class="filtro-opcao">
+                <label class="combobox-option">
                     <input type="checkbox" name="cidade" value="Aragoiânia0" onclick="AlteraCidade()" checked>Aragoiânia
                 </label>
             </div>
@@ -465,7 +475,7 @@
             select.innerHTML = '';
             
             // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 35; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
