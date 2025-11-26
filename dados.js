@@ -191,7 +191,7 @@
             "ST PALMARES - MAYSA II;Trindade;2º DOMINGO;17:00hs;kz32ghcwk65SdK1k8;0",
             "<B>CENTRAL - VILA PAI ETERNO</B>;Trindade;2ª SEGUNDA-FEIRA;19:30hs;XXYM45ajGVQu1Rsn6;0",
             "JD. CALIFÓRNIA;Trindade;2ª QUARTA-FEIRA meses FEV MAI AGO NOV;19:30hs;xn9oBpk1WRfyq4s88;0",
-            "ALTO DO CERRADO - SÃO FRANCISCO;Trindade;3º SÁBADO;17:00hs;eTCkDsAjQoiGZUhS9;0",
+            "ALTO DO CERRAD I;Trindade;3º SÁBADO;17:00hs;eTCkDsAjQoiGZUhS9;0",
             "LAGUNA PARK - CAMPESTRE/GO;Trindade;3º DOMINGO;17:00hs;G2FRfvxcDfnQfKvJ8;0",
             "RESIDENCIAL VIEIRA;Trindade;3ª SEGUNDA-FEIRA;19:30hs;su4KnXzBMVFvt2VT7;0",
             "MAYSA I;Trindade;3ª TERÇA-FEIRA;19:30hs;BPjCP9Z1ou6XWuJb7;0",
@@ -221,3 +221,4 @@
             "VILA GALVÃO;Senador Canedo;2ª TERÇA-FEIRA;19:30hs;mCD5gdLAp37sadDR6;0",
             "JARDIM BARCELONA;Senador Canedo;3ª TERÇA-FEIRA;19:30hs;sBkqgEbx5CxVcsaZ6;0"
         ];
+
