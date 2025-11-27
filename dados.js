@@ -12,7 +12,7 @@
             "ST. UNIVERSITÁRIO;Goiânia;1º DOMINGO;17:00hs;f4jkwB9HdBhJMobN6;1",
             "ST. URIAS MAGALHÃES;Goiânia;1º DOMINGO;17:00hs;fYH4domMCTcszBZc7;5",
             "ST. NORTE FERROVIÁRIO II;Goiânia;1º DOMINGO;17:00hs;fyt967DQ1EgXkji18;5",
-            "ST. MADRE GERMANA;Goiânia;1º DOMINGO;17:00hs;pLUuFLWU1AqApnx56;2",
+            "ST. MADRE GERMANA 2;Goiânia;1º DOMINGO;17:00hs;JfvWA4JTasNrqzTo9;2",
             "ST. ESTRELA DALVA;Goiânia;1ª SEXTA-FEIRA;19:30hs;DJJ1EU8izHd3iVkh6;4",
             "ST. FAIÇALVILLE;Goiânia;1º DOMINGO;17:00hs;BnQwHq2mhdCuNmsf7;2",
             "ST. BELA VISTA;Goiânia;1º DOMINGO;17:00hs;6FfuP1QrYMLrrHXm8;1",
@@ -180,7 +180,7 @@
             "DISTRITO VL. RICA;Goiânia;3ª SEXTA-FEIRA DOS MESES ÍMPARES;19:30hs;kRnnufBAuWN2HiedA;5",
             "IND. ST. ANTONIO (T. PROMETIDA);Aparecida;2ª SEXTA-FEIRA meses PARES;19:30H;TvaUyyRADcfky5eaA;0",
             "JARDIM BURITI SERENO I;Aparecida;4ª SEGUNDA-FEIRA meses ÍMPARES;19:30H;Zdk6Tqvsp9oZsavS7;0",
-            "NOVA OLINDA;Aparecida;5ª QUARTA-FEIRA;19:30H;LZcYBBYJ4qhgPJ9U9;0",
+            "NOVA OLINDA;Aparecida;4º DOMINGO;19:30H;LZcYBBYJ4qhgPJ9U9;0",
             "SETOR AEROPORTO SUL;Aparecida;5º DOMINGO;17:00H;kJnN5yAhCJAfm9gd9;0",
             "SETOR CONTINENTAL;Aparecida;;wnMvCcxyCGSxrWD89;0",
             "DISTRITO DE SANTA MARIA;Hidrolândia;;0",
@@ -221,4 +221,5 @@
             "VILA GALVÃO;Senador Canedo;2ª TERÇA-FEIRA;19:30hs;mCD5gdLAp37sadDR6;0",
             "JARDIM BARCELONA;Senador Canedo;3ª TERÇA-FEIRA;19:30hs;sBkqgEbx5CxVcsaZ6;0"
         ];
+
 
