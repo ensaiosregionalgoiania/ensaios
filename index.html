@@ -1054,7 +1054,7 @@ function toggleDetalhes(index) {
             
             select.innerHTML = '';
             
-            for (let i = 0; i < 35; i++) {
+            for (let i = 0; i < 62; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
@@ -1417,11 +1417,6 @@ function consultarPorEncarregadoLocal() {
         
         return `${dia} ${meses[mes]}`;
     }
-
-// Exemplos de uso
-console.log(formatarData("15/03/2024")); // "15 MAR"
-console.log(formatarData("01/12/2024")); // "01 DEZ"
-console.log(formatarData("25/07/2024")); // "25 JUL"    }
 
 </script>
 </body>
