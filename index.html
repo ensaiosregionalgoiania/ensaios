@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ensaio Local por Data</title>
+    <title>Ensaio Local</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -32,6 +32,58 @@
             border-bottom: 1px solid #eee;
         }
         
+        .consultas-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .consultas-titulo {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+        
+        .radio-option input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
         .input-group {
             display: flex;
             flex-direction: column;
@@ -52,9 +104,16 @@
             margin-bottom: 10px;
         }
         
-        #btn-listar {
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        button {
             padding: 12px;
-            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 4px;
@@ -63,8 +122,24 @@
             transition: background-color 0.3s;
         }
         
+        #btn-listar {
+            background-color: #3498db;
+        }
+        
+        #btn-consultar-casa-oracao, 
+        #btn-consultar-encarregado-local,
+        #btn-consultar-encarregado-regional {
+            background-color: #27ae60;
+        }
+        
         #btn-listar:hover {
             background-color: #2980b9;
+        }
+        
+        #btn-consultar-casa-oracao:hover,
+        #btn-consultar-encarregado-local:hover,
+        #btn-consultar-encarregado-regional:hover {
+            background-color: #219a52;
         }
         
         .error {
@@ -76,12 +151,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 0px;
             font-size: 0.9rem;
         }
         
         th, td {
-            padding: 12px;
+            padding: 5px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -97,11 +172,100 @@
             background-color: #f2f2f2;
         }
         
+        /* Estilos para a linha expansível */
+        .detalhes-row {
+            background-color: #f8f9fa;
+        }
+        
+.detalhes-content {
+    display: none;
+}
+
+.detalhe-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Permite que o item encolha */
+    flex: 1; /* Ocupa espaço disponível */
+    padding: 10px;
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.detalhes-content.visible {
+    display: table-row;
+}
+
+        .detalhe-item {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+
+        }
+        
+.detalhe-label {
+    font-weight: bold;
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+        
+.detalhe-valor {
+    color: #333;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+        
+        .btn-expandir {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-expandir:hover {
+            background: #2980b9;
+        }
+        
+.btn-maps {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    width: 60px;
+    transition: background-color 0.3s;
+}
+        
+.btn-maps:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+        
         .no-events {
             text-align: center;
             padding: 20px;
             color: #7f8c8d;
             font-style: italic;
+        }
+        
+        .hidden {
+            display: none;
         }
         
         @media (min-width: 600px) {
@@ -118,17 +282,48 @@
             label {
                 margin-right: 10px;
                 margin-bottom: 0;
-                width: 120px;
+                width: 80px;
             }
             
-            #data-select {
+            #data-select, input[type="text"] {
                 flex-grow: 1;
                 margin-right: 10px;
                 margin-bottom: 0;
             }
             
-            #btn-listar {
+            button {
                 width: auto;
+            }
+            
+            .radio-group {
+                gap: 20px;
+            }
+            
+            .radio-option {
+                padding: 2px 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .radio-group {
+                gap: 8px;
+            }
+            
+            .radio-option {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .radio-option label {
+                font-size: 0.85rem;
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            th, td {
+                padding: 8px 4px;
             }
         }
     
@@ -332,11 +527,23 @@
 
         .container {
             transition: transform 0.3s ease, opacity 0.3s ease;
-        }    
+        }
+
+.detalhes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    width: 100%;
+    box-sizing: border-box;
+}
+
     </style>
 
 </head>
 <body>
+
     <!-- Botão para abrir o menu -->
     <button class="menu-btn" id="menu-btn">☰</button>
     
@@ -412,10 +619,57 @@
     </div>
 
     <div class="container">
-        <h1>Ensaio Local por Data</h1>
-        <div class="input-group">
-            <select id="data-select"></select>
+        <h1>Ensaio Local</h1>
+        
+        <!-- Container melhorado para as consultas -->
+        <div class="consultas-container">
+            <div class="consultas-titulo">Consultar por:</div>
+            
+            <!-- Radio buttons para escolher o tipo de consulta -->
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="consulta-data" name="tipo-consulta" value="data" checked>
+                    <label for="consulta-data">Data</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-CasaOracao" name="tipo-consulta" value="CasaOracao">
+                    <label for="consulta-CasaOracao">Casa de Oração</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local">
+                    <label for="consulta-encarregado-local">Enc. Local</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional">
+                    <label for="consulta-encarregado-regional">Enc. Regional</label>
+                </div>
+            </div>
         </div>
+
+        <!-- Consulta por Data -->
+        <div id="consulta-data-group" class="input-group">
+            <select id="data-select"></select>
+            <button id="btn-listar">Listar</button>
+        </div>
+
+        <!-- Consulta por Casa de Oração CCB -->
+        <div id="consulta-casa-oracao-group" class="input-group hidden">
+            <input type="text" id="casa-oracao-input" placeholder="Digite o nome da Casa de Oração CCB">
+            <button id="btn-consultar-casa-oracao">Consultar</button>
+        </div>
+
+        <!-- Consulta por Encarregado Local -->
+        <div id="consulta-encarregado-local-group" class="input-group hidden">
+            <input type="text" id="encarregado-local-input" placeholder="Digite o nome do Encarregado Local">
+            <button id="btn-consultar-encarregado-local">Consultar</button>
+        </div>
+
+        <!-- Consulta por Encarregado Regional -->
+        <div id="consulta-encarregado-regional-group" class="input-group hidden">
+            <input type="text" id="encarregado-regional-input" placeholder="Digite o nome do Encarregado Regional">
+            <button id="btn-consultar-encarregado-regional">Consultar</button>
+        </div>
+
         <span id="error-msg" class="error"></span>
         <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
         
@@ -424,15 +678,343 @@
                 <tr>
                     <th>Local</th>
                     <th>Cidade</th>
+                    <th>Data</th>
                     <th>Horário</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
-    <script src="dados.js"></script>
+<script src="dados.js"></script>
 
-    <script>
+<script>
+    /*    const dados = [
+        "<B>Jd Europa</B>;<B>Goiânia</B>;2ª QUINTA-FEIRA;<B>19:30</B>;wCXzwnDgT28jsN6B9;2;Pedro Machado;Hiwerson;T",
+        "St Madre Germana 2;Goiânia;1º DOMINGO;17:00;JfvWA4JTasNrqzTo9;2;Welliton;André;T"
+    ];*/
+
+        // Função para verificar se um mês deve ser exibido baseado na configuração de meses
+        function deveExibirMes(mes, configMeses) {
+            if (!configMeses || configMeses === 'T') {
+                return true;
+            }
+            
+            if (configMeses === 'P') {
+                return mes % 2 === 0;
+            }
+            
+            if (configMeses === 'I') {
+                return mes % 2 === 1;
+            }
+            
+            const mesesPermitidos = configMeses.split('!').map(m => parseInt(m));
+            return mesesPermitidos.includes(mes);
+        }
+
+        // Função para calcular a próxima data do evento
+        function calcularProximaData(descricaoDia) {
+            const hoje = new Date();
+            const mesAtual = hoje.getMonth() + 1;
+            const anoAtual = hoje.getFullYear();
+            
+            let dataEvento = calcularDataEvento(descricaoDia, mesAtual, anoAtual);
+            
+            if (dataEvento && dataEvento < hoje) {
+                let proximoMes = mesAtual + 1;
+                let proximoAno = anoAtual;
+                
+                if (proximoMes > 12) {
+                    proximoMes = 1;
+                    proximoAno = anoAtual + 1;
+                }
+                
+                dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+            }
+            
+            if (!dataEvento) {
+                let proximoMes = mesAtual + 1;
+                let proximoAno = anoAtual;
+                
+                if (proximoMes > 12) {
+                    proximoMes = 1;
+                    proximoAno = anoAtual + 1;
+                }
+                
+                dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+            }
+            
+            return dataEvento;
+        }
+
+        // Função para alternar entre os tipos de consulta
+        function alternarTipoConsulta() {
+            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+            
+            document.getElementById('consulta-data-group').classList.add('hidden');
+            document.getElementById('consulta-casa-oracao-group').classList.add('hidden');
+            document.getElementById('consulta-encarregado-local-group').classList.add('hidden');
+            document.getElementById('consulta-encarregado-regional-group').classList.add('hidden');
+            
+            if (tipoConsulta === 'data') {
+                document.getElementById('consulta-data-group').classList.remove('hidden');
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            } else if (tipoConsulta === 'CasaOracao') {
+                document.getElementById('consulta-casa-oracao-group').classList.remove('hidden');
+                limparTabela();
+            } else if (tipoConsulta === 'encarregado-local') {
+                document.getElementById('consulta-encarregado-local-group').classList.remove('hidden');
+                limparTabela();
+            } else if (tipoConsulta === 'encarregado-regional') {
+                document.getElementById('consulta-encarregado-regional-group').classList.remove('hidden');
+                limparTabela();
+            }
+        }
+
+        // Função para limpar a tabela
+        function limparTabela() {
+            const tabela = document.querySelector('#tabela-eventos tbody');
+            tabela.innerHTML = '';
+        }
+
+        // Função para consultar por Casa de Oracao CCB
+
+function consultarPorCasaOracao() {
+    const termo = document.getElementById('casa-oracao-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome da Casa de Oração CCB.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+            
+            if (local.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    const row = tabela.insertRow();
+                    row.id = `evento-${index}`;
+                    //row.style.cursor = "pointer";
+                    //row.onclick = () => abrirMaps(localizacao);
+
+                    row.insertCell(0).innerHTML = local;
+                    row.insertCell(1).innerHTML = cidade;
+                    row.insertCell(2).textContent = dataString(dataFormatada);
+                    row.insertCell(3).innerHTML = horario;
+                    
+                    const acoesCell = row.insertCell(4);
+                    const expandirBtn = document.createElement('button');
+                    expandirBtn.className = 'btn-expandir';
+                    expandirBtn.textContent = '+';
+
+                    const indexTemp = index
+                    expandirBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleDetalhes(indexTemp);
+                    };
+                    acoesCell.appendChild(expandirBtn);
+
+                    // Linha de detalhes
+                    const detalhesRow = tabela.insertRow();
+                    detalhesRow.className = 'detalhes-content';
+                    detalhesRow.id = `detalhes-${index}`;
+                    const detalhesCell = detalhesRow.insertCell(0);
+                    detalhesCell.colSpan = 5;
+                    detalhesCell.innerHTML = `
+                        <table>
+                            <tr>
+                               <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
+                                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
+                                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
+                                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
+                            </tr>
+                        </table>`;
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para esta Casa de Oração CCB.";
+        cell.className = "no-events";
+    } else {
+        MostrarMsg();
+    }
+}
+
+
+        // Função para consultar por Encarregado Regional
+function consultarPorEncarregadoRegional() {
+    const termo = document.getElementById('encarregado-regional-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome do Encarregado Regional.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+            
+            if (encarregadoRegional && encarregadoRegional.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    const row = tabela.insertRow();
+                    row.id = `evento-${index}`;
+                    //row.style.cursor = "pointer";
+                    //row.onclick = () => abrirMaps(localizacao);
+
+                    row.insertCell(0).innerHTML = local;
+                    row.insertCell(1).innerHTML = cidade;
+                    row.insertCell(2).textContent = dataString(dataFormatada);
+                    row.insertCell(3).innerHTML = horario;
+                    
+                    const acoesCell = row.insertCell(4);
+                    const expandirBtn = document.createElement('button');
+                    expandirBtn.className = 'btn-expandir';
+                    expandirBtn.textContent = '+';
+                    const indexTemp = index
+                    expandirBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleDetalhes(indexTemp);
+                    };
+                    acoesCell.appendChild(expandirBtn);
+
+                    // Linha de detalhes
+                    const detalhesRow = tabela.insertRow();
+                    detalhesRow.className = 'detalhes-content';
+                    detalhesRow.id = `detalhes-${index}`;
+                    const detalhesCell = detalhesRow.insertCell(0);
+                    detalhesCell.colSpan = 5;
+                    detalhesCell.innerHTML = `
+                        <table>
+                            <tr>
+                                <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
+                                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
+                                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
+                                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
+                            </tr>
+                        </table>`;
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para este Encarregado Regional.";
+        cell.className = "no-events";
+    } else {
+        MostrarMsg();
+    }
+}
+
+// Função para alternar os detalhes - VERSÃO DEBUG
+function toggleDetalhes(index) {
+    console.log("Toggle detalhes chamado para índice:", index);
+    
+    const detalhes = document.getElementById(`detalhes-${index}`);
+    const expandirBtn = document.querySelector(`#evento-${index} .btn-expandir`);
+    
+    console.log("Elemento detalhes encontrado:", detalhes);
+    console.log("Botão expandir encontrado:", expandirBtn);
+    
+    if (!detalhes || !expandirBtn) {
+        console.log("ERRO: Elementos não encontrados");
+        return;
+    }
+    
+    if (detalhes.classList.contains('visible')) {
+        console.log("Fechando detalhes");
+        detalhes.classList.remove('visible');
+        expandirBtn.textContent = '+';
+    } else {
+        console.log("Abrindo detalhes");
+        // Fechar outros detalhes abertos
+        document.querySelectorAll('.detalhes-content.visible').forEach(d => {
+            d.classList.remove('visible');
+            const otherIndex = d.id.split('-')[1];
+            const otherBtn = document.querySelector(`#evento-${otherIndex} .btn-expandir`);
+            if (otherBtn) otherBtn.textContent = '+';
+        });
+        
+        detalhes.classList.add('visible');
+        expandirBtn.textContent = '-';
+    }
+    
+    console.log("Classe atual do detalhes:", detalhes.className);
+}
+        // Função para abrir o Maps
+        function abrirMaps(localizacao) {
+            if (localizacao) {
+                window.open("https://maps.app.goo.gl/" + localizacao, "_blank");
+            }
+        }
+
+        // Função para gerar tabela por Casa de Oracao CCB
+
 
         // Função para formatar data como dd/mm/aaaa
         function formatarData(data) {
@@ -469,12 +1051,9 @@
         function preencherSelectDatas() {
             const select = document.getElementById('data-select');
             const hoje = new Date();
-            //hoje.setDate(hoje.getDate() + 25);
             
-            // Limpa o select
             select.innerHTML = '';
             
-            // Adiciona as opções para os próximos 15 dias (hoje + 14 dias)
             for (let i = 0; i < 35; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
@@ -486,7 +1065,6 @@
                 option.value = dataFormatada + "|" + diaSemana;
                 option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
                 
-                // Seleciona a data atual por padrão
                 if (i === 0) {
                     option.selected = true;
                 }
@@ -497,20 +1075,17 @@
 
         // Função CORRIGIDA para calcular a data do evento
         function calcularDataEvento(descricao, mes, ano) {
-            // Extrai a ordem (1º, 2º, etc.) e o dia da semana
             const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
             if (!match) return null;
             
             const ordem = parseInt(match[1]);
             let diaSemana = match[2].trim().toUpperCase();
             
-            // Padroniza o nome do dia da semana
             diaSemana = diaSemana
                 .replace(/-/g, ' ')
                 .replace(/FEIRA/g, '')
                 .trim();
             
-            // Mapeamento dos dias da semana
             const diasMap = {
                 'DOMINGO': 0,
                 'SEGUNDA': 1,
@@ -524,7 +1099,6 @@
             const diaNum = diasMap[diaSemana];
             if (diaNum === undefined) return null;
 
-            // Calcula a data correta
             let data = new Date(ano, mes - 1, 1);
             let contador = 0;
             
@@ -541,17 +1115,12 @@
             return null;
         }
 
-        // Função para gerar a tabela
-        function gerarTabela(dataInformada) {
-            
-            // Seleciona todos os checkboxes com name="opcoes"
+        // Função para gerar a tabela por data
+        function gerarTabelaPorData(dataInformada) {
             const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
             const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
-
-            //todosCheckboxes.length;
-            //const totalMarcados = checkboxesMarcados.length;
             const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
-            //alert(totalNaoMarcados)
+            
             if (checkboxes.length === 0) {
                 alert("Nenhuma cidade foi selecionada.");
                 return;
@@ -559,11 +1128,10 @@
             
             let cidades = "|";
             
-            // Percorre todos os checkboxes selecionados
             checkboxes.forEach((checkbox) => {
                 cidades += `|${checkbox.value}|`;
             });
-            //alert(cidades)            
+            
             const tabela = document.querySelector('#tabela-eventos tbody');
             tabela.innerHTML = '';
 
@@ -574,10 +1142,16 @@
             const ultimoDia = new Date(ano, mes, 0).getDate();
             
             let encontrouEventos = false;
+            let index = 0;
 
             dados.forEach(item => {
                 try {
-                    const [local, cidade, descricaoDia, horario, localizacao, setor] = item.split(';');
+                    const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+                    
+                    if (!deveExibirMes(mes, meses)) {
+                        return;
+                    }
+                    
                     let dataEvento = ""
                     if ((dia >= 22 && dia <= 28)) {
                         if (dia + 7 > ultimoDia) {
@@ -588,23 +1162,53 @@
                     } else {
                         dataEvento = calcularDataEvento(descricaoDia, mes, ano);
                     }   
+                    
                     if (dataEvento && 
                         dataEvento.getDate() === dia &&
                         dataEvento.getMonth() === mes - 1 &&
                         dataEvento.getFullYear() === ano) {
-                        //alert(totalNaoMarcados)
+                        
                         if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
                             const dataFormatada = dataInformada;
-                            const row = tabela.insertRow();
-                            row.style.cursor = "pointer";
 
-                            //row.className = "clickable"; // Adiciona a classe para o cursor
-                            row.onclick = () => window.open("https://maps.app.goo.gl/" + localizacao, "_blank"); // Redireciona ao clicar
+                            // Linha principal
+                            const row = tabela.insertRow();
+                            row.id = `evento-${index}`;
+                            //row.style.cursor = "pointer";
+                            //row.onclick = () => abrirMaps(localizacao);
 
                             row.insertCell(0).innerHTML = local;
-                            row.insertCell(1).textContent = cidade;
-                            row.insertCell(2).textContent = horario;
+                            row.insertCell(1).innerHTML = cidade;
+                            row.insertCell(2).textContent = dataString(dataFormatada);
+                            row.insertCell(3).innerHTML = horario;
                             
+                            const acoesCell = row.insertCell(4);
+                            const expandirBtn = document.createElement('button');
+                            expandirBtn.className = 'btn-expandir';
+                            expandirBtn.textContent = '+';
+                            const indexTemp = index
+                            expandirBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                toggleDetalhes(indexTemp);
+                            };
+                            acoesCell.appendChild(expandirBtn);
+
+                            // Linha de detalhes (MÉTODO CORRIGIDO)
+                            const detalhesRow = tabela.insertRow();
+                            detalhesRow.className = 'detalhes-content';
+                            detalhesRow.id = `detalhes-${index}`;
+                            const detalhesCell = detalhesRow.insertCell(0);
+                            detalhesCell.colSpan = 5;
+                            detalhesCell.innerHTML = `
+                                <table>
+                                    <tr>
+                                        <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
+                                        <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
+                                        <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
+                                        <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
+                                    </tr>
+                                </table>`;
+                            index++;
                             encontrouEventos = true;
                         }
                     }
@@ -616,70 +1220,209 @@
             if (!encontrouEventos) {
                 const row = tabela.insertRow();
                 const cell = row.insertCell(0);
-                cell.colSpan = 4;
+                cell.colSpan = 5;
                 cell.textContent = "Nenhum ensaio encontrado para esta data.";
                 cell.className = "no-events";
             } else {
-                MostrarMsg()
+                MostrarMsg();
             }
         }
 
+        function MostrarMsg()  { 
+            const tooltip = document.getElementById('infoTooltip');
+            tooltip.classList.add('visible');
+            setTimeout(() => {
+                tooltip.classList.remove('visible');
+            }, 4000);
+         }
+        
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             preencherSelectDatas();
-            const dataSelecionada = document.getElementById('data-select').value;
-            gerarTabela(dataSelecionada);
             
-            // Evento do botão "Listar" (mantido para consistência, mas não é mais necessário)
-            //document.getElementById('btn-listar').addEventListener('click', () => {
-            //    const dataSelecionada = document.getElementById('data-select').value;
-            //    gerarTabela(dataSelecionada);
-            //});
-            
-            // Atualiza automaticamente quando muda a seleção
-            document.getElementById('data-select').addEventListener('change', (e) => {
-                gerarTabela(e.target.value);
+            document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
+                radio.addEventListener('change', alternarTipoConsulta);
             });
-        });
-
-        function MostrarMsg()  { 
-            const tooltip = document.getElementById('infoTooltip');
             
-            // Mostra o tooltip
-            tooltip.classList.add('visible');
+            document.getElementById('btn-consultar-casa-oracao').addEventListener('click', consultarPorCasaOracao);
+            document.getElementById('btn-consultar-encarregado-local').addEventListener('click', consultarPorEncarregadoLocal);
+            document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', consultarPorEncarregadoRegional);
             
-            // Esconde após 1 segundo
-            setTimeout(() => {
-                tooltip.classList.remove('visible');
-            }, 2000);
-
-
-         }
-        
-         document.addEventListener('DOMContentLoaded', function() {
-            // Elementos do menu
-            const menuBtn = document.getElementById('menu-btn');
-            const menuLateral = document.getElementById('menu-lateral');
-            const overlay = document.getElementById('overlay');
-            const conteudoPrincipal = document.getElementById('conteudo-principal');
-            const aplicarFiltrosBtn = document.getElementById('aplicar-filtros');
+            document.getElementById('btn-listar').addEventListener('click', () => {
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            });
             
+            document.getElementById('casa-oracao-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorCasaOracao();
+                }
+            });
+            
+            document.getElementById('encarregado-local-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorEncarregadoLocal();
+                }
+            });
+            
+            document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorEncarregadoRegional();
+                }
+            });
+            
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            gerarTabelaPorData(dataSelecionada);
+            
+            document.getElementById('data-select').addEventListener('change', (e) => {
+                if (document.getElementById('consulta-data').checked) {
+                    const dataSelecionada = e.target.value.split('|')[0];
+                    gerarTabelaPorData(dataSelecionada);
+                }
+            });
+
             // Controles do menu
+            const menuBtn = document.getElementById('menu-btn');
+            const overlay = document.getElementById('overlay');
+            
             function toggleMenu() {
                 document.body.classList.toggle('menu-aberto');
             }
             
             menuBtn.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
-            aplicarFiltrosBtn.addEventListener('click', function() {
-                toggleMenu();
-            });
-            
         });
         
         function AlteraCidade() {
-            gerarTabela(document.getElementById('data-select').value);
+            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+            
+            if (tipoConsulta === 'data') {
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            } else if (tipoConsulta === 'CasaOracao') {
+                consultarPorCasaOracao();
+            } else if (tipoConsulta === 'encarregado-local') {
+                consultarPorEncarregadoLocal();
+            } else if (tipoConsulta === 'encarregado-regional') {
+                consultarPorEncarregadoRegional();
+            }
         }
-    </script>
+
+function consultarPorEncarregadoLocal() {
+    const termo = document.getElementById('encarregado-local-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome do Encarregado Local.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+            
+            if (encarregadoLocal && encarregadoLocal.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    const row = tabela.insertRow();
+                    row.id = `evento-${index}`;
+                    //row.style.cursor = "pointer";
+                    //row.onclick = () => abrirMaps(localizacao);
+
+                    row.insertCell(0).innerHTML = local;
+                    row.insertCell(1).innerHTML = cidade;
+                    row.insertCell(2).textContent = dataString(dataFormatada);
+                    row.insertCell(3).innerHTML = horario;
+                    
+                    const acoesCell = row.insertCell(4);
+                    const expandirBtn = document.createElement('button');
+                    expandirBtn.className = 'btn-expandir';
+                    expandirBtn.textContent = '+';
+                    const indexTemp = index
+                    expandirBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleDetalhes(indexTemp);
+                    };
+                    acoesCell.appendChild(expandirBtn);
+
+                    // Linha de detalhes
+                    const detalhesRow = tabela.insertRow();
+                    detalhesRow.className = 'detalhes-content';
+                    detalhesRow.id = `detalhes-${index}`;
+                    const detalhesCell = detalhesRow.insertCell(0);
+                    detalhesCell.colSpan = 5;
+                    detalhesCell.innerHTML = `
+                        <table>
+                            <tr>
+                                <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
+                                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
+                                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
+                                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
+                            </tr>
+                        </table>`;
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para este Encarregado Local.";
+        cell.className = "no-events";
+    } else {
+        MostrarMsg();
+    }
+}
+
+    function dataString(dataFormatada) {
+        // Divide a string dd/mm/aaaa
+        const partes = dataFormatada.split('/');
+        const dia = partes[0];
+        const mes = parseInt(partes[1]) - 1; // -1 porque meses começam em 0
+        const ano = partes[2];
+        
+        // Array com abreviações dos meses
+        const meses = [
+            'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN',
+            'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'
+        ];
+        
+        return `${dia} ${meses[mes]}`;
+    }
+
+// Exemplos de uso
+console.log(formatarData("15/03/2024")); // "15 MAR"
+console.log(formatarData("01/12/2024")); // "01 DEZ"
+console.log(formatarData("25/07/2024")); // "25 JUL"    }
+
+</script>
 </body>
 </html>
