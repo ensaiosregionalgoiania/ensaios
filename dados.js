@@ -192,7 +192,7 @@
             "St Aeroporto Sul;Aparecida;5º DOMINGO;17:00;kJnN5yAhCJAfm9gd9;0;;;T",
             "St Continental;Aparecida;;wnMvCcxyCGSxrWD89;0;;;T",
             "Distrito de Santa Maria;Hidrolândia;;0;;;T",
-            "Jd Alto Paraíso II;Aparecida;2ª QUARTA-FEIRA;19:30;c8kRiGzwVfpy43yPA;0;Eliezer;Pedro Moreira;T",
+            "Jd Alto Paraiso II;Aparecida;2ª QUARTA-FEIRA;19:30;c8kRiGzwVfpy43yPA;0;Eliezer;Pedro Moreira;T",
             "Pontakaiana;Trindade;2ª SEXTA-FEIRA;19:30;g5JM3crwXzVCd1GY9;0;;;T",
             "Jd Imperial II - Dª Ires II;Trindade;2º SáBADO;17:00;bTQiPYLCFB4wwYzm9;0;;;T",
             "St Palmares - Maysa II;Trindade;2º DOMINGO;17:00;kz32ghcwk65SdK1k8;0;;;T",
