@@ -68,7 +68,7 @@
             "St Goiânia Viva;Goiânia;1º SáBADO;17:00;KdGCYm1SVy7Qxfqc6;3;;;T",
             "Res Morada do Ipê;Goiânia;1º SáBADO;17:00;GksGsiGsrxWWGYe99;5;;;T",
             "Res Íris Ville;Goiânia;1º SáBADO;17:00;VyEhWKcqUz2NdD5U7;1;;;T",
-            "Real Conquista;Goiânia;1º SáBADO;17:00;T3PugKZyNpHAMAg56;2;Adriel;Pedro Pimenta;T",
+            "Real Conquista;Goiânia;1º SáBADO;19:30;T3PugKZyNpHAMAg56;2;Adriel;Pedro Pimenta;T",
             "Pq das Flores;Goiânia;1º SáBADO;17:00;MuWhXkmKDwNGgEXh8;4;Cícero Vicente;Davi Borges;T",
             "Chácara Céu Azul;Goiânia;1º SáBADO;17:00;Z6jVPKW89bh8zWHc8;4;Ivon Ribeiro;Davi Borges;T",
             "Distrito de Nova Fátima;Hidrolândia;2º DOMINGO;17:00;Jitgq66ePpp4BaLK8;0;;;T",
