@@ -184,26 +184,14 @@
 .detalhe-item {
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Permite que o item encolha */
+    min-width: 150px; /* Permite que o item encolha */
     flex: 1; /* Ocupa espaço disponível */
-    padding: 10px;
-    background-color: white;
-    border-radius: 6px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .detalhes-content.visible {
     display: table-row;
 }
 
-        .detalhe-item {
-            display: flex;
-            flex-direction: column;
-            min-width: 150px;
-
-        }
-        
 .detalhe-label {
     font-weight: bold;
     color: #666;
@@ -552,70 +540,9 @@
     
     <!-- Menu Lateral -->
     <div class="menu-lateral" id="menu-lateral">
-        <h2>Filtrar Cidades</h2>
-        
-        <div class="filtro-grupo">
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia1" onclick="AlteraCidade()" checked>Goiânia-setor 1
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia2" onclick="AlteraCidade()" checked>Goiânia-setor 2
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia3" onclick="AlteraCidade()" checked>Goiânia-setor 3
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia4" onclick="AlteraCidade()" checked>Goiânia-setor 4
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="Goiânia5" onclick="AlteraCidade()" checked>Goiânia-setor 5
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aparecida0" onclick="AlteraCidade()" checked>Aparecida
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Trindade0" onclick="AlteraCidade()" checked>Trindade
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Senador Canedo0" onclick="AlteraCidade()" checked>Senador Canedo
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Aragoiânia0" onclick="AlteraCidade()" checked>Aragoiânia
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Hidrolândia0" onclick="AlteraCidade()" checked>Hidrolândia
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Guapó0" onclick="AlteraCidade()" checked>Guapó
-                </label>
-            </div>
-            <div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" name="cidade" value="Goianira0" onclick="AlteraCidade()" checked>Goianira
-                </label>
-            </div>
-                </div>
+        <h2>Filtrar Cidades/Setor</h2>
+        <div class="filtro-grupo" id ="setor">
+        </div>
     </div>
 
     <div class="container">
@@ -687,13 +614,9 @@
         </table>
     </div>
 <script src="dados.js"></script>
+<script src="setor.js"></script>
 
 <script>
-    /*    const dados = [
-        "<B>Jd Europa</B>;<B>Goiânia</B>;2ª QUINTA-FEIRA;<B>19:30</B>;wCXzwnDgT28jsN6B9;2;Pedro Machado;Hiwerson;T",
-        "St Madre Germana 2;Goiânia;1º DOMINGO;17:00;JfvWA4JTasNrqzTo9;2;Welliton;André;T"
-    ];*/
-
         // Função para verificar se um mês deve ser exibido baseado na configuração de meses
         function deveExibirMes(mes, configMeses) {
             if (!configMeses || configMeses === 'T') {
@@ -713,37 +636,76 @@
         }
 
         // Função para calcular a próxima data do evento
-        function calcularProximaData(descricaoDia) {
-            const hoje = new Date();
+        function calcularProximaData(descricaoDia, meses) {
+            let hoje = new Date(new Date().setHours(0, 0, 0, 0));
             const mesAtual = hoje.getMonth() + 1;
             const anoAtual = hoje.getFullYear();
-            
-            let dataEvento = calcularDataEvento(descricaoDia, mesAtual, anoAtual);
-            
-            if (dataEvento && dataEvento < hoje) {
-                let proximoMes = mesAtual + 1;
-                let proximoAno = anoAtual;
-                
-                if (proximoMes > 12) {
-                    proximoMes = 1;
-                    proximoAno = anoAtual + 1;
-                }
-                
+            let proximoMes = mesAtual;
+            let proximoAno = anoAtual;
+            let contador = 0
+            //while (true) {
                 dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
-            }
-            
-            if (!dataEvento) {
-                let proximoMes = mesAtual + 1;
-                let proximoAno = anoAtual;
-                
-                if (proximoMes > 12) {
-                    proximoMes = 1;
-                    proximoAno = anoAtual + 1;
+                if (dataEvento === null) {
+                    descricaoDia = descricaoDia.replace("5", "4");
+                    dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
                 }
-                
-                dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
-            }
-            
+                console.log(descricaoDia)
+                if (dataEvento && dataEvento < hoje) {
+                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                    const nextMesAno = MesAno.split(';');
+                    proximoMes = nextMesAno[0];
+                    proximoAno = nextMesAno[1];
+                }
+                if (meses === "I" && proximoMes % 2 === 0) {
+                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                    const nextMesAno = MesAno.split(';');
+                    proximoMes = nextMesAno[0];
+                    proximoAno = nextMesAno[1];
+                } else { 
+                    if (meses === "I" && proximoMes % 2 === 0) {
+                        const MesAno = proximoMesAno(proximoMes, proximoAno);
+                        const nextMesAno = MesAno.split(';');
+                        proximoMes = nextMesAno[0];
+                        proximoAno = nextMesAno[1];
+                    } else {
+                        if (meses === "P" && proximoMes % 2 === 1) {
+                            const MesAno = proximoMesAno(proximoMes, proximoAno);
+                            const nextMesAno = MesAno.split(';');
+                            proximoMes = nextMesAno[0];
+                            proximoAno = nextMesAno[1];
+                        } else { 
+                            if (meses == "3M1") { 
+                                while (!(proximoMes == 1 || proximoMes == 4 || proximoMes == 7 || proximoMes == 10)) {
+                                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                    const nextMesAno = MesAno.split(';');
+                                    proximoMes = nextMesAno[0];
+                                    proximoAno = nextMesAno[1];
+                                }
+                            } else { 
+                                if (meses == "3M2") {
+                                    while (!(proximoMes == 2 || proximoMes == 5 || proximoMes == 8 || proximoMes == 11)) {
+                                        const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                        const nextMesAno = MesAno.split(';');
+                                        proximoMes = nextMesAno[0];
+                                        proximoAno = nextMesAno[1];
+                                    }
+                                } else { 
+                                    if (meses == "3M3") {
+                                        while (!(proximoMes == 3 || proximoMes == 6 || proximoMes == 9 || proximoMes == 12)) {
+                                            const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                            const nextMesAno = MesAno.split(';');
+                                            proximoMes = nextMesAno[0];
+                                            proximoAno = nextMesAno[1];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //}
+            //}
+            dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
             return dataEvento;
         }
 
@@ -813,48 +775,14 @@ function consultarPorCasaOracao() {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
             
             if (local.toUpperCase().includes(termo)) {
-                if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
-                    const proximaData = calcularProximaData(descricaoDia);
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
-
                     // Linha principal
-                    const row = tabela.insertRow();
-                    row.id = `evento-${index}`;
-                    //row.style.cursor = "pointer";
-                    //row.onclick = () => abrirMaps(localizacao);
-
-                    row.insertCell(0).innerHTML = local;
-                    row.insertCell(1).innerHTML = cidade;
-                    row.insertCell(2).textContent = dataString(dataFormatada);
-                    row.insertCell(3).innerHTML = horario;
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
                     
-                    const acoesCell = row.insertCell(4);
-                    const expandirBtn = document.createElement('button');
-                    expandirBtn.className = 'btn-expandir';
-                    expandirBtn.textContent = '+';
-
-                    const indexTemp = index
-                    expandirBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        toggleDetalhes(indexTemp);
-                    };
-                    acoesCell.appendChild(expandirBtn);
-
-                    // Linha de detalhes
-                    const detalhesRow = tabela.insertRow();
-                    detalhesRow.className = 'detalhes-content';
-                    detalhesRow.id = `detalhes-${index}`;
-                    const detalhesCell = detalhesRow.insertCell(0);
-                    detalhesCell.colSpan = 5;
-                    detalhesCell.innerHTML = `
-                        <table>
-                            <tr>
-                               <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
-                                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
-                                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
-                                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
-                            </tr>
-                        </table>`;
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
                     index++;
                     encontrouEventos = true;
                 }
@@ -910,47 +838,15 @@ function consultarPorEncarregadoRegional() {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
             
             if (encarregadoRegional && encarregadoRegional.toUpperCase().includes(termo)) {
-                if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
-                    const proximaData = calcularProximaData(descricaoDia);
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
 
                     // Linha principal
-                    const row = tabela.insertRow();
-                    row.id = `evento-${index}`;
-                    //row.style.cursor = "pointer";
-                    //row.onclick = () => abrirMaps(localizacao);
-
-                    row.insertCell(0).innerHTML = local;
-                    row.insertCell(1).innerHTML = cidade;
-                    row.insertCell(2).textContent = dataString(dataFormatada);
-                    row.insertCell(3).innerHTML = horario;
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
                     
-                    const acoesCell = row.insertCell(4);
-                    const expandirBtn = document.createElement('button');
-                    expandirBtn.className = 'btn-expandir';
-                    expandirBtn.textContent = '+';
-                    const indexTemp = index
-                    expandirBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        toggleDetalhes(indexTemp);
-                    };
-                    acoesCell.appendChild(expandirBtn);
-
-                    // Linha de detalhes
-                    const detalhesRow = tabela.insertRow();
-                    detalhesRow.className = 'detalhes-content';
-                    detalhesRow.id = `detalhes-${index}`;
-                    const detalhesCell = detalhesRow.insertCell(0);
-                    detalhesCell.colSpan = 5;
-                    detalhesCell.innerHTML = `
-                        <table>
-                            <tr>
-                                <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
-                                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
-                                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
-                                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
-                            </tr>
-                        </table>`;
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
                     index++;
                     encontrouEventos = true;
                 }
@@ -973,26 +869,15 @@ function consultarPorEncarregadoRegional() {
 
 // Função para alternar os detalhes - VERSÃO DEBUG
 function toggleDetalhes(index) {
-    console.log("Toggle detalhes chamado para índice:", index);
-    
     const detalhes = document.getElementById(`detalhes-${index}`);
     const expandirBtn = document.querySelector(`#evento-${index} .btn-expandir`);
     
-    console.log("Elemento detalhes encontrado:", detalhes);
-    console.log("Botão expandir encontrado:", expandirBtn);
-    
-    if (!detalhes || !expandirBtn) {
-        console.log("ERRO: Elementos não encontrados");
-        return;
-    }
+    if (!detalhes || !expandirBtn) return;
     
     if (detalhes.classList.contains('visible')) {
-        console.log("Fechando detalhes");
         detalhes.classList.remove('visible');
         expandirBtn.textContent = '+';
     } else {
-        console.log("Abrindo detalhes");
-        // Fechar outros detalhes abertos
         document.querySelectorAll('.detalhes-content.visible').forEach(d => {
             d.classList.remove('visible');
             const otherIndex = d.id.split('-')[1];
@@ -1003,8 +888,6 @@ function toggleDetalhes(index) {
         detalhes.classList.add('visible');
         expandirBtn.textContent = '-';
     }
-    
-    console.log("Classe atual do detalhes:", detalhes.className);
 }
         // Função para abrir o Maps
         function abrirMaps(localizacao) {
@@ -1012,9 +895,6 @@ function toggleDetalhes(index) {
                 window.open("https://maps.app.goo.gl/" + localizacao, "_blank");
             }
         }
-
-        // Função para gerar tabela por Casa de Oracao CCB
-
 
         // Função para formatar data como dd/mm/aaaa
         function formatarData(data) {
@@ -1111,7 +991,6 @@ function toggleDetalhes(index) {
                 }
                 data.setDate(data.getDate() + 1);
             }
-            
             return null;
         }
 
@@ -1131,7 +1010,6 @@ function toggleDetalhes(index) {
             checkboxes.forEach((checkbox) => {
                 cidades += `|${checkbox.value}|`;
             });
-            
             const tabela = document.querySelector('#tabela-eventos tbody');
             tabela.innerHTML = '';
 
@@ -1168,46 +1046,14 @@ function toggleDetalhes(index) {
                         dataEvento.getMonth() === mes - 1 &&
                         dataEvento.getFullYear() === ano) {
                         
-                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
+                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                             const dataFormatada = dataInformada;
 
                             // Linha principal
-                            const row = tabela.insertRow();
-                            row.id = `evento-${index}`;
-                            //row.style.cursor = "pointer";
-                            //row.onclick = () => abrirMaps(localizacao);
-
-                            row.insertCell(0).innerHTML = local;
-                            row.insertCell(1).innerHTML = cidade;
-                            row.insertCell(2).textContent = dataString(dataFormatada);
-                            row.insertCell(3).innerHTML = horario;
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
                             
-                            const acoesCell = row.insertCell(4);
-                            const expandirBtn = document.createElement('button');
-                            expandirBtn.className = 'btn-expandir';
-                            expandirBtn.textContent = '+';
-                            const indexTemp = index
-                            expandirBtn.onclick = (e) => {
-                                e.stopPropagation();
-                                toggleDetalhes(indexTemp);
-                            };
-                            acoesCell.appendChild(expandirBtn);
-
-                            // Linha de detalhes (MÉTODO CORRIGIDO)
-                            const detalhesRow = tabela.insertRow();
-                            detalhesRow.className = 'detalhes-content';
-                            detalhesRow.id = `detalhes-${index}`;
-                            const detalhesCell = detalhesRow.insertCell(0);
-                            detalhesCell.colSpan = 5;
-                            detalhesCell.innerHTML = `
-                                <table>
-                                    <tr>
-                                        <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
-                                        <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
-                                        <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
-                                        <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
-                                    </tr>
-                                </table>`;
+                            // Detalhes (MÉTODO CORRIGIDO)
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
                             index++;
                             encontrouEventos = true;
                         }
@@ -1252,25 +1098,22 @@ function toggleDetalhes(index) {
                 const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
                 gerarTabelaPorData(dataSelecionada);
             });
-            
             document.getElementById('casa-oracao-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     consultarPorCasaOracao();
                 }
             });
-            
             document.getElementById('encarregado-local-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     consultarPorEncarregadoLocal();
                 }
             });
-            
             document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     consultarPorEncarregadoRegional();
                 }
             });
-            
+            CriaMenu()
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
             gerarTabelaPorData(dataSelecionada);
             
@@ -1291,6 +1134,7 @@ function toggleDetalhes(index) {
             
             menuBtn.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
+
         });
         
         function AlteraCidade() {
@@ -1318,7 +1162,6 @@ function consultarPorEncarregadoLocal() {
     
     const tabela = document.querySelector('#tabela-eventos tbody');
     tabela.innerHTML = '';
-
     const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
     const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
     const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
@@ -1341,47 +1184,15 @@ function consultarPorEncarregadoLocal() {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
             
             if (encarregadoLocal && encarregadoLocal.toUpperCase().includes(termo)) {
-                if (totalNaoMarcados == 0 || cidades.indexOf("|"+cidade+setor+"|") > 0)  {
-                    const proximaData = calcularProximaData(descricaoDia);
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
 
                     // Linha principal
-                    const row = tabela.insertRow();
-                    row.id = `evento-${index}`;
-                    //row.style.cursor = "pointer";
-                    //row.onclick = () => abrirMaps(localizacao);
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
 
-                    row.insertCell(0).innerHTML = local;
-                    row.insertCell(1).innerHTML = cidade;
-                    row.insertCell(2).textContent = dataString(dataFormatada);
-                    row.insertCell(3).innerHTML = horario;
-                    
-                    const acoesCell = row.insertCell(4);
-                    const expandirBtn = document.createElement('button');
-                    expandirBtn.className = 'btn-expandir';
-                    expandirBtn.textContent = '+';
-                    const indexTemp = index
-                    expandirBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        toggleDetalhes(indexTemp);
-                    };
-                    acoesCell.appendChild(expandirBtn);
-
-                    // Linha de detalhes
-                    const detalhesRow = tabela.insertRow();
-                    detalhesRow.className = 'detalhes-content';
-                    detalhesRow.id = `detalhes-${index}`;
-                    const detalhesCell = detalhesRow.insertCell(0);
-                    detalhesCell.colSpan = 5;
-                    detalhesCell.innerHTML = `
-                        <table>
-                            <tr>
-                                <td><b>Data:</b><br>${dataString(dataFormatada)}</td>
-                                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
-                                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
-                                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
-                            </tr>
-                        </table>`;
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
                     index++;
                     encontrouEventos = true;
                 }
@@ -1416,6 +1227,71 @@ function consultarPorEncarregadoLocal() {
         ];
         
         return `${dia} ${meses[mes]}`;
+    }
+ 
+function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses) {
+    const detalhesRow = tabela.insertRow();
+    detalhesRow.className = 'detalhes-content';
+    detalhesRow.id = `detalhes-${index}`;
+    const detalhesCell = detalhesRow.insertCell(0);
+    detalhesCell.colSpan = 5;
+    let complemento = ""
+    if (meses == "I") complemento = " - Meses Impares"
+    if (meses == "P") complemento = " - Meses Pares"
+    if (meses == "3M1") complemento = " - Meses JAN,<BR>ABR, JUL e OUT"
+    if (meses == "3M2") complemento = " - Meses FEV,<BR>MAI, AGO e NOV"
+    if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
+
+
+    detalhesCell.innerHTML = `
+        <table>
+            <tr>
+                <td><b>Data Ensaio:</b><br>${descricaoDia}${complemento}</td>
+                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
+                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
+                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
+            </tr>
+        </table>`;
+}
+    function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario) {
+        const row = tabela.insertRow();
+        row.id = `evento-${index}`;
+        row.insertCell(0).innerHTML = local;
+        row.insertCell(1).innerHTML = cidade;
+        row.insertCell(2).textContent = dataString(dataFormatada);
+        row.insertCell(3).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
+        const acoesCell = row.insertCell(4);
+        const expandirBtn = document.createElement('button');
+        expandirBtn.className = 'btn-expandir';
+        expandirBtn.textContent = '+';
+        const indexTemp = index
+        expandirBtn.onclick = (e) => {
+            e.stopPropagation();
+            toggleDetalhes(indexTemp);
+        };
+        acoesCell.appendChild(expandirBtn);
+    }
+
+    function proximoMesAno(proximoMes, proximoAno) {
+        proximoMes = parseInt(proximoMes) + 1;
+        if (proximoMes > 12) {
+            proximoMes = 1;
+            proximoAno = proximoAno + 1;
+        }
+        return proximoMes + ";" + proximoAno;
+    }
+
+    function CriaMenu(){
+        let HTML = ""
+        for (let i = 0; i < setor.length; i++) {
+            let setorSplit = setor[i].split(';');
+            HTML += `<div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox"  name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked>${setorSplit[1]}
+                </label>
+            </div>`
+        }
+        document.getElementById('setor').innerHTML = HTML
     }
 
 </script>
