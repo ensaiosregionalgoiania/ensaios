@@ -527,6 +527,23 @@
     box-sizing: border-box;
 }
 
+    .minha-div {
+        cursor: pointer;
+        position: fixed;
+        top: 20px;      /* Distância do topo */
+        right: 20px;    /* Distância da direita */
+        width: 150px;
+        height: 30px;
+        background: #4CAF50;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 1000;  /* Para ficar acima de outros elementos */
+        color: white; 
+        font-size: 22px; 
+        text-align: center;   
+        vertical-align: center;   
+    }
     </style>
 
 </head>
@@ -545,6 +562,11 @@
         </div>
     </div>
 
+    <a href="https://wa.me/5562996037779">
+    <div class="minha-div">
+        Suporte
+    </div>
+    </a>
     <div class="container">
         <h1>Ensaio Local</h1>
         
@@ -599,7 +621,7 @@
 
         <span id="error-msg" class="error"></span>
         <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
-        
+
         <table id="tabela-eventos">
             <thead>
                 <tr>
@@ -649,7 +671,6 @@
                     descricaoDia = descricaoDia.replace("5", "4");
                     dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
                 }
-                console.log(descricaoDia)
                 if (dataEvento && dataEvento < hoje) {
                     const MesAno = proximoMesAno(proximoMes, proximoAno);
                     const nextMesAno = MesAno.split(';');
@@ -773,8 +794,8 @@ function consultarPorCasaOracao() {
     dados.forEach(item => {
         try {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
-            
-            if (local.toUpperCase().includes(termo)) {
+            let localSemAcento = TiraAcento(local)
+            if (localSemAcento.toUpperCase().includes(termo)) {
                 if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
@@ -836,8 +857,9 @@ function consultarPorEncarregadoRegional() {
     dados.forEach(item => {
         try {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
-            
-            if (encarregadoRegional && encarregadoRegional.toUpperCase().includes(termo)) {
+            let encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional)
+
+            if (encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo)) {
                 if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
@@ -1182,8 +1204,8 @@ function consultarPorEncarregadoLocal() {
     dados.forEach(item => {
         try {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
-            
-            if (encarregadoLocal && encarregadoLocal.toUpperCase().includes(termo)) {
+            encarregadoLocalSemAcento = TiraAcento(encarregadoLocal)
+            if (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo)) {
                 if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
@@ -1292,6 +1314,16 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
             </div>`
         }
         document.getElementById('setor').innerHTML = HTML
+    }
+
+    function TiraAcento(Texto) {
+        return Texto.normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[ºª]/g, '')           // Remove símbolos de ordem
+        .replace(/[^\w\s]/g, ' ')       // Substitui outros símbolos por espaço
+        .replace(/\s+/g, ' ')           // Normaliza espaços
+        .toLowerCase()
+        .trim(); 
     }
 
 </script>
