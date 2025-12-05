@@ -315,7 +315,7 @@
             }
         }
     
-         .tooltip {
+         /*.tooltip {
             position: fixed;
             top: 20px;
             left: 50%;
@@ -328,7 +328,7 @@
             z-index: 1000;
             opacity: 0;
             transition: opacity 0.3s;
-        }
+        }*/
         .visible {
             opacity: 1;
         }
@@ -425,7 +425,7 @@
         .menu-btn {
             position: fixed;
             left: 15px;
-            top: 15px;
+            top: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -527,10 +527,10 @@
     box-sizing: border-box;
 }
 
-    .minha-div {
+    .suporte {
         cursor: pointer;
         position: fixed;
-        top: 20px;      /* Distância do topo */
+        top: 10px;      /* Distância do topo */
         right: 20px;    /* Distância da direita */
         width: 150px;
         height: 30px;
@@ -563,9 +563,9 @@
     </div>
 
     <a href="https://wa.me/5562996037779">
-    <div class="minha-div">
-        Suporte
-    </div>
+        <div class="suporte">
+            Suporte
+        </div>
     </a>
     <div class="container">
         <h1>Ensaio Local</h1>
@@ -620,7 +620,7 @@
         </div>
 
         <span id="error-msg" class="error"></span>
-        <div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>
+        <!--<div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>-->
 
         <table id="tabela-eventos">
             <thead>
@@ -819,8 +819,8 @@ function consultarPorCasaOracao() {
         cell.colSpan = 5;
         cell.textContent = "Nenhum ensaio encontrado para esta Casa de Oração CCB.";
         cell.className = "no-events";
-    } else {
-        MostrarMsg();
+    //} else {
+    //    MostrarMsg();
     }
 }
 
@@ -884,8 +884,8 @@ function consultarPorEncarregadoRegional() {
         cell.colSpan = 5;
         cell.textContent = "Nenhum ensaio encontrado para este Encarregado Regional.";
         cell.className = "no-events";
-    } else {
-        MostrarMsg();
+    //} else {
+    //    MostrarMsg();
     }
 }
 
@@ -1091,18 +1091,20 @@ function toggleDetalhes(index) {
                 cell.colSpan = 5;
                 cell.textContent = "Nenhum ensaio encontrado para esta data.";
                 cell.className = "no-events";
-            } else {
-                MostrarMsg();
+            //} else {
+                //console.log("bbbbb")
+                //MostrarMsg();
             }
         }
 
-        function MostrarMsg()  { 
-            const tooltip = document.getElementById('infoTooltip');
-            tooltip.classList.add('visible');
-            setTimeout(() => {
-                tooltip.classList.remove('visible');
-            }, 4000);
-         }
+        //function MostrarMsg()  { 
+        //
+        //    const tooltip = document.getElementById('infoTooltip');
+        //    tooltip.classList.add('visible');
+        //    setTimeout(() => {
+        //        tooltip.classList.remove('visible');
+        //    }, 4000);
+        // }
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
@@ -1230,8 +1232,8 @@ function consultarPorEncarregadoLocal() {
         cell.colSpan = 5;
         cell.textContent = "Nenhum ensaio encontrado para este Encarregado Local.";
         cell.className = "no-events";
-    } else {
-        MostrarMsg();
+    //} else {
+    //    MostrarMsg();
     }
 }
 
