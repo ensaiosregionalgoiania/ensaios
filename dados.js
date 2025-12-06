@@ -224,7 +224,7 @@
             "Firminópolis;Firminópolis;4º SáBADO;N;Xs9cLn374eSeSXUB9;9;Wesley;Jackson;T",
             "Turvânia;Turvânia;3º SáBADO;T;ur6BTXyHSUmgd9qp9;9;Witian(instrutor);Jackson;T",
             "Paraúna;Paraúna;2º DOMINGO;N;UoqYSPJyvfiMMLUJ6;9;Rogério(instrutor);Jackson;T",
-            "Aurilândia;Aurilândia;2º DOMINGO;N;;9;Welberty;Jackson;T",
+            "Aurilândia;Aurilândia;2º DOMINGO;N;X3vxw74mzNQ3HZMx8;9;Welberty;Jackson;T",
             "Sanclerlândia;Sanclerlândia;2ª SEXTA-FEIRA;N;NbEm4gPVZrU1H9vB9;9;Leonardo;Jackson;T",
             "Adelândia;Adelândia;5º DOMINGO;T;8WfSCDgYps2rzjFM7;9;Wender Gomes;Jackson;I",
             "Palminópolis;Palminópolis;2º SáBADO;N;DTR9vz7ZECR6Bpqq6;9;João;Jackson;T",
