@@ -242,5 +242,5 @@
             "BRAZABRANTES;Brazabrantes;5ª TERÇA-FEIRA;N;jhEdqWi8JcuD8Sy46;10;;;T",
             "ITAGUARI;Itaguari;5º SÁBADO;T;hmkta1jeoTnfJj7RA;10;;;T",
             "ORDALIA;Itauçu;5º SÁBADO;T;AnRSiHpmmBGFzVqo9;10;;;T",
-            "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;;;T"
+            "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;Diogo;Nereu;T"
         ];
