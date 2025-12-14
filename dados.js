@@ -55,7 +55,7 @@
             "Jardim Santo Antônio;Goiânia;1ª QUINTA-FEIRA;N;JBvHtFB7vJAK4aC8A;2;Cleibe;André;T",
             "Jardim Balneário Meia Ponte;Goiânia;1ª SEXTA-FEIRA;N;C5erC5BGabA7aH8H7;4;Benedito Valério;Túlio Marcos;T",
             "Parque Ibirapuera;Aparecida;1ª SEXTA-FEIRA;N;YBz12uTTvvupg1v16;6;Lucas de Jesus;;T",
-            "Varjão - Faz Salobro de Baixo;Varjão;1ª SEXTA-FEIRA;N;WedDouD7xqsoosXD8;7;;;T",
+            "Varjão - Faz Salobro de Baixo;Varjão;1ª SEXTA-FEIRA;N;WedDouD7xqsoosXD8;7;Gabriel Martins;Luís do Guapó;T",
             "Independência Mansões I;Aparecida;1ª SEXTA-FEIRA;N;HB5VegSFgms4WMGj7;6;Ricardo campelo;;T",
             "Residencial Mar Del Plata;Goiânia;1ª SEXTA-FEIRA;N;KL3hP3EnU6FFn7Em6;1;André Lisboa;Ricardo Rosemberg;T",
             "Santo Hilário;Goiânia;1ª SEXTA-FEIRA;N;ofo9X9vxfmm6zjbo6;1;;;T",
