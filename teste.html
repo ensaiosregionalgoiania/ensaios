@@ -1437,16 +1437,17 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
         ordemDistancia = !ordemDistancia;
     }
 
-    function getLocation() {
-                   alert("1")
-        if (navigator.geolocation) {
-                   alert("2")
-            navigator.geolocation.getCurrentPosition(showPosition);
-            alert(position.coords.latitude)
-            alert(position.coords.longitude)
-        }
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        alert("Geolocalização não suportada");
     }
+}
 
+function showPosition(position) {
+    alert("Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude);
+}
 </script>
 </body>
 </html>
