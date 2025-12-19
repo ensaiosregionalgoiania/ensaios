@@ -1359,7 +1359,8 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     row.insertCell(1).innerHTML = cidade;
     
     // Cálculo da distância
-    const distanciaKm = calcularDistancia(-16.738325, -49.311055, lat, lon); 
+    alert(minhaLat);
+    const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
     
     row.insertCell(2).textContent = `${distanciaKm.toFixed(1)} km`;
     
@@ -1445,8 +1446,11 @@ function getLocation() {
     }
 }
 
+let minhaLat = 0
+let minhaLon = 0
 function showPosition(position) {
-    alert("Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude);
+    minhaLat = position.coords.latitude;
+    minhaLon = position.coords.longitude;
 }
 </script>
 </body>
