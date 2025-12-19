@@ -1131,7 +1131,6 @@ function toggleDetalhes(index) {
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            alert("ok")
             getLocation();
             preencherSelectDatas();
             
@@ -1439,7 +1438,9 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     }
 
     function getLocation() {
+                   alert("1")
         if (navigator.geolocation) {
+                   alert("2")
             navigator.geolocation.getCurrentPosition(showPosition);
             alert(position.coords.latitude)
             alert(position.coords.longitude)
