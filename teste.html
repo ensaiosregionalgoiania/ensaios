@@ -1,0 +1,18 @@
+<button onclick="getLocation()">Pedir Localização</button>
+<p id="demo"></p>
+
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        alert("Geolocalização não suportada");
+    }
+}
+
+function showPosition(position) {
+    document.getElementById("demo").innerHTML = 
+        "Latitude: " + position.coords.latitude + 
+        "<br>Longitude: " + position.coords.longitude;
+}
+</script>
