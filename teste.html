@@ -1449,6 +1449,7 @@ function getLocation() {
                 (position) => {
                     minhaLat = position.coords.latitude;
                     minhaLon = position.coords.longitude;
+                    alert(minhaLat)
                     resolve({ minhaLat, minhaLon });
                 },
                 (error) => {
