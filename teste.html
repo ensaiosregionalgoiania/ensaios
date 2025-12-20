@@ -1131,7 +1131,7 @@ function toggleDetalhes(index) {
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            getLocation();
+            initApp();
             preencherSelectDatas();
             
             document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
@@ -1359,7 +1359,7 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     row.insertCell(1).innerHTML = cidade;
     
     // Cálculo da distância
-    alert(minhaLat);
+    console.log(minhaLat);
     const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
     
     row.insertCell(2).textContent = `${distanciaKm.toFixed(1)} km`;
@@ -1438,21 +1438,45 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
         ordemDistancia = !ordemDistancia;
     }
 
+let minhaLat = 0;
+let minhaLon = 0;
+
+// Função que retorna uma Promise para a geolocalização
 function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        alert("Geolocalização não suportada");
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    minhaLat = position.coords.latitude;
+                    minhaLon = position.coords.longitude;
+                    resolve({ minhaLat, minhaLon });
+                },
+                (error) => {
+                    console.error("Erro na geolocalização:", error);
+                    reject(error);
+                }
+            );
+        } else {
+            reject(new Error("Geolocalização não suportada"));
+        }
+    });
+}
+
+// Função principal que inicializa tudo
+async function initApp() {
+    try {
+        console.log("Obtendo localização...");
+        await getLocation();
+        console.log(`Localização obtida: ${minhaLat}, ${minhaLon}`);
+        //aqui
+        
+    } catch (error) {
+        console.error("Falha ao obter localização:", error);
+        // Pode usar uma localização padrão ou pedir manualmente
+        usarLocalizacaoPadrao();
     }
 }
 
-let minhaLat = 0
-let minhaLon = 0
-function showPosition(position) {
-    minhaLat = position.coords.latitude;
-    minhaLon = position.coords.longitude;
-    alert(minhaLat);
-}
 </script>
 </body>
 </html>
