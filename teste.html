@@ -648,7 +648,7 @@
                 <tr>
                     <th>Local</th>
                     <th>Cidade</th>
-                    <th>Distância<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
+                    <th>Dist<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
                     <th>Data</th>                  
                     <th>Horário</th>
                     <th>Ações</th>
@@ -1163,7 +1163,7 @@ function toggleDetalhes(index) {
             });
             CriaMenu()
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
-            gerarTabelaPorData(dataSelecionada);
+            //gerarTabelaPorData(dataSelecionada);
             
             document.getElementById('data-select').addEventListener('change', (e) => {
                 if (document.getElementById('consulta-data').checked) {
@@ -1359,10 +1359,11 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     row.insertCell(1).innerHTML = cidade;
     
     // Cálculo da distância
-    console.log(minhaLat);
+    //console.log(minhaLat);
     const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
-    
-    row.insertCell(2).textContent = `${distanciaKm.toFixed(1)} km`;
+
+    let distanciaAtual = minhaLat != 0 ? `${distanciaKm.toFixed(1)} km` : "";
+    row.insertCell(2).textContent = distanciaAtual;
     
     row.insertCell(3).textContent = dataString(dataFormatada);
     row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
@@ -1449,7 +1450,6 @@ function getLocation() {
                 (position) => {
                     minhaLat = position.coords.latitude;
                     minhaLon = position.coords.longitude;
-                    alert(minhaLat)
                     resolve({ minhaLat, minhaLon });
                 },
                 (error) => {
