@@ -1302,6 +1302,7 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
                 <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
             </tr>
         </table>`;
+        ordemDistancia = true;
         trocaSeta()
 }
 
@@ -1384,7 +1385,7 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     acoesCell.appendChild(expandirBtn);
 }    
 
-    let ordemDistancia = false; // true = A-Z, false = Z-A
+    let ordemDistancia = true; // true = A-Z, false = Z-A
     function trocaSeta(){
         const tabela = document.getElementById('tabela-eventos');
         const tbody = tabela.querySelector('tbody');
