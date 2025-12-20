@@ -826,7 +826,7 @@ function consultarPorCasaOracao() {
                     LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                     
                     // Detalhes
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                     index++;
                     encontrouEventos = true;
                 }
@@ -891,7 +891,7 @@ function consultarPorEncarregadoRegional() {
                     LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                     
                     // Detalhes
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                     index++;
                     encontrouEventos = true;
                 }
@@ -1098,7 +1098,7 @@ function toggleDetalhes(index) {
                             LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                             
                             // Detalhes (MÉTODO CORRIGIDO)
-                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                             index++;
                             encontrouEventos = true;
                         }
@@ -1240,7 +1240,7 @@ function consultarPorEncarregadoLocal() {
                     LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
 
                     // Detalhes
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                     index++;
                     encontrouEventos = true;
                 }
@@ -1277,7 +1277,7 @@ function consultarPorEncarregadoLocal() {
         return `${dia} ${meses[mes]}`;
     }
  
-function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses) {
+function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
     const detalhesRow = tabela.insertRow();
     detalhesRow.className = 'detalhes-content';
     detalhesRow.id = `detalhes-${index}`;
@@ -1295,6 +1295,7 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
         <table>
             <tr>
                 <td><b>Data Ensaio:</b><br>${descricaoDia}${complemento}</td>
+                <td><b>Hora:</b><br>${horario}</td>
                 <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
                 <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
                 <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
