@@ -1291,11 +1291,12 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
 
 
+    
     detalhesCell.innerHTML = `
         <table>
             <tr>
                 <td><b>Data Ensaio:</b><br>${descricaoDia}${complemento}</td>
-                <td><b>Hora:</b><br>${horario}</td>
+                <td><b>Hora:</b><br>${horario === "T" ? "17:00" : "19:30"}</td>
                 <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
                 <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
                 <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
