@@ -650,7 +650,7 @@
                     <th>Cidade</th>
                     <th>Dist<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
                     <th>Data</th>                  
-                    <th>Horário</th>
+                    <!--<th>Horário</th>-->
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -1366,7 +1366,7 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     row.insertCell(2).textContent = distanciaAtual;
     
     row.insertCell(3).textContent = dataString(dataFormatada);
-    row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
+    //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
     const acoesCell = row.insertCell(5);
     acoesCell.style.textAlign = "center";
     
