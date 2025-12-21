@@ -1294,14 +1294,14 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     
     detalhesCell.innerHTML = `
         <table>
-            <tr style="height: 15px; padding: 2px;">
-                <td><b>Data Ensaio:</b></td>
-                <td><b>Hora:</b></td>
-                <td><b>Enc. Local:</b></td>
-                <td><b>Enc. Regional:</b></td>
+            <tr style="height: 15px; padding: 1px;">
+                <td>Data Ensaio</td>
+                <td>Hora</td>
+                <td>Enc Local</td>
+                <td>Enc Regional</td>
                 <td colspan="2" valign="center"><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
             </tr>
-            <tr style="height: 15px;" padding: 2px;>
+            <tr style="height: 15px;" padding: 1px;>
                 <td>${descricaoDia}${complemento}</td>
                 <td>${horario === "T" ? "17:00" : "19:30"}</td>
                 <td>${encarregadoLocal || 'Não informado'}</td>
