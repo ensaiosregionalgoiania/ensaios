@@ -228,7 +228,7 @@
     background: #e74c3c;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 5px 5px;
     border-radius: 4px;
     text-decoration: none;
     display: inline-block;
@@ -236,7 +236,7 @@
     cursor: pointer;
     font-size: 0.9rem;
     margin-top: 10px;
-    width: 60px;
+    width: 50px;
     transition: background-color 0.3s;
 }
         
@@ -311,7 +311,7 @@
             }
             
             th, td {
-                padding: 8px 4px;
+                padding: 4px 4px;
             }
         }
     
@@ -648,8 +648,9 @@
                 <tr>
                     <th>Local</th>
                     <th>Cidade</th>
-                    <th>Data</th>
-                    <th>Horário</th>
+                    <th>Dist<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
+                    <th>Data</th>                  
+                    <!--<th>Horário</th>-->
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -660,6 +661,7 @@
 <script src="setor.js"></script>
 
 <script>
+
         // Função para verificar se um mês deve ser exibido baseado na configuração de meses
         function deveExibirMes(mes, configMeses) {
             if (!configMeses || configMeses === 'T') {
@@ -814,17 +816,17 @@ function consultarPorCasaOracao() {
 
     dados.forEach(item => {
         try {
-            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
             let localSemAcento = TiraAcento(local)
             if (localSemAcento.toUpperCase().includes(termo)) {
                 if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
                     // Linha principal
-                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                     
                     // Detalhes
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                     index++;
                     encontrouEventos = true;
                 }
@@ -877,7 +879,7 @@ function consultarPorEncarregadoRegional() {
 
     dados.forEach(item => {
         try {
-            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
             let encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional)
 
             if (encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo)) {
@@ -886,10 +888,10 @@ function consultarPorEncarregadoRegional() {
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
 
                     // Linha principal
-                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                     
                     // Detalhes
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                     index++;
                     encontrouEventos = true;
                 }
@@ -1067,7 +1069,7 @@ function toggleDetalhes(index) {
 
             dados.forEach(item => {
                 try {
-                    const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+                    const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
                     
                     if (!deveExibirMes(mes, meses)) {
                         return;
@@ -1093,10 +1095,10 @@ function toggleDetalhes(index) {
                             const dataFormatada = dataInformada;
 
                             // Linha principal
-                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                             
                             // Detalhes (MÉTODO CORRIGIDO)
-                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                             index++;
                             encontrouEventos = true;
                         }
@@ -1129,6 +1131,7 @@ function toggleDetalhes(index) {
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
+            initApp();
             preencherSelectDatas();
             
             document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
@@ -1160,7 +1163,7 @@ function toggleDetalhes(index) {
             });
             CriaMenu()
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
-            gerarTabelaPorData(dataSelecionada);
+            //gerarTabelaPorData(dataSelecionada);
             
             document.getElementById('data-select').addEventListener('change', (e) => {
                 if (document.getElementById('consulta-data').checked) {
@@ -1226,7 +1229,7 @@ function consultarPorEncarregadoLocal() {
 
     dados.forEach(item => {
         try {
-            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses] = item.split(';');
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
             encarregadoLocalSemAcento = TiraAcento(encarregadoLocal)
             if (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo)) {
                 if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
@@ -1234,10 +1237,10 @@ function consultarPorEncarregadoLocal() {
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
 
                     // Linha principal
-                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario)
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
 
                     // Detalhes
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses)
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                     index++;
                     encontrouEventos = true;
                 }
@@ -1274,7 +1277,7 @@ function consultarPorEncarregadoLocal() {
         return `${dia} ${meses[mes]}`;
     }
  
-function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses) {
+function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
     const detalhesRow = tabela.insertRow();
     detalhesRow.className = 'detalhes-content';
     detalhesRow.id = `detalhes-${index}`;
@@ -1288,34 +1291,27 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
 
 
+    
     detalhesCell.innerHTML = `
         <table>
-            <tr>
-                <td><b>Data Ensaio:</b><br>${descricaoDia}${complemento}</td>
-                <td><b>Enc. Local:</b><br>${encarregadoLocal || 'Não informado'}</td>
-                <td><b>Enc. Regional:</b><br>${encarregadoRegional || 'Não informado'}</td>
+            <tr style="height: 15px; padding: 2px;">
+                <td><b>Data Ensaio:</b></td>
+                <td><b>Hora:</b></td>
+                <td><b>Enc. Local:</b></td>
+                <td><b>Enc. Regional:</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr style="height: 15px;" padding: 2px;>
+                <td>${descricaoDia}${complemento}</td>
+                <td>${horario === "T" ? "17:00" : "19:30"}</td>
+                <td>${encarregadoLocal || 'Não informado'}</td>
+                <td>${encarregadoRegional || 'Não informado'}</td>
                 <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
             </tr>
         </table>`;
+        ordemDistancia = true;
+        trocaSeta()
 }
-    function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario) {
-        const row = tabela.insertRow();
-        row.id = `evento-${index}`;
-        row.insertCell(0).innerHTML = local;
-        row.insertCell(1).innerHTML = cidade;
-        row.insertCell(2).textContent = dataString(dataFormatada);
-        row.insertCell(3).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
-        const acoesCell = row.insertCell(4);
-        const expandirBtn = document.createElement('button');
-        expandirBtn.className = 'btn-expandir';
-        expandirBtn.textContent = '+';
-        const indexTemp = index
-        expandirBtn.onclick = (e) => {
-            e.stopPropagation();
-            toggleDetalhes(indexTemp);
-        };
-        acoesCell.appendChild(expandirBtn);
-    }
 
     function proximoMesAno(proximoMes, proximoAno) {
         proximoMes = parseInt(proximoMes) + 1;
@@ -1327,7 +1323,11 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     }
 
     function CriaMenu(){
-        let HTML = ""
+        let HTML /*= `<div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" onclick="AlteraCidade()" checked>Todas
+                </label>
+            </div>`*/
         for (let i = 0; i < setor.length; i++) {
             let setorSplit = setor[i].split(';');
             HTML += `<div class="filtro-opcao">
@@ -1348,6 +1348,146 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
         .toLowerCase()
         .trim(); 
     }
+
+// Função para calcular distância usando a fórmula de Haversine
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Raio da Terra em quilômetros
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distância em km
+}
+
+// Função atualizada para criar linha principal da tabela
+function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon) {
+    const row = tabela.insertRow();
+    row.id = `evento-${index}`;
+    row.insertCell(0).innerHTML = local;
+    row.insertCell(1).innerHTML = cidade;
+    
+    // Cálculo da distância
+    //console.log(minhaLat);
+    const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
+
+    let distanciaAtual = minhaLat != 0 ? `${distanciaKm.toFixed(1)} km` : "";
+    row.insertCell(2).textContent = distanciaAtual;
+    
+    row.insertCell(3).textContent = dataString(dataFormatada);
+    //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
+    const acoesCell = row.insertCell(4);
+    acoesCell.style.textAlign = "center";
+    
+    const expandirBtn = document.createElement('button');
+    expandirBtn.className = 'btn-expandir';
+    expandirBtn.textContent = '+';
+    const indexTemp = index;
+    expandirBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleDetalhes(indexTemp);
+    };
+    acoesCell.appendChild(expandirBtn);
+}    
+
+    let ordemDistancia = true; // true = A-Z, false = Z-A
+    function trocaSeta(){
+        const tabela = document.getElementById('tabela-eventos');
+        const tbody = tabela.querySelector('tbody');
+        const todasLinhas = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Separar linhas de evento e seus detalhes
+        const eventosComDetalhes = [];
+        
+        for (let i = 0; i < todasLinhas.length; i++) {
+            const linha = todasLinhas[i];
+            
+            if (linha.id.startsWith('evento-')) {
+                // Encontrar a linha de detalhes correspondente
+                const idNum = linha.id.split('-')[1];
+                const detalhes = document.getElementById(`detalhes-${idNum}`);
+                
+                eventosComDetalhes.push({
+                    evento: linha,
+                    detalhes: detalhes
+                });
+            }
+        }
+        
+        // Ordenar pela distancia (terceira coluna, índice 2)
+        eventosComDetalhes.sort((a, b) => {
+            let distanciaA = a.evento.cells[2].textContent.trim().toLowerCase();
+            distanciaA = distanciaA.replace(',', '.').replace(' km', '')
+            distanciaA = parseFloat(distanciaA) || 0;
+            let distanciaB = b.evento.cells[2].textContent.trim().toLowerCase();
+            distanciaB = distanciaB.replace(',', '.').replace(' km', '')
+            distanciaB = parseFloat(distanciaB) || 0;
+            //alert(distanciaB)
+            //parseFloat("9,7 km".replace(',', '.'))            
+            
+            // Usar localeCompare para ordenação correta em português
+            const comparacao = distanciaA- distanciaB;
+            
+            return ordemDistancia ? comparacao : -comparacao;
+        });
+        
+        // Reconstruir o tbody na nova ordem
+        tbody.innerHTML = '';
+        eventosComDetalhes.forEach(item => {
+            tbody.appendChild(item.evento);
+            if (item.detalhes) {
+                tbody.appendChild(item.detalhes);
+            }
+        });
+        
+        // Atualizar a seta
+        const seta = document.getElementById('Seta');
+        seta.innerHTML = ordemDistancia ? "▲" : "▼";
+        
+        // Alternar ordem para próxima vez
+        ordemDistancia = !ordemDistancia;
+    }
+
+let minhaLat = 0;
+let minhaLon = 0;
+
+// Função que retorna uma Promise para a geolocalização
+function getLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    minhaLat = position.coords.latitude;
+                    minhaLon = position.coords.longitude;
+                    resolve({ minhaLat, minhaLon });
+                },
+                (error) => {
+                    console.error("Erro na geolocalização:", error);
+                    reject(error);
+                }
+            );
+        } else {
+            reject(new Error("Geolocalização não suportada"));
+        }
+    });
+}
+
+// Função principal que inicializa tudo
+async function initApp() {
+    try {
+        console.log("Obtendo localização...");
+        await getLocation();
+        console.log(`Localização obtida: ${minhaLat}, ${minhaLon}`);
+        //aqui
+        
+    } catch (error) {
+        console.error("Falha ao obter localização:", error);
+        // Pode usar uma localização padrão ou pedir manualmente
+        usarLocalizacaoPadrao();
+    }
+}
 
 </script>
 </body>
