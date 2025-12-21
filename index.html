@@ -1299,14 +1299,13 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
                 <td><b>Hora:</b></td>
                 <td><b>Enc. Local:</b></td>
                 <td><b>Enc. Regional:</b></td>
-                <td>&nbsp;</td>
+                <td colspan="2"><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
             </tr>
             <tr style="height: 15px;" padding: 2px;>
                 <td>${descricaoDia}${complemento}</td>
                 <td>${horario === "T" ? "17:00" : "19:30"}</td>
                 <td>${encarregadoLocal || 'Não informado'}</td>
                 <td>${encarregadoRegional || 'Não informado'}</td>
-                <td><button class="btn-maps" onclick="abrirMaps('${localizacao}')">Maps</button></td>
             </tr>
         </table>`;
         ordemDistancia = true;
