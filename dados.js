@@ -120,7 +120,7 @@
             "Setor Pedro Ludovico;Goiânia;2ª SEXTA-FEIRA;N;SgUPyCuxBkm485Wi7;1;;;T;-16.7303883;-49.4522408",
             "Setor Santos Dumont;Goiânia;2ª SEXTA-FEIRA;N;vJXpG8Z6akbmuHwQ9;3;;;T;-16.7310459;-49.4522408",
             "Residencial Buena Vista III;Goiânia;2ª SEXTA-FEIRA;N;fWnMGPmvaCyj5tR78;3;;;T;-16.7208106;-49.3957716",
-            "Parque Amazônia;Goiânia;2ª SEXTA-FEIRA;N;uz5JdYhjKTGDtxNLA;2;Lynardo;Isaque/André/Jackson;T;-16.7349129;-49.2854856",
+            "Parque Amazônia;Goiânia;3ª QUINTA-FEIRA;N;uz5JdYhjKTGDtxNLA;2;Lynardo;Isaque/André/Jackson;T;-16.7349129;-49.2854856",
             "Jardim das Aroeiras / Vila Concórdia;Goiânia;2ª SEXTA-FEIRA;N;tiL3hV4RD973dsGG6;1;;;T;-16.659597;-49.1968827",
             "Eldorado Oeste;Goiânia;2ª SEXTA-FEIRA;N;SuHs1ZRmcLgdekz56;3;;;T;-16.6911668;-49.4058882",
             "Bairro Goyá;Goiânia;2º DOMINGO;T;cxht1iptcMjbbXEi6;2;Wermerson;Hiwerson;T;-16.6883436;-49.3374302",
