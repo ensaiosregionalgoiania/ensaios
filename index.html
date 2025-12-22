@@ -565,7 +565,12 @@
         text-align: center;   
         vertical-align: center;   
     }
-
+       .vertical-text {
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
 </style>
 
 </head>
@@ -1300,7 +1305,7 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
                 <td>Hora</td>
                 <td>Enc Local</td>
                 <td>Enc Regional</td>
-                <td rowspan="2" valign="center"><button class="btn-maps" onclick="abrirMaps('${localizacao}')">M<BR>a<BR>p<BR>s</button></td>
+                <td rowspan="2" valign="center"><button class="btn-maps" onclick="abrirMaps('${localizacao}')"<div class="vertical-text">MAPS</div></button></td>
             </tr>
             <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
                 <td>${descricaoDia}${complemento}</td>
