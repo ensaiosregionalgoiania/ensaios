@@ -169,7 +169,7 @@
             "Goianira - Setor Sul (Jardim Imperial);Goianira;4ª SEGUNDA-FEIRA;N;w3ahx7ZqUy8KeEAJA;7;;;T;-16.5202346;-49.4162498",
             "Jardim Califórnia;Goiânia;4ª QUINTA-FEIRA;N;PqrrW6zSdiD1RSKs8;1;;;T;-16.6828779;-49.2084434",
             "Residencial Park Solar;Goiânia;4ª SEXTA-FEIRA;N;sfcXgF2igCY2nsRG6;4;Edenilson Noé;Jackson;T;-16.6281966;-49.3600363",
-            "Santa Rita;Goiânia;3ª SEXTA-FEIRA;N;GyvMHiMhQvVfo6uC6;2;Wesley;Hiwerson;T;-16.7312037;-49.3388978",
+            "Santa Rita;Goiânia;4ª SEXTA-FEIRA;N;GyvMHiMhQvVfo6uC6;2;Wesley;Hiwerson;T;-16.7312037;-49.3388978",
             "Distrito de Oloana;Hidrolândia;4º SáBADO;T;Bm6uW1fF3p9qvXsUA;6;;;T;-17.1148177;-49.4072942",
             "Jardim Primavera;Goiânia;4º SáBADO;T;V2PJyKFW5SEewXrf8;4;Luis Romário;Davi Borges;T;-16.5870545;-49.3712965",
             "Vila Delfiori;Aparecida;2º SáBADO;T;7YpA5szLBfYUbNFc9;6;José Batista;;I;-16.8262055;-49.4082375",
@@ -242,5 +242,6 @@
             "BRAZABRANTES;Brazabrantes;5ª TERÇA-FEIRA;N;jhEdqWi8JcuD8Sy46;10;;;T;-16.4324758;-49.3877532",
             "ITAGUARI;Itaguari;5º SÁBADO;T;hmkta1jeoTnfJj7RA;10;;;T;-15.9187192;-49.6020129",
             "ORDALIA;Itauçu;5º SÁBADO;T;AnRSiHpmmBGFzVqo9;10;;;T;-16.2093576;-49.7357894",
-            "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;Diogo;Nereu;T;-16.7192162;-49.4341354"
+            "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;Diogo;Nereu;T;-16.7192162;-49.4341354",
+            "Santo Antônio;Santo Antônio;2º SÁBADO;N;JDVBRBe7gJxw3sQP6;10;;;T;-16.4874364;-49.3106424"
         ];
