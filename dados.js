@@ -243,5 +243,5 @@
             "ITAGUARI;Itaguari;5º SÁBADO;T;hmkta1jeoTnfJj7RA;10;;;T;-15.9187192;-49.6020129",
             "ORDALIA;Itauçu;5º SÁBADO;T;AnRSiHpmmBGFzVqo9;10;;;T;-16.2093576;-49.7357894",
             "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;Diogo;Nereu;T;-16.7192162;-49.4341354",
-            "Santo Antônio;Santo Antônio;2º SÁBADO;N;JDVBRBe7gJxw3sQP6;10;;;T;-16.4874364;-49.3106424"
+            "Santo Antônio de Goiás;Santo Antônio de Goiás;2º SÁBADO;N;JDVBRBe7gJxw3sQP6;10;Daniel Vieira;Gilton Pereira;T;-16.4874364;-49.3106424"
         ];
