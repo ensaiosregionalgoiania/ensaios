@@ -1,1720 +1,1498 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <title>Sistema de Rodízio de Organistas CCB</title>
+    <title>Ensaio Local</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
             color: #333;
+            line-height: 1.6;
         }
-        h1, h2 {
-            color: #2c3e50;
-            text-align: center;
-        }
-        .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .left-panel, .right-panel {
-            flex: 1;
-            min-width: 300px;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .consultas-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .consultas-titulo {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+        
+        .radio-option input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        #data-select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #btn-listar {
+            background-color: #3498db;
+        }
+        
+        #btn-consultar-casa-oracao, 
+        #btn-consultar-encarregado-local,
+        #btn-consultar-encarregado-regional {
+            background-color: #27ae60;
+        }
+        
+        #btn-listar:hover {
+            background-color: #2980b9;
+        }
+        
+        #btn-consultar-casa-oracao:hover,
+        #btn-consultar-encarregado-local:hover,
+        #btn-consultar-encarregado-regional:hover {
+            background-color: #219a52;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin-top: 0px;
+            font-size: 0.9rem;
         }
+        
         th, td {
-            border: 1px solid #020202;
-            padding: 8px;
+            padding: 5px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
         }
+        
         th {
             background-color: #3498db;
             color: white;
+            position: sticky;
+            top: 0;
         }
+        
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-        .month-header {
-            background-color: #2c3e50 !important;
-            color: white;
-            font-weight: bold;
-            text-align: center;
+        
+        /* Estilos para a linha expansível */
+        .detalhes-row {
+            background-color: #f8f9fa;
         }
-        .next-service {
-            background-color: #fffacd !important;
-            font-weight: bold;
-        }
-        .adjusted-organist {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        button {
-            background-color: #3498db;
+        
+.detalhes-content {
+    display: none;
+}
+
+.detalhe-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px; /* Permite que o item encolha */
+    flex: 1; /* Ocupa espaço disponível */
+}
+
+.detalhes-content.visible {
+    display: table-row;
+}
+
+.detalhe-label {
+    font-weight: bold;
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+        
+.detalhe-valor {
+    color: #333;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+        
+        .btn-expandir {
+            background: #3498db;
             color: white;
             border: none;
-            padding: 10px 15px;
             border-radius: 4px;
+            padding: 6px 12px;
             cursor: pointer;
-            margin: 5px;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
         }
-        button:hover {
-            background-color: #2980b9;
+        
+        .btn-expandir:hover {
+            background: #2980b9;
         }
-        .download-btn {
-            background-color: #27ae60;
+        
+.btn-maps {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 5px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 2px;
+    width: 25px;
+    height: 80px;
+    transition: background-color 0.3s;
+}
+        
+.btn-maps:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+        
+        .no-events {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
         }
-        .download-btn:hover {
-            background-color: #219653;
+        
+        .hidden {
+            display: none;
         }
-        .export-btn {
-            background-color: #9b59b6;
+        
+        @media (min-width: 600px) {
+            .container {
+                max-width: 800px;
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            label {
+                margin-right: 10px;
+                margin-bottom: 0;
+                width: 80px;
+            }
+            
+            #data-select, input[type="text"] {
+                flex-grow: 1;
+                margin-right: 10px;
+                margin-bottom: 0;
+            }
+            
+            button {
+                width: auto;
+            }
+            
+            .radio-group {
+                gap: 20px;
+            }
+            
+            .radio-option {
+                padding: 2px 5px;
+            }
         }
-        .export-btn:hover {
-            background-color: #8e44ad;
+        
+        @media (max-width: 480px) {
+            .radio-group {
+                gap: 8px;
+            }
+            
+            .radio-option {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .radio-option label {
+                font-size: 0.85rem;
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            th, td {
+                padding: 4px 4px;
+            }
         }
-        .instructions {
-            background-color: #eaf2f8;
-            padding: 15px;
+    
+         /*.tooltip {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
             border-radius: 5px;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }*/
+        .visible {
+            opacity: 1;
         }
-        .schedule-view {
-            max-height: 70vh;
+        
+        /* Menu Lateral */
+        .menu-lateral {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background-color: #343a40;
+            color: #f8f9fa;
+            padding: 20px 15px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
             overflow-y: auto;
-            padding: 10px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
-        .schedule-month {
+        
+        .menu-aberto .menu-lateral {
+            transform: translateX(0);
+        }
+        
+        .menu-aberto body {
+            overflow: hidden;
+        }
+        
+        .menu-lateral h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.4rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #495057;
+        }
+        
+        .filtro-grupo {
             margin-bottom: 25px;
         }
-        select {
-            padding: 8px;
-            margin: 5px 0;
-            width: 100%;
-            max-width: 250px;
-        }
-        .selection-group {
-            margin: 15px 0;
-        }
-        .selection-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        textarea {
-            width: 100%;
-            font-family: monospace;
-            margin-bottom: 10px;
-            min-height: 200px;
-        }
-        .action-buttons {
-            display: flex;
-            justify-content: space-between;
+        
+        .filtro-grupo h3 {
+            color: #adb5bd;
             margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+        
+        .filtro-grupo h3::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #6c757d;
+            margin-right: 10px;
+            border-radius: 50%;
+
         }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 900px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .modal-actions {
-            text-align: right;
-            margin-top: 20px;
-        }
-        .modal-actions button {
-            margin-left: 10px;
-        }
-        .editable-cell {
-            cursor: pointer;
+        
+        .filtro-opcao {
+            margin-bottom: 12px;
             position: relative;
         }
-        .editable-cell input {
-            position: absolute;
-            left: 0;
+        
+        .filtro-opcao label {
+            display: flex;
+            align-items: center;
+            color: #e9ecef;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .filtro-opcao label:hover {
+            background-color: #495057;
+        }
+
+        .menu-aberto .conteudo-principal {
+                transform: translateX(85%);
+            }
+        
+        .filtro-opcao input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        /* Botão do Menu */
+        .menu-btn {
+            position: fixed;
+            left: 15px;
+            top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .menu-btn:hover {
+            background-color: #0069d9;
+        }
+        
+        .menu-btn:focus {
+            outline: none;
+        }
+        
+        /* Conteúdo Principal */
+        .conteudo-principal {
+            padding: 80px 20px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-aberto .conteudo-principal {
+            transform: translateX(280px);
+            opacity: 0.7;
+            filter: blur(2px);
+            pointer-events: none;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* Overlay para fechar o menu */
+        .overlay {
+            position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            border: none;
-            padding: 8px;
-            box-sizing: border-box;
-            display: none;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
-        .editable-cell.editing {
-            padding: 0;
+        /* Animação de carregamento */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .editable-cell.editing .cell-value {
-            display: none;
+        
+        .filtro-opcao {
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
         }
-        .editable-cell.editing input {
-            display: block;
+        
+        .filtro-opcao:nth-child(1) { animation-delay: 0.1s; }
+        .filtro-opcao:nth-child(2) { animation-delay: 0.2s; }
+        .filtro-opcao:nth-child(3) { animation-delay: 0.3s; }
+        .filtro-opcao:nth-child(4) { animation-delay: 0.4s; }
+        .filtro-opcao:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Correções para o menu lateral */
+       .menu-aberto .overlay {
+            opacity: 1;
+            visibility: visible;
         }
-        .add-organist-btn {
-            background-color: #2ecc71;
-            margin-top: 10px;
+
+        .menu-aberto .conteudo-principal {
+            transform: translateX(280px);
+            opacity: 0.5;
+            pointer-events: none;
         }
-        .add-organist-btn:hover {
-            background-color: #27ae60;
+
+        .container {
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .modal, .modal * {
-                visibility: visible;
-            }
-            .modal {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: auto;
-                background-color: white;
-            }
-            .modal-actions {
-                display: none;
-            }
-            .next-service {
-                background-color: #fffacd !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .adjusted-organist {
-                color: #e74c3c !important;
-            }
-        }
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-            .left-panel, .right-panel {
-                width: 100%;
-            }
-            .action-buttons {
-                flex-direction: column;
-            }
-        }
-        .priority-cell {
-           background-color: #e6f7ff !important;
-           border: 2px solid #1890ff !important;
-           font-weight: bold;
-        }
-        .order-select {
-    position: absolute;
-    z-index: 100;
-    background: white;
-    border: 1px solid #ccc;
-    max-height: 200px;
-    overflow-y: auto;
-    display: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
 
-.order-select.show {
-    display: block;
-}
-
-.order-option {
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.order-option:hover {
-    background-color: #f0f0f0;
-}
-
-.order-option.inicio {
-    font-weight: bold;
-    background-color: #e6f7ff;
-}
-.import-btn {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 5px;
-}
-
-.import-btn:hover {
-    background-color: #2980b9;
-}
-
-#organistsData {
-    min-height: 30px;
-    resize: vertical; /* Permite redimensionar verticalmente se necessário */
-    overflow-y: auto; /* Adiciona scroll se o conteúdo for muito grande */
-}
-.action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.action-buttons button {
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-}
-
-.export-btn {
-    background-color: #27ae60;
-    color: white;
-}
-
-.export-btn:hover {
-    background-color: #219653;
-}
-
-.import-txt-btn {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.import-txt-btn:hover {
-    background-color: #2980b9;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-}
-
-.service-days {
-    margin: 15px 0;
-}
-
-.day-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 5px;
-}
-
-.day-checkboxes label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-}
-
-.dsst-multiselect {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.dsst-multiselect label {
-    display: block;
-    padding: 5px;
-    cursor: pointer;
-}
-
-.dsst-multiselect label:hover {
-    background-color: #f0f0f0;
-}
-
-.editable-cell[data-field="dsst"] {
-    position: relative;
-}
-
-.dsst-multiselect {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    display: none;
-}
-
-.priority-cell {
-    background-color: #e6f7ff !important;
-    border: 2px solid #1890ff !important;
-    font-weight: bold;
-}
-
-.dsst-select {
+.detalhes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    background-color: #f8f9fa;
     width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
+    box-sizing: border-box;
 }
 
-.dsst-select option {
-    padding: 5px;
-}
+    .suporte {
+        cursor: pointer;
+        position: fixed;
+        top: 5px;      /* Distância do topo */
+        right: 20px;    /* Distância da direita */
+        width: 80px;
+        height: 25px;
+        background: #4CAF50;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 1000;  /* Para ficar acima de outros elementos */
+        color: white; 
+        font-size: 22px; 
+        text-align: center;   
+        vertical-align: center;  
+        display: flex;
+        align-items: center;
+        justify-content: center;         
+    }
+    .menu1 {
+        cursor: pointer;
+        position: fixed;
+        top: 5px;      /* Distância do topo */
+        left: 20px;    /* Distância da direita */
+        width: 80px;
+        height: 35px;
+        background-color: #007bff;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 1000;  /* Para ficar acima de outros elementos */
+        color: white; 
+        font-size: 22px; 
+        text-align: center;   
+        vertical-align: center;   
+    }
+       .vertical-text {
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
+</style>
 
-.dsst-editor {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 8px;
-    z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.dsst-editor label {
-    display: block;
-    padding: 4px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.dsst-editor label:hover {
-    background-color: #f5f5f5;
-}
-
-/* Remove os checkboxes padrão e cria visualização personalizada */
-.dsst-editor input[type="checkbox"] {
-    display: none; /* Esconde o checkbox padrão */
-}
-
-.dsst-editor label {
-    display: block;
-    padding: 5px 8px;
-    margin: 2px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: #f5f5f5;
-    transition: all 0.2s;
-}
-
-.dsst-editor input[type="checkbox"]:checked + label {
-    background-color: #3498db;
-    color: white;
-}
-
-.dsst-editor label:hover {
-    background-color: #e0e0e0;
-}
-
-.dsst-editor input[type="checkbox"]:checked + label:hover {
-    background-color: #2980b9;
-}
-
-    </style>
 </head>
 <body>
-    <h1>Sistema de Rodízio de Organistas CCB</h1>
-    <!-instrucoes aqui->
 
-    <div class="main-container">
-        <div class="left-panel">
-            <h2>Lista de Organistas</h2>
-            
-<div style="margin-bottom: 20px;">
-    <label for="organistsData" style="display: none;">Dados das Organistas (CSV):</label><br>
-<textarea id="organistsData" rows="1" style="display: none; width: 100%; font-family: monospace; margin-bottom: 10px; height: 30px;">
-    Lucia,,1,,,,,
-    Danielly,13,2,,,,,
-    Celmy,3,3,,,,,
-    Geovana,5,4,,4,,,
-    Fabiana,2,5,,2,3,,
-    Marluz,,6,"Marluz",,,,
-    Waleria,7,7,,,6,,
-    Taina,,8,"Larissa",3,,,
-    Miriana,,9,,,6,07/07/2025,19/07/2025
-    Luana,15,10,,,,,
-    Leticia,,11,,,,,
-    Patricia,6,12,,,,,
-    Kassia,16,13,,,,,
-    Priscila,17,14,,,,16/12/2025,31/12/2025
-    Nelia,9,,,,,,
-    Vanessa,10,,,,0|6,,
-    Fabline,11,,,,,,
-    Ana,12,,,,,,
-    Luiza,14,,,1,3,,
-    Larissa,,,,,,,</textarea>    
-    <div class="action-buttons">
-        <button onclick="importOrganists()">Importar Dados</button>
-        <button onclick="document.getElementById('fileInput').click()" class="import-txt-btn">Importar de TXT</button>
-        <button onclick="exportToTxt()" class="export-btn">Exportar para TXT</button>
-        <input type="file" id="fileInput" accept=".txt,.csv" style="display: none;">
-    </div>
-</div>            
-            <table id="organistsTable">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Ordem MH</th>
-                        <th>Ordem CO</th>
-                        <th>Parceira MH</th>
-                        <th>Ordem RJM</th>
-                        <th>Dia sem tocar</th>
-                        <th>Início sem tocar</th>
-                        <th>Fim sem tocar</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            
-            <button onclick="addNewOrganist()" class="add-organist-btn">Adicionar Nova Organista</button>
+    <!-- Botão para abrir o menu -->
+    <button class="menu1" id="menu-btn">Menu</button>
+    <!--☰-->
+    <!-- Overlay para fechar o menu -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Menu Lateral -->
+    <div class="menu-lateral" id="menu-lateral">
+        <h2>Filtrar Cidades/Setor</h2>
+        <div class="filtro-grupo" id ="setor">
         </div>
+    </div>
 
-        <div class="right-panel">
-            <h2>Gerar Rodízio</h2>
-            <div>
-                <label for="startDate">Data Inicial:</label>
-                <input type="date" id="startDate">
-                
-                <label for="months">Meses:</label>
-                <input type="number" id="months" value="6" min="1" max="12">
-                
-                <div class="service-days">
-                    <label>Dias de Culto:</label>
-                    <div class="day-checkboxes">
-                        <label><input type="checkbox" class="day-checkbox" value="0" checked> Domingo</label>
-                        <label><input type="checkbox" class="day-checkbox" value="1"> Segunda</label>
-                        <label><input type="checkbox" class="day-checkbox" value="2"> Terça</label>
-                        <label><input type="checkbox" class="day-checkbox" value="3" checked> Quarta</label>
-                        <label><input type="checkbox" class="day-checkbox" value="4"> Quinta</label>
-                        <label><input type="checkbox" class="day-checkbox" value="5"> Sexta</label>
-                        <label><input type="checkbox" class="day-checkbox" value="6" checked> Sábado</label>
-                    </div>
+    <a href="https://wa.me/5562996037779">
+        <div class="suporte">
+            Suporte
+        </div>
+    </a>
+    <div class="container">
+        <h1>Ensaio Local</h1>
+        
+        <!-- Container melhorado para as consultas -->
+        <div class="consultas-container">
+            <div class="consultas-titulo">Consultar por:</div>
+            
+            <!-- Radio buttons para escolher o tipo de consulta -->
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="consulta-data" name="tipo-consulta" value="data" checked>
+                    <label for="consulta-data">Data</label>
                 </div>
-                
-                <button onclick="generateSchedule()">Gerar Rodízio</button>
-                <button onclick="openScheduleModal()" class="download-btn">Visualizar Rodízio</button>
-                <button onclick="saveScheduleToPDF()" class="export-btn">Salvar Rodízio</button>            </div>
-                <div id="schedule-view" class="schedule-view">
-                <p>Gere o rodízio para visualizar os meses aqui.</p>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-CasaOracao" name="tipo-consulta" value="CasaOracao">
+                    <label for="consulta-CasaOracao">Casa de Oração</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local">
+                    <label for="consulta-encarregado-local">Enc. Local</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional">
+                    <label for="consulta-encarregado-regional">Enc. Regional</label>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="scheduleModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="text-align: center;">Rodízio de Organistas</h2>
-            <div id="modalScheduleView"></div>
-            <div class="modal-actions">
-                <button onclick="window.print()">Imprimir</button>
-                <button onclick="closeModal()">Fechar</button>
-            </div>
+        <!-- Consulta por Data -->
+        <div id="consulta-data-group" class="input-group">
+            <select id="data-select"></select>
+            <button id="btn-listar">Listar</button>
         </div>
+
+        <!-- Consulta por Casa de Oração CCB -->
+        <div id="consulta-casa-oracao-group" class="input-group hidden">
+            <input type="text" id="casa-oracao-input" placeholder="Digite o nome da Casa de Oração CCB">
+            <button id="btn-consultar-casa-oracao">Consultar</button>
+        </div>
+
+        <!-- Consulta por Encarregado Local -->
+        <div id="consulta-encarregado-local-group" class="input-group hidden">
+            <input type="text" id="encarregado-local-input" placeholder="Digite o nome do Encarregado Local">
+            <button id="btn-consultar-encarregado-local">Consultar</button>
+        </div>
+
+        <!-- Consulta por Encarregado Regional -->
+        <div id="consulta-encarregado-regional-group" class="input-group hidden">
+            <input type="text" id="encarregado-regional-input" placeholder="Digite o nome do Encarregado Regional">
+            <button id="btn-consultar-encarregado-regional">Consultar</button>
+        </div>
+
+        <span id="error-msg" class="error"></span>
+        <!--<div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>-->
+
+        <table id="tabela-eventos">
+            <thead>
+                <tr>
+                    <th>Local</th>
+                    <th>Cidade</th>
+                    <th>Dist<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
+                    <th>Data</th>                  
+                    <!--<th>Horário</th>-->
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
+<script src="dados.js"></script>
+<script src="setor.js"></script>
 
 <script>
-    // Variável global para armazenar as organistas
-    let organists = [];
-    let currentSchedule = {};
-    let nextServiceDate = null;
-    let priorityOrganists = {
-        mh: null,
-        co: null,
-        rjm: null
-    };
 
-    // Inicializa a página
-    document.addEventListener('DOMContentLoaded', function() {
-        renderOrganistsTable();
-        setDefaultStartDate();
-        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-    });
-
-    // Funções auxiliares
-    function getMonthName(monthIndex) {
-        const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        return months[monthIndex];
-    }
-
-    function getDayName(dayIndex) {
-        const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-        return days[dayIndex];
-    }
-
-    function isValidDate(dateString) {
-        return /^\d{2}\/\d{2}\/\d{4}$/.test(dateString);
-    }
-
-    function setDefaultStartDate() {
-        const today = new Date();
-        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-        const formattedDate = nextMonth.toISOString().split('T')[0];
-        document.getElementById('startDate').value = formattedDate;
-    }
-
-    // Funções para DSST simplificado
-    function formatDsstValue(dsst) {
-        if (!dsst) return '';
-        const days = Array.isArray(dsst) ? dsst : [dsst];
-        return days.map(d => {
-            if (d === 0) return 'Dom';
-            if (d === 3) return 'Qua';
-            if (d === 6) return 'Sáb';
-            return '';
-        }).filter(Boolean).join(' | ');
-    }
-
-    function isDsstSelected(dsst, day) {
-        if (!dsst) return '';
-        return (Array.isArray(dsst) ? dsst.includes(day) : dsst === day) ? 'checked' : '';
-    }
-
-    // Funções de manipulação de dados
-    function importOrganists() {
-        try {
-            const csvData = document.getElementById('organistsData').value.trim();
-            if (!csvData) {
-                alert('Nenhum dado para importar!');
-                return;
+        // Função para verificar se um mês deve ser exibido baseado na configuração de meses
+        function deveExibirMes(mes, configMeses) {
+            if (!configMeses || configMeses === 'T') {
+                return true;
             }
-
-            const lines = csvData.split('\n');
-            organists = [];
             
-            lines.forEach(line => {
-                line = line.trim();
-                if (!line) return;
-                
-                const cells = line.split(',').map(cell => {
-                    cell = cell.trim();
-                    if (cell.startsWith('"') && cell.endsWith('"')) {
-                        return cell.slice(1, -1);
-                    }
-                    return cell === '' ? null : cell;
-                });
-                
-                organists.push({
-                    name: cells[0],
-                    mhOrder: cells[1] ? parseInt(cells[1]) : null,
-                    coOrder: cells[2] ? parseInt(cells[2]) : null,
-                    parceira: cells[3] || null,
-                    rjmOrder: cells[4] ? parseInt(cells[4]) : null,
-                    dsst: cells[5] ? (cells[5].includes('|') ? 
-                        cells[5].split('|').map(Number) : 
-                        parseInt(cells[5])) : null,
-                    idtst: cells[6] || null,
-                    fdtst: cells[7] || null
-                });
-            });
+            if (configMeses === 'P') {
+                return mes % 2 === 0;
+            }
             
-            renderOrganistsTable();
-            alert(`Dados importados com sucesso! ${organists.length} organistas cadastradas.`);
-        } catch (error) {
-            alert('Erro ao importar dados: ' + error.message);
-            console.error(error);
+            if (configMeses === 'I') {
+                return mes % 2 === 1;
+            }
+            
+            const mesesPermitidos = configMeses.split('!').map(m => parseInt(m));
+            return mesesPermitidos.includes(mes);
         }
-    }
 
-    function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            document.getElementById('organistsData').value = e.target.result;
-            importOrganists();
-        };
-        
-        reader.onerror = function() {
-            alert('Erro ao ler o arquivo');
-        };
-        
-        reader.readAsText(file);
-        event.target.value = '';
-    }
-
-    function exportToTxt() {
-        const content = organists.map(org => {
-            return [
-                org.name,
-                org.mhOrder !== null ? org.mhOrder : '',
-                org.coOrder !== null ? org.coOrder : '',
-                org.parceira ? `"${org.parceira}"` : '',
-                org.rjmOrder !== null ? org.rjmOrder : '',
-                org.dsst !== null ? (Array.isArray(org.dsst) ? org.dsst.join('|') : org.dsst) : '',
-                org.idtst || '',
-                org.fdtst || ''
-            ].join(',');
-        }).join('\n');
-
-        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `organistas-ccb-${new Date().toISOString().slice(0, 10)}.txt`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 100);
-    }
-
-    // Funções de renderização
-    function renderOrganistsTable() {
-        const tbody = document.querySelector('#organistsTable tbody');
-        tbody.innerHTML = '';
-        
-        organists.sort((a, b) => {
-            const aCO = a.coOrder === null ? 999 : a.coOrder;
-            const bCO = b.coOrder === null ? 999 : b.coOrder;
-            return aCO - bCO || (a.mhOrder || 999) - (b.mhOrder || 999);
-        });
-        
-        organists.forEach((org, index) => {
-            const row = document.createElement('tr');
-            const isPriorityMH = org.name === priorityOrganists.mh;
-            const isPriorityCO = org.name === priorityOrganists.co;
-            const isPriorityRJM = org.name === priorityOrganists.rjm;
-
-            row.innerHTML = `
-                <td class="editable-cell" data-field="name">
-                    <span class="cell-value">${org.name}</span>
-                    <input type="text" value="${org.name}">
-                </td>
-                <td class="editable-cell" data-field="mhOrder">
-                    <span class="cell-value ${isPriorityMH ? 'priority-cell' : ''}">${org.mhOrder === null ? '' : org.mhOrder}</span>
-                </td>
-                <td class="editable-cell" data-field="coOrder">
-                    <span class="cell-value ${isPriorityCO ? 'priority-cell' : ''}">${org.coOrder === null ? '' : org.coOrder}</span>
-                </td>
-                <td class="editable-cell" data-field="parceira">
-                    <span class="cell-value">${org.parceira || ''}</span>
-                    <input type="text" value="${org.parceira || ''}">
-                </td>
-                <td class="editable-cell" data-field="rjmOrder">
-                    <span class="cell-value ${isPriorityRJM ? 'priority-cell' : ''}">${org.rjmOrder === null ? '' : org.rjmOrder}</span>
-                </td>
-                <td class="editable-cell" data-field="dsst">
-                    <span class="cell-value">${formatDsstValue(org.dsst)}</span>
-                    <div class="dsst-editor" style="display: none;">
-                        <input type="checkbox" value="0" id="dsst-${index}-0" ${isDsstSelected(org.dsst, 0)}>
-                        <label for="dsst-${index}-0">Dom</label>
-                        
-                        <input type="checkbox" value="3" id="dsst-${index}-3" ${isDsstSelected(org.dsst, 3)}>
-                        <label for="dsst-${index}-3">Qua</label>
-                        
-                        <input type="checkbox" value="6" id="dsst-${index}-6" ${isDsstSelected(org.dsst, 6)}>
-                        <label for="dsst-${index}-6">Sáb</label>
-                    </div>
-                </td>
-                <td class="editable-cell" data-field="idtst">
-                    <span class="cell-value">${org.idtst || ''}</span>
-                    <input type="text" value="${org.idtst || ''}" placeholder="dd/mm/aaaa">
-                </td>
-                <td class="editable-cell" data-field="fdtst">
-                    <span class="cell-value">${org.fdtst || ''}</span>
-                    <input type="text" value="${org.fdtst || ''}" placeholder="dd/mm/aaaa">
-                </td>
-            `;
-            
-            tbody.appendChild(row);
-        });
-        
-        setupEditableCells();
-    }
-
-    function setupEditableCells() {
-        // Células de texto simples
-        document.querySelectorAll('.editable-cell:not([data-field$="Order"]):not([data-field="dsst"])').forEach(cell => {
-            cell.addEventListener('click', function(e) {
-                if (e.target.tagName === 'INPUT') return;
-                if (this.classList.contains('editing')) return;
-                
-                this.classList.add('editing');
-                const input = this.querySelector('input');
-                input.focus();
-            });
-            
-            const input = cell.querySelector('input');
-            input.addEventListener('blur', () => saveCellEdit(cell));
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') saveCellEdit(cell);
-            });
-        });
-
-        // Células de dias sem tocar (DSST)
-        document.querySelectorAll('.editable-cell[data-field="dsst"]').forEach(cell => {
-            cell.addEventListener('click', function(e) {
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
-                if (this.classList.contains('editing')) return;
-                
-                this.classList.add('editing');
-                const editor = this.querySelector('.dsst-editor');
-                editor.style.display = 'block';
-                
-                // Fecha ao clicar fora
-                const clickOutside = (e) => {
-                    if (!cell.contains(e.target)) {
-                        saveCellEdit(cell);
-                        document.removeEventListener('click', clickOutside);
-                    }
-                };
-                setTimeout(() => document.addEventListener('click', clickOutside), 10);
-            });
-        });
-
-        // Células de ordem (dropdown numérico)
-        document.querySelectorAll('.editable-cell[data-field$="Order"]').forEach(cell => {
-            const select = document.createElement('div');
-            select.className = 'order-select';
-            
-            for (let i = 1; i <= 20; i++) {
-                const option = document.createElement('div');
-                option.className = 'order-option';
-                option.textContent = i;
-                option.dataset.value = i;
-                select.appendChild(option);
-            }
-            
-            const inicioOption = document.createElement('div');
-            inicioOption.className = 'order-option inicio';
-            inicioOption.textContent = 'Início';
-            inicioOption.dataset.value = '0';
-            select.appendChild(inicioOption);
-            
-            cell.appendChild(select);
-            cell.style.position = 'relative';
-
-            cell.addEventListener('click', function(e) {
-                if (e.target.classList.contains('order-option')) return;
-                
-                document.querySelectorAll('.order-select').forEach(s => {
-                    s.classList.remove('show');
-                });
-                
-                select.classList.add('show');
-                e.stopPropagation();
-            });
-
-            select.addEventListener('click', function(e) {
-                if (e.target.classList.contains('order-option')) {
-                    const value = e.target.dataset.value;
-                    const field = cell.getAttribute('data-field').replace('Order', '');
-                    const row = cell.parentNode;
-                    const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-                    
-                    if (value === '0') {
-                        priorityOrganists[field] = organists[rowIndex].name;
+        // Função para calcular a próxima data do evento
+        function calcularProximaData(descricaoDia, meses) {
+            let hoje = new Date(new Date().setHours(0, 0, 0, 0));
+            const mesAtual = hoje.getMonth() + 1;
+            const anoAtual = hoje.getFullYear();
+            let proximoMes = mesAtual;
+            let proximoAno = anoAtual;
+            let contador = 0
+            //while (true) {
+                dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+                if (dataEvento === null) {
+                    descricaoDia = descricaoDia.replace("5", "4");
+                    dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+                }
+                if (dataEvento && dataEvento < hoje) {
+                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                    const nextMesAno = MesAno.split(';');
+                    proximoMes = nextMesAno[0];
+                    proximoAno = nextMesAno[1];
+                }
+                if (meses === "I" && proximoMes % 2 === 0) {
+                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                    const nextMesAno = MesAno.split(';');
+                    proximoMes = nextMesAno[0];
+                    proximoAno = nextMesAno[1];
+                } else { 
+                    if (meses === "I" && proximoMes % 2 === 0) {
+                        const MesAno = proximoMesAno(proximoMes, proximoAno);
+                        const nextMesAno = MesAno.split(';');
+                        proximoMes = nextMesAno[0];
+                        proximoAno = nextMesAno[1];
                     } else {
-                        organists[rowIndex][`${field}Order`] = parseInt(value);
-                        if (priorityOrganists[field] === organists[rowIndex].name) {
-                            priorityOrganists[field] = null;
-                        }
-                    }
-                    
-                    select.classList.remove('show');
-                    renderOrganistsTable();
-                }
-            });
-        });
-
-        // Fechar editáveis ao clicar fora
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.editable-cell')) {
-                document.querySelectorAll('.editable-cell.editing').forEach(cell => {
-                    saveCellEdit(cell);
-                });
-                document.querySelectorAll('.order-select').forEach(s => {
-                    s.classList.remove('show');
-                });
-            }
-        });
-    }
-
-    function saveCellEdit(cell) {
-        const row = cell.parentNode;
-        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-        const field = cell.getAttribute('data-field');
-        
-        if (field === 'dsst') {
-            const checkboxes = cell.querySelectorAll('.dsst-editor input:checked');
-            const values = Array.from(checkboxes).map(cb => parseInt(cb.value));
-            organists[rowIndex][field] = values.length > 0 ? (values.length === 1 ? values[0] : values) : null;
-            cell.querySelector('.cell-value').textContent = formatDsstValue(organists[rowIndex][field]);
-        } else {
-            const input = cell.querySelector('input');
-            if (!input) return;
-            
-            let value = input.value.trim();
-            
-            if (field === 'mhOrder' || field === 'coOrder' || field === 'rjmOrder') {
-                value = value === '' ? null : parseInt(value);
-            } else if ((field === 'idtst' || field === 'fdtst') && value !== '' && !isValidDate(value)) {
-                alert('Formato de data inválido. Use dd/mm/aaaa');
-                return;
-            }
-            
-            organists[rowIndex][field] = value;
-            cell.querySelector('.cell-value').textContent = value || '';
-        }
-        
-        cell.classList.remove('editing');
-        const editor = cell.querySelector('.dsst-editor');
-        if (editor) editor.style.display = 'none';
-    }
-
-    function addNewOrganist() {
-        organists.push({
-            name: "Nova Organista",
-            mhOrder: null,
-            coOrder: null,
-            parceira: null,
-            rjmOrder: null,
-            dsst: null,
-            idtst: null,
-            fdtst: null
-        });
-        
-        renderOrganistsTable();
-        
-        const lastRow = document.querySelector('#organistsTable tbody tr:last-child');
-        const nameCell = lastRow.querySelector('td[data-field="name"]');
-        nameCell.click();
-    }
-
-    // Função principal refatorada
-    function generateSchedule() {
-        if (!validateInputs()) return;
-        
-        const { startDate, endDate, selectedDays } = getScheduleParameters();
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        // Criar estrutura vazia
-        const scheduleByMonth = createEmptyCalendar(startDate, endDate, selectedDays, today);
-        
-        // Preencher com organistas - agora em 3 etapas separadas
-        //aqui
-        fillCultoOficialSchedule(scheduleByMonth);
-        fillParceirasMH(scheduleByMonth); // Depois preenche as parceiras MH
-        fillMeiaHoraSchedule(scheduleByMonth);
-        fillRJMSchedule(scheduleByMonth);
-        
-        // Atualizar views
-        currentSchedule = scheduleByMonth;
-        updateScheduleView(scheduleByMonth);
-        updateModalScheduleView(scheduleByMonth);
-    }
-
-    function fillRJMSchedule(scheduleByMonth) {
-        // 1. Filtra APENAS organistas que tocam na RJM
-        const rjmOrganists = organists.filter(org => 
-            org?.rjmOrder !== null && 
-            org.name !== 'Danielly' // Exclui especificamente a Danielly
-        ).sort((a, b) => a.rjmOrder - b.rjmOrder);
-
-        let currentIndex = 0;
-
-        Object.values(scheduleByMonth).forEach(monthSchedule => {
-            monthSchedule.forEach(item => {
-                if (item.date.getDay() === 0) { // Apenas domingos
-                    // 2. Encontra todas disponíveis nesta data
-                    const availableToday = rjmOrganists.filter(org => 
-                        isOrganistAvailableForRJM(org, item.date)
-                    );
-
-                    if (availableToday.length === 0) {
-                        item.rjm = 'N/D';
-                        item.isAdjusted = true;
-                        return;
-                    }
-
-                    // 3. Encontra a próxima na ordem considerando apenas disponíveis
-                    let selectedOrganist = null;
-                    let adjusted = false;
-                    
-                    // Procura na ordem normal
-                    for (let i = 0; i < rjmOrganists.length; i++) {
-                        const candidate = rjmOrganists[(currentIndex + i) % rjmOrganists.length];
-                        if (availableToday.includes(candidate)) {
-                            selectedOrganist = candidate;
-                            adjusted = i > 0;
-                            currentIndex = (currentIndex + i + 1) % rjmOrganists.length;
-                            break;
-                        }
-                    }
-
-                    item.rjm = selectedOrganist ? 
-                        `${selectedOrganist.name}${adjusted ? ' **' : ''}` : 
-                        'N/D';
-                    item.isAdjusted = adjusted;
-                }
-            });
-        });
-    }
-
-    isOrganistAvailableForRJM
-    // Função específica para RJM
-    function isOrganistAvailableForRJM(org, date) {
-        // 1. Verifica período sem tocar
-        if (org.idtst && isDateInRange(date, org.idtst, org.fdtst)) {
-            return false;
-        }
-
-        // 2. Verifica dias sem tocar (RJM sempre domingo - day 0)
-        if (org.dsst) {
-            const forbiddenDays = Array.isArray(org.dsst) ? org.dsst : [org.dsst];
-            if (forbiddenDays.includes(0)) return false; // 0 = Domingo
-        }
-
-        return true;
-    }
-
-    function isDateInRange(date, startDateStr, endDateStr) {
-        if (!startDateStr) return false;
-        
-        const [startDay, startMonth, startYear] = startDateStr.split('/').map(Number);
-        const start = new Date(startYear, startMonth - 1, startDay);
-        
-        if (!endDateStr) {
-            return date.getTime() === start.getTime();
-        }
-        
-        const [endDay, endMonth, endYear] = endDateStr.split('/').map(Number);
-        const end = new Date(endYear, endMonth - 1, endDay);
-        
-        return date >= start && date <= end;
-    }
-
-    function isOrganistAvailable(org, dayOfWeek, currentDate, type) {
-        if (!org) return false;
-        
-        // Verifica período sem tocar
-        if (org.idtst && isDateInRange(currentDate, org.idtst, org.fdtst)) {
-            return false;
-        }
-        
-        // Verifica dias sem tocar (DSST)
-        if (org.dsst) {
-            let forbiddenDays = [];
-            if (Array.isArray(org.dsst)) {
-                forbiddenDays = org.dsst;
-            } else if (typeof org.dsst === 'number') {
-                forbiddenDays = [org.dsst];
-            }
-            
-            if (forbiddenDays.includes(dayOfWeek)) {
-                return false;
-            }
-        }
-        
-        // Verifica se a organista tem ordem definida para este tipo de culto
-        if (type === 'mh' && org.mhOrder === null) return false;
-        if (type === 'co' && org.coOrder === null) return false;
-        if (type === 'rjm' && org.rjmOrder === null) return false;
-        
-        return true;
-    }
-
-    // Funções de visualização e modal
-    function openScheduleModal() {
-        if (Object.keys(currentSchedule).length === 0) {
-            alert('Por favor, gere o rodízio primeiro');
-            return;
-        }
-        document.getElementById('scheduleModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('scheduleModal').style.display = 'none';
-    }
-
-    function updateScheduleView(scheduleByMonth) {
-        const container = document.getElementById('schedule-view');
-        container.innerHTML = '';
-        
-        if (!scheduleByMonth || Object.keys(scheduleByMonth).length === 0) {
-            container.innerHTML = '<p>Gere o rodízio para visualizar os meses aqui.</p>';
-            return;
-        }
-        
-        Object.entries(scheduleByMonth).forEach(([monthYear, schedule], monthIndex) => {
-            if (!schedule || !Array.isArray(schedule)) return;
-            
-            const monthDiv = document.createElement('div');
-            monthDiv.className = 'schedule-month';
-            monthDiv.id = `month-${monthIndex}`;
-            
-            let tableHTML = `
-                <table id="table-${monthIndex}">
-                    <tr><th colspan="5" class="month-header">${monthYear}</th></tr>
-                    <tr>
-                        <th>Dia</th>
-                        <th>Dia Semana</th>
-                        <th>Meia Hora</th>
-                        <th>Culto Oficial</th>
-                        <th>RJM</th>
-                    </tr>
-            `;
-            
-            schedule.forEach((item, dayIndex) => {
-                if (!item) return;
-                
-                const dateStr = formatDate(item.date);
-                const safeMh = item.mh || '';
-                const safeCo = item.co || '';
-                const safeRjm = item.rjm || '';
-                
-                const rowClass = item.isNextService ? 'next-service' : '';
-                const mhClass = safeMh.includes('**') ? 'adjusted-organist' : '';
-                const coClass = safeCo.includes('**') ? 'adjusted-organist' : '';
-                const rjmClass = safeRjm.includes('**') ? 'adjusted-organist' : '';
-                
-                tableHTML += `
-                    <tr class="${rowClass}" id="row-${monthIndex}-${dayIndex}">
-                        <td id="day-${monthIndex}-${dayIndex}">${String(item.day).padStart(2, '0')}</td>
-                        <td id="weekday-${monthIndex}-${dayIndex}">${item.dayName}</td>
-                        <td class="${mhClass}" id="mh-${monthIndex}-${dayIndex}" data-date="${dateStr}">${safeMh}</td>
-                        <td class="${coClass}" id="co-${monthIndex}-${dayIndex}" data-date="${dateStr}">${safeCo}</td>
-                        <td class="${rjmClass}" id="rjm-${monthIndex}-${dayIndex}" data-date="${dateStr}">${safeRjm}</td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += `</table>`;
-            monthDiv.innerHTML = tableHTML;
-            container.appendChild(monthDiv);
-        });
-    }
-
-    function updateModalScheduleView(scheduleByMonth) {
-        const container = document.getElementById('modalScheduleView');
-        container.innerHTML = '';
-        
-        if (!scheduleByMonth || Object.keys(scheduleByMonth).length === 0) return;
-        
-        Object.entries(scheduleByMonth).forEach(([monthYear, schedule]) => {
-            if (!schedule || !Array.isArray(schedule)) return;
-            
-            const monthDiv = document.createElement('div');
-            monthDiv.className = 'schedule-month';
-            
-            let tableHTML = `
-                <table>
-                    <tr><th colspan="5" class="month-header">${monthYear}</th></tr>
-                    <tr>
-                        <th>Dia</th>
-                        <th>Dia Semana</th>
-                        <th>Meia Hora</th>
-                        <th>Culto Oficial</th>
-                        <th>RJM</th>
-                    </tr>
-            `;
-            
-            schedule.forEach(item => {
-                if (!item) return;
-                
-                const safeMh = item.mh || '';
-                const safeCo = item.co || '';
-                const safeRjm = item.rjm || '';
-                
-                const rowClass = item.isNextService ? 'next-service' : '';
-                const mhClass = typeof safeMh === 'string' && safeMh.includes('**') ? 'adjusted-organist' : '';
-                const coClass = typeof safeCo === 'string' && safeCo.includes('**') ? 'adjusted-organist' : '';
-                const rjmClass = typeof safeRjm === 'string' && safeRjm.includes('**') ? 'adjusted-organist' : '';
-                
-                tableHTML += `
-                    <tr class="${rowClass}">
-                        <td>${item.day ? String(item.day).padStart(2, '0') : ''}${item.isAdjustedPeriod ? '***' : ''}</td>
-                        <td>${item.dayName || ''}</td>
-                        <td class="${mhClass}">${safeMh}</td>
-                        <td class="${coClass}">${safeCo}</td>
-                        <td class="${rjmClass}">${safeRjm}</td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += `</table>`;
-            monthDiv.innerHTML = tableHTML;
-            container.appendChild(monthDiv);
-        });
-    }
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('scheduleModal');
-        if (event.target == modal) {
-            closeModal();
-        }
-    };
-
-    // Funções auxiliares
-    function validateInputs() {
-        if (!organists || organists.length === 0) {
-            alert('Por favor, importe a lista de organistas primeiro');
-            return false;
-        }
-
-        const startDateInput = document.getElementById('startDate').value;
-        if (!startDateInput) {
-            alert('Por favor, selecione uma data válida');
-            return false;
-        }
-        
-        const selectedDays = [];
-        document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
-            const dayValue = parseInt(checkbox.value);
-            if (!isNaN(dayValue)) {
-                selectedDays.push(dayValue);
-            }
-        });
-        
-        if (selectedDays.length === 0) {
-            alert('Selecione pelo menos um dia de culto');
-            return false;
-        }
-        
-        return true;
-    }
-
-    function getScheduleParameters() {
-        const [year, month, day] = document.getElementById('startDate').value.split('-').map(Number);
-        const startDate = new Date(year, month - 1, day);
-        const months = parseInt(document.getElementById('months').value) || 6;
-        const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, 0);
-        
-        const selectedDays = [];
-        document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
-            selectedDays.push(parseInt(checkbox.value));
-        });
-        
-        return { startDate, endDate, selectedDays };
-    }
-
-    function createEmptyCalendar(startDate, endDate, selectedDays, today) {
-        const scheduleByMonth = {};
-        let currentDate = new Date(startDate);
-        nextServiceDate = null;
-
-        while (currentDate <= endDate) {
-            const dayOfWeek = currentDate.getDay();
-            
-            if (selectedDays.includes(dayOfWeek)) {
-                const monthYear = `${getMonthName(currentDate.getMonth())} ${currentDate.getFullYear()}`;
-                if (!scheduleByMonth[monthYear]) {
-                    scheduleByMonth[monthYear] = [];
-                }
-
-                const isNextService = !nextServiceDate && currentDate >= today;
-                if (isNextService) {
-                    nextServiceDate = currentDate;
-                }
-
-                scheduleByMonth[monthYear].push({
-                    date: new Date(currentDate),
-                    day: currentDate.getDate(),
-                    dayName: getDayName(dayOfWeek),
-                    mh: '', // Será preenchido depois
-                    co: '', // Será preenchido depois
-                    rjm: (dayOfWeek === 0) ? '' : null, // Apenas domingos
-                    isNextService,
-                    isAdjusted: false
-                });
-            }
-            
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-        
-        return scheduleByMonth;
-    }
-
-    function assignOrganist(organistList, scheduleItem, type, currentIndex, lastOrganistName = null, pendingOrganists = []) {
-        const dayOfWeek = scheduleItem.date.getDay();
-        const currentDate = scheduleItem.date;
-        
-        // Tenta usar organistas pendentes primeiro (apenas para MH)
-        if (type === 'mh' && pendingOrganists.length > 0) {
-            for (let i = 0; i < pendingOrganists.length; i++) {
-                const candidate = pendingOrganists[i];
-                if (isOrganistAvailable(candidate, dayOfWeek, currentDate, type) && 
-                    candidate.name !== lastOrganistName) {
-                    pendingOrganists.splice(i, 1);
-                    return {
-                        organist: candidate,
-                        adjusted: true,
-                        newIndex: currentIndex,
-                        pendingOrganists
-                    };
-                }
-            }
-        }
-
-        // Busca na ordem normal
-        let attempts = 0;
-        let adjusted = false;
-        let index = currentIndex;
-        let selectedOrganist = null;
-
-        do {
-            const candidate = organistList[index % organistList.length];
-            
-            if (isOrganistAvailable(candidate, dayOfWeek, currentDate, type) && 
-                (type !== 'mh' || candidate.name !== lastOrganistName)) {
-                selectedOrganist = candidate;
-                break;
-            }
-            
-            // Adiciona às pendentes se não estiver já na lista (apenas para MH)
-            if (type === 'mh' && !pendingOrganists.some(o => o.name === candidate.name)) {
-                pendingOrganists.push(candidate);
-            }
-            
-            index = (index + 1) % organistList.length;
-            attempts++;
-            adjusted = attempts > 0;
-        } while (attempts < organistList.length);
-
-        // Se não encontrou, procura qualquer disponível
-        if (!selectedOrganist) {
-            for (const org of organistList) {
-                if (isOrganistAvailable(org, dayOfWeek, currentDate, type) && 
-                    (type !== 'mh' || org.name !== lastOrganistName)) {
-                    selectedOrganist = org;
-                    adjusted = true;
-                    break;
-                }
-            }
-        }
-
-        return {
-            organist: selectedOrganist,
-            adjusted,
-            newIndex: (selectedOrganist && !adjusted) ? (index + 1) % organistList.length : currentIndex,
-            pendingOrganists
-        };
-    }
-
-    function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-
-    // 1. Função específica para Meia Hora
-    function fillMeiaHoraSchedule(scheduleByMonth) {
-        // 1. Filtra organistas válidas para MH (exceto as que são parceiras de CO)
-        const mhOrganists = organists
-            .filter(org => org.mhOrder !== null && !isParceiraDeCO(org))
-            .sort((a, b) => a.mhOrder - b.mhOrder);
-
-        let mhIndex = 0;
-        let pendingSwaps = []; // Armazena trocas pendentes de DSST
-
-        Object.values(scheduleByMonth).forEach(monthSchedule => {
-            monthSchedule.forEach(item => {
-                // 2. Não mexe em MH já preenchido (respeita parceiras do CO)
-                if (item.mh && item.mh.trim() !== '' && item.mh !== 'N/D') {
-                    return;
-                }
-
-                // 3. Processa a organista da MH
-                const result = processOrganistMH(item, mhOrganists, mhIndex, pendingSwaps);
-                
-                item.mh = result.organist ? `${result.organist.name}${result.adjusted ? ' **' : ''}` : 'N/D';
-                item.isAdjusted = item.isAdjusted || result.adjusted;
-                mhIndex = result.newIndex;
-            });
-        });
-    }
-
-    // 2. Função específica para Culto Oficial
-    function fillCultoOficialSchedule(scheduleByMonth) {
-        // 1. Filtra e ordena as organistas válidas para CO
-        const coOrganists = organists
-            .filter(org => org.coOrder !== null)
-            .sort((a, b) => a.coOrder - b.coOrder);
-
-        let coIndex = 0;
-        let pendingSwaps = []; // Armazena trocas pendentes de DSST
-
-        // 2. Processa todos os dias (incluindo domingos)
-        Object.values(scheduleByMonth).forEach(monthSchedule => {
-            monthSchedule.forEach(item => {
-                // 3. Tenta resolver trocas pendentes primeiro
-                const resolvedSwap = resolvePendingSwap(item, pendingSwaps);
-                if (resolvedSwap.success) {
-                    item.co = resolvedSwap.organist.name;
-                    item.isAdjusted = true;
-                    return;
-                }
-
-                // 4. Processa a organista atual do CO
-                const result = processOrganistCO(item, coOrganists, coIndex, pendingSwaps);
-                
-                // 5. Atualiza os dados do culto oficial
-                item.co = result.organist ? `${result.organist.name}${result.adjusted ? ' **' : ''}` : 'N/D';
-                item.isAdjusted = result.adjusted;
-                coIndex = result.newIndex;
-            });
-        });
-    }
-
-    function isInNoPlayPeriod(org, date) {
-        if (!org.idtst) return false;
-        
-        // Converte strings de data para objetos Date
-        const [startDay, startMonth, startYear] = org.idtst.split('/').map(Number);
-        const startDate = new Date(startYear, startMonth - 1, startDay);
-        
-        if (!org.fdtst) {
-            return date.getTime() === startDate.getTime();
-        }
-        
-        const [endDay, endMonth, endYear] = org.fdtst.split('/').map(Number);
-        const endDate = new Date(endYear, endMonth - 1, endDay);
-        
-        return date >= startDate && date <= endDate;
-    }
-
-    function hasDSST(org, date) {
-        if (!org.dsst) return false;
-        const dayOfWeek = date.getDay();
-        const forbiddenDays = Array.isArray(org.dsst) ? org.dsst : [org.dsst];
-        return forbiddenDays.includes(dayOfWeek);
-    }
-
-    function isOrganistAvailableForCO(org, date, ignoreDSST = false) {
-        // 1. Verifica período sem tocar
-        if (isInNoPlayPeriod(org, date)) return false;
-        
-        // 2. Verifica DSST (a menos que seja ignorado para trocas)
-        if (!ignoreDSST && hasDSST(org, date)) return false;
-        
-        return true;
-    }
-
-    function processPendingDSST(item, pendingDSST) {
-        for (let i = 0; i < pendingDSST.length; i++) {
-            const swap = pendingDSST[i];
-            if (isOrganistAvailableForCO(swap.organist, item.date, true)) { // Ignora DSST para trocas
-                pendingDSST.splice(i, 1); // Remove da lista de pendentes
-                return {
-                    success: true,
-                    organist: swap.organist
-                };
-            }
-        }
-        return { success: false };
-    }
-
-    // Encontra a próxima organista disponível (para troca de DSST)
-    function findNextAvailable(item, coOrganists, startIndex) {
-        for (let i = 1; i <= coOrganists.length; i++) {
-            const candidate = coOrganists[(startIndex + i) % coOrganists.length];
-            if (!isInNoPlayPeriod(candidate, item.date) && !hasDSST(candidate, item.date)) {
-                return {
-                    organist: candidate,
-                    newIndex: (startIndex + i + 1) % coOrganists.length
-                };
-            }
-        }
-        return null;
-    }
-
-    // Função auxiliar 3: Atribui parceira MH
-    function assignParceiraMH(item, coOrganist) {
-        const parceira = organists.find(org => org.name === coOrganist.parceira);
-        if (parceira && isOrganistAvailable(parceira, item.date.getDay(), item.date, 'mh')) {
-            item.mh = parceira.name;
-        } else {
-            item.mh = 'N/D';
-            item.isAdjusted = true;
-        }
-    }
-
-    // Função auxiliar 1: Resolve trocas pendentes de DSST
-    function resolvePendingSwap(item, pendingSwaps) {
-        for (let i = 0; i < pendingSwaps.length; i++) {
-            const swap = pendingSwaps[i];
-            if (isOrganistAvailable(swap.organist, item.date.getDay(), item.date, 'co')) {
-                pendingSwaps.splice(i, 1);
-                return { success: true, organist: swap.organist };
-            }
-        }
-        return { success: false };
-    }
-
-    // Função auxiliar 2: Lógica principal do CO
-    function processOrganistCO(item, coOrganists, currentIndex, pendingSwaps) {
-        const maxAttempts = coOrganists.length * 2;
-        let attempts = 0;
-        let adjusted = false;
-
-        while (attempts < maxAttempts) {
-            const candidate = coOrganists[currentIndex % coOrganists.length];
-            currentIndex = (currentIndex + 1) % coOrganists.length;
-            attempts++;
-
-            // Situação 1: Período sem tocar (pula e mantém ordem)
-            if (isInNoPlayPeriod(candidate, item.date)) {
-                continue;
-            }
-
-            // Situação 2: DSST (marca para troca)
-            if (hasDSST(candidate, item.date)) {
-                pendingSwaps.push({
-                    organist: candidate,
-                    originalDate: item.date
-                });
-                adjusted = true;
-                continue;
-            }
-
-            // Situação 3: Organista disponível
-            return {
-                organist: candidate,
-                adjusted,
-                newIndex: currentIndex
-            };
-        }
-
-        // Fallback: nenhuma organista disponível
-        return { organist: null, adjusted: true, newIndex: currentIndex };
-    }
-
-    function fillParceirasMH(scheduleByMonth) {
-        Object.values(scheduleByMonth).forEach(monthSchedule => {
-            monthSchedule.forEach(item => {
-                // Só preenche se MH estiver vazio/não definido
-                if (!item.mh || item.mh.trim() === '') {
-                    // Extrai o nome limpo da organista CO (remove ** e espaços)
-                    const coName = item.co?.replace(/\*\*/g, '').trim() || '';
-                    
-                    if (coName && coName !== 'N/D') {
-                        // Encontra a organista CO com correspondência flexível
-                        const coOrganist = organists.find(org => 
-                            org.name.trim().toLowerCase() === coName.toLowerCase()
-                        );
-                        
-                        // Se encontrou e tem parceira definida
-                        if (coOrganist?.parceira) {
-                            const parceiraName = coOrganist.parceira.trim();
-                            const parceira = organists.find(org => 
-                                org.name.trim().toLowerCase() === parceiraName.toLowerCase()
-                            );
-                            
-                            // Verificação simplificada de disponibilidade
-                            if (parceira) {
-                                item.mh = parceira.name;
-                            } else {
-                                item.mh = 'N/D';
-                                item.isAdjusted = true;
+                        if (meses === "P" && proximoMes % 2 === 1) {
+                            const MesAno = proximoMesAno(proximoMes, proximoAno);
+                            const nextMesAno = MesAno.split(';');
+                            proximoMes = nextMesAno[0];
+                            proximoAno = nextMesAno[1];
+                        } else { 
+                            if (meses == "3M1") { 
+                                while (!(proximoMes == 1 || proximoMes == 4 || proximoMes == 7 || proximoMes == 10)) {
+                                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                    const nextMesAno = MesAno.split(';');
+                                    proximoMes = nextMesAno[0];
+                                    proximoAno = nextMesAno[1];
+                                }
+                            } else { 
+                                if (meses == "3M2") {
+                                    while (!(proximoMes == 2 || proximoMes == 5 || proximoMes == 8 || proximoMes == 11)) {
+                                        const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                        const nextMesAno = MesAno.split(';');
+                                        proximoMes = nextMesAno[0];
+                                        proximoAno = nextMesAno[1];
+                                    }
+                                } else { 
+                                    if (meses == "3M3") {
+                                        while (!(proximoMes == 3 || proximoMes == 6 || proximoMes == 9 || proximoMes == 12)) {
+                                            const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                            const nextMesAno = MesAno.split(';');
+                                            proximoMes = nextMesAno[0];
+                                            proximoAno = nextMesAno[1];
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            });
-        });
-    }
-
-    // Função auxiliar 1: Verifica se é parceira de CO
-    function isParceiraDeCO(organist) {
-        return organists.some(org => org.parceira === organist.name);
-    }
-
-    // Função auxiliar 2: Lógica principal da MH
-    function processOrganistMH(item, mhOrganists, currentIndex, pendingSwaps) {
-        // A. Tenta resolver trocas pendentes primeiro
-        const resolvedSwap = resolvePendingSwapMH(item, pendingSwaps);
-        if (resolvedSwap.success) {
-            return {
-                organist: resolvedSwap.organist,
-                adjusted: true,
-                newIndex: currentIndex // Mantém o índice atual
-            };
+                //}
+            //}
+            dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+            return dataEvento;
         }
 
-        // B. Procura próxima organista disponível
-        const maxAttempts = mhOrganists.length * 2;
-        let attempts = 0;
-        let adjusted = false;
-
-        while (attempts < maxAttempts) {
-            const candidate = mhOrganists[currentIndex % mhOrganists.length];
-            currentIndex = (currentIndex + 1) % mhOrganists.length;
-            attempts++;
-
-            // Situação 1: Período sem tocar (pula e mantém ordem)
-            if (isInNoPlayPeriod(candidate, item.date)) {
-                continue;
+        // Função para alternar entre os tipos de consulta
+        function alternarTipoConsulta() {
+            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+            
+            document.getElementById('consulta-data-group').classList.add('hidden');
+            document.getElementById('consulta-casa-oracao-group').classList.add('hidden');
+            document.getElementById('consulta-encarregado-local-group').classList.add('hidden');
+            document.getElementById('consulta-encarregado-regional-group').classList.add('hidden');
+            
+            if (tipoConsulta === 'data') {
+                document.getElementById('consulta-data-group').classList.remove('hidden');
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            } else if (tipoConsulta === 'CasaOracao') {
+                document.getElementById('consulta-casa-oracao-group').classList.remove('hidden');
+                limparTabela();
+            } else if (tipoConsulta === 'encarregado-local') {
+                document.getElementById('consulta-encarregado-local-group').classList.remove('hidden');
+                limparTabela();
+            } else if (tipoConsulta === 'encarregado-regional') {
+                document.getElementById('consulta-encarregado-regional-group').classList.remove('hidden');
+                limparTabela();
             }
+        }
 
-            // Situação 2: DSST (marca para troca)
-            if (hasDSST(candidate, item.date)) {
-                pendingSwaps.push({
-                    organist: candidate,
-                    originalDate: item.date
+        // Função para limpar a tabela
+        function limparTabela() {
+            const tabela = document.querySelector('#tabela-eventos tbody');
+            tabela.innerHTML = '';
+        }
+
+        // Função para consultar por Casa de Oracao CCB
+
+function consultarPorCasaOracao() {
+    const termo = document.getElementById('casa-oracao-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome da Casa de Oração CCB.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            let localSemAcento = TiraAcento(local)
+            if (localSemAcento.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+                    // Linha principal
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+                    
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para esta Casa de Oração CCB.";
+        cell.className = "no-events";
+    //} else {
+    //    MostrarMsg();
+    }
+}
+
+
+        // Função para consultar por Encarregado Regional
+function consultarPorEncarregadoRegional() {
+    const termo = document.getElementById('encarregado-regional-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome do Encarregado Regional.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            let encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional)
+
+            if (encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+                    
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para este Encarregado Regional.";
+        cell.className = "no-events";
+    //} else {
+    //    MostrarMsg();
+    }
+}
+
+// Função para alternar os detalhes - VERSÃO DEBUG
+function toggleDetalhes(index) {
+    const detalhes = document.getElementById(`detalhes-${index}`);
+    const expandirBtn = document.querySelector(`#evento-${index} .btn-expandir`);
+    
+    if (!detalhes || !expandirBtn) return;
+    
+    if (detalhes.classList.contains('visible')) {
+        detalhes.classList.remove('visible');
+        expandirBtn.textContent = '+';
+    } else {
+        document.querySelectorAll('.detalhes-content.visible').forEach(d => {
+            d.classList.remove('visible');
+            const otherIndex = d.id.split('-')[1];
+            const otherBtn = document.querySelector(`#evento-${otherIndex} .btn-expandir`);
+            if (otherBtn) otherBtn.textContent = '+';
+        });
+        
+        detalhes.classList.add('visible');
+        expandirBtn.textContent = '-';
+    }
+}
+        // Função para abrir o Maps
+        function abrirMaps(localizacao) {
+            if (localizacao) {
+                window.open("https://maps.app.goo.gl/" + localizacao, "_blank");
+            }
+        }
+
+        // Função para formatar data como dd/mm/aaaa
+        function formatarData(data) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        // Função para obter o nome do dia da semana
+        function getDiaSemana(data) {
+            const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            let NumeroSemana = ""
+           if (data.getDate() <= 7) {
+                NumeroSemana = "1";
+           } else if (data.getDate() <= 14) {
+                NumeroSemana = "2";
+           } else if (data.getDate() <= 21) {
+                NumeroSemana = "3";
+           } else if (data.getDate() <= 28) {
+                NumeroSemana = "4";
+           } else {
+                NumeroSemana = "5";
+           }
+           let Ordem = "ª"
+           if (data.getDay() == 0 || data.getDay() == 6) {
+                Ordem = "º";
+           }
+
+            return NumeroSemana + Ordem + " " + dias[data.getDay()];
+        }
+
+        // Função para preencher o select com as datas
+        function preencherSelectDatas() {
+            const select = document.getElementById('data-select');
+            const hoje = new Date();
+            
+            select.innerHTML = '';
+            
+            for (let i = 0; i < 62; i++) {
+                const data = new Date(hoje);
+                data.setDate(hoje.getDate() + i);
+                
+                const dataFormatada = formatarData(data);
+                const diaSemana = getDiaSemana(data);
+                
+                const option = document.createElement('option');
+                option.value = dataFormatada + "|" + diaSemana;
+                option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
+                
+                if (i === 0) {
+                    option.selected = true;
+                }
+                
+                select.appendChild(option);
+            }
+        }
+
+        // Função CORRIGIDA para calcular a data do evento
+        function calcularDataEvento(descricao, mes, ano) {
+            const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
+            if (!match) return null;
+            
+            const ordem = parseInt(match[1]);
+            let diaSemana = match[2].trim().toUpperCase();
+            
+            diaSemana = diaSemana
+                .replace(/-/g, ' ')
+                .replace(/FEIRA/g, '')
+                .trim();
+            
+            const diasMap = {
+                'DOMINGO': 0,
+                'SEGUNDA': 1,
+                'TERÇA': 2, 'TERCA': 2,
+                'QUARTA': 3,
+                'QUINTA': 4,
+                'SEXTA': 5,
+                'SÁBADO': 6, 'SABADO': 6
+            };
+
+            const diaNum = diasMap[diaSemana];
+            if (diaNum === undefined) return null;
+
+            let data = new Date(ano, mes - 1, 1);
+            let contador = 0;
+            
+            while (data.getMonth() === mes - 1) {
+                if (data.getDay() === diaNum) {
+                    contador++;
+                    if (contador === ordem) {
+                        return new Date(data);
+                    }
+                }
+                data.setDate(data.getDate() + 1);
+            }
+            return null;
+        }
+
+        // Função para gerar a tabela por data
+        function gerarTabelaPorData(dataInformada) {
+            const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+            const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+            const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+            
+            if (checkboxes.length === 0) {
+                alert("Nenhuma cidade foi selecionada.");
+                return;
+            }
+            
+            let cidades = "|";
+            
+            checkboxes.forEach((checkbox) => {
+                cidades += `|${checkbox.value}|`;
+            });
+            const tabela = document.querySelector('#tabela-eventos tbody');
+            tabela.innerHTML = '';
+
+            const [diaStr, mesStr, anoStr] = dataInformada.split('/');
+            const dia = parseInt(diaStr);
+            const mes = parseInt(mesStr);
+            const ano = parseInt(anoStr);
+            const ultimoDia = new Date(ano, mes, 0).getDate();
+            
+            let encontrouEventos = false;
+            let index = 0;
+
+            dados.forEach(item => {
+                try {
+                    const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+                    
+                    if (!deveExibirMes(mes, meses)) {
+                        return;
+                    }
+                    
+                    let dataEvento = ""
+                    if ((dia >= 22 && dia <= 28)) {
+                        if (dia + 7 > ultimoDia) {
+                            dataEvento = calcularDataEvento(descricaoDia.replace("5ª", "4ª").replace("5º", "4º"), mes, ano);
+                        } else {
+                            dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                        }
+                    } else {
+                        dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    }   
+                    
+                    if (dataEvento && 
+                        dataEvento.getDate() === dia &&
+                        dataEvento.getMonth() === mes - 1 &&
+                        dataEvento.getFullYear() === ano) {
+                        
+                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                            const dataFormatada = dataInformada;
+
+                            // Linha principal
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+                            
+                            // Detalhes (MÉTODO CORRIGIDO)
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                            index++;
+                            encontrouEventos = true;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Erro ao processar item:", item, e);
+                }
+            });
+
+            if (!encontrouEventos) {
+                const row = tabela.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 5;
+                cell.textContent = "Nenhum ensaio encontrado para esta data.";
+                cell.className = "no-events";
+            //} else {
+                //console.log("bbbbb")
+                //MostrarMsg();
+            }
+        }
+
+        //function MostrarMsg()  { 
+        //
+        //    const tooltip = document.getElementById('infoTooltip');
+        //    tooltip.classList.add('visible');
+        //    setTimeout(() => {
+        //        tooltip.classList.remove('visible');
+        //    }, 4000);
+        // }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            preencherSelectDatas();
+            
+            document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
+                radio.addEventListener('change', alternarTipoConsulta);
+            });
+            
+            document.getElementById('btn-consultar-casa-oracao').addEventListener('click', consultarPorCasaOracao);
+            document.getElementById('btn-consultar-encarregado-local').addEventListener('click', consultarPorEncarregadoLocal);
+            document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', consultarPorEncarregadoRegional);
+            
+            document.getElementById('btn-listar').addEventListener('click', () => {
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            });
+            document.getElementById('casa-oracao-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorCasaOracao();
+                }
+            });
+            document.getElementById('encarregado-local-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorEncarregadoLocal();
+                }
+            });
+            document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorEncarregadoRegional();
+                }
+            });
+            CriaMenu()
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            //gerarTabelaPorData(dataSelecionada);
+            
+            document.getElementById('data-select').addEventListener('change', (e) => {
+                if (document.getElementById('consulta-data').checked) {
+                    const dataSelecionada = e.target.value.split('|')[0];
+                    gerarTabelaPorData(dataSelecionada);
+                }
+            });
+
+            // Controles do menu
+            const menuBtn = document.getElementById('menu-btn');
+            const overlay = document.getElementById('overlay');
+            
+            function toggleMenu() {
+                document.body.classList.toggle('menu-aberto');
+            }
+            
+            menuBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+        });
+        
+        function AlteraCidade() {
+            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+            
+            if (tipoConsulta === 'data') {
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            } else if (tipoConsulta === 'CasaOracao') {
+                consultarPorCasaOracao();
+            } else if (tipoConsulta === 'encarregado-local') {
+                consultarPorEncarregadoLocal();
+            } else if (tipoConsulta === 'encarregado-regional') {
+                consultarPorEncarregadoRegional();
+            }
+        }
+
+function consultarPorEncarregadoLocal() {
+    const termo = document.getElementById('encarregado-local-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome do Encarregado Local.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            encarregadoLocalSemAcento = TiraAcento(encarregadoLocal)
+            if (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para este Encarregado Local.";
+        cell.className = "no-events";
+    //} else {
+    //    MostrarMsg();
+    }
+}
+
+    function dataString(dataFormatada) {
+        // Divide a string dd/mm/aaaa
+        const partes = dataFormatada.split('/');
+        const dia = partes[0];
+        const mes = parseInt(partes[1]) - 1; // -1 porque meses começam em 0
+        const ano = partes[2];
+        
+        // Array com abreviações dos meses
+        const meses = [
+            'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN',
+            'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'
+        ];
+        
+        return `${dia} ${meses[mes]}`;
+    }
+ 
+function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
+    const detalhesRow = tabela.insertRow();
+    detalhesRow.className = 'detalhes-content';
+    detalhesRow.id = `detalhes-${index}`;
+    const detalhesCell = detalhesRow.insertCell(0);
+    detalhesCell.colSpan = 5;
+    let complemento = ""
+    if (meses == "I") complemento = " - Meses Impares"
+    if (meses == "P") complemento = " - Meses Pares"
+    if (meses == "3M1") complemento = " - Meses JAN,<BR>ABR, JUL e OUT"
+    if (meses == "3M2") complemento = " - Meses FEV,<BR>MAI, AGO e NOV"
+    if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
+
+
+    
+    detalhesCell.innerHTML = `
+        <table>
+            <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
+                <td>Data Ensaio</td>
+                <td>Hora</td>
+                <td>Enc Local</td>
+                <td>Enc Regional</td>
+                <td rowspan="2" valign="center"><button class="btn-maps" onclick="abrirMaps('${localizacao}')"><div class="vertical-text">MAPS</div></button></td>
+            </tr>
+            <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
+                <td>${descricaoDia}${complemento}</td>
+                <td>${horario === "T" ? "17:00" : "19:30"}</td>
+                <td>${encarregadoLocal || 'Não informado'}</td>
+                <td>${encarregadoRegional || 'Não informado'}</td>
+            </tr>
+        </table>`;
+        ordemDistancia = true;
+        trocaSeta()
+}
+
+    function proximoMesAno(proximoMes, proximoAno) {
+        proximoMes = parseInt(proximoMes) + 1;
+        if (proximoMes > 12) {
+            proximoMes = 1;
+            proximoAno = proximoAno + 1;
+        }
+        return proximoMes + ";" + proximoAno;
+    }
+
+    function CriaMenu(){
+        let HTML /*= `<div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox" onclick="AlteraCidade()" checked>Todas
+                </label>
+            </div>`*/
+        for (let i = 0; i < setor.length; i++) {
+            let setorSplit = setor[i].split(';');
+            HTML += `<div class="filtro-opcao">
+                <label class="combobox-option">
+                    <input type="checkbox"  name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked>${setorSplit[1]}
+                </label>
+            </div>`
+        }
+        document.getElementById('setor').innerHTML = HTML
+    }
+
+    function TiraAcento(Texto) {
+        return Texto.normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[ºª]/g, '')           // Remove símbolos de ordem
+        .replace(/[^\w\s]/g, ' ')       // Substitui outros símbolos por espaço
+        .replace(/\s+/g, ' ')           // Normaliza espaços
+        .toLowerCase()
+        .trim(); 
+    }
+
+// Função para calcular distância usando a fórmula de Haversine
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Raio da Terra em quilômetros
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distância em km
+}
+
+// Função atualizada para criar linha principal da tabela
+function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon) {
+    const row = tabela.insertRow();
+    row.id = `evento-${index}`;
+    row.insertCell(0).innerHTML = local;
+    row.insertCell(1).innerHTML = cidade;
+    
+    // Cálculo da distância
+    //console.log(minhaLat);
+    const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
+
+    let distanciaAtual = minhaLat != 0 ? `${distanciaKm.toFixed(1)} km` : "";
+    row.insertCell(2).textContent = distanciaAtual;
+    
+    row.insertCell(3).textContent = dataString(dataFormatada);
+    //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
+    const acoesCell = row.insertCell(4);
+    acoesCell.style.textAlign = "center";
+    
+    const expandirBtn = document.createElement('button');
+    expandirBtn.className = 'btn-expandir';
+    expandirBtn.textContent = '+';
+    const indexTemp = index;
+    expandirBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleDetalhes(indexTemp);
+    };
+    acoesCell.appendChild(expandirBtn);
+}    
+
+    let ordemDistancia = true; // true = A-Z, false = Z-A
+    function trocaSeta(){
+        const tabela = document.getElementById('tabela-eventos');
+        const tbody = tabela.querySelector('tbody');
+        const todasLinhas = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Separar linhas de evento e seus detalhes
+        const eventosComDetalhes = [];
+        
+        for (let i = 0; i < todasLinhas.length; i++) {
+            const linha = todasLinhas[i];
+            
+            if (linha.id.startsWith('evento-')) {
+                // Encontrar a linha de detalhes correspondente
+                const idNum = linha.id.split('-')[1];
+                const detalhes = document.getElementById(`detalhes-${idNum}`);
+                
+                eventosComDetalhes.push({
+                    evento: linha,
+                    detalhes: detalhes
                 });
-                adjusted = true;
-                continue;
-            }
-
-            // Situação 3: Organista disponível
-            return {
-                organist: candidate,
-                adjusted,
-                newIndex: currentIndex
-            };
-        }
-
-        // Fallback: nenhuma organista disponível
-        return { organist: null, adjusted: true, newIndex: currentIndex };
-    }
-
-    // Função auxiliar 3: Resolve trocas pendentes de DSST para MH
-    function resolvePendingSwapMH(item, pendingSwaps) {
-        for (let i = 0; i < pendingSwaps.length; i++) {
-            const swap = pendingSwaps[i];
-            if (isOrganistAvailable(swap.organist, item.date.getDay(), item.date, 'mh')) {
-                pendingSwaps.splice(i, 1);
-                return { success: true, organist: swap.organist };
             }
         }
-        return { success: false };
-    }
-
-    function saveScheduleToPDF() {
-        // Verifica se há dados para exportar
-        if (Object.keys(currentSchedule).length === 0) {
-            alert('Por favor, gere o rodízio primeiro');
-            return;
-        }
-
-        // Cria novo documento PDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-            orientation: 'landscape',
-            unit: 'mm'
+        
+        // Ordenar pela distancia (terceira coluna, índice 2)
+        eventosComDetalhes.sort((a, b) => {
+            let distanciaA = a.evento.cells[2].textContent.trim().toLowerCase();
+            distanciaA = distanciaA.replace(',', '.').replace(' km', '')
+            distanciaA = parseFloat(distanciaA) || 0;
+            let distanciaB = b.evento.cells[2].textContent.trim().toLowerCase();
+            distanciaB = distanciaB.replace(',', '.').replace(' km', '')
+            distanciaB = parseFloat(distanciaB) || 0;
+            //alert(distanciaB)
+            //parseFloat("9,7 km".replace(',', '.'))            
+            
+            // Usar localeCompare para ordenação correta em português
+            const comparacao = distanciaA- distanciaB;
+            
+            return ordemDistancia ? comparacao : -comparacao;
         });
-
-        // Configurações do documento
-        let yPosition = 15;
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const margin = 10;
-
-        // Adiciona título
-        doc.setFontSize(16);
-        doc.setTextColor(40);
-        doc.text('RODÍZIO DE ORGANISTAS CCB', pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 10;
-
-        // Configurações da tabela
-        const headers = [['Dia', 'Dia Semana', 'Meia Hora', 'Culto Oficial', 'RJM']];
-        const tableConfig = {
-            startY: yPosition,
-            head: headers,
-            theme: 'grid',
-            headStyles: {
-                fillColor: [41, 128, 185],
-                textColor: 255,
-                fontStyle: 'bold'
-            },
-            columnStyles: {
-                0: { cellWidth: 15 },
-                1: { cellWidth: 25 },
-                2: { cellWidth: 35 },
-                3: { cellWidth: 35 },
-                4: { cellWidth: 35 }
-            },
-            didDrawPage: function(data) {
-                // Adiciona número de página
-                doc.setFontSize(10);
-                doc.setTextColor(100);
-                doc.text(
-                    `Página ${data.pageCount}`,
-                    pageWidth - margin,
-                    doc.internal.pageSize.getHeight() - 10,
-                    { align: 'right' }
-                );
-            }
-        };
-
-        // Adiciona cada mês ao PDF
-        Object.entries(currentSchedule).forEach(([monthYear, schedule]) => {
-            // Adiciona cabeçalho do mês
-            doc.setFontSize(14);
-            doc.setTextColor(0, 0, 0);
-            doc.text(monthYear.toUpperCase(), margin, yPosition);
-            yPosition += 10;
-
-            // Prepara dados da tabela
-            const tableData = schedule.map(item => [
-                item.day.toString().padStart(2, '0'),
-                item.dayName,
-                item.mh || '',
-                item.co || '',
-                item.rjm || ''
-            ]);
-
-            // Adiciona tabela ao documento
-            doc.autoTable({
-                ...tableConfig,
-                body: tableData,
-                startY: yPosition
-            });
-
-            // Atualiza posição Y e adiciona nova página se necessário
-            yPosition = doc.lastAutoTable.finalY + 10;
-            if (yPosition > doc.internal.pageSize.getHeight() - 20) {
-                doc.addPage();
-                yPosition = 15;
+        
+        // Reconstruir o tbody na nova ordem
+        tbody.innerHTML = '';
+        eventosComDetalhes.forEach(item => {
+            tbody.appendChild(item.evento);
+            if (item.detalhes) {
+                tbody.appendChild(item.detalhes);
             }
         });
-
-        // Salva o PDF
-        doc.save(`Rodizio_Organistas_CCB_${new Date().toLocaleDateString('pt-BR')}.pdf`);
+        
+        // Atualizar a seta
+        const seta = document.getElementById('Seta');
+        seta.innerHTML = ordemDistancia ? "▲" : "▼";
+        
+        // Alternar ordem para próxima vez
+        ordemDistancia = !ordemDistancia;
     }
 
+let minhaLat = 0;
+let minhaLon = 0;
+
+// Função que retorna uma Promise para a geolocalização
+function getLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    minhaLat = position.coords.latitude;
+                    minhaLon = position.coords.longitude;
+                    resolve({ minhaLat, minhaLon });
+                },
+                (error) => {
+                    console.error("Erro na geolocalização:", error);
+                    reject(error);
+                }
+            );
+        } else {
+            reject(new Error("Geolocalização não suportada"));
+        }
+    });
+}
+
+// Função principal que inicializa tudo
+async function initApp() {
+    try {
+        console.log("Obtendo localização...");
+        await getLocation();
+        console.log(`Localização obtida: ${minhaLat}, ${minhaLon}`);
+        //aqui
+        
+    } catch (error) {
+        console.error("Falha ao obter localização:", error);
+        // Pode usar uma localização padrão ou pedir manualmente
+        usarLocalizacaoPadrao();
+    }
+}
 
 </script>
 </body>
