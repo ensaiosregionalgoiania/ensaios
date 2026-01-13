@@ -26,7 +26,7 @@
             "Jardim Nova Esperança;Goiânia;1º DOMINGO;T;Y1sZAuF7Td5gjHtUA;3;;;T;-16.6423409;-49.3289845;DN 3N 6N;08/02/2026",
             "Jardim Liberdade;Goiânia;1º DOMINGO;T;8jnsTy5LySrqKVzP7;4;Carlos de Souza;Davi Borges;T;-16.6147859;-49.3421297;DN 2N 6N;",
             "Jardim Guanabara;Goiânia;1º DOMINGO;T;TAjbgKfYSEVyUPVr5;5;;;T;-16.6196841;-49.211197;DN 4N SN;13/12/2026",
-            "Jardim América;Goiânia;1º DOMINGO;T;aFi4SSMVq3qz5bsh8;2;Moacir;André;T;-16.7075614;-49.2857044;DN 3N 5N;", //
+            "Jardim América;Goiânia;2º DOMINGO;T;aFi4SSMVq3qz5bsh8;2;Moacir;André;T;-16.7075614;-49.2857044;DN 3N 5N;", //
             "<B>Guapó - Central</B>;<B>Guapó</B>;1º DOMINGO;<B>T</B>;UmoNQHrabx42qfyM7;7;;;T;-16.8325333;-49.53504;DN 4N;18/10/2026",
             "<B>Abadia de GoiáS - Central</B>;<B>Abadia</B>;1º DOMINGO;<B>T</B>;TgHBjRy7r7cwX2up8;7;;;T;-16.7663505;-49.4273011;DN 3N 5N;19/07/2026",
             "Carolina Parque;Goiânia;1º DOMINGO;T;eJzMbXYnWATf43Vy5;3;;;T;-16.7310459;-49.4522408;DN 3N 5N;",
