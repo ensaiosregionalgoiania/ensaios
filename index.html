@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -588,7 +589,7 @@
         </div>
     </a>
     <div class="container">
-        <h1>Ensaio Local</h1>
+        <h1 id="Titulo">Ensaio Local</h1>
         <!-- Container melhorado para as consultas -->
         <div class="consultas-container">
             <div class="consultas-titulo">Consulta por:</div>
@@ -596,20 +597,20 @@
             <!-- Radio buttons para escolher o tipo de consulta -->
             <div class="radio-group">
                 <div class="radio-option">
-                    <input type="radio" id="consulta-data" name="tipo-consulta" value="data" checked>
+                    <input type="radio" id="consulta-data" name="tipo-consulta" value="data" checked onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
                     <label for="consulta-data">Data</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="consulta-CasaOracao" name="tipo-consulta" value="CasaOracao">
+                    <input type="radio" id="consulta-CasaOracao" name="tipo-consulta" value="CasaOracao" onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
                     <label for="consulta-CasaOracao">Casa de Oração</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local">
-                    <label for="consulta-encarregado-local">Enc. Local</label>
+                    <input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local" onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
+                    <label for="consulta-encarregado-local">Encarregado</label>
                 </div>
-                <div class="radio-option">
-                    <input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional">
-                    <label for="consulta-encarregado-regional">Enc. Regional</label>
+                <div class="radio-option" style="border-color: rgb(255, 1, 1);">
+                    <input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional" onchange="document.getElementById('Titulo').innerText='Ensaio Regional'">
+                    <label for="consulta-encarregado-regional"><b>Ensaio Regional</b></label>
                 </div>
             </div>
         </div>
@@ -659,6 +660,30 @@
 <script src="setor.js"></script>
 
 <script>
+        /*const dados = [
+            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;<B>T</B>;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;22/03/2026",
+            "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
+            "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;<B>T</B>;cbaHom1Dz6uJrsG39;6;Alex Flávio;Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN;14/06/2026",
+            "Setor dos Bandeirantes;Aparecida;1º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
+            "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N;",
+            "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N;20/04/2026", //aqui
+            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;Gustavo Rodrigo;;T;-16.8256386;-49.229775;DN 4N;",
+            "Bairro Independência;Aparecida;1º DOMINGO;T;d58NBSKruwc735pA9;6;Roberto Santana;Odário;T;-16.8080739;-49.3235699;DN 3N SN;01/05/2026",
+            "Vila São José;Goiânia;1º DOMINGO;T;5kdjpLgQreAGofYKA;5;;;T;-16.6596485;-49.299886;DN 3N 5N;"
+        ];
+
+        const setor = [
+            "1;Goiânia-Setor 1",
+            "2;Goiânia-Setor 2",
+            "3;Goiânia-Setor 3",
+            "4;Goiânia-Setor 4",
+            "5;Goiânia-Setor 5",
+            "6;Aparecida",
+            "7;Trindade",
+            "8;Senador Canedo",
+            "9;S L Montes Belos",
+            "10;Inhumas"
+        ];*/
 
         // Função para verificar se um mês deve ser exibido baseado na configuração de meses
         function deveExibirMes(mes, configMeses) {
@@ -1138,7 +1163,7 @@ function toggleDetalhes(index) {
             
             document.getElementById('btn-consultar-casa-oracao').addEventListener('click', consultarPorCasaOracao);
             document.getElementById('btn-consultar-encarregado-local').addEventListener('click', consultarPorEncarregadoLocal);
-            document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', consultarPorEncarregadoRegional);
+            document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', gerarTabelaPorEnsaioRegional);
             
             document.getElementById('btn-listar').addEventListener('click', () => {
                 const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
@@ -1156,7 +1181,7 @@ function toggleDetalhes(index) {
             });
             document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    consultarPorEncarregadoRegional();
+                    gerarTabelaPorEnsaioRegional();
                 }
             });
             CriaMenu()
@@ -1194,7 +1219,8 @@ function toggleDetalhes(index) {
             } else if (tipoConsulta === 'encarregado-local') {
                 consultarPorEncarregadoLocal();
             } else if (tipoConsulta === 'encarregado-regional') {
-                consultarPorEncarregadoRegional();
+                alert("a")
+                gerarTabelaPorEnsaioRegional();
             }
         }
 
@@ -1228,8 +1254,10 @@ function consultarPorEncarregadoLocal() {
     dados.forEach(item => {
         try {
             const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            //aqui
             encarregadoLocalSemAcento = TiraAcento(encarregadoLocal)
-            if (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo)) {
+            encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional)
+            if (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo) || encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo)) {
                 if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
@@ -1368,13 +1396,17 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
     
     // Cálculo da distância
     //console.log(minhaLat);
+
     const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
 
     let distanciaAtual = minhaLat != 0 ? `${distanciaKm.toFixed(1)} km` : "";
     row.insertCell(2).textContent = distanciaAtual;
-    
-    row.insertCell(3).textContent = dataString(dataFormatada);
-    //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
+    if (document.getElementById('consulta-encarregado-regional').checked == false) {
+        row.insertCell(3).textContent = dataString(dataFormatada);
+    } else {
+        row.insertCell(3).textContent = dataFormatada;
+    }
+        //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
     const acoesCell = row.insertCell(4);
     acoesCell.style.textAlign = "center";
     
@@ -1415,19 +1447,36 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
         
         // Ordenar pela distancia (terceira coluna, índice 2)
         eventosComDetalhes.sort((a, b) => {
-            let distanciaA = a.evento.cells[2].textContent.trim().toLowerCase();
-            distanciaA = distanciaA.replace(',', '.').replace(' km', '')
-            distanciaA = parseFloat(distanciaA) || 0;
-            let distanciaB = b.evento.cells[2].textContent.trim().toLowerCase();
-            distanciaB = distanciaB.replace(',', '.').replace(' km', '')
-            distanciaB = parseFloat(distanciaB) || 0;
+            let valorA, valorB;
+            if (document.getElementById('consulta-encarregado-regional').checked == false) {
+                let distanciaA = a.evento.cells[2].textContent.trim().toLowerCase();
+                distanciaA = distanciaA.replace(',', '.').replace(' km', '')
+                distanciaA = parseFloat(distanciaA) || 0;
+                //console.log(distanciaA)
+                //console.log(document.getElementById('consulta-encarregado-regional').checked)
+                let distanciaB = b.evento.cells[2].textContent.trim().toLowerCase();
+                distanciaB = distanciaB.replace(',', '.').replace(' km', '')
+                distanciaB = parseFloat(distanciaB) || 0;
+            } else {
+                // Para Ensaio Regional: ordenar por data (formato dd/mm/aaaa)
+                const partesA = a.evento.cells[3].textContent.split('/');
+                const partesB = b.evento.cells[3].textContent.split('/');
+                
+                // Criar objeto Date para comparação
+                const dataA = new Date(partesA[2], partesA[1] - 1, partesA[0]);
+                const dataB = new Date(partesB[2], partesB[1] - 1, partesB[0]);
+                
+                valorA = dataA.getTime();
+                valorB = dataB.getTime();
+            }
+            
             //alert(distanciaB)
             //parseFloat("9,7 km".replace(',', '.'))            
             
             // Usar localeCompare para ordenação correta em português
-            const comparacao = distanciaA- distanciaB;
+            //const comparacao = distanciaA - distanciaB;
             
-            return ordemDistancia ? comparacao : -comparacao;
+            return ordemDistancia ? valorA - valorB : valorB - valorA;
         });
         
         // Reconstruir o tbody na nova ordem
@@ -1483,6 +1532,72 @@ async function initApp() {
         console.error("Falha ao obter localização:", error);
         // Pode usar uma localização padrão ou pedir manualmente
         usarLocalizacaoPadrao();
+    }
+}
+
+function gerarTabelaPorEnsaioRegional() {
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+    const hoje = new Date(new Date().setHours(0, 0, 0, 0)); // Data atual sem horas
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = item.split(';');
+            
+            if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
+                // Verificar se a data do ensaio regional é futura
+                const partesData = dataEnsaioRegional.split('/');
+                if (partesData.length === 3) {
+                    const dia = parseInt(partesData[0]);
+                    const mes = parseInt(partesData[1]) - 1; // Meses começam em 0
+                    const ano = parseInt(partesData[2]);
+                    const dataEvento = new Date(ano, mes, dia);
+                    
+                    // Comparar apenas data (ignorar horas)
+                    dataEvento.setHours(0, 0, 0, 0);
+                    
+                    // Verificar se é data futura ou é hoje
+                    if (dataEvento >= hoje) {
+                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                            // Linha principal
+                            LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario, lat, lon)
+
+                            // Detalhes
+                            const dataFormatada = dataEnsaioRegional; // Usar a mesma data
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                            index++;
+                            encontrouEventos = true;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio regional futuro encontrado.";
+        cell.className = "no-events";
     }
 }
 
