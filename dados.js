@@ -16,7 +16,7 @@
             "Setor Madre Germana 2;Goiânia;1º DOMINGO;T;JfvWA4JTasNrqzTo9;2;Welliton;André;T;-16.8167904;-49.3738204;DN 5N SN;12/04/2026",
             "Setor Faiçalville;Goiânia;1º DOMINGO;T;BnQwHq2mhdCuNmsf7;2;Josimar;Huiwerson;T;-16.7332701;-49.3194884;DN 3N 6N;",
             "Setor Bela Vista;Goiânia;1º DOMINGO;T;6FfuP1QrYMLrrHXm8;1;;;T;-16.7310459;-49.4522408;DN 3T 4N SN;15/03/2026", //
-            "Setor Coimbra;Goiânia;1º DOMINGO;T;AHA4PNhtdDhWqMP76;4;Euzébio Marcelino;Davi Borges;T;-16.6804397;-49.290128;DN 3N 6N;21/06/2026",
+            "Setor Coimbra;Goiânia;1º DOMINGO;T;AHA4PNhtdDhWqMP76;4;Euzébio Marcelino;Davi Borges;T;-16.6804397;-49.290128;DN 3N 6N;14/06/2026",
             "Setor Alphaville II;Goiânia;1º DOMINGO;T;VJfWLbqyQPxEaRhm6;3;;;T;-16.7334585;-49.3795188;DN 2N 5N;",
             "Residencial Itaipu;Goiânia;1º DOMINGO;T;meFED6rqGuhwh9pE7;2;Fábio Augusto;Pedro Pimenta;T;-16.779655;-49.3649108;DN 4N;",
             "Residencial Brisas da Mata;Goiânia;1º DOMINGO;T;MvRbJroWVEVyQyo3A;4;Lourenço de Sousa;Túlio Marcos;T;-16.5942494;-49.3056839;DN 2N 5N;",
@@ -97,7 +97,7 @@
             "Setor Criméia Leste;Goiânia;2ª SEGUNDA-FEIRA;N;BpjzdrtJ2dDbwLjKA;5;;;T;-16.6452838;-49.2583937;DN 5N;",
             "Parque Los Angeles I;Goianira;2ª SEGUNDA-FEIRA;N;nGUY8PSRHYXz8qJ67;7;;;T;-16.5195012;-49.4109269;DN 5N SN;",
             "Capuava;Goiânia;2ª SEGUNDA-FEIRA;N;VSSC4zA2MYhZCbm26;3;;;T;-16.6585788;-49.3254611;DN 4T 5N SN;24/05/2026",
-            "Vila Rosa1;Goiânia;2ª TERÇA-FEIRA;N;1cFS7ezbQ3qPUWDy7;2;Joilson;Isaque;T;-16.7453343;-49.2996847;DN 4N 6N;",
+            "Vila Rosa;Goiânia;2ª TERÇA-FEIRA;N;1cFS7ezbQ3qPUWDy7;2;Joilson;Isaque;T;-16.7453343;-49.2996847;DN 4N 6N;",
             "Residencial Fonte das Águas;Goiânia;2ª TERÇA-FEIRA;N;aVP46SN2a81qnUxz6;4;Acrício Vieira;Davi Borges;T;-16.6037414;-49.4505603;DN 5N;",
             "Fama - Setor Marechal Rondon;Goiânia;2ª TERÇA-FEIRA;N;5TyhAmrtwvYnvwfw8;5;;;T;-16.7310459;-49.4522408;DM DN 4N SN;26/04/2026", //
             "Jardim Itapoã;Aparecida;2ª TERÇA-FEIRA;N;MEfkGCz8dp56TEL79;6;Mizael Balduíno;;T;-16.7899094;-49.2982941;DN 6N;",
