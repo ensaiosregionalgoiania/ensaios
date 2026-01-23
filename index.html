@@ -87,9 +87,10 @@
         }
         
         .input-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 15px; 
+            gap: 15px;       
         }
         
         label {
@@ -114,7 +115,7 @@
             margin-bottom: 10px;
         }
         
-        button {
+        .botao-consultar-imprimir {
             padding: 12px;
             color: white;
             border: none;
@@ -122,28 +123,18 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
-        }
-        
-        #btn-listar {
-            background-color: #3498db;
-        }
-        
-        #btn-consultar-casa-oracao, 
-        #btn-consultar-encarregado-local,
-        #btn-consultar-encarregado-regional {
             background-color: #27ae60;
         }
         
-        #btn-listar:hover {
-            background-color: #2980b9;
+        .botao-consultar-imprimir:hover {
+            background-color: #3498db;
         }
-        
-        #btn-consultar-casa-oracao:hover,
-        #btn-consultar-encarregado-local:hover,
-        #btn-consultar-encarregado-regional:hover {
-            background-color: #219a52;
+
+        .botao-consultar-imprimir:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
-        
+
         .error {
             color: #e74c3c;
             font-size: 0.9rem;
@@ -263,11 +254,6 @@
             .container {
                 max-width: 800px;
                 padding: 20px;
-            }
-            
-            .input-group {
-                flex-direction: row;
-                align-items: center;
             }
             
             label {
@@ -565,6 +551,112 @@
             letter-spacing: 2px;
             font-size: 12px;
         }
+
+/* Estilos para impressão */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    .container, .container * {
+        visibility: visible;
+    }
+    
+    .container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        box-shadow: none;
+    }
+    
+    /* Ocultar elementos não necessários na impressão */
+    .menu1, .suporte, .overlay, .menu-lateral,
+    .consultas-container, .input-group, #error-msg,
+    .btn-expandir, .btn-maps {
+        display: none !important;
+    }
+    
+    /* Mostrar todos os detalhes na impressão */
+    .detalhes-content {
+        display: table-row !important;
+        visibility: visible !important;
+        page-break-inside: avoid;
+    }
+    
+    /* Ajustar tabela para impressão */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+    }
+    
+    th, td {
+        padding: 4px;
+        border: 1px solid #000;
+    }
+    
+    th {
+        background-color: #ddd !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Ajustar detalhes para impressão */
+    .detalhes-container {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        padding: 10px;
+    }
+    
+    .detalhe-item {
+        min-width: auto;
+    }
+    
+    /* Remover cores de fundo */
+    tr:nth-child(even) {
+        background-color: transparent !important;
+    }
+    
+    /* Ajustar layout dos detalhes na tabela */
+    .detalhes-content td {
+        border: 1px solid #ccc;
+    }
+    
+    /* Cabeçalho da impressão */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+    }
+    
+    .print-title {
+        font-size: 14pt;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .print-date {
+        font-size: 10pt;
+        color: #666;
+    }
+    
+    /* Quebra de página */
+    .page-break {
+        page-break-before: always;
+    }
+    
+    h1 {
+        color: #000 !important;
+        font-size: 12pt;
+    }
+}        
 </style>
 
 </head>
@@ -608,7 +700,7 @@
                     <input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local" onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
                     <label for="consulta-encarregado-local">Encarregado</label>
                 </div>
-                <div class="radio-option" style="border-color: rgb(255, 1, 1);">
+                <div class="radio-option">
                     <input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional" onchange="document.getElementById('Titulo').innerText='Ensaio Regional'">
                     <label for="consulta-encarregado-regional"><b>Ensaio Regional</b></label>
                 </div>
@@ -617,26 +709,30 @@
 
         <!-- Consulta por Data -->
         <div id="consulta-data-group" class="input-group">
-            <select id="data-select"></select>
-            <button id="btn-listar">Listar</button>
+            <select id="data-select" style="width: 40%;"></select>
+            <button id="btn-listar" class="botao-consultar-imprimir" style="width: 10%;">Consultar</button>
+            <button id="btn-imprimir-data" class="botao-consultar-imprimir" style="width: 10%;" disabled>Imprimir</button>
         </div>
 
         <!-- Consulta por Casa de Oração CCB -->
         <div id="consulta-casa-oracao-group" class="input-group hidden">
             <input type="text" id="casa-oracao-input" placeholder="Digite o nome da Casa de Oração CCB">
-            <button id="btn-consultar-casa-oracao">Consultar</button>
+            <button id="btn-consultar-casa-oracao" class="botao-consultar-imprimir" style="width: 10%;">Consultar</button>
+            <button id="btn-imprimir-casa-oracao" class="botao-consultar-imprimir" style="width: 10%;" disabled>Imprimir</button>
         </div>
 
         <!-- Consulta por Encarregado Local -->
         <div id="consulta-encarregado-local-group" class="input-group hidden">
             <input type="text" id="encarregado-local-input" placeholder="Digite o nome do Encarregado Local">
-            <button id="btn-consultar-encarregado-local">Consultar</button>
+            <button id="btn-consultar-encarregado-local" class="botao-consultar-imprimir" style="width: 10%;">Consultar</button>
+            <button id="btn-imprimir-encarregado-local" class="botao-consultar-imprimir" style="width: 10%;" disabled>Imprimir</button>
         </div>
 
         <!-- Consulta por Encarregado Regional -->
         <div id="consulta-encarregado-regional-group" class="input-group hidden">
-            <input type="text" id="encarregado-regional-input" placeholder="Digite o nome do Encarregado Regional">
-            <button id="btn-consultar-encarregado-regional">Consultar</button>
+            <input type="text" id="encarregado-regional-input" placeholder="Digite o nome do Encarregado Regional" style="visibility:hidden;">
+            <button id="btn-consultar-encarregado-regional" class="botao-consultar-imprimir" style="width: 10%;">Consultar</button>
+            <button id="btn-imprimir-ensaio-regional" class="botao-consultar-imprimir" style="width: 10%;" disabled>Imprimir</button>
         </div>
 
         <span id="error-msg" class="error"></span>
@@ -816,7 +912,7 @@ function consultarPorCasaOracao() {
         alert("Por favor, digite o nome da Casa de Oração CCB.");
         return;
     }
-    
+    document.getElementById('btn-imprimir-casa-oracao').disabled = false;
     const tabela = document.querySelector('#tabela-eventos tbody');
     tabela.innerHTML = '';
 
@@ -873,6 +969,8 @@ function consultarPorCasaOracao() {
 
         // Função para consultar por Encarregado Regional
 function consultarPorEncarregadoRegional() {
+    document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
+
     const termo = document.getElementById('encarregado-regional-input').value.trim().toUpperCase();
     
     if (!termo) {
@@ -1064,6 +1162,7 @@ function toggleDetalhes(index) {
 
         // Função para gerar a tabela por data
         function gerarTabelaPorData(dataInformada) {
+            document.getElementById('btn-imprimir-data').disabled = false;
             const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
             const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
             const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
@@ -1166,6 +1265,7 @@ function toggleDetalhes(index) {
             document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', gerarTabelaPorEnsaioRegional);
             
             document.getElementById('btn-listar').addEventListener('click', () => {
+                //document.getElementById('btn-imprimir').disabled = false;
                 const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
                 gerarTabelaPorData(dataSelecionada);
             });
@@ -1181,9 +1281,17 @@ function toggleDetalhes(index) {
             });
             document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
+                    document.getElementById('btn-imprimir').disabled = false;
                     gerarTabelaPorEnsaioRegional();
                 }
             });
+
+    document.getElementById('btn-imprimir-data').addEventListener('click', imprimirTabelaAtual);
+    document.getElementById('btn-imprimir-casa-oracao').addEventListener('click', imprimirTabelaAtual);
+    document.getElementById('btn-imprimir-encarregado-local').addEventListener('click', imprimirTabelaAtual);
+    document.getElementById('btn-imprimir-ensaio-regional').addEventListener('click', imprimirTabelaAtual);
+
+
             CriaMenu()
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
             //gerarTabelaPorData(dataSelecionada);
@@ -1231,7 +1339,8 @@ function consultarPorEncarregadoLocal() {
         alert("Por favor, digite o nome do Encarregado Local.");
         return;
     }
-    
+    document.getElementById('btn-imprimir-encarregado-local').disabled = false;
+
     const tabela = document.querySelector('#tabela-eventos tbody');
     tabela.innerHTML = '';
     const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
@@ -1536,6 +1645,8 @@ async function initApp() {
 }
 
 function gerarTabelaPorEnsaioRegional() {
+    document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
+    //aa
     const tabela = document.querySelector('#tabela-eventos tbody');
     tabela.innerHTML = '';
     const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
@@ -1601,6 +1712,232 @@ function gerarTabelaPorEnsaioRegional() {
     }
 }
 
+// Função para imprimir a tabela atual
+function imprimirTabelaAtual() {
+    // Determinar qual tipo de consulta está ativa
+    const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+    let titulo = '';
+    let filtro = '';
+    
+    switch(tipoConsulta) {
+        case 'data':
+            const dataSelecionada = document.getElementById('data-select').value;
+            const [data, diaSemana] = dataSelecionada.split('|');
+            titulo = `Ensaio Local - Data: ${data} (${diaSemana})`;
+            break;
+        case 'CasaOracao':
+            const casa = document.getElementById('casa-oracao-input').value;
+            titulo = `Ensaio Local - Casa de Oração: ${casa}`;
+            filtro = casa ? `Filtro: ${casa}` : '';
+            break;
+        case 'encarregado-local':
+            const encarregadoLocal = document.getElementById('encarregado-local-input').value;
+            titulo = `Ensaio Local - Encarregado Local: ${encarregadoLocal}`;
+            filtro = encarregadoLocal ? `Filtro: ${encarregadoLocal}` : '';
+            break;
+        case 'encarregado-regional':
+            const encarregadoRegional = document.getElementById('encarregado-regional-input').value;
+            titulo = `Ensaio Regional - Encarregado Regional: ${encarregadoRegional}`;
+            filtro = encarregadoRegional ? `Filtro: ${encarregadoRegional}` : '';
+            break;
+    }
+    
+    // Obter cidades selecionadas
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    let cidadesSelecionadas = [];
+    checkboxes.forEach(cb => {
+        const label = cb.parentElement.textContent.trim();
+        cidadesSelecionadas.push(label);
+    });
+    
+    // Criar janela de impressão
+    const janelaImpressao = window.open('', '_blank');
+    
+    // Montar o HTML para impressão
+    const htmlImpressao = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Impressão - Ensaio Local</title>
+            <meta charset="UTF-8">
+            <style>
+                @page {
+                    size: auto;
+                    margin: 15mm;
+                }
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-size: 10pt;
+                    line-height: 1.4;
+                    color: #000;
+                    margin: 0;
+                    padding: 0;
+                }
+                .print-header {
+                    text-align: center;
+                    margin-bottom: 15px;
+                    border-bottom: 2px solid #000;
+                    padding-bottom: 10px;
+                }
+                .print-title {
+                    font-size: 14pt;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+                .print-subtitle {
+                    font-size: 11pt;
+                    margin-bottom: 10px;
+                    color: #555;
+                }
+                .print-info {
+                    font-size: 9pt;
+                    margin-bottom: 15px;
+                    color: #777;
+                }
+                .print-date {
+                    font-size: 9pt;
+                    text-align: right;
+                    margin-bottom: 10px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                    font-size: 9pt;
+                }
+                th, td {
+                    border: 1px solid #000;
+                    padding: 4px 6px;
+                    text-align: left;
+                    vertical-align: top;
+                }
+                th {
+                    background-color: #f0f0f0;
+                    font-weight: bold;
+                }
+                .detalhes-row td {
+                    border-top: none;
+                    padding: 8px;
+                    background-color: #f9f9f9;
+                }
+                .detalhes-table {
+                    width: 100%;
+                    border: none;
+                }
+                .detalhes-table td {
+                    border: 1px solid #ccc;
+                    padding: 3px;
+                }
+                .no-print {
+                    display: none;
+                }
+                .page-break {
+                    page-break-before: always;
+                }
+                .print-footer {
+                    margin-top: 20px;
+                    font-size: 8pt;
+                    color: #666;
+                    text-align: center;
+                    border-top: 1px solid #ccc;
+                    padding-top: 5px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="print-header">
+                <div class="print-title">${titulo}</div>
+                ${filtro ? `<div class="print-subtitle">${filtro}</div>` : ''}
+                <div class="print-info">
+                    Cidades: ${cidadesSelecionadas.join(', ') || 'Todas'}
+                </div>
+                <div class="print-date">
+                    Impresso em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th width="25%">Local</th>
+                        <th width="15%">Cidade</th>
+                        <th width="10%">Distância</th>
+                        <th width="15%">Data</th>
+                        <th width="35%">Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${gerarConteudoImpressao()}
+                </tbody>
+            </table>
+            
+            <div class="print-footer">
+                Sistema Ensaio Local - Impressão gerada automaticamente
+            </div>
+        </body>
+        </html>
+    `;
+    
+    // Escrever o HTML na nova janela e imprimir
+    janelaImpressao.document.write(htmlImpressao);
+    janelaImpressao.document.close();
+    
+    // Aguardar carregamento antes de imprimir
+    setTimeout(() => {
+        janelaImpressao.print();
+        janelaImpressao.close();
+    }, 500);
+}
+
+// Função para gerar o conteúdo da tabela para impressão
+function gerarConteudoImpressao() {
+    const tbody = document.querySelector('#tabela-eventos tbody');
+    const linhas = tbody.querySelectorAll('tr');
+    let html = '';
+    let contador = 0;
+    
+    for (let i = 0; i < linhas.length; i++) {
+        const linha = linhas[i];
+        
+        // Verificar se é uma linha de evento (não de detalhes)
+        if (linha.id && linha.id.startsWith('evento-')) {
+            const celulas = linha.cells;
+            const idEvento = linha.id.split('-')[1];
+            
+            // Obter os detalhes correspondentes
+            const detalhes = document.getElementById(`detalhes-${idEvento}`);
+            let detalhesHTML = '';
+            
+            if (detalhes) {
+                const detalhesCelula = detalhes.cells[0];
+                detalhesHTML = detalhesCelula.innerHTML
+                    .replace(/class="[^"]*"/g, '') // Remover classes
+                    .replace(/style="[^"]*"/g, '') // Remover estilos inline
+                    .replace(/<button[^>]*>.*?<\/button>/g, '') // Remover botões
+                    .replace(/onclick="[^"]*"/g, ''); // Remover onclick
+            }
+            
+            html += `
+                <tr>
+                    <td>${celulas[0].innerHTML}</td>
+                    <td>${celulas[1].textContent}</td>
+                    <td>${celulas[2].textContent}</td>
+                    <td>${celulas[3].textContent}</td>
+                    <td>${detalhesHTML}</td>
+                </tr>
+            `;
+            
+            contador++;
+            
+            // Adicionar quebra de página a cada 20 itens
+            if (contador % 20 === 0) {
+                html += '<tr class="page-break"></tr>';
+            }
+        }
+    }
+    
+    return html;
+}
 </script>
 </body>
 </html>
