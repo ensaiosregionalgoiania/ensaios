@@ -94,7 +94,7 @@
             "Conj Vera Cruz II;Goiânia;2º DOMINGO;T;NqdAXaUcVfFszREh8;3;Ítallo;José Humberto;T;-16.6759677;-49.3852949;DN 4N 6N;07/06/2026",
             "Abadia de Goiás - Rec dos Dourados;Abadia;2º DOMINGO;T;mN3ME7NYVVikaa2u5;7;;;T;-16.821665;-49.398595;DN 4N;",
             "Jardim dos Buritis;Aparecida;2ª SEGUNDA-FEIRA;N;TayGSqjSSEow244m8;6;Osires Elias;;T;-16.7681759;-49.236295;DN 4N 6N;",
-            "Setor Criméia Leste;Goiânia;2ª SEGUNDA-FEIRA;N;BpjzdrtJ2dDbwLjKA;5;;;T;-16.6452838;-49.2583937;DN 5N;",
+            "Setor Criméia Leste;Goiânia;2ª SEGUNDA-FEIRA;N;BpjzdrtJ2dDbwLjKA;5;Darciano Gonçalves;Doralino;T;-16.6452838;-49.2583937;DN 5N;",
             "Parque Los Angeles I;Goianira;2ª SEGUNDA-FEIRA;N;nGUY8PSRHYXz8qJ67;7;;;T;-16.5195012;-49.4109269;DN 5N SN;",
             "Capuava;Goiânia;2ª SEGUNDA-FEIRA;N;VSSC4zA2MYhZCbm26;3;;;T;-16.6585788;-49.3254611;DN 4T 5N SN;24/05/2026",
             "Vila Rosa;Goiânia;2ª TERÇA-FEIRA;N;1cFS7ezbQ3qPUWDy7;2;Joilson;Isaque;T;-16.7453343;-49.2996847;DN 4N 6N;",
