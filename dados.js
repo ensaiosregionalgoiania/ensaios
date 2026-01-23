@@ -102,7 +102,7 @@
             "Fama - Setor Marechal Rondon;Goiânia;2ª TERÇA-FEIRA;N;5TyhAmrtwvYnvwfw8;5;;;T;-16.7310459;-49.4522408;DM DN 4N SN;26/04/2026", //
             "Jardim Itapoã;Aparecida;2ª TERÇA-FEIRA;N;MEfkGCz8dp56TEL79;6;Mizael Balduíno;;T;-16.7899094;-49.2982941;DN 6N;",
             "Parque Flamboyant;Aparecida;2ª QUARTA-FEIRA;N;p1cv8v1pXmtsUyiq8;6;Gideon;;T;-16.7408375;-49.2197766;DN 2N 5N;08/02/2026",
-            "Vila Roriz - Urias Magalhães 2;Goiânia;2ª QUARTA-FEIRA;N;YwXrcBbGEWvqpZb87;5;;;T;-16.6393546;-49.265602;2N 5N;",
+            "Vila Roriz - Urias Magalhães 2;Goiânia;4º DOMINGO;T;YwXrcBbGEWvqpZb87;5;Tales;Doralino;T;-16.6393546;-49.265602;2N 5N;",
             "Setor São Judas Tadeu;Goiânia;2ª QUARTA-FEIRA;N;z7SA5X6QjFSF47D89;5;;;T;-16.617153;-49.2478092;DN 2N 6N;",
             "Setor Santa Genoveva;Goiânia;2ª QUARTA-FEIRA;N;uYp9wBLFHeQJf1rWA;5;;;T;-16.6298706;-49.2355763;DN 6N;",
             "Jardim Novo Mundo;Goiânia;2ª QUARTA-FEIRA;N;t193qgTKffUqQhDF7;1;;;T;-16.6894674;-49.2286619;DN 3N 5N;24/05/2026",
