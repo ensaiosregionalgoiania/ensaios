@@ -1716,7 +1716,6 @@ function gerarTabelaPorEnsaioRegional() {
 
 // Versão simplificada que funciona em todos os celulares
 function imprimirTabelaAtual() {
-    alert("ok")
     try {
         // Determinar qual tipo de consulta está ativa
         const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
@@ -1730,7 +1729,7 @@ function imprimirTabelaAtual() {
                 titulo = 'Ensaio Local por Casa de Oração';
                 break;
             case 'encarregado-local':
-                titulo = 'Ensaio Local por Encarregado';
+                titulo = 'Ensaio Local por Encarregado Local';
                 break;
             case 'encarregado-regional':
                 titulo = 'Ensaio Regional';
@@ -1745,38 +1744,85 @@ function imprimirTabelaAtual() {
                 <meta charset="UTF-8">
                 <title>${titulo}</title>
                 <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; }
-                    h1 { color: #2c3e50; text-align: center; }
-                    .info { margin-bottom: 20px; text-align: center; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                    th { background-color: #3498db; color: white; padding: 8px; }
-                    td { border: 1px solid #ddd; padding: 6px; }
-                    .detalhes { background-color: #f9f9f9; font-size: 0.9em; }
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        margin: 15px;
+                        font-size: 12px;
+                    }
+                    h1 { 
+                        color: #2c3e50; 
+                        text-align: center;
+                        margin-bottom: 10px;
+                    }
+                    .header-info {
+                        text-align: center;
+                        margin-bottom: 20px;
+                        color: #666;
+                        font-size: 11px;
+                    }
+                    .main-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    .main-table th {
+                        background-color: #3498db;
+                        color: white;
+                        padding: 8px;
+                        text-align: left;
+                        border: 1px solid #2980b9;
+                    }
+                    .main-table td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        vertical-align: top;
+                    }
+                    .details-section {
+                        margin: 10px 0;
+                        padding: 10px;
+                        background-color: #f8f9fa;
+                        border: 1px solid #dee2e6;
+                        border-radius: 4px;
+                    }
+                    .details-title {
+                        font-weight: bold;
+                        color: #2c3e50;
+                        margin-bottom: 5px;
+                        font-size: 11px;
+                    }
+                    .details-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 10px;
+                    }
+                    .details-table td {
+                        border: 1px solid #ccc;
+                        padding: 5px;
+                    }
+                    .details-label {
+                        background-color: #e9ecef;
+                        font-weight: bold;
+                        width: 25%;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        font-size: 10px;
+                        color: #6c757d;
+                    }
                 </style>
             </head>
             <body>
                 <h1>${titulo}</h1>
-                <div class="info">
-                    <p>Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+                <div class="header-info">
+                    Gerado em: ${new Date().toLocaleString('pt-BR')}
                 </div>
         `;
-        
-        // Adicionar tabela
-        html += `<table>
-            <thead>
-                <tr>
-                    <th>Local</th>
-                    <th>Cidade</th>
-                    <th>Distância</th>
-                    <th>Data</th>
-                    <th>Detalhes</th>
-                </tr>
-            </thead>
-            <tbody>`;
         
         // Coletar dados da tabela
         const tbody = document.querySelector('#tabela-eventos tbody');
         const linhas = tbody.querySelectorAll('tr');
+        let contador = 0;
         
         for (let i = 0; i < linhas.length; i++) {
             const linha = linhas[i];
@@ -1784,34 +1830,84 @@ function imprimirTabelaAtual() {
             if (linha.id && linha.id.startsWith('evento-')) {
                 const celulas = linha.cells;
                 const idEvento = linha.id.split('-')[1];
-                
-                let detalhes = '';
                 const detalhesElem = document.getElementById(`detalhes-${idEvento}`);
+                
+                // Adicionar linha principal
+                html += `
+                <table class="main-table">
+                    <tr>
+                        <td width="25%"><strong>Local:</strong><br>${celulas[0].textContent}</td>
+                        <td width="15%"><strong>Cidade:</strong><br>${celulas[1].textContent}</td>
+                        <!--<td width="10%"><strong>Distância:</strong><br>${celulas[2].textContent}</td>-->
+                        <td width="15%"><strong>Data:</strong><br>${celulas[3].textContent}</td>
+                    </tr>
+                </table>`;
+                
+                // Adicionar detalhes se existirem
                 if (detalhesElem) {
-                    detalhes = detalhesElem.querySelector('td').textContent;
+                    const tabelaDetalhes = detalhesElem.querySelector('table');
+                    if (tabelaDetalhes) {
+                        const linhasDetalhes = tabelaDetalhes.querySelectorAll('tr');
+                        
+                        if (linhasDetalhes.length >= 2) {
+                            const titulos = linhasDetalhes[0].querySelectorAll('td');
+                            const valores = linhasDetalhes[1].querySelectorAll('td');
+                            
+                            html += `<div class="details-section">
+                                <!--<div class="details-title">Detalhes do Ensaio</div>-->
+                                <table class="details-table">`;
+                            
+                            // Criar linhas para cada campo de detalhe
+                            titulos.forEach((tituloCell, index) => {
+                                if (index < valores.length) {
+                                    const tituloTexto = tituloCell.textContent.trim();
+                                    const valorTexto = valores[index].textContent.trim();
+                                    
+                                    // Separar os dados específicos
+                                    let valorFormatado = valorTexto;
+                                    
+                                    // Para a célula de "Data Ensaio", separar descrição e complemento
+                                    if (tituloTexto === "Data Ensaio" && valorTexto.includes('-')) {
+                                        const partes = valorTexto.split('-');
+                                        valorFormatado = partes[0].trim();
+                                        if (partes[1]) {
+                                            valorFormatado += '<br><em>' + partes[1].trim() + '</em>';
+                                        }
+                                    }
+                                    
+                                    html += `<tr>
+                                        <td class="details-label">${tituloTexto}</td>
+                                        <td>${valorFormatado}</td>
+                                    </tr>`;
+                                }
+                            });
+                            
+                            html += `</table></div>`;
+                        }
+                    }
                 }
                 
-                html += `<tr>
-                    <td>${celulas[0].textContent}</td>
-                    <td>${celulas[1].textContent}</td>
-                    <td>${celulas[2].textContent}</td>
-                    <td>${celulas[3].textContent}</td>
-                    <td class="detalhes">${detalhes}</td>
-                </tr>`;
+                html += `<hr style="margin: 20px 0; border: none; border-top: 1px dashed #ccc;">`;
+                contador++;
             }
         }
         
-        html += `</tbody></table></body></html>`;
+        // Rodapé
+        html += `
+            <div class="footer">
+                Total de registros: ${contador} | Sistema Ensaio Local
+            </div>
+        </body>
+        </html>`;
         
-        // Abrir em nova janela para impressão/PDF
+        // Abrir em nova janela
         const janela = window.open('', '_blank');
         janela.document.write(html);
         janela.document.close();
         
-        // Aguardar e imprimir/gerar PDF
+        // Gerar PDF/Imprimir
         setTimeout(() => {
             janela.print();
-            // janela.close(); // Opcional: fechar após imprimir
         }, 500);
         
     } catch (error) {
@@ -1819,6 +1915,7 @@ function imprimirTabelaAtual() {
         alert('Erro ao gerar relatório.');
     }
 }
+
 </script>
 </body>
 </html>
