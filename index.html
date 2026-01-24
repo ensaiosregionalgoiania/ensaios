@@ -754,6 +754,8 @@
     </div>
 <script src="dados.js"></script>
 <script src="setor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
         /*const dados = [
@@ -1712,231 +1714,110 @@ function gerarTabelaPorEnsaioRegional() {
     }
 }
 
-// Função para imprimir a tabela atual
+// Versão simplificada que funciona em todos os celulares
 function imprimirTabelaAtual() {
-    // Determinar qual tipo de consulta está ativa
-    const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
-    let titulo = '';
-    let filtro = '';
-    
-    switch(tipoConsulta) {
-        case 'data':
-            const dataSelecionada = document.getElementById('data-select').value;
-            const [data, diaSemana] = dataSelecionada.split('|');
-            titulo = `Ensaio Local - Data: ${data} (${diaSemana})`;
-            break;
-        case 'CasaOracao':
-            const casa = document.getElementById('casa-oracao-input').value;
-            titulo = `Ensaio Local - Casa de Oração: ${casa}`;
-            filtro = casa ? `Filtro: ${casa}` : '';
-            break;
-        case 'encarregado-local':
-            const encarregadoLocal = document.getElementById('encarregado-local-input').value;
-            titulo = `Ensaio Local - Encarregado Local: ${encarregadoLocal}`;
-            filtro = encarregadoLocal ? `Filtro: ${encarregadoLocal}` : '';
-            break;
-        case 'encarregado-regional':
-            const encarregadoRegional = document.getElementById('encarregado-regional-input').value;
-            titulo = `Ensaio Regional - Encarregado Regional: ${encarregadoRegional}`;
-            filtro = encarregadoRegional ? `Filtro: ${encarregadoRegional}` : '';
-            break;
-    }
-    
-    // Obter cidades selecionadas
-    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
-    let cidadesSelecionadas = [];
-    checkboxes.forEach(cb => {
-        const label = cb.parentElement.textContent.trim();
-        cidadesSelecionadas.push(label);
-    });
-    
-    // Criar janela de impressão
-    const janelaImpressao = window.open('', '_blank');
-    
-    // Montar o HTML para impressão
-    const htmlImpressao = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Impressão - Ensaio Local</title>
-            <meta charset="UTF-8">
-            <style>
-                @page {
-                    size: auto;
-                    margin: 15mm;
-                }
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    font-size: 10pt;
-                    line-height: 1.4;
-                    color: #000;
-                    margin: 0;
-                    padding: 0;
-                }
-                .print-header {
-                    text-align: center;
-                    margin-bottom: 15px;
-                    border-bottom: 2px solid #000;
-                    padding-bottom: 10px;
-                }
-                .print-title {
-                    font-size: 14pt;
-                    font-weight: bold;
-                    margin-bottom: 5px;
-                }
-                .print-subtitle {
-                    font-size: 11pt;
-                    margin-bottom: 10px;
-                    color: #555;
-                }
-                .print-info {
-                    font-size: 9pt;
-                    margin-bottom: 15px;
-                    color: #777;
-                }
-                .print-date {
-                    font-size: 9pt;
-                    text-align: right;
-                    margin-bottom: 10px;
-                }
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-top: 10px;
-                    font-size: 9pt;
-                }
-                th, td {
-                    border: 1px solid #000;
-                    padding: 4px 6px;
-                    text-align: left;
-                    vertical-align: top;
-                }
-                th {
-                    background-color: #f0f0f0;
-                    font-weight: bold;
-                }
-                .detalhes-row td {
-                    border-top: none;
-                    padding: 8px;
-                    background-color: #f9f9f9;
-                }
-                .detalhes-table {
-                    width: 100%;
-                    border: none;
-                }
-                .detalhes-table td {
-                    border: 1px solid #ccc;
-                    padding: 3px;
-                }
-                .no-print {
-                    display: none;
-                }
-                .page-break {
-                    page-break-before: always;
-                }
-                .print-footer {
-                    margin-top: 20px;
-                    font-size: 8pt;
-                    color: #666;
-                    text-align: center;
-                    border-top: 1px solid #ccc;
-                    padding-top: 5px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="print-header">
-                <div class="print-title">${titulo}</div>
-                ${filtro ? `<div class="print-subtitle">${filtro}</div>` : ''}
-                <div class="print-info">
-                    Cidades: ${cidadesSelecionadas.join(', ') || 'Todas'}
-                </div>
-                <div class="print-date">
-                    Impresso em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
-                </div>
-            </div>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th width="25%">Local</th>
-                        <th width="15%">Cidade</th>
-                        <th width="10%">Distância</th>
-                        <th width="15%">Data</th>
-                        <th width="35%">Detalhes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${gerarConteudoImpressao()}
-                </tbody>
-            </table>
-            
-            <div class="print-footer">
-                Sistema Ensaio Local - Impressão gerada automaticamente
-            </div>
-        </body>
-        </html>
-    `;
-    
-    // Escrever o HTML na nova janela e imprimir
-    janelaImpressao.document.write(htmlImpressao);
-    janelaImpressao.document.close();
-    
-    // Aguardar carregamento antes de imprimir
-    setTimeout(() => {
-        janelaImpressao.print();
-        janelaImpressao.close();
-    }, 500);
-}
-
-// Função para gerar o conteúdo da tabela para impressão
-function gerarConteudoImpressao() {
-    const tbody = document.querySelector('#tabela-eventos tbody');
-    const linhas = tbody.querySelectorAll('tr');
-    let html = '';
-    let contador = 0;
-    
-    for (let i = 0; i < linhas.length; i++) {
-        const linha = linhas[i];
+    alert("ok")
+    try {
+        // Determinar qual tipo de consulta está ativa
+        const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+        let titulo = '';
         
-        // Verificar se é uma linha de evento (não de detalhes)
-        if (linha.id && linha.id.startsWith('evento-')) {
-            const celulas = linha.cells;
-            const idEvento = linha.id.split('-')[1];
-            
-            // Obter os detalhes correspondentes
-            const detalhes = document.getElementById(`detalhes-${idEvento}`);
-            let detalhesHTML = '';
-            
-            if (detalhes) {
-                const detalhesCelula = detalhes.cells[0];
-                detalhesHTML = detalhesCelula.innerHTML
-                    .replace(/class="[^"]*"/g, '') // Remover classes
-                    .replace(/style="[^"]*"/g, '') // Remover estilos inline
-                    .replace(/<button[^>]*>.*?<\/button>/g, '') // Remover botões
-                    .replace(/onclick="[^"]*"/g, ''); // Remover onclick
-            }
-            
-            html += `
+        switch(tipoConsulta) {
+            case 'data':
+                titulo = 'Ensaio Local por Data';
+                break;
+            case 'CasaOracao':
+                titulo = 'Ensaio Local por Casa de Oração';
+                break;
+            case 'encarregado-local':
+                titulo = 'Ensaio Local por Encarregado';
+                break;
+            case 'encarregado-regional':
+                titulo = 'Ensaio Regional';
+                break;
+        }
+        
+        // Criar HTML para PDF
+        let html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>${titulo}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { color: #2c3e50; text-align: center; }
+                    .info { margin-bottom: 20px; text-align: center; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th { background-color: #3498db; color: white; padding: 8px; }
+                    td { border: 1px solid #ddd; padding: 6px; }
+                    .detalhes { background-color: #f9f9f9; font-size: 0.9em; }
+                </style>
+            </head>
+            <body>
+                <h1>${titulo}</h1>
+                <div class="info">
+                    <p>Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+                </div>
+        `;
+        
+        // Adicionar tabela
+        html += `<table>
+            <thead>
                 <tr>
-                    <td>${celulas[0].innerHTML}</td>
+                    <th>Local</th>
+                    <th>Cidade</th>
+                    <th>Distância</th>
+                    <th>Data</th>
+                    <th>Detalhes</th>
+                </tr>
+            </thead>
+            <tbody>`;
+        
+        // Coletar dados da tabela
+        const tbody = document.querySelector('#tabela-eventos tbody');
+        const linhas = tbody.querySelectorAll('tr');
+        
+        for (let i = 0; i < linhas.length; i++) {
+            const linha = linhas[i];
+            
+            if (linha.id && linha.id.startsWith('evento-')) {
+                const celulas = linha.cells;
+                const idEvento = linha.id.split('-')[1];
+                
+                let detalhes = '';
+                const detalhesElem = document.getElementById(`detalhes-${idEvento}`);
+                if (detalhesElem) {
+                    detalhes = detalhesElem.querySelector('td').textContent;
+                }
+                
+                html += `<tr>
+                    <td>${celulas[0].textContent}</td>
                     <td>${celulas[1].textContent}</td>
                     <td>${celulas[2].textContent}</td>
                     <td>${celulas[3].textContent}</td>
-                    <td>${detalhesHTML}</td>
-                </tr>
-            `;
-            
-            contador++;
-            
-            // Adicionar quebra de página a cada 20 itens
-            if (contador % 20 === 0) {
-                html += '<tr class="page-break"></tr>';
+                    <td class="detalhes">${detalhes}</td>
+                </tr>`;
             }
         }
+        
+        html += `</tbody></table></body></html>`;
+        
+        // Abrir em nova janela para impressão/PDF
+        const janela = window.open('', '_blank');
+        janela.document.write(html);
+        janela.document.close();
+        
+        // Aguardar e imprimir/gerar PDF
+        setTimeout(() => {
+            janela.print();
+            // janela.close(); // Opcional: fechar após imprimir
+        }, 500);
+        
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao gerar relatório.');
     }
-    
-    return html;
 }
 </script>
 </body>
