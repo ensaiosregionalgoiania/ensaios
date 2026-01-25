@@ -349,10 +349,10 @@
         
         .menu-lateral h2 {
             color: #fff;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
             text-align: center;
-            font-size: 1.4rem;
-            padding-bottom: 10px;
+            font-size: 18px;
+            padding-bottom: 5px;
             border-bottom: 1px solid #495057;
         }
         
@@ -1458,10 +1458,10 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     }
 
     function CriaMenu(){
-        let HTML 
+        let HTML = ""
         for (let i = 0; i < setor.length; i++) {
             let setorSplit = setor[i].split(';');
-            HTML += `<div class="filtro-opcao" style="height: 12px;">
+            HTML += `<div class="filtro-opcao" style="height: 15px;">
                 <label>
                     <input type="checkbox"  name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked style="height: 10px;">${setorSplit[1]}
                 </label>
