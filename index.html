@@ -1823,79 +1823,45 @@ function imprimirTabelaAtual() {
         const tbody = document.querySelector('#tabela-eventos tbody');
         const linhas = tbody.querySelectorAll('tr');
         let contador = 0;
-        
+        html += `
+        <table class="main-table">
+            <tr>
+                <td><strong>Local:</strong></td>
+                <td><strong>Cidade:</strong></td>
+                <td><strong>Data:</strong></td>
+                <td><strong>Dia Ensaio:</strong></td>
+                <td><strong>Hora Ensaio:</strong></td>
+                <td><strong>Encarregado Local:</strong></td>
+                <td><strong>Encarregado Regional:</strong></td>
+            </tr>`;
+        let Quantidade = 0
         for (let i = 0; i < linhas.length; i++) {
             const linha = linhas[i];
-            
-            if (linha.id && linha.id.startsWith('evento-')) {
-                const celulas = linha.cells;
-                const idEvento = linha.id.split('-')[1];
-                const detalhesElem = document.getElementById(`detalhes-${idEvento}`);
-                
-                // Adicionar linha principal
+            const celulasPrimeiraLinha = linha.querySelectorAll('td');
+            if (i % 4 === 0) {
                 html += `
-                <table class="main-table">
                     <tr>
-                        <td width="25%"><strong>Local:</strong><br>${celulas[0].textContent}</td>
-                        <td width="15%"><strong>Cidade:</strong><br>${celulas[1].textContent}</td>
-                        <!--<td width="10%"><strong>Distância:</strong><br>${celulas[2].textContent}</td>-->
-                        <td width="15%"><strong>Data:</strong><br>${celulas[3].textContent}</td>
-                    </tr>
-                </table>`;
-                
-                // Adicionar detalhes se existirem
-                if (detalhesElem) {
-                    const tabelaDetalhes = detalhesElem.querySelector('table');
-                    if (tabelaDetalhes) {
-                        const linhasDetalhes = tabelaDetalhes.querySelectorAll('tr');
-                        
-                        if (linhasDetalhes.length >= 2) {
-                            const titulos = linhasDetalhes[0].querySelectorAll('td');
-                            const valores = linhasDetalhes[1].querySelectorAll('td');
-                            
-                            html += `<div class="details-section">
-                                <!--<div class="details-title">Detalhes do Ensaio</div>-->
-                                <table class="details-table">`;
-                            
-                            // Criar linhas para cada campo de detalhe
-                            titulos.forEach((tituloCell, index) => {
-                                if (index < valores.length) {
-                                    const tituloTexto = tituloCell.textContent.trim();
-                                    const valorTexto = valores[index].textContent.trim();
-                                    
-                                    // Separar os dados específicos
-                                    let valorFormatado = valorTexto;
-                                    
-                                    // Para a célula de "Data Ensaio", separar descrição e complemento
-                                    if (tituloTexto === "Data Ensaio" && valorTexto.includes('-')) {
-                                        const partes = valorTexto.split('-');
-                                        valorFormatado = partes[0].trim();
-                                        if (partes[1]) {
-                                            valorFormatado += '<br><em>' + partes[1].trim() + '</em>';
-                                        }
-                                    }
-                                    
-                                    html += `<tr>
-                                        <td class="details-label">${tituloTexto}</td>
-                                        <td>${valorFormatado}</td>
-                                    </tr>`;
-                                }
-                            });
-                            
-                            html += `</table></div>`;
-                        }
-                    }
-                }
-                
-                html += `<hr style="margin: 20px 0; border: none; border-top: 1px dashed #ccc;">`;
-                contador++;
-            }
+                        <td>${celulasPrimeiraLinha[0].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[1].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[3].innerHTML}</td>`;
+            }    
+            if (i % 4 === 1) {
+                 html += `
+                        <td>${celulasPrimeiraLinha[6].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[7].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[8].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[9].innerHTML}</td>
+                    </tr>`;
+                    Quantidade += 1
+            } 
         }
-        
+        html += `
+        </table>`;
+
         // Rodapé
         html += `
             <div class="footer">
-                Total de registros: ${contador} | Sistema Ensaio Local
+                Total de registros: ${Quantidade} | Sistema Ensaio Local
             </div>
         </body>
         </html>`;
