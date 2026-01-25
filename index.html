@@ -1329,7 +1329,6 @@ function toggleDetalhes(index) {
             } else if (tipoConsulta === 'encarregado-local') {
                 consultarPorEncarregadoLocal();
             } else if (tipoConsulta === 'encarregado-regional') {
-                alert("a")
                 gerarTabelaPorEnsaioRegional();
             }
         }
@@ -1459,16 +1458,12 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     }
 
     function CriaMenu(){
-        let HTML /*= `<div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox" onclick="AlteraCidade()" checked>Todas
-                </label>
-            </div>`*/
+        let HTML 
         for (let i = 0; i < setor.length; i++) {
             let setorSplit = setor[i].split(';');
-            HTML += `<div class="filtro-opcao">
-                <label class="combobox-option">
-                    <input type="checkbox"  name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked>${setorSplit[1]}
+            HTML += `<div class="filtro-opcao" style="height: 12px;">
+                <label>
+                    <input type="checkbox"  name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked style="height: 10px;">${setorSplit[1]}
                 </label>
             </div>`
         }
