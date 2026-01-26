@@ -133,7 +133,7 @@
             "Residencial Solange Parque III;Goiânia;3º DOMINGO;T;grD9H9zX5hc8TJWD8;3;;;T;-16.7310459;-49.4522408;DN 2N 5N;",
             "Residencial Vale dos Sonhos;Goiânia;3º DOMINGO;T;FEUpPPMPR1k337E27;5;;;T;-16.5988021;-49.2043578;DN 3N;",
             "Setor Gentil Meireles;Goiânia;3º DOMINGO;T;THhmWwk9CepizSS6A;5;;;T;-16.6498496;-49.2865026;DN 4N 6N;",
-            "Residencial Barra Vento;Goiânia;3º DOMINGO;T;mDHg64SGZM5z1Rd16;4;Santil Tomaz;Túlio Marcos;T;-16.6232582;-49.3063065;DN 3N 6N;08/11/2026",
+            "Residencial BarraVento;Goiânia;3º DOMINGO;T;mDHg64SGZM5z1Rd16;4;Santil Tomaz;Túlio Marcos;T;-16.6232582;-49.3063065;DN 3N 6N;08/11/2026",
             "Parque Maracanã;Goiânia;3º DOMINGO;T;CxBqm41inwY99xPz8;4;Marcelo Mello;Davi Borges;T;-16.6134904;-49.3570018;DN 3N;",
             "Privê das Oliveiras;Goiânia;3º DOMINGO;T;DJD9PxZ3N6uWYSvy5;2;Bruno Rodrigues;André;T;-16.8184213;-49.3799289;2N 6N;",
             "Água Branca;Goiânia;3º DOMINGO;T;2YothebbxUbFvadD6;1;;;T;-16.6972214;-49.2187246;DN 6N;",
