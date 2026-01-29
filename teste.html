@@ -407,13 +407,29 @@
                 height: 45px;
             }
         }
-    </style>
+
+        .mostra-erro {
+            opacity: 0.5; 
+            filter: grayscale(100%)
+        }
+</style>
 </head>
 
 <body>
     <div class="container">
-                    <div>❌</div>
-
+        <div style="width: 100%; display: flex; " id="Placar">
+            <div style="width: 10%; padding: 10px; text-align: center; border-right: 2px solid white;">Acertos</div>
+            <div style="width: 10%; padding: 10px; text-align: center; border-right: 2px solid white; font-weight: bold; font-size: 1.2em;" id="Acertos">0</div>
+            <div style="width: 55%; padding: 10px; text-align: center; font-weight: bold;"></div>
+            <div style="width: 5%; padding: 10px; text-align: center; border-right: 2px solid white;">Erros</div>
+            <div style="width: 20%; padding: 10px; text-align: left; font-size: 0.8em;" id="Erros">
+                <span id="erro1" class="mostra-erro">❌</span>
+                <span id="erro2" class="mostra-erro">❌</span>
+                <span id="erro3" class="mostra-erro">❌</span>
+                <span id="erro4" class="mostra-erro">❌</span>
+                <span id="erro5" class="mostra-erro">❌</span>
+            </div>
+        </div>
         <div class="error-warning" id="errorWarning">
             ⚠️ Cuidado! Você tem <span class="error-count" id="errorCount">0</span> erros. Ao atingir 5 erros, o jogo termina!
         </div>
@@ -424,7 +440,7 @@
             
             <div class="timer-section">
                 <div class="timer-box">
-                    <div class="timer" id="timer">5</div>
+                    <div class="timer" id="timer">10</div>
                     <div class="timer-label">SEGUNDOS</div>
                 </div>
                 <div class="current-note" id="currentNote"></div>
@@ -512,13 +528,14 @@
 
     <script>
         // Variáveis do jogo
+        const TEMPO_RESPOSTA = 10; // Configuração centralizada
         let currentNote = null;
         let score = 0;
         let errors = 0;
         let total = 0;
         let streak = 0;
         let timer = null;
-        let timeLeft = 5;
+        let timeLeft = TEMPO_RESPOSTA;
         let gameActive = false;
         let gameOver = false;
         
@@ -605,7 +622,7 @@
             //document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
             
             // Resetar timer
-            timeLeft = 5;
+            timeLeft = TEMPO_RESPOSTA;
             updateTimerDisplay();
             
             // Iniciar contagem
@@ -697,7 +714,7 @@
                 showFeedback('✅ Correto!', true);
                 
                 // Próxima nota após 1 segundo
-                setTimeout(nextNote, 1000);
+                setTimeout(nextNote, 500);
             } else {
                 // Erro
                 errors++;
@@ -709,7 +726,7 @@
                     setTimeout(showGameOver, 1500);
                 } else {
                     // Próxima nota após 2 segundos
-                    setTimeout(nextNote, 2000);
+                    setTimeout(nextNote, 500);
                 }
             }
             
@@ -743,12 +760,16 @@
         
         function updateStats() {
             document.getElementById('score').textContent = score;
+            document.getElementById('Acertos').textContent = score;
             document.getElementById('errors').textContent = errors;
+            if (errors != 0) {
+                document.getElementById('erro' + errors).classList.remove('mostra-erro');
+            }
             document.getElementById('total').textContent = total;
             document.getElementById('streak').textContent = streak;
             
             // Atualizar aviso de erros
-            const errorWarning = document.getElementById('errorWarning');
+            //const errorWarning = document.getElementById('errorWarning');
             const errorCount = document.getElementById('errorCount');
             
             errorCount.textContent = errors;
@@ -794,7 +815,12 @@
             total = 0;
             streak = 0;
             gameOver = false;
-            
+            document.getElementById('erro1').classList.add('mostra-erro');
+            document.getElementById('erro2').classList.add('mostra-erro');
+            document.getElementById('erro3').classList.add('mostra-erro');
+            document.getElementById('erro4').classList.add('mostra-erro');
+            document.getElementById('erro5').classList.add('mostra-erro');
+
             // Fechar modal
             closeModal();
             
