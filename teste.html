@@ -2,356 +2,837 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pentagrama Musical</title>
-    <!-- Usando a versão mais recente da VexFlow -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>🎵 Treino Musical</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            justify-content: center;
+            padding: 15px;
+            min-height: 100vh;
+            transform: rotate(0deg);
+        }
+        
+        /* Forçar orientação paisagem */
+        @media screen and (orientation: portrait) {
+            body::before {
+                content: "📱 Gire seu celular para horizontal";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5em;
+                text-align: center;
+                padding: 20px;
+                z-index: 1000;
+                font-weight: bold;
+            }
+            
+            .container {
+                display: none;
+            }
         }
         
         .container {
+            width: 100%;
+            max-width: 800px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            max-width: 1200px;
-            width: 100%;
-            overflow: auto;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
         }
         
         h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 15px;
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .subtitle {
-            color: #7f8c8d;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.2em;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
         }
         
-        #score-container {
-            background: #fff;
-            border: 2px solid #bdc3c7;
+        .game-area {
+            width: 100%;
+        }
+        
+        .pentagrama-container {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            overflow-x: auto;
-            min-height: 400px;
+            padding: 15px;
+            margin-bottom: 15px;
+            min-height: 150px;
             display: flex;
+            align-items: center;
             justify-content: center;
         }
         
         #notation {
-            min-width: 900px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
         
-        .info-panel {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 20px;
-            border-left: 5px solid #3498db;
+        .timer-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f0f2ff;
+            border-radius: 8px;
         }
         
-        .info-panel h3 {
-            color: #2c3e50;
+        .timer-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .timer {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            line-height: 1;
+        }
+        
+        .timer-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .current-note {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            min-height: 25px;
+        }
+        
+        .feedback {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            min-height: 30px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .feedback.correct {
+            color: #06D6A0;
+            animation: pulse 0.5s;
+        }
+        
+        .feedback.error {
+            color: #EF476F;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             margin-bottom: 15px;
         }
         
-        .note-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
+        .note-btn {
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
         }
         
-        .note-item {
-            background: white;
+        .note-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .note-do { background: linear-gradient(45deg, #FF6B6B, #FF8E8E); }
+        .note-re { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
+        .note-mi { background: linear-gradient(45deg, #FFD166, #FFB347); }
+        .note-fa { background: linear-gradient(45deg, #06D6A0, #06A678); }
+        .note-sol { background: linear-gradient(45deg, #118AB2, #0A6C8F); }
+        .note-la { background: linear-gradient(45deg, #EF476F, #D43A5E); }
+        .note-si { background: linear-gradient(45deg, #9D4EDD, #7B2CBF); }
+        
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .next-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .end-btn {
+            background: linear-gradient(45deg, #EF476F, #D43A5E);
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .error-warning {
+            background: #FFF5F5;
+            border-left: 4px solid #EF476F;
             padding: 10px;
             border-radius: 5px;
-            text-align: center;
-            border: 2px solid #3498db;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .error-count {
+            color: #EF476F;
             font-weight: bold;
         }
         
-        .controls {
-            display: flex;
+        /* Modal de Game Over */
+        .game-over-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
             justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
+            padding: 20px;
         }
         
-        button {
-            background: #3498db;
-            color: white;
+        .game-over-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: popIn 0.3s;
+        }
+        
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .game-over-title {
+            font-size: 2em;
+            color: #EF476F;
+            margin-bottom: 15px;
+        }
+        
+        .game-over-message {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .game-over-stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-btn {
+            width: 100%;
+            padding: 15px;
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
+            margin-top: 10px;
         }
         
-        button:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
+        .restart-btn {
+            background: linear-gradient(45deg, #06D6A0, #06A678);
+            color: white;
         }
         
-        @media (max-width: 768px) {
+        .close-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .instructions {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f2ff;
+            border-radius: 5px;
+        }
+        
+        /* Ajustes para telas muito pequenas */
+        @media (max-width: 480px) {
             .container {
                 padding: 15px;
             }
             
             h1 {
-                font-size: 1.8em;
+                font-size: 1.5em;
             }
             
-            #score-container {
+            .note-btn {
+                height: 50px;
+                font-size: 1.1em;
+            }
+            
+            .timer {
+                font-size: 2em;
+            }
+            
+            .stat-value {
+                font-size: 1.5em;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .container {
                 padding: 10px;
+            }
+            
+            .pentagrama-container {
+                min-height: 120px;
+                padding: 10px;
+            }
+            
+            .note-btn {
+                height: 45px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎵 Pentagrama Musical</h1>
-        <div class="subtitle">Escala Natural de Si₁ até Ré₄</div>
-        
-        <div id="score-container">
-            <div id="notation"></div>
+        <div class="header">
+            <h1>🎵 Treino Musical</h1>
+            <div class="subtitle">Identifique as notas no pentagrama</div>
         </div>
         
-        <div class="info-panel">
-            <h3>🔍 Informações sobre a Escala</h3>
-            <p><strong>Clave:</strong> Clave de Sol (usada para sons agudos)</p>
-            <p><strong>Extensão:</strong> 17 notas naturais (sem sustenidos ou bemóis)</p>
-            <p><strong>Nota mais grave:</strong> Si₁ (primeira linha suplementar inferior)</p>
-            <p><strong>Nota mais aguda:</strong> Ré₄ (segunda linha suplementar superior)</p>
+        <div class="error-warning" id="errorWarning">
+            ⚠️ Cuidado! Você tem <span class="error-count" id="errorCount">0</span> erros. Ao atingir 5 erros, o jogo termina!
+        </div>
+        
+        <div class="game-area">
+            <div class="pentagrama-container">
+                <div id="notation"></div>
+            </div>
             
-            <div class="note-list">
-                <div class="note-item">Si₁</div>
-                <div class="note-item">Dó₂</div>
-                <div class="note-item">Ré₂</div>
-                <div class="note-item">Mi₂</div>
-                <div class="note-item">Fá₂</div>
-                <div class="note-item">Sol₂</div>
-                <div class="note-item">Lá₂</div>
-                <div class="note-item">Si₂</div>
-                <div class="note-item">Dó₃</div>
-                <div class="note-item">Ré₃</div>
-                <div class="note-item">Mi₃</div>
-                <div class="note-item">Fá₃</div>
-                <div class="note-item">Sol₃</div>
-                <div class="note-item">Lá₃</div>
-                <div class="note-item">Si₃</div>
-                <div class="note-item">Dó₄</div>
-                <div class="note-item">Ré₄</div>
+            <div class="timer-section">
+                <div class="timer-box">
+                    <div class="timer" id="timer">5</div>
+                    <div class="timer-label">SEGUNDOS</div>
+                </div>
+                <div class="current-note" id="currentNote"></div>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="notes-grid">
+                <button class="note-btn note-do" onclick="checkAnswer('C')">Dó</button>
+                <button class="note-btn note-re" onclick="checkAnswer('D')">Ré</button>
+                <button class="note-btn note-mi" onclick="checkAnswer('E')">Mi</button>
+                <button class="note-btn note-fa" onclick="checkAnswer('F')">Fá</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('G')">Sol</button>
+                <button class="note-btn note-la" onclick="checkAnswer('A')">Lá</button>
+                <button class="note-btn note-si" onclick="checkAnswer('B')">Si</button>
+            </div>
+            
+            <div class="controls-row">
+                <button class="control-btn next-btn" onclick="nextNote()">
+                    <span>▶</span> Próxima
+                </button>
+                <button class="control-btn end-btn" onclick="endGame()">
+                    <span>⏹</span> Encerrar
+                </button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">ACERTOS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="errors">0</div>
+                    <div class="stat-label">ERROS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total">0</div>
+                    <div class="stat-label">TOTAL</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">SEQUÊNCIA</div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <strong>Dicas:</strong> Use os botões ou teclas 1-7 (Dó=1, Si=7)
             </div>
         </div>
-        
-        <div class="controls">
-            <button onclick="location.reload()">🔄 Recarregar</button>
-            <button onclick="exibirInfoDetalhada()">ℹ️ Mais Informações</button>
+    </div>
+    
+    <!-- Modal de Game Over -->
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="game-over-content">
+            <div class="game-over-title">💀 GAME OVER!</div>
+            <div class="game-over-message">
+                Você atingiu 5 erros!<br>
+                Precisa praticar mais!
+            </div>
+            
+            <div class="game-over-stats">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9em; color: #666;">Acertos</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #06D6A0;" id="finalScore">0</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9em; color: #666;">Erros</div>
+                        <div style="font-size: 1.8em; font-weight: bold; color: #EF476F;" id="finalErrors">0</div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    Total de notas: <span style="font-weight: bold;" id="finalTotal">0</span>
+                </div>
+            </div>
+            
+            <button class="modal-btn restart-btn" onclick="restartGame()">
+                🔄 Jogar Novamente
+            </button>
+            <button class="modal-btn close-btn" onclick="closeModal()">
+                ✕ Fechar
+            </button>
         </div>
     </div>
 
     <script>
-        // Aguardar o carregamento da página
+        // Variáveis do jogo
+        let currentNote = null;
+        let score = 0;
+        let errors = 0;
+        let total = 0;
+        let streak = 0;
+        let timer = null;
+        let timeLeft = 5;
+        let gameActive = false;
+        let gameOver = false;
+        
+        // Mapeamento de notas
+        const notesMap = {
+            'C': ['c/4', 'c/5', 'c/6'],
+            'D': ['d/4', 'd/5', 'd/6'],
+            'E': ['e/4', 'e/5', 'e/6'],
+            'F': ['f/4', 'f/5', 'f/6'],
+            'G': ['g/4', 'g/5', 'g/6'],
+            'A': ['a/4', 'a/5', 'a/6'],
+            'B': ['b/3', 'b/4', 'b/5']
+        };
+        
+        const noteNames = {
+            'C': 'Dó',
+            'D': 'Ré',
+            'E': 'Mi',
+            'F': 'Fá',
+            'G': 'Sol',
+            'A': 'Lá',
+            'B': 'Si'
+        };
+        
+        // Inicializar o jogo
         document.addEventListener('DOMContentLoaded', function() {
-            criarPentagrama();
+            updateStats();
+            nextNote();
+            setupKeyboard();
         });
         
-        function criarPentagrama() {
+        function setupKeyboard() {
+            document.addEventListener('keydown', function(event) {
+                if (gameOver || !gameActive) return;
+                
+                const keyMap = {
+                    '1': 'C', 'd': 'C', 'D': 'C',
+                    '2': 'D', 'r': 'D', 'R': 'D',
+                    '3': 'E', 'm': 'E', 'M': 'E',
+                    '4': 'F', 'f': 'F', 'F': 'F',
+                    '5': 'G', 's': 'G', 'S': 'G',
+                    '6': 'A', 'l': 'A', 'L': 'A',
+                    '7': 'B', 't': 'B', 'T': 'B',
+                    ' ': nextNote,
+                    'Enter': nextNote,
+                    'Escape': endGame,
+                    'e': endGame, 'E': endGame
+                };
+                
+                const action = keyMap[event.key];
+                if (action) {
+                    if (typeof action === 'function') {
+                        action();
+                    } else {
+                        checkAnswer(action);
+                    }
+                }
+            });
+        }
+        
+        function nextNote() {
+            if (gameOver) return;
+            
+            if (timer) {
+                clearInterval(timer);
+            }
+            
+            // Resetar feedback
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            
+            // Sortear nova nota
+            const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+            currentNote = notes[Math.floor(Math.random() * notes.length)];
+            
+            // Sortear oitava
+            const octaves = notesMap[currentNote];
+            const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+            
+            // Criar notação
+            createNotation(selectedOctave);
+            
+            // Atualizar texto
+            document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
+            
+            // Resetar timer
+            timeLeft = 5;
+            updateTimerDisplay();
+            
+            // Iniciar contagem
+            gameActive = true;
+            timer = setInterval(updateTimer, 1000);
+        }
+        
+        function createNotation(noteKey) {
             try {
-                // Limpar container
                 const container = document.getElementById('notation');
                 container.innerHTML = '';
                 
-                // Criar renderizador SVG
                 const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
                 
-                // Configurar dimensões
-                renderer.resize(900, 300);
+                // Ajustar tamanho para mobile
+                const width = Math.min(window.innerWidth - 60, 400);
+                renderer.resize(width, 120);
+                
                 const context = renderer.getContext();
+                const staveWidth = width - 100;
                 
-                // Criar pentagrama
-                const stave = new Vex.Flow.Stave(50, 50, 800);
-                
-                // Adicionar clave de Sol
+                // Criar pentagrama centralizado
+                const stave = new Vex.Flow.Stave(50, 20, staveWidth);
                 stave.addClef('treble');
-                
-                // Adicionar compasso
-                stave.addTimeSignature('4/4');
-                
-                // Desenhar o pentagrama
                 stave.setContext(context).draw();
                 
-                // Definir as notas da escala
-                // Nota: No VexFlow, a oitava 4 é a mais comum para clave de Sol
-                const notes = [
-                    // Si₁ (oitava 3, linha suplementar inferior)
-                    new Vex.Flow.StaveNote({
-                        keys: ['b/3'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Dó₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['c/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Ré₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['d/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Mi₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['e/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Fá₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['f/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Sol₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['g/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Lá₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['a/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Si₂
-                    new Vex.Flow.StaveNote({
-                        keys: ['b/4'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Dó₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['c/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Ré₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['d/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Mi₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['e/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Fá₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['f/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Sol₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['g/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Lá₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['a/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Si₃
-                    new Vex.Flow.StaveNote({
-                        keys: ['b/5'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Dó₄
-                    new Vex.Flow.StaveNote({
-                        keys: ['c/6'],
-                        duration: 'w',
-                        stem_direction: 1
-                    }),
-                    // Ré₄
-                    new Vex.Flow.StaveNote({
-                        keys: ['d/6'],
-                        duration: 'w',
-                        stem_direction: 1
-                    })
-                ];
+                // Criar nota semibreve
+                const note = new Vex.Flow.StaveNote({
+                    keys: [noteKey],
+                    duration: 'w'
+                });
                 
-                // Criar voz e formato
+                // Criar voz e desenhar
                 const voice = new Vex.Flow.Voice({
-                    num_beats: 17,
+                    num_beats: 1,
                     beat_value: 1,
                     resolution: Vex.Flow.RESOLUTION
                 });
                 
-                voice.addTickables(notes);
+                voice.addTickables([note]);
                 
-                // Formatar e desenhar
-                const formatter = new Vex.Flow.Formatter()
+                new Vex.Flow.Formatter()
                     .joinVoices([voice])
-                    .format([voice], 700);
+                    .format([voice], staveWidth - 20);
                 
                 voice.draw(context, stave);
                 
-                console.log('Pentagrama criado com sucesso!');
-                
             } catch (error) {
-                console.error('Erro ao criar pentagrama:', error);
-                document.getElementById('notation').innerHTML = 
-                    '<div style="color: red; text-align: center; padding: 50px;">' +
-                    '<h3>Erro ao carregar a notação musical</h3>' +
-                    '<p>Detalhes: ' + error.message + '</p>' +
-                    '<p>Verifique se a conexão com a internet está ativa</p>' +
-                    '</div>';
+                console.error('Erro:', error);
             }
         }
         
-        function exibirInfoDetalhada() {
-            alert('Escala Natural de Si₁ a Ré₄\n\n' +
-                  'Esta escala contém 17 notas naturais consecutivas, sem acidentes (sustenidos ou bemóis).\n\n' +
-                  'Oitavas representadas:\n' +
-                  '• Oitava 1: Si₁\n' +
-                  '• Oitava 2: Dó₂ até Si₂\n' +
-                  '• Oitava 3: Dó₃ até Si₃\n' +
-                  '• Oitava 4: Dó₄ e Ré₄\n\n' +
-                  'A clave de Sol é usada para representar sons médios e agudos.');
+        function updateTimer() {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                gameActive = false;
+                handleTimeOut();
+            }
         }
+        
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer');
+            timerEl.textContent = timeLeft;
+            
+            // Mudar cor conforme tempo
+            if (timeLeft <= 2) {
+                timerEl.style.color = '#EF476F';
+            } else if (timeLeft <= 3) {
+                timerEl.style.color = '#FFD166';
+            } else {
+                timerEl.style.color = '#667eea';
+            }
+        }
+        
+        function checkAnswer(userNote) {
+            if (gameOver || !gameActive) return;
+            
+            clearInterval(timer);
+            gameActive = false;
+            total++;
+            
+            if (userNote === currentNote) {
+                // Acerto
+                score++;
+                streak++;
+                showFeedback('✅ Correto!', true);
+                
+                // Próxima nota após 1 segundo
+                setTimeout(nextNote, 1000);
+            } else {
+                // Erro
+                errors++;
+                streak = 0;
+                showFeedback(`❌ Errado! Era ${noteNames[currentNote]}`, false);
+                
+                // Verificar se atingiu 5 erros
+                if (errors >= 5) {
+                    setTimeout(showGameOver, 1500);
+                } else {
+                    // Próxima nota após 2 segundos
+                    setTimeout(nextNote, 2000);
+                }
+            }
+            
+            updateStats();
+        }
+        
+        function handleTimeOut() {
+            gameActive = false;
+            errors++;
+            streak = 0;
+            total++;
+            
+            showFeedback('⏰ Tempo esgotado!', false);
+            
+            // Verificar se atingiu 5 erros
+            if (errors >= 5) {
+                setTimeout(showGameOver, 1500);
+            } else {
+                // Próxima nota após 2 segundos
+                setTimeout(nextNote, 2000);
+            }
+            
+            updateStats();
+        }
+        
+        function showFeedback(message, isCorrect) {
+            const feedbackEl = document.getElementById('feedback');
+            feedbackEl.textContent = message;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'error'}`;
+        }
+        
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('errors').textContent = errors;
+            document.getElementById('total').textContent = total;
+            document.getElementById('streak').textContent = streak;
+            
+            // Atualizar aviso de erros
+            const errorWarning = document.getElementById('errorWarning');
+            const errorCount = document.getElementById('errorCount');
+            
+            errorCount.textContent = errors;
+            
+            if (errors >= 3) {
+                errorWarning.style.display = 'block';
+            } else {
+                errorWarning.style.display = 'none';
+            }
+            
+            if (errors >= 4) {
+                errorWarning.style.background = '#FFEBEE';
+                errorWarning.style.borderLeftColor = '#F44336';
+            } else if (errors >= 3) {
+                errorWarning.style.background = '#FFF3E0';
+                errorWarning.style.borderLeftColor = '#FF9800';
+            }
+        }
+        
+        function showGameOver() {
+            gameOver = true;
+            clearInterval(timer);
+            
+            // Atualizar estatísticas no modal
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalErrors').textContent = errors;
+            document.getElementById('finalTotal').textContent = total;
+            
+            // Mostrar modal
+            document.getElementById('gameOverModal').style.display = 'flex';
+        }
+        
+        function endGame() {
+            if (!gameOver) {
+                showGameOver();
+            }
+        }
+        
+        function restartGame() {
+            // Resetar variáveis
+            score = 0;
+            errors = 0;
+            total = 0;
+            streak = 0;
+            gameOver = false;
+            
+            // Fechar modal
+            closeModal();
+            
+            // Atualizar estatísticas
+            updateStats();
+            
+            // Iniciar novo jogo
+            nextNote();
+        }
+        
+        function closeModal() {
+            document.getElementById('gameOverModal').style.display = 'none';
+        }
+        
+        // Forçar orientação paisagem em dispositivos móveis
+        function lockOrientation() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {
+                    // Ignorar erro se o navegador não permitir
+                });
+            }
+        }
+        
+        // Tentar bloquear orientação quando a página carregar
+        window.addEventListener('load', function() {
+            if (window.innerHeight > window.innerWidth) {
+                // Está em retrato, mostrar mensagem
+                setTimeout(lockOrientation, 100);
+            }
+        });
+        
+        // Atualizar orientação quando a janela mudar de tamanho
+        window.addEventListener('resize', function() {
+            createNotation(); // Recriar notação para ajustar tamanho
+        });
     </script>
 </body>
 </html>
