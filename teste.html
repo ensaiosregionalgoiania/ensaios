@@ -415,7 +415,7 @@
 </style>
 </head>
 
-<body><br>
+<body><br><br><br>
     <div class="container">
         <div style="width: 100%; display: flex; " id="Placar">
             <div style="width: 10%; padding: 10px; text-align: center; border-right: 2px solid white;">Acertos</div>
@@ -537,6 +537,7 @@
         let timeLeft = TEMPO_RESPOSTA;
         let gameActive = false;
         let gameOver = false;
+        let currentNoteKey = '';
         
         // Mapeamento de notas
         const notesMap = {
@@ -629,51 +630,59 @@
             timer = setInterval(updateTimer, 1000);
         }
         
-        function createNotation(noteKey) {
-            try {
-                const container = document.getElementById('notation');
-                container.innerHTML = '';
-                
-                const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-                
-                // Ajustar tamanho para mobile
-                const width = Math.min(window.innerWidth - 60, 400);
-                renderer.resize(width, 120);
-                
-                const context = renderer.getContext();
-                const staveWidth = width - 100;
-                
-                // Criar pentagrama centralizado
-                const stave = new Vex.Flow.Stave(50, 20, staveWidth);
-                stave.addClef('treble');
-                stave.setContext(context).draw();
-                
-                // Criar nota semibreve
-                const note = new Vex.Flow.StaveNote({
-                    keys: [noteKey],
-                    duration: 'w'
-                });
-                
-                // Criar voz e desenhar
-                const voice = new Vex.Flow.Voice({
-                    num_beats: 1,
-                    beat_value: 1,
-                    resolution: Vex.Flow.RESOLUTION
-                });
-                
-                voice.addTickables([note]);
-                
-                new Vex.Flow.Formatter()
-                    .joinVoices([voice])
-                    .format([voice], staveWidth - 20);
-                
-                voice.draw(context, stave);
-                
-            } catch (error) {
-                console.error('Erro:', error);
-            }
+function createNotation(noteKey, mostrarNota = true) {
+    try {
+        const container = document.getElementById('notation');
+        container.innerHTML = '';
+        
+        if (!mostrarNota) {
+            // Se não deve mostrar nota, retorna pentagrama vazio
+            const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+            const width = Math.min(window.innerWidth - 60, 400);
+            renderer.resize(width, 120);
+            const context = renderer.getContext();
+            const staveWidth = width - 100;
+            
+            const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+            stave.addClef('treble'); // ou 'bass'
+            stave.setContext(context).draw();
+            return;
         }
         
+        // Código original para mostrar nota
+        const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+        const width = Math.min(window.innerWidth - 60, 400);
+        renderer.resize(width, 120);
+        const context = renderer.getContext();
+        const staveWidth = width - 100;
+        
+        const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+        stave.addClef('treble'); // ou 'bass'
+        stave.setContext(context).draw();
+        
+        const note = new Vex.Flow.StaveNote({
+            keys: [noteKey],
+            duration: 'w'
+        });
+        
+        const voice = new Vex.Flow.Voice({
+            num_beats: 1,
+            beat_value: 1,
+            resolution: Vex.Flow.RESOLUTION
+        });
+        
+        voice.addTickables([note]);
+        
+        new Vex.Flow.Formatter()
+            .joinVoices([voice])
+            .format([voice], staveWidth - 20);
+        
+        voice.draw(context, stave);
+        
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}        
         function updateTimer() {
             timeLeft--;
             updateTimerDisplay();
@@ -699,39 +708,56 @@
             }
         }
         
-        function checkAnswer(userNote) {
-            if (gameOver || !gameActive) return;
-            
-            clearInterval(timer);
-            gameActive = false;
-            total++;
-            
-            if (userNote === currentNote) {
-                // Acerto
-                score++;
-                streak++;
-                showFeedback('✅ Correto!', true);
-                
-                // Próxima nota após 1 segundo
-                setTimeout(nextNote, 500);
-            } else {
-                // Erro
-                errors++;
-                streak = 0;
-                showFeedback(`❌ Errado! Era ${noteNames[currentNote]}`, false);
-                
-                // Verificar se atingiu 5 erros
-                if (errors >= 5) {
-                    setTimeout(showGameOver, 1500);
-                } else {
-                    // Próxima nota após 2 segundos
-                    setTimeout(nextNote, 500);
-                }
-            }
-            
-            updateStats();
-        }
+function checkAnswer(userNote) {
+    if (gameOver || !gameActive) return;
+    
+    clearInterval(timer);
+    //pararProgresso(); // Se estiver usando barra de progresso
+    gameActive = false;
+    total++;
+    
+    // Guardar a nota atual para mostrar depois
+    const notaAtualKey = currentNoteKey; // Você precisa armazenar isso
+    
+    // APAGAR a nota imediatamente
+    createNotation(null, false); // Mostra pentagrama vazio
+    
+    if (userNote === currentNote) {
+        // Acerto
+        score++;
+        streak++;
         
+        // Mostrar ✅ por 500ms
+        mostrarSimboloNoPentagrama('✅');
+        showFeedback('✅ Correto!', true);
+        
+        // Próxima nota após 500ms
+        setTimeout(() => {
+            nextNote();
+        }, 500);
+        
+    } else {
+        // Erro
+        errors++;
+        streak = 0;
+        
+        // Mostrar ❌ por 500ms
+        mostrarSimboloNoPentagrama('❌');
+        showFeedback(`❌ Errado! Era ${noteNames[currentNote]}`, false);
+        
+        // Verificar se atingiu 5 erros
+        if (errors >= 5) {
+            setTimeout(showGameOver, 1500);
+        } else {
+            // Próxima nota após 500ms
+            setTimeout(() => {
+                nextNote();
+            }, 500);
+        }
+    }
+    
+    updateStats();
+}        
         function handleTimeOut() {
             gameActive = false;
             errors++;
@@ -855,6 +881,43 @@
         window.addEventListener('resize', function() {
             createNotation(); // Recriar notação para ajustar tamanho
         });
+
+function mostrarSimboloNoPentagrama(simbolo) {
+    const container = document.getElementById('notation');
+    container.innerHTML = '';
+    
+    // Criar um SVG simples com o símbolo
+    const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+    const width = Math.min(window.innerWidth - 60, 400);
+    renderer.resize(width, 120);
+    const context = renderer.getContext();
+    
+    // Desenhar pentagrama vazio
+    const staveWidth = width - 100;
+    const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+    stave.addClef('treble'); // ou 'bass'
+    stave.setContext(context).draw();
+    
+    // Adicionar o símbolo grande no centro
+    const svg = container.querySelector('svg');
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    
+    text.setAttribute('x', width / 2);
+    text.setAttribute('y', 70); // Centro vertical
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '60');
+    text.setAttribute('font-weight', 'bold');
+    
+    if (simbolo === '✅') {
+        text.setAttribute('fill', '#06D6A0'); // Verde para acerto
+    } else {
+        text.setAttribute('fill', '#EF476F'); // Vermelho para erro
+    }
+    
+    text.textContent = simbolo;
+    svg.appendChild(text);
+}
+
     </script>
 </body>
 </html>
