@@ -409,17 +409,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🎵 Treino Musical</h1>
-            <div class="subtitle">Identifique as notas no pentagrama</div>
-        </div>
-        
+                    <div>❌</div>
+
         <div class="error-warning" id="errorWarning">
             ⚠️ Cuidado! Você tem <span class="error-count" id="errorCount">0</span> erros. Ao atingir 5 erros, o jogo termina!
         </div>
-        
         <div class="game-area">
             <div class="pentagrama-container">
                 <div id="notation"></div>
@@ -605,7 +602,7 @@
             createNotation(selectedOctave);
             
             // Atualizar texto
-            document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
+            //document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
             
             // Resetar timer
             timeLeft = 5;
@@ -756,19 +753,19 @@
             
             errorCount.textContent = errors;
             
-            if (errors >= 3) {
-                errorWarning.style.display = 'block';
-            } else {
-                errorWarning.style.display = 'none';
-            }
+            //if (errors >= 3) {
+            //    errorWarning.style.display = 'block';
+            //} else {
+            //    errorWarning.style.display = 'none';
+            //}
             
-            if (errors >= 4) {
-                errorWarning.style.background = '#FFEBEE';
-                errorWarning.style.borderLeftColor = '#F44336';
-            } else if (errors >= 3) {
-                errorWarning.style.background = '#FFF3E0';
-                errorWarning.style.borderLeftColor = '#FF9800';
-            }
+            //if (errors >= 4) {
+            //    errorWarning.style.background = '#FFEBEE';
+            //    errorWarning.style.borderLeftColor = '#F44336';
+            //} else if (errors >= 3) {
+            //    errorWarning.style.background = '#FFF3E0';
+            //    errorWarning.style.borderLeftColor = '#FF9800';
+            //}
         }
         
         function showGameOver() {
