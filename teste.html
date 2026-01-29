@@ -238,7 +238,7 @@
             gap: 5px;
         }
         
-        .next-btn {
+        .btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
         }
@@ -412,6 +412,50 @@
             opacity: 0.5; 
             filter: grayscale(100%)
         }
+
+/* ADICIONE ESTES ESTILOS */
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 100%;
+    background: #4CAF50;
+    border-radius: 5px;
+    transition: width 1s linear;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.progress-bar.warning {
+    background: #FF9800;
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
+}
+
+.progress-bar.danger {
+    background: #F44336;
+    box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+    animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}
+
+.timer-label {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+}        
+
 </style>
 </head>
 
@@ -438,13 +482,19 @@
                 <div id="notation"></div>
             </div>
             
+            <!-- NO LUGAR DA SEÇÃO DO TIMER ATUAL -->
             <div class="timer-section">
-                <div class="timer-box">
-                    <div class="timer" id="timer">10</div>
-                    <div class="timer-label">SEGUNDOS</div>
+                <!-- Barra de progresso (1/3 da largura) -->
+                <div class="timer-box" style="width: 33.33%; min-width: 100px;">
+                    <div class="progress-container">
+                        <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                    <div class="timer-label">⏱️ TEMPO</div>
                 </div>
-            </div>
-            
+                
+                <!-- Espaço vazio (2/3 da largura) -->
+                <div style="width: 66.66%;"></div>
+            </div>            
             <div class="feedback" id="feedback"></div>
             
             <div class="notes-grid">
@@ -620,7 +670,11 @@
             
             // Atualizar texto
             //document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
+
+            resetarBarraProgresso();
+            iniciarBarraProgresso();
             
+
             // Resetar timer
             timeLeft = TEMPO_RESPOSTA;
             updateTimerDisplay();
@@ -695,17 +749,17 @@ function createNotation(noteKey, mostrarNota = true) {
         }
         
         function updateTimerDisplay() {
-            const timerEl = document.getElementById('timer');
-            timerEl.textContent = timeLeft;
+            //const timerEl = document.getElementById('timer');
+            //timerEl.textContent = timeLeft;
             
             // Mudar cor conforme tempo
-            if (timeLeft <= 2) {
-                timerEl.style.color = '#EF476F';
-            } else if (timeLeft <= 3) {
-                timerEl.style.color = '#FFD166';
-            } else {
-                timerEl.style.color = '#667eea';
-            }
+            //if (timeLeft <= 2) {
+            //    timerEl.style.color = '#EF476F';
+            //} else if (timeLeft <= 3) {
+            //    timerEl.style.color = '#FFD166';
+            //} else {
+            //    timerEl.style.color = '#667eea';
+            //}
         }
         
 function checkAnswer(userNote) {
@@ -757,6 +811,7 @@ function checkAnswer(userNote) {
     }
     
     updateStats();
+    pararBarraProgresso()
 }        
         function handleTimeOut() {
             gameActive = false;
@@ -775,6 +830,7 @@ function checkAnswer(userNote) {
             }
             
             updateStats();
+            pararBarraProgresso()
         }
         
         function showFeedback(message, isCorrect) {
@@ -916,6 +972,50 @@ function mostrarSimboloNoPentagrama(simbolo) {
     
     text.textContent = simbolo;
     svg.appendChild(text);
+}
+const TEMPO_TOTAL = 10;
+let progressInterval = null;
+
+function iniciarBarraProgresso() {
+    pararBarraProgresso();
+    
+    const progressBar = document.getElementById('progressBar');
+    let tempo = TEMPO_TOTAL;
+    
+    progressBar.style.width = '100%';
+    progressBar.className = 'progress-bar';
+    
+    progressInterval = setInterval(() => {
+        tempo--;
+        const porcentagem = (tempo / TEMPO_TOTAL) * 100;
+        
+        progressBar.style.width = porcentagem + '%';
+        
+        // Mudar cor
+        if (tempo <= 3) {
+            progressBar.className = 'progress-bar danger';
+        } else if (tempo <= 5) {
+            progressBar.className = 'progress-bar warning';
+        }
+        
+        if (tempo <= 0) {
+            pararBarraProgresso();
+        }
+    }, 1000);
+}
+
+function pararBarraProgresso() {
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+}
+
+function resetarBarraProgresso() {
+    pararBarraProgresso();
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.width = '100%';
+    progressBar.className = 'progress-bar';
 }
 
     </script>
