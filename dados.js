@@ -86,7 +86,7 @@
             "Setor Noroeste;Goiânia;2º DOMINGO;T;JdMpUusT9jvbXuAY9;3;;;T;-16.6412358;-49.3148354;DN 5N;",
             "Setor Finsocial;Goiânia;2º DOMINGO;T;LhYD3ZknK7MNH1tXA;4;;Túlio Marcos;T;-16.6197631;-49.3187812;DN 4N 6T SN;",
             "Setor Alto do Vale;Goiânia;3º DOMINGO;T;qPrJpePnWe5WCLh6A;4;Tiago;Túlio Marcos;T;-16.6141671;-49.3099245;DN 5N;",
-            "Jardim Pompéia;Goiânia;2º DOMINGO;T;W3koKo4c4GdPf9VPA;5;;;T;-16.6111163;-49.2404582;DN 4N SN;",
+            "Jardim Pompéia;Goiânia;2º DOMINGO;T;W3koKo4c4GdPf9VPA;5;Antomar da Silveira;Gilton Pereira;T;-16.6111163;-49.2404582;DN 4N SN;",
             "Jardim Itaipu;Goiânia;2º DOMINGO;T;MQnbKAhq1fcgPSxdA;2;Anderson/Josemir;Pedro Pimenta;T;-16.779655;-49.3649108;DN 3N;",
             "Jardim das Oliveiras;Goiânia;2º DOMINGO;T;kqZLW4r7Qce2jqze9;3;Cleiber José;Humberto;T;-16.7014059;-49.3649458;DN 3N 6N;",
             "Jardim Curitiba III;Goiânia;2º DOMINGO;T;NPx2UipgVr8f7NtD9;4;Cloves de Souza;Jackson;T;-16.5959867;-49.3310037;DN 3N 6N;",
