@@ -487,15 +487,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="timer-box" style="width: 80%;">
-                    <div style="width: 15%; padding: 5px; border: 1px solid #0a0321; text-align: left; box-sizing: border-box;">
+                <div class="timer-box" style="width: 30%;">
+                    <div style="width: 30%; padding: 5px; border: 1px solid #0a0321; text-align: left; box-sizing: border-box;">
                         <div style="font-size: 0.9em; font-weight: bold;">Acertos</div>
                         <div style="display: flex; gap: 8px;">
                             <span id="Acertos" style="font-size:20px; text-align: center; font-weight: bold;"><b>0</b></span>
                         </div>
-    
                     </div>
-                    <div style="width: 28%; padding: 10px; border: 1px solid #0a0321; display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
+                    <div style="width: 70%; padding: 10px; border: 1px solid #0a0321; display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
                         <div style="font-size: 0.9em; font-weight: bold;">Erros</div>
                         <div style="display: flex; gap: 8px;">
                             <span id="erro1" class="mostra-erro">❌</span>
@@ -506,16 +505,20 @@
                         </div>
                     </div>                    
                 </div> 
-            </div>            
+<div class="timer-box" style="gap: 10px; width: 50%; border: 1px solid #0a0321;">
+    <button class="note-btn note-do" id="claveSol" style="width: 33%; font-size: 40px; font-weight: bold; color: black;">𝄞</button>
+    <button class="note-btn note-do" id="claveFa" style="width: 33%; font-size: 40px; font-weight: bold; color: black;">𝄢</button>
+    <button class="note-btn note-do" id="claveDo" style="width: 33%; font-size: 40px; font-weight: bold; color: black;">𝄡</button>
+</div>            </div>            
             
             <div class="notes-grid">
-                <button class="note-btn note-do" onclick="checkAnswer('C')">Dó</button>
-                <button class="note-btn note-re" onclick="checkAnswer('D')">Ré</button>
-                <button class="note-btn note-mi" onclick="checkAnswer('E')">Mi</button>
-                <button class="note-btn note-fa" onclick="checkAnswer('F')">Fá</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('D')">Ré</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('E')">Mi</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('F')">Fá</button>
                 <button class="note-btn note-sol" onclick="checkAnswer('G')">Sol</button>
-                <button class="note-btn note-la" onclick="checkAnswer('A')">Lá</button>
-                <button class="note-btn note-si" onclick="checkAnswer('B')">Si</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
+                <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
             </div>
             
             <div class="controls-row">
@@ -621,6 +624,33 @@
             'B': 'Si'
         };
         
+        const escala = [
+            ["B2", 123.47],
+            ["C3", 130.81],
+            ["D3", 146.83],
+            ["E3", 164.81],
+            ["F3", 174.61],
+            ["G3", 196.00],
+            ["A3", 220.00],
+            ["B3", 246.94],
+            ["C4", 261.63],
+            ["D4", 293.66],
+            ["E4", 329.63],
+            ["F4", 349.23],
+            ["G4", 392.00],
+            ["A4", 440.00],
+            ["B4", 493.88],
+            ["C5", 523.25],
+            ["D5", 587.33],
+            ["E5", 659.25],   // E5
+            ["F5", 698.46],   // F5
+            ["G5", 783.99],  // G5
+            ["A5", 880.00],   // A5 (LÁ PADRÃO - 440Hz × 2)
+            ["B5", 987.77],   // B5
+            ["C6", 1046.50],  // C6
+            ["D6", 1174.66]   // D6
+        ];
+       
         // Inicializar o jogo
         document.addEventListener('DOMContentLoaded', function() {
             updateStats();
@@ -671,14 +701,16 @@
             // Sortear nova nota
             const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
             currentNote = notes[Math.floor(Math.random() * notes.length)];
-            
             // Sortear oitava
             const octaves = notesMap[currentNote];
             const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+            //alert(selectedOctave.toUpperCase().replace("/", ""))
             
             // Criar notação
             createNotation(selectedOctave);
-            
+            let frequencia = pesquisarFrequencia(selectedOctave.toUpperCase().replace("/", ""))
+            tocarNota(frequencia)
+            //aqui
             // Atualizar texto
             //document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
 
@@ -1028,6 +1060,37 @@ function resetarBarraProgresso() {
     progressBar.style.width = '100%';
     progressBar.className = 'progress-bar';
 }
+
+            function tocarNota(frequencia) {
+                //const [nomeNota, frequencia] = escala[index];
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                // Configura oscilador
+                oscillator.type = 'triangle'; // 'sine', 'square', 'sawtooth', 'triangle'
+                oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
+                
+                // Configura envelope (para som mais natural)
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                // Conecta e toca
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start();
+                
+                // Para após 500ms
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 500);
+            }
+        
+        function pesquisarFrequencia(nota) {
+            const encontrado = escala.find(item => item[0] === nota);
+            return encontrado ? encontrado[1] : null;
+        }
 
     </script>
 </body>
