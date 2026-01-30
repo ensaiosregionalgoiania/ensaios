@@ -93,25 +93,29 @@
             width: 100%;
         }
         
-        .pentagrama-container {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.pentagrama-container {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    min-height: 110px;
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    overflow: hidden; /* Evita barra de rolagem */
+}
         
-        #notation {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .timer-section {
+#notation {
+    width: 100%;
+    top: 50%;
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+     /*align-items: center; Centraliza verticalmente */
+    min-height: 85px;
+}        
+ 
+.timer-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -122,9 +126,11 @@
         }
         
         .timer-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 80%; 
+            min-width: 100px; 
+            border: 1px solid #0a0321; 
+            display: flex; 
+            box-sizing: border-box;
         }
         
         .timer {
@@ -462,17 +468,6 @@
 <body><br><br><br>
     <div class="container">
         <div style="width: 100%; display: flex; " id="Placar">
-            <div style="width: 10%; padding: 10px; text-align: center; border-right: 2px solid white;">Acertos</div>
-            <div style="width: 10%; padding: 10px; text-align: center; border-right: 2px solid white; font-weight: bold; font-size: 1.2em;" id="Acertos">0</div>
-            <div style="width: 55%; padding: 10px; text-align: center; font-weight: bold;"></div>
-            <div style="width: 5%; padding: 10px; text-align: center; border-right: 2px solid white;">Erros</div>
-            <div style="width: 20%; padding: 10px; text-align: left; font-size: 0.8em;" id="Erros">
-                <span id="erro1" class="mostra-erro">❌</span>
-                <span id="erro2" class="mostra-erro">❌</span>
-                <span id="erro3" class="mostra-erro">❌</span>
-                <span id="erro4" class="mostra-erro">❌</span>
-                <span id="erro5" class="mostra-erro">❌</span>
-            </div>
         </div>
         <div class="error-warning" id="errorWarning">
             ⚠️ Cuidado! Você tem <span class="error-count" id="errorCount">0</span> erros. Ao atingir 5 erros, o jogo termina!
@@ -485,17 +480,24 @@
             <!-- NO LUGAR DA SEÇÃO DO TIMER ATUAL -->
             <div class="timer-section">
                 <!-- Barra de progresso (1/3 da largura) -->
-                <div class="timer-box" style="width: 33.33%; min-width: 100px;">
-                    <div class="progress-container">
-                        <div id="progressBar" class="progress-bar"></div>
+                <div class="timer-box" style="width: 20%;">
+                    <div class="progress-container" style="width: 100%;">
+                        <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
                     </div>
-                    <div class="timer-label">⏱️ TEMPO</div>
                 </div>
-                
-                <!-- Espaço vazio (2/3 da largura) -->
-                <div style="width: 66.66%;"></div>
-            </div>            
-            <div class="feedback" id="feedback"></div>
+                    <div class="timer-box">
+                        <div style="width: 12%; padding: 5px; border: 1px solid #0a0321; text-align: left; box-sizing: border-box;">Acertos<br>
+                            <span id="Acertos" style="font-size:20px; text-align: center; font-weight: bold;"><b>0</b></span>
+                        </div>
+                        <div style="width: 60%; padding: 5px; border: 1px solid #0a0321; text-align: left; font-size: 0.8em; display: flex; align-items: center; gap: 8px; box-sizing: border-box;">Erros<br>a
+                            <span id="erro1" class="mostra-erro">❌</span>
+                            <span id="erro2" class="mostra-erro">❌</span>
+                            <span id="erro3" class="mostra-erro">❌</span>
+                            <span id="erro4" class="mostra-erro">❌</span>
+                            <span id="erro5" class="mostra-erro">❌</span>
+                        </div>
+                    </div> 
+           </div>            
             
             <div class="notes-grid">
                 <button class="note-btn note-do" onclick="checkAnswer('C')">Dó</button>
@@ -654,8 +656,8 @@
             }
             
             // Resetar feedback
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('feedback').className = 'feedback';
+            //document.getElementById('feedback').textContent = '';
+            //document.getElementById('feedback').className = 'feedback';
             
             // Sortear nova nota
             const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
@@ -693,11 +695,11 @@ function createNotation(noteKey, mostrarNota = true) {
             // Se não deve mostrar nota, retorna pentagrama vazio
             const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
             const width = Math.min(window.innerWidth - 60, 400);
-            renderer.resize(width, 120);
+            renderer.resize(width, 70); // SVG bem pequeno
             const context = renderer.getContext();
             const staveWidth = width - 100;
             
-            const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+            const stave = new Vex.Flow.Stave(50, 12, staveWidth);
             stave.addClef('treble'); // ou 'bass'
             stave.setContext(context).draw();
             return;
@@ -834,9 +836,9 @@ function checkAnswer(userNote) {
         }
         
         function showFeedback(message, isCorrect) {
-            const feedbackEl = document.getElementById('feedback');
-            feedbackEl.textContent = message;
-            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'error'}`;
+            //const feedbackEl = document.getElementById('feedback');
+            //feedbackEl.textContent = message;
+            //feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'error'}`;
         }
         
         function updateStats() {
