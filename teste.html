@@ -521,7 +521,7 @@
                 <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
             </div>
             
-            <div class="controls-row">
+            <!--<div class="controls-row">
                 <button class="control-btn next-btn" onclick="nextNote()">
                     <span>▶</span> Próxima
                 </button>
@@ -553,7 +553,7 @@
                 <strong>Dicas:</strong> Use os botões ou teclas 1-7 (Dó=1, Si=7)
             </div>
         </div>
-    </div>
+    </div> -->
     
     <!-- Modal de Game Over -->
     <div class="game-over-modal" id="gameOverModal">
@@ -883,14 +883,14 @@ function checkAnswer(userNote) {
         }
         
         function updateStats() {
-            document.getElementById('score').textContent = score;
+            //document.getElementById('score').textContent = score;
             document.getElementById('Acertos').textContent = score;
-            document.getElementById('errors').textContent = errors;
+            //document.getElementById('errors').textContent = errors;
             if (errors != 0) {
                 document.getElementById('erro' + errors).classList.remove('mostra-erro');
             }
-            document.getElementById('total').textContent = total;
-            document.getElementById('streak').textContent = streak;
+            //document.getElementById('total').textContent = total;
+            //document.getElementById('streak').textContent = streak;
             
             // Atualizar aviso de erros
             //const errorWarning = document.getElementById('errorWarning');
@@ -1084,7 +1084,7 @@ function resetarBarraProgresso() {
                 // Para após 500ms
                 setTimeout(() => {
                     oscillator.stop();
-                }, 500);
+                }, 1000);
             }
         
         function pesquisarFrequencia(nota) {
