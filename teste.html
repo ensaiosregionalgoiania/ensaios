@@ -317,7 +317,7 @@
             background: #f8f9fa;
             border-radius: 15px;
             padding: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border: 2px solid #e9ecef;
         }
 
@@ -356,7 +356,44 @@
         .close-btn:hover {
             background: linear-gradient(45deg, #5a6fd8, #6a419f);
         }
+
+        .share-btn {
+            background: linear-gradient(45deg, #3b5998, #4267B2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
+        }
+
+        .share-btn:hover {
+            background: linear-gradient(45deg, #344e86, #3b5998);
+        }
         
+        /* Toast de compartilhamento */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1002;
+            animation: slideDown 0.3s ease-out;
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
         /* Estilos para tela cheia */
         :fullscreen .container {
             border-radius: 0;
@@ -512,17 +549,29 @@
                     </div>
                 </div>
                 <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    Total de notas: <span style="font-weight: bold;" id="finalTotal">0</span>
+                    Total de notas: <span style="font-weight: bold;" id="finalTotal">0</span><br>
+                    Clave: <span style="font-weight: bold;" id="finalClave">Sol</span>
+                </div>
+                <div style="margin-top: 10px; padding: 10px; background: #fff; border-radius: 10px; border: 1px dashed #ddd;">
+                    <div style="font-size: 0.8em; color: #888;">Compartilhe seu resultado!</div>
                 </div>
             </div>
             
             <button class="modal-btn restart-btn" onclick="restartGame()">
                 🔄 Jogar Novamente
             </button>
+            <button class="modal-btn share-btn" onclick="shareResults()">
+                📤 Compartilhar Resultado
+            </button>
             <button class="modal-btn close-btn" onclick="closeModal()">
                 ✕ Fechar
             </button>
         </div>
+    </div>
+
+    <!-- Toast de compartilhamento -->
+    <div class="toast" id="shareToast">
+        Resultado copiado para a área de transferência! 📋
     </div>
 
     <script>
@@ -919,6 +968,14 @@
             document.getElementById('finalErrors').textContent = errors;
             document.getElementById('finalTotal').textContent = total;
             
+            // Mostrar a clave atual
+            const claveNomes = {
+                'SOL': 'Sol',
+                'FA': 'Fá',
+                'DO': 'Dó'
+            };
+            document.getElementById('finalClave').textContent = claveNomes[Clave];
+            
             // Mostrar modal com efeito
             document.getElementById('gameOverModal').style.display = 'flex';
             
@@ -1095,6 +1152,74 @@
                 const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
                 createNotation(selectedOctave);
             }
+        }
+        
+        // Função para compartilhar resultados
+        function shareResults() {
+            // Calcular precisão
+            const precisao = total > 0 ? Math.round((score / total) * 100) : 0;
+            
+            // Texto para compartilhamento
+            const shareText = `🎵 Treino Musical - Resultados 🎵
+
+🎯 Acertos: ${score}
+❌ Erros: ${errors}
+📊 Total de notas: ${total}
+🎯 Precisão: ${precisao}%
+🗝️ Clave: ${Clave === 'SOL' ? 'Sol' : Clave === 'FA' ? 'Fá' : 'Dó'}
+
+🏆 Desafie-se também em: (https://ensaiosregionalgoiania.github.io/ensaios/teste.html)
+
+#TreinoMusical #AprendaMúsica #JogoMusical`;
+            
+            // URL do jogo (substitua pelo seu link real)
+            const gameURL = window.location.href;
+            
+            // Usar a Web Share API se disponível (funciona em dispositivos móveis)
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Meu resultado no Treino Musical',
+                    text: shareText,
+                    url: gameURL
+                })
+                .then(() => console.log('Compartilhamento realizado com sucesso!'))
+                .catch((error) => {
+                    console.log('Erro ao compartilhar:', error);
+                    fallbackShare(shareText);
+                });
+            } else {
+                // Fallback para navegadores sem Web Share API
+                fallbackShare(shareText);
+            }
+        }
+        
+        function fallbackShare(shareText) {
+            // Copiar para área de transferência
+            navigator.clipboard.writeText(shareText)
+                .then(() => {
+                    showToast('Resultado copiado para a área de transferência! 📋');
+                })
+                .catch(() => {
+                    // Fallback mais antigo
+                    const textArea = document.createElement('textarea');
+                    textArea.value = shareText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast('Resultado copiado para a área de transferência! 📋');
+                });
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('shareToast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            // Esconder o toast após 3 segundos
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
         }
 
     </script>
