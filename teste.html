@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>🎵 Treino Musical</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow.js"></script>
     <style>
@@ -36,7 +37,7 @@
         /* Forçar orientação paisagem */
         @media screen and (orientation: portrait) {
             body::before {
-                content: "📱 Gire seu celular para horizontal e aumente o volume do celular";
+                content: "📱 Gire seu celular para horizontal";
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -179,6 +180,35 @@
         .mostra-erro {
             opacity: 0.5; 
             filter: grayscale(100%)
+        }
+
+        /* Botão de tela cheia */
+        .fullscreen-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .fullscreen-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .fullscreen-btn:active {
+            transform: scale(0.95);
         }
 
         /* ADICIONE ESTES ESTILOS */
@@ -327,10 +357,87 @@
             background: linear-gradient(45deg, #5a6fd8, #6a419f);
         }
         
+        /* Estilos para tela cheia */
+        :fullscreen .container {
+            border-radius: 0;
+            padding: 20px;
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        :-webkit-full-screen .container {
+            border-radius: 0;
+            padding: 20px;
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        :-moz-full-screen .container {
+            border-radius: 0;
+            padding: 20px;
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        :fullscreen .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        :-webkit-full-screen .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* Ajustes para telas menores em modo paisagem */
+        @media screen and (max-height: 600px) and (orientation: landscape) {
+            .container {
+                padding: 10px;
+            }
+            
+            .pentagrama-container {
+                min-height: 80px;
+                margin-bottom: 10px;
+            }
+            
+            .notes-grid {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .note-btn {
+                height: 50px;
+                font-size: 1.1em;
+            }
+            
+            .timer-section {
+                margin-bottom: 10px;
+                padding: 8px;
+            }
+        }
+        
     </style>
 </head>
 
 <body>
+    <!-- Botão de tela cheia -->
+    <button class="fullscreen-btn" id="fullscreenBtn" title="Tela Cheia">
+        ⛶
+    </button>
+    
     <div class="container">
         <div class="game-area">
             <div class="pentagrama-container">
@@ -431,6 +538,7 @@
         let gameActive = false;
         let gameOver = false;
         let Clave = "SOL"; // Clave padrão
+        let isFullscreen = false;
         
         // Mapeamento de notas para cada clave
         const notasPorClave = {
@@ -505,7 +613,95 @@
             updateStats();
             nextNote();
             setupKeyboard();
+            setupFullscreen();
+            
+            // Tentar entrar em tela cheia automaticamente em dispositivos móveis
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setTimeout(enterFullscreen, 1000);
+            }
         });
+        
+        function setupFullscreen() {
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            // Detectar mudanças no modo de tela cheia
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+        }
+        
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                enterFullscreen();
+            } else {
+                exitFullscreen();
+            }
+        }
+        
+        function enterFullscreen() {
+            const element = document.documentElement;
+            
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+            
+            // Mostrar instrução para girar o celular em retrato
+            if (window.innerHeight > window.innerWidth) {
+                alert("Para melhor experiência, gire seu celular para modo paisagem (horizontal)!");
+            }
+        }
+        
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+        
+        function handleFullscreenChange() {
+            isFullscreen = !!(document.fullscreenElement || 
+                            document.webkitFullscreenElement || 
+                            document.mozFullScreenElement || 
+                            document.msFullscreenElement);
+            
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            fullscreenBtn.innerHTML = isFullscreen ? '⛶' : '⛶';
+            fullscreenBtn.title = isFullscreen ? 'Sair da Tela Cheia' : 'Tela Cheia';
+            
+            // Ajustar layout quando entrar/sair da tela cheia
+            setTimeout(adjustLayoutForFullscreen, 100);
+        }
+        
+        function adjustLayoutForFullscreen() {
+            if (isFullscreen) {
+                // Ajustar para melhor uso do espaço
+                document.body.style.padding = '0';
+                document.querySelector('.container').style.padding = '20px';
+            } else {
+                document.body.style.padding = '15px';
+            }
+            
+            // Recriar a notação para ajustar ao novo tamanho
+            if (currentNote) {
+                const octaves = notasPorClave[Clave][currentNote];
+                const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+                createNotation(selectedOctave);
+            }
+        }
         
         function setupKeyboard() {
             document.addEventListener('keydown', function(event) {
@@ -522,7 +718,8 @@
                     ' ': nextNote,
                     'Enter': nextNote,
                     'Escape': endGame,
-                    'e': endGame, 'E': endGame
+                    'e': endGame, 'E': endGame,
+                    'f': toggleFullscreen, 'F': toggleFullscreen
                 };
                 
                 const action = keyMap[event.key];
