@@ -538,6 +538,12 @@
             margin-bottom: 25px;
             line-height: 1.5;
         }
+
+    /* Adicione no final da seção <style> */
+    .game-over-modal .fullscreen-btn,
+    .game-over-modal .sound-btn {
+        display: none !important;
+    }        
         
     </style>
 </head>
@@ -917,9 +923,9 @@
             }
             
             // Mostrar instrução para girar o celular em retrato
-            if (window.innerHeight > window.innerWidth) {
-                alert("Para melhor experiência, gire seu celular para modo paisagem (horizontal)!");
-            }
+            //if (window.innerHeight > window.innerWidth) {
+            //    alert("Para melhor experiência, gire seu celular para modo paisagem (horizontal)!");
+            //}
         }
         
         function exitFullscreen() {
