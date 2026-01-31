@@ -93,29 +93,27 @@
             width: 100%;
         }
         
-.pentagrama-container {
-    background: #f8f9fa;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 15px;
-    min-height: 110px;
-    display: flex;
-    align-items: center; /* Centraliza verticalmente */
-    justify-content: center; /* Centraliza horizontalmente */
-    overflow: hidden; /* Evita barra de rolagem */
-}
+        .pentagrama-container {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
         
-#notation {
-    width: 100%;
-    top: 50%;
-    display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-     /*align-items: center; Centraliza verticalmente */
-    min-height: 85px;
-}        
- 
-.timer-section {
+        #notation {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            min-height: 85px;
+        }
+        
+        .timer-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -139,53 +137,6 @@
             color: #667eea;
             font-family: 'Courier New', monospace;
             line-height: 1;
-        }
-        
-        .timer-label {
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 2px;
-        }
-        
-        .current-note {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            min-height: 25px;
-        }
-        
-        .feedback {
-            font-size: 1.3em;
-            font-weight: bold;
-            text-align: center;
-            min-height: 30px;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .feedback.correct {
-            color: #06D6A0;
-            animation: pulse 0.5s;
-        }
-        
-        .feedback.error {
-            color: #EF476F;
-            animation: shake 0.5s;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
         }
         
         .notes-grid {
@@ -223,261 +174,65 @@
         .note-la { background: linear-gradient(45deg, #EF476F, #D43A5E); }
         .note-si { background: linear-gradient(45deg, #9D4EDD, #7B2CBF); }
         
-        .controls-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .control-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-        
-        .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .end-btn {
-            background: linear-gradient(45deg, #EF476F, #D43A5E);
-            color: white;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .stat-box {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #667eea;
-            line-height: 1;
-        }
-        
-        .stat-label {
-            font-size: 0.75em;
-            color: #666;
-            margin-top: 3px;
-        }
-        
-        .error-warning {
-            background: #FFF5F5;
-            border-left: 4px solid #EF476F;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        
-        .error-count {
-            color: #EF476F;
-            font-weight: bold;
-        }
-        
-        /* Modal de Game Over */
-        .game-over-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .game-over-content {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            animation: popIn 0.3s;
-        }
-        
-        @keyframes popIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .game-over-title {
-            font-size: 2em;
-            color: #EF476F;
-            margin-bottom: 15px;
-        }
-        
-        .game-over-message {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        
-        .game-over-stats {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .modal-btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .restart-btn {
-            background: linear-gradient(45deg, #06D6A0, #06A678);
-            color: white;
-        }
-        
-        .close-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .instructions {
-            font-size: 0.8em;
-            color: #666;
-            text-align: center;
-            margin-top: 10px;
-            padding: 10px;
-            background: #f0f2ff;
-            border-radius: 5px;
-        }
-        
-        /* Ajustes para telas muito pequenas */
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-            
-            .note-btn {
-                height: 50px;
-                font-size: 1.1em;
-            }
-            
-            .timer {
-                font-size: 0.8em;
-            }
-            
-            .stat-value {
-                font-size: 1.5em;
-            }
-        }
-        
-        @media (max-height: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .pentagrama-container {
-                min-height: 120px;
-                padding: 10px;
-            }
-            
-            .note-btn {
-                height: 45px;
-            }
-        }
-
         .mostra-erro {
             opacity: 0.5; 
             filter: grayscale(100%)
         }
 
-/* ADICIONE ESTES ESTILOS */
-.progress-container {
-    width: 80%;
-    height: 10px;
-    background: #f0f0f0;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 8px;
-    border: 1px solid #ddd;
-}
+        /* ADICIONE ESTES ESTILOS */
+        .progress-container {
+            width: 80%;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+        }
 
-.progress-bar {
-    height: 100%;
-    width: 80%;
-    background: #4CAF50;
-    border-radius: 5px;
-    transition: width 1s linear;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-}
+        .progress-bar {
+            height: 100%;
+            width: 80%;
+            background: #4CAF50;
+            border-radius: 5px;
+            transition: width 1s linear;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
 
-.progress-bar.warning {
-    background: #FF9800;
-    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
-}
+        .progress-bar.warning {
+            background: #FF9800;
+            box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
+        }
 
-.progress-bar.danger {
-    background: #F44336;
-    box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
-    animation: pulse 0.5s infinite alternate;
-}
+        .progress-bar.danger {
+            background: #F44336;
+            box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+            animation: pulse 0.5s infinite alternate;
+        }
 
-@keyframes pulse {
-    from { opacity: 1; }
-    to { opacity: 0.7; }
-}
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
 
-.timer-label {
-    font-size: 0.8em;
-    color: #666;
-    text-align: center;
-    font-weight: 500;
-}        
-
-</style>
+        /* Botões de clave ativos */
+        .clave-active {
+            background: linear-gradient(45deg, #FFD166, #FFB347) !important;
+            border: 3px solid #333 !important;
+            transform: scale(1.05);
+            display: none
+        }
+        
+    </style>
 </head>
 
-<body><br><br><br>
+<body>
     <div class="container">
-        <div style="width: 100%; display: flex; " id="Placar">
-        </div>
-        <div class="error-warning" id="errorWarning">
-            ⚠️ Cuidado! Você tem <span class="error-count" id="errorCount">0</span> erros. Ao atingir 5 erros, o jogo termina!
-        </div>
         <div class="game-area">
             <div class="pentagrama-container">
                 <div id="notation"></div>
             </div>
             
-            <!-- NO LUGAR DA SEÇÃO DO TIMER ATUAL -->
             <div class="timer-section">
                 <div class="timer-box" style="width: 20%;">
                     <div style="width: 100%; padding: 5px; border: 1px solid #0a0321; text-align: left; box-sizing: border-box;">
@@ -505,11 +260,13 @@
                         </div>
                     </div>                    
                 </div> 
-<div class="timer-box" style="gap: 10px; width: 50%; border: 1px solid #0a0321;">
-    <button class="note-btn note-do" id="claveSol" style="width: 33%; font-size: 40px; font-weight: bold; color: black;">𝄞</button>
-    <button class="note-btn note-do" id="claveFa" style="width: 33%; font-size: 40px; font-weight: bold; color: black;">𝄢</button>
-    <button class="note-btn note-do" id="claveDo" style="width: 33%; font-size: 40px; font-weight: bold; color: black;">𝄡</button>
-</div>            </div>            
+                
+                <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
+                    <button class="note-btn note-mi clave-active" id="claveSOL" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
+                    <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
+                    <button class="note-btn note-mi" id="claveDO" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>
+                </div>            
+            </div>            
             
             <div class="notes-grid">
                 <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
@@ -520,40 +277,8 @@
                 <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
                 <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
             </div>
-            <br><br><br><br><br>a      
-            <!--<div class="controls-row">
-                <button class="control-btn next-btn" onclick="nextNote()">
-                    <span>▶</span> Próxima
-                </button>
-                <button class="control-btn end-btn" onclick="endGame()">
-                    <span>⏹</span> Encerrar
-                </button>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-value" id="score">0</div>
-                    <div class="stat-label">ACERTOS</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="errors">0</div>
-                    <div class="stat-label">ERROS</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="total">0</div>
-                    <div class="stat-label">TOTAL</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="streak">0</div>
-                    <div class="stat-label">SEQUÊNCIA</div>
-                </div>
-            </div>
-            
-            <div class="instructions">
-                <strong>Dicas:</strong> Use os botões ou teclas 1-7 (Dó=1, Si=7)
-            </div>
         </div>
-    </div> -->
+    </div>
     
     <!-- Modal de Game Over -->
     <div class="game-over-modal" id="gameOverModal">
@@ -591,7 +316,7 @@
 
     <script>
         // Variáveis do jogo
-        const TEMPO_RESPOSTA = 10; // Configuração centralizada
+        const TEMPO_RESPOSTA = 10;
         let currentNote = null;
         let score = 0;
         let errors = 0;
@@ -601,17 +326,37 @@
         let timeLeft = TEMPO_RESPOSTA;
         let gameActive = false;
         let gameOver = false;
-        let currentNoteKey = '';
+        let Clave = "SOL"; // Clave padrão
         
-        // Mapeamento de notas
-        const notesMap = {
-            'C': ['c/4', 'c/5', 'c/6'],
-            'D': ['d/4', 'd/5', 'd/6'],
-            'E': ['e/4', 'e/5'],
-            'F': ['f/4', 'f/5'],
-            'G': ['g/4', 'g/5'],
-            'A': ['a/4', 'a/5'],
-            'B': ['b/3', 'b/4']
+        // Mapeamento de notas para cada clave
+        const notasPorClave = {
+            'SOL': { // Clave de Sol
+                'C': ['c/4', 'c/5', 'c/6'],
+                'D': ['d/4', 'd/5', 'd/6'],
+                'E': ['e/4', 'e/5'],
+                'F': ['f/4', 'f/5'],
+                'G': ['g/4', 'g/5'],
+                'A': ['a/4', 'a/5'],
+                'B': ['b/3', 'b/4']
+            },
+            'FA': { // Clave de Fá
+                'C': ['c/4', 'c/5'],
+                'D': ['d/4', 'd/5'],
+                'E': ['e/4', 'e/5'],
+                'F': ['f/4', 'f/5'],
+                'G': ['g/4', 'g/5'],
+                'A': ['a/4', 'a/5'],
+                'B': ['b/3', 'b/4']
+            },
+            'DO': { // Clave de Dó (na 3ª linha)
+                'C': ['c/4', 'c/5'],
+                'D': ['d/4', 'd/5'],
+                'E': ['e/4', 'e/5'],
+                'F': ['f/4', 'f/5'],
+                'G': ['g/4', 'g/5'],
+                'A': ['a/4', 'a/5'],
+                'B': ['b/4', 'b/5']
+            }
         };
         
         const noteNames = {
@@ -642,13 +387,13 @@
             ["B4", 493.88],
             ["C5", 523.25],
             ["D5", 587.33],
-            ["E5", 659.25],   // E5
-            ["F5", 698.46],   // F5
-            ["G5", 783.99],  // G5
-            ["A5", 880.00],   // A5 (LÁ PADRÃO - 440Hz × 2)
-            ["B5", 987.77],   // B5
-            ["C6", 1046.50],  // C6
-            ["D6", 1174.66]   // D6
+            ["E5", 659.25],
+            ["F5", 698.46],
+            ["G5", 783.99],
+            ["A5", 880.00],
+            ["B5", 987.77],
+            ["C6", 1046.50],
+            ["D6", 1174.66]
         ];
        
         // Inicializar o jogo
@@ -694,96 +439,96 @@
                 clearInterval(timer);
             }
             
-            // Resetar feedback
-            //document.getElementById('feedback').textContent = '';
-            //document.getElementById('feedback').className = 'feedback';
-            
             // Sortear nova nota
             const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
             currentNote = notes[Math.floor(Math.random() * notes.length)];
-            // Sortear oitava
-            const octaves = notesMap[currentNote];
-            const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-            //alert(selectedOctave.toUpperCase().replace("/", ""))
             
-            // Criar notação
+            // Sortear oitava baseada na clave atual
+            const octaves = notasPorClave[Clave][currentNote];
+            const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+            
+            // Criar notação com a clave atual
             createNotation(selectedOctave);
-            let frequencia = pesquisarFrequencia(selectedOctave.toUpperCase().replace("/", ""))
-            tocarNota(frequencia)
-            //aqui
-            // Atualizar texto
-            //document.getElementById('currentNote').textContent = `Nota: ${noteNames[currentNote]}`;
+            
+            // Tocar som da nota
+            let frequencia = pesquisarFrequencia(selectedOctave.toUpperCase().replace("/", ""));
+            if (frequencia) tocarNota(frequencia);
 
             resetarBarraProgresso();
             iniciarBarraProgresso();
-            
 
             // Resetar timer
             timeLeft = TEMPO_RESPOSTA;
-            updateTimerDisplay();
             
             // Iniciar contagem
             gameActive = true;
             timer = setInterval(updateTimer, 1000);
         }
         
-function createNotation(noteKey, mostrarNota = true) {
-    try {
-        const container = document.getElementById('notation');
-        container.innerHTML = '';
-        
-        if (!mostrarNota) {
-            // Se não deve mostrar nota, retorna pentagrama vazio
-            const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-            const width = Math.min(window.innerWidth - 60, 400);
-            renderer.resize(width, 70); // SVG bem pequeno
-            const context = renderer.getContext();
-            const staveWidth = width - 100;
-            
-            const stave = new Vex.Flow.Stave(50, 12, staveWidth);
-            stave.addClef('treble'); // ou 'bass'
-            stave.setContext(context).draw();
-            return;
+        function createNotation(noteKey, mostrarNota = true) {
+            try {
+                const container = document.getElementById('notation');
+                container.innerHTML = '';
+                
+                if (!mostrarNota) {
+                    // Pentagrama vazio
+                    const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+                    const width = Math.min(window.innerWidth - 60, 400);
+                    renderer.resize(width, 70);
+                    const context = renderer.getContext();
+                    const staveWidth = width - 100;
+                    
+                    const stave = new Vex.Flow.Stave(50, 12, staveWidth);
+                    stave.addClef(getClefName(Clave));
+                    stave.setContext(context).draw();
+                    return;
+                }
+                
+                const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+                const width = Math.min(window.innerWidth - 60, 400);
+                renderer.resize(width, 120);
+                const context = renderer.getContext();
+                const staveWidth = width - 100;
+                
+                const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+                stave.addClef(getClefName(Clave));
+                stave.setContext(context).draw();
+                
+                const note = new Vex.Flow.StaveNote({
+                    keys: [noteKey],
+                    duration: 'w'
+                });
+                
+                const voice = new Vex.Flow.Voice({
+                    num_beats: 1,
+                    beat_value: 1,
+                    resolution: Vex.Flow.RESOLUTION
+                });
+                
+                voice.addTickables([note]);
+                
+                new Vex.Flow.Formatter()
+                    .joinVoices([voice])
+                    .format([voice], staveWidth - 20);
+                
+                voice.draw(context, stave);
+                
+            } catch (error) {
+                console.error('Erro ao criar notação:', error);
+            }
         }
         
-        // Código original para mostrar nota
-        const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-        const width = Math.min(window.innerWidth - 60, 400);
-        renderer.resize(width, 120);
-        const context = renderer.getContext();
-        const staveWidth = width - 100;
+        function getClefName(clave) {
+            switch(clave) {
+                case 'SOL': return 'treble';
+                case 'FA': return 'bass';
+                case 'DO': return 'alto'; // Clave de Dó na 3ª linha
+                default: return 'treble';
+            }
+        }
         
-        const stave = new Vex.Flow.Stave(50, 20, staveWidth);
-        stave.addClef('treble'); // ou 'bass'
-        stave.setContext(context).draw();
-        
-        const note = new Vex.Flow.StaveNote({
-            keys: [noteKey],
-            duration: 'w'
-        });
-        
-        const voice = new Vex.Flow.Voice({
-            num_beats: 1,
-            beat_value: 1,
-            resolution: Vex.Flow.RESOLUTION
-        });
-        
-        voice.addTickables([note]);
-        
-        new Vex.Flow.Formatter()
-            .joinVoices([voice])
-            .format([voice], staveWidth - 20);
-        
-        voice.draw(context, stave);
-        
-    } catch (error) {
-        console.error('Erro:', error);
-    }
-}        
         function updateTimer() {
             timeLeft--;
-            updateTimerDisplay();
-            
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 gameActive = false;
@@ -791,138 +536,88 @@ function createNotation(noteKey, mostrarNota = true) {
             }
         }
         
-        function updateTimerDisplay() {
-            //const timerEl = document.getElementById('timer');
-            //timerEl.textContent = timeLeft;
+        function checkAnswer(userNote) {
+            let Notas = "ABCDEFGAB"
+            let Posicao = 0
+            let novaNota = ""
+            if (Clave === "FA") {
+                posicao = Notas.indexOf(currentNote) + 2;
+                currentNote = Notas.charAt(posicao); 
+            } else if (Clave === "DO") {
+                posicao = Notas.indexOf(currentNote) + 1;
+                currentNote = Notas.charAt(posicao); 
+            }
+            if (gameOver || !gameActive) return;
             
-            // Mudar cor conforme tempo
-            //if (timeLeft <= 2) {
-            //    timerEl.style.color = '#EF476F';
-            //} else if (timeLeft <= 3) {
-            //    timerEl.style.color = '#FFD166';
-            //} else {
-            //    timerEl.style.color = '#667eea';
-            //}
+            clearInterval(timer);
+            gameActive = false;
+            total++;
+            
+            // Apagar a nota imediatamente
+            createNotation(null, false);
+
+            if (userNote === currentNote) {
+                // Acerto
+                score++;
+                streak++;
+                
+                mostrarSimboloNoPentagrama('✅');
+                
+                setTimeout(() => {
+                    nextNote();
+                }, 500);
+                
+            } else {
+                // Erro
+                errors++;
+                streak = 0;
+                
+                mostrarSimboloNoPentagrama('❌');
+                
+                if (errors >= 5) {
+                    setTimeout(showGameOver, 1500);
+                } else {
+                    setTimeout(() => {
+                        nextNote();
+                    }, 500);
+                }
+            }
+            
+            updateStats();
+            pararBarraProgresso();
         }
         
-function checkAnswer(userNote) {
-    if (gameOver || !gameActive) return;
-    
-    clearInterval(timer);
-    //pararProgresso(); // Se estiver usando barra de progresso
-    gameActive = false;
-    total++;
-    
-    // Guardar a nota atual para mostrar depois
-    const notaAtualKey = currentNoteKey; // Você precisa armazenar isso
-    
-    // APAGAR a nota imediatamente
-    createNotation(null, false); // Mostra pentagrama vazio
-    
-    if (userNote === currentNote) {
-        // Acerto
-        score++;
-        streak++;
-        
-        // Mostrar ✅ por 500ms
-        mostrarSimboloNoPentagrama('✅');
-        showFeedback('✅ Correto!', true);
-        
-        // Próxima nota após 500ms
-        setTimeout(() => {
-            nextNote();
-        }, 500);
-        
-    } else {
-        // Erro
-        errors++;
-        streak = 0;
-        
-        // Mostrar ❌ por 500ms
-        mostrarSimboloNoPentagrama('❌');
-        showFeedback(`❌ Errado! Era ${noteNames[currentNote]}`, false);
-        
-        // Verificar se atingiu 5 erros
-        if (errors >= 5) {
-            setTimeout(showGameOver, 1500);
-        } else {
-            // Próxima nota após 500ms
-            setTimeout(() => {
-                nextNote();
-            }, 500);
-        }
-    }
-    
-    updateStats();
-    pararBarraProgresso()
-}        
         function handleTimeOut() {
             gameActive = false;
             errors++;
             streak = 0;
             total++;
             
-            showFeedback('⏰ Tempo esgotado!', false);
-            
-            // Verificar se atingiu 5 erros
             if (errors >= 5) {
                 setTimeout(showGameOver, 1500);
             } else {
-                // Próxima nota após 2 segundos
                 setTimeout(nextNote, 2000);
             }
             
             updateStats();
-            pararBarraProgresso()
-        }
-        
-        function showFeedback(message, isCorrect) {
-            //const feedbackEl = document.getElementById('feedback');
-            //feedbackEl.textContent = message;
-            //feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'error'}`;
+            pararBarraProgresso();
         }
         
         function updateStats() {
-            //document.getElementById('score').textContent = score;
             document.getElementById('Acertos').textContent = score;
-            //document.getElementById('errors').textContent = errors;
             if (errors != 0) {
                 document.getElementById('erro' + errors).classList.remove('mostra-erro');
             }
-            //document.getElementById('total').textContent = total;
-            //document.getElementById('streak').textContent = streak;
-            
-            // Atualizar aviso de erros
-            //const errorWarning = document.getElementById('errorWarning');
-            const errorCount = document.getElementById('errorCount');
-            
-            errorCount.textContent = errors;
-            
-            //if (errors >= 3) {
-            //    errorWarning.style.display = 'block';
-            //} else {
-            //    errorWarning.style.display = 'none';
-            //}
-            
-            //if (errors >= 4) {
-            //    errorWarning.style.background = '#FFEBEE';
-            //    errorWarning.style.borderLeftColor = '#F44336';
-            //} else if (errors >= 3) {
-            //    errorWarning.style.background = '#FFF3E0';
-            //    errorWarning.style.borderLeftColor = '#FF9800';
-            //}
         }
         
         function showGameOver() {
             gameOver = true;
             clearInterval(timer);
             
-            // Atualizar estatísticas no modal
             document.getElementById('finalScore').textContent = score;
             document.getElementById('finalErrors').textContent = errors;
             document.getElementById('finalTotal').textContent = total;
             
-            // Mostrar modal
             document.getElementById('gameOverModal').style.display = 'flex';
         }
         
@@ -933,25 +628,18 @@ function checkAnswer(userNote) {
         }
         
         function restartGame() {
-            // Resetar variáveis
             score = 0;
             errors = 0;
             total = 0;
             streak = 0;
             gameOver = false;
-            document.getElementById('erro1').classList.add('mostra-erro');
-            document.getElementById('erro2').classList.add('mostra-erro');
-            document.getElementById('erro3').classList.add('mostra-erro');
-            document.getElementById('erro4').classList.add('mostra-erro');
-            document.getElementById('erro5').classList.add('mostra-erro');
+            
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('erro' + i).classList.add('mostra-erro');
+            }
 
-            // Fechar modal
             closeModal();
-            
-            // Atualizar estatísticas
             updateStats();
-            
-            // Iniciar novo jogo
             nextNote();
         }
         
@@ -959,137 +647,126 @@ function checkAnswer(userNote) {
             document.getElementById('gameOverModal').style.display = 'none';
         }
         
-        // Forçar orientação paisagem em dispositivos móveis
-        function lockOrientation() {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {
-                    // Ignorar erro se o navegador não permitir
-                });
+        function mostrarSimboloNoPentagrama(simbolo) {
+            const container = document.getElementById('notation');
+            container.innerHTML = '';
+            
+            const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+            const width = Math.min(window.innerWidth - 60, 400);
+            renderer.resize(width, 120);
+            const context = renderer.getContext();
+            
+            const staveWidth = width - 100;
+            const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+            stave.addClef(getClefName(Clave));
+            stave.setContext(context).draw();
+            
+            const svg = container.querySelector('svg');
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            
+            text.setAttribute('x', width / 2);
+            text.setAttribute('y', 70);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('font-size', '60');
+            text.setAttribute('font-weight', 'bold');
+            
+            if (simbolo === '✅') {
+                text.setAttribute('fill', '#06D6A0');
+            } else {
+                text.setAttribute('fill', '#EF476F');
             }
+            
+            text.textContent = simbolo;
+            svg.appendChild(text);
         }
         
-        // Tentar bloquear orientação quando a página carregar
-        window.addEventListener('load', function() {
-            if (window.innerHeight > window.innerWidth) {
-                // Está em retrato, mostrar mensagem
-                setTimeout(lockOrientation, 100);
-            }
-        });
-        
-        // Atualizar orientação quando a janela mudar de tamanho
-        window.addEventListener('resize', function() {
-            createNotation(); // Recriar notação para ajustar tamanho
-        });
+        const TEMPO_TOTAL = 10;
+        let progressInterval = null;
 
-function mostrarSimboloNoPentagrama(simbolo) {
-    const container = document.getElementById('notation');
-    container.innerHTML = '';
-    
-    // Criar um SVG simples com o símbolo
-    const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-    const width = Math.min(window.innerWidth - 60, 400);
-    renderer.resize(width, 120);
-    const context = renderer.getContext();
-    
-    // Desenhar pentagrama vazio
-    const staveWidth = width - 100;
-    const stave = new Vex.Flow.Stave(50, 20, staveWidth);
-    stave.addClef('treble'); // ou 'bass'
-    stave.setContext(context).draw();
-    
-    // Adicionar o símbolo grande no centro
-    const svg = container.querySelector('svg');
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    
-    text.setAttribute('x', width / 2);
-    text.setAttribute('y', 70); // Centro vertical
-    text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('font-size', '60');
-    text.setAttribute('font-weight', 'bold');
-    
-    if (simbolo === '✅') {
-        text.setAttribute('fill', '#06D6A0'); // Verde para acerto
-    } else {
-        text.setAttribute('fill', '#EF476F'); // Vermelho para erro
-    }
-    
-    text.textContent = simbolo;
-    svg.appendChild(text);
-}
-const TEMPO_TOTAL = 10;
-let progressInterval = null;
-
-function iniciarBarraProgresso() {
-    pararBarraProgresso();
-    
-    const progressBar = document.getElementById('progressBar');
-    let tempo = TEMPO_TOTAL;
-    
-    progressBar.style.width = '100%';
-    progressBar.className = 'progress-bar';
-    
-    progressInterval = setInterval(() => {
-        tempo--;
-        const porcentagem = (tempo / TEMPO_TOTAL) * 100;
-        
-        progressBar.style.width = porcentagem + '%';
-        
-        // Mudar cor
-        if (tempo <= 3) {
-            progressBar.className = 'progress-bar danger';
-        } else if (tempo <= 5) {
-            progressBar.className = 'progress-bar warning';
-        }
-        
-        if (tempo <= 0) {
+        function iniciarBarraProgresso() {
             pararBarraProgresso();
+            
+            const progressBar = document.getElementById('progressBar');
+            let tempo = TEMPO_TOTAL;
+            
+            progressBar.style.width = '100%';
+            progressBar.className = 'progress-bar';
+            
+            progressInterval = setInterval(() => {
+                tempo--;
+                const porcentagem = (tempo / TEMPO_TOTAL) * 100;
+                
+                progressBar.style.width = porcentagem + '%';
+                
+                if (tempo <= 3) {
+                    progressBar.className = 'progress-bar danger';
+                } else if (tempo <= 5) {
+                    progressBar.className = 'progress-bar warning';
+                }
+                
+                if (tempo <= 0) {
+                    pararBarraProgresso();
+                }
+            }, 1000);
         }
-    }, 1000);
-}
 
-function pararBarraProgresso() {
-    if (progressInterval) {
-        clearInterval(progressInterval);
-        progressInterval = null;
-    }
-}
-
-function resetarBarraProgresso() {
-    pararBarraProgresso();
-    const progressBar = document.getElementById('progressBar');
-    progressBar.style.width = '100%';
-    progressBar.className = 'progress-bar';
-}
-
-            function tocarNota(frequencia) {
-                //const [nomeNota, frequencia] = escala[index];
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                // Configura oscilador
-                oscillator.type = 'triangle'; // 'sine', 'square', 'sawtooth', 'triangle'
-                oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
-                
-                // Configura envelope (para som mais natural)
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                // Conecta e toca
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.start();
-                
-                // Para após 500ms
-                setTimeout(() => {
-                    oscillator.stop();
-                }, 1000);
+        function pararBarraProgresso() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
             }
+        }
+
+        function resetarBarraProgresso() {
+            pararBarraProgresso();
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '100%';
+            progressBar.className = 'progress-bar';
+        }
+
+        function tocarNota(frequencia) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.start();
+            
+            setTimeout(() => {
+                oscillator.stop();
+            }, 1000);
+        }
         
         function pesquisarFrequencia(nota) {
             const encontrado = escala.find(item => item[0] === nota);
             return encontrado ? encontrado[1] : null;
+        }
+
+        function MudaClave(claveTemp) {
+            // Remover classe ativa de todos os botões
+            document.getElementById('claveSOL').style.display = "block";
+            document.getElementById('claveFA').style.display = "block";
+            document.getElementById('claveDO').style.display = "block";
+            // Adicionar classe ativa ao botão clicado
+            document.getElementById(claveTemp).style.display = "none";
+            
+            // Mudar a clave
+            Clave = claveTemp.replace("clave","");
+            
+            // Recriar a nota atual com a nova clave
+            if (currentNote) {
+                const octaves = notasPorClave[Clave][currentNote];
+                const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+                createNotation(selectedOctave);
+            }
         }
 
     </script>
