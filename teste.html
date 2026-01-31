@@ -211,6 +211,39 @@
             transform: scale(0.95);
         }
 
+        /* Botão de som */
+        .sound-btn {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            background: linear-gradient(45deg, #06D6A0, #06A678);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .sound-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .sound-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .sound-off {
+            background: linear-gradient(45deg, #EF476F, #D43A5E) !important;
+        }
+
         /* ADICIONE ESTES ESTILOS */
         .progress-container {
             width: 80%;
@@ -466,6 +499,46 @@
             }
         }
         
+        /* Modal de ativação de som para iOS */
+        .sound-activation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1002;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .sound-activation-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .sound-activation-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .sound-activation-message {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
     </style>
 </head>
 
@@ -473,6 +546,11 @@
     <!-- Botão de tela cheia -->
     <button class="fullscreen-btn" id="fullscreenBtn" title="Tela Cheia">
         ⛶
+    </button>
+    
+    <!-- Botão de som -->
+    <button class="sound-btn" id="soundBtn" title="Ativar/Desativar Som">
+        🔊
     </button>
     
     <div class="container">
@@ -569,6 +647,25 @@
         </div>
     </div>
 
+    <!-- Modal de ativação de som para iOS -->
+    <div class="sound-activation-modal" id="soundActivationModal">
+        <div class="sound-activation-content">
+            <div class="sound-activation-title">🔊 Ativar Som</div>
+            <div class="sound-activation-message">
+                Para o som funcionar no iPhone/iPad:<br><br>
+                1. Certifique-se que o botão de silêncio não está ativado<br>
+                2. Aumente o volume do dispositivo<br>
+                3. Clique no botão abaixo para ativar o som
+            </div>
+            <button class="modal-btn restart-btn" onclick="activateSound()">
+                ✅ Ativar Som Agora
+            </button>
+            <button class="modal-btn close-btn" onclick="skipSoundActivation()">
+                Pular (Sem Som)
+            </button>
+        </div>
+    </div>
+
     <!-- Toast de compartilhamento -->
     <div class="toast" id="shareToast">
         Resultado copiado para a área de transferência! 📋
@@ -588,6 +685,9 @@
         let gameOver = false;
         let Clave = "SOL"; // Clave padrão
         let isFullscreen = false;
+        let soundEnabled = true;
+        let audioContext = null;
+        let soundActivated = false;
         
         // Mapeamento de notas para cada clave
         const notasPorClave = {
@@ -660,15 +760,128 @@
         // Inicializar o jogo
         document.addEventListener('DOMContentLoaded', function() {
             updateStats();
-            nextNote();
             setupKeyboard();
             setupFullscreen();
+            setupSound();
+            
+            // Verificar se é iOS e mostrar modal de ativação de som
+            if (isIOS() && !soundActivated) {
+                setTimeout(() => {
+                    document.getElementById('soundActivationModal').style.display = 'flex';
+                }, 1000);
+            } else {
+                nextNote();
+            }
             
             // Tentar entrar em tela cheia automaticamente em dispositivos móveis
             if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 setTimeout(enterFullscreen, 1000);
             }
         });
+        
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+        
+        function setupSound() {
+            const soundBtn = document.getElementById('soundBtn');
+            soundBtn.addEventListener('click', toggleSound);
+            
+            // Inicializar AudioContext (mas não iniciar ainda)
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log("AudioContext não suportado");
+                soundEnabled = false;
+                updateSoundButton();
+            }
+        }
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundButton();
+            
+            // Se está ativando o som no iOS, tentar ativar o AudioContext
+            if (soundEnabled && isIOS() && audioContext && audioContext.state === 'suspended') {
+                activateSound();
+            }
+        }
+        
+        function updateSoundButton() {
+            const soundBtn = document.getElementById('soundBtn');
+            if (soundEnabled) {
+                soundBtn.innerHTML = '🔊';
+                soundBtn.classList.remove('sound-off');
+                soundBtn.title = 'Desativar Som';
+            } else {
+                soundBtn.innerHTML = '🔇';
+                soundBtn.classList.add('sound-off');
+                soundBtn.title = 'Ativar Som';
+            }
+        }
+        
+        function activateSound() {
+            if (audioContext) {
+                // Para iOS, precisamos iniciar o AudioContext com uma interação do usuário
+                audioContext.resume().then(() => {
+                    console.log('AudioContext ativado com sucesso');
+                    soundActivated = true;
+                    soundEnabled = true;
+                    updateSoundButton();
+                    
+                    // Tocar um som de teste
+                    tocarNotaTeste();
+                    
+                    // Fechar modal
+                    document.getElementById('soundActivationModal').style.display = 'none';
+                    
+                    // Iniciar o jogo se ainda não começou
+                    if (!gameActive && !gameOver) {
+                        nextNote();
+                    }
+                }).catch(e => {
+                    console.log('Erro ao ativar AudioContext:', e);
+                    showToast('Não foi possível ativar o som. Verifique as configurações do dispositivo.');
+                });
+            }
+        }
+        
+        function skipSoundActivation() {
+            soundEnabled = false;
+            updateSoundButton();
+            document.getElementById('soundActivationModal').style.display = 'none';
+            
+            // Iniciar o jogo sem som
+            if (!gameActive && !gameOver) {
+                nextNote();
+            }
+        }
+        
+        function tocarNotaTeste() {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // Lá 440Hz
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+                
+                console.log('Som de teste tocado');
+            } catch (e) {
+                console.log('Erro ao tocar som de teste:', e);
+            }
+        }
         
         function setupFullscreen() {
             const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -800,9 +1013,11 @@
             // Criar notação com a clave atual
             createNotation(selectedOctave);
             
-            // Tocar som da nota
-            let frequencia = pesquisarFrequencia(selectedOctave.toUpperCase().replace("/", ""));
-            if (frequencia) tocarNota(frequencia);
+            // Tocar som da nota (se habilitado)
+            if (soundEnabled) {
+                let frequencia = pesquisarFrequencia(selectedOctave.toUpperCase().replace("/", ""));
+                if (frequencia) tocarNota(frequencia);
+            }
 
             resetarBarraProgresso();
             iniciarBarraProgresso();
@@ -984,8 +1199,14 @@
         }
         
         function tocarSomGameOver() {
+            if (!soundEnabled || !audioContext) return;
+            
             try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                // Garantir que o AudioContext está ativo (especialmente para iOS)
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
                 
@@ -1002,7 +1223,38 @@
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + 0.7);
             } catch (e) {
-                console.log("Áudio não disponível");
+                console.log("Erro ao tocar som de game over");
+            }
+        }
+        
+        function tocarNota(frequencia) {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                // Para iOS, garantir que o AudioContext está ativo
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start();
+                
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 1000);
+            } catch (e) {
+                console.log("Erro ao tocar nota:", e);
             }
         }
         
@@ -1108,27 +1360,6 @@
             progressBar.style.width = '100%';
             progressBar.className = 'progress-bar';
         }
-
-        function tocarNota(frequencia) {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.type = 'triangle';
-            oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
-            
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            oscillator.start();
-            
-            setTimeout(() => {
-                oscillator.stop();
-            }, 1000);
-        }
         
         function pesquisarFrequencia(nota) {
             const encontrado = escala.find(item => item[0] === nota);
@@ -1168,11 +1399,11 @@
 🎯 Precisão: ${precisao}%
 🗝️ Clave: ${Clave === 'SOL' ? 'Sol' : Clave === 'FA' ? 'Fá' : 'Dó'}
 
-🏆 Desafie-se também em: (https://ensaiosregionalgoiania.github.io/ensaios/teste.html)
+🏆 Desafie-se também em: https://ensaiosregionalgoiania.github.io/ensaios/teste.html
 
 #TreinoMusical #AprendaMúsica #JogoMusical`;
             
-            // URL do jogo (substitua pelo seu link real)
+            // URL do jogo
             const gameURL = window.location.href;
             
             // Usar a Web Share API se disponível (funciona em dispositivos móveis)
