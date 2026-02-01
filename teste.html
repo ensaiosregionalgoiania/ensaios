@@ -1368,7 +1368,14 @@
         }
         
         function pesquisarFrequencia(nota) {
-            const encontrado = escala.find(item => item[0] === nota);
+            const indice = escala.findIndex(item => item[0] === nota);
+            let voltaFrequencia = 0
+            if (Clave === "FA") {
+                voltaFrequencia = 5
+            } else if (Clave === "DO") {
+                voltaFrequencia = 6
+            }
+            const encontrado = escala[indice-voltaFrequencia];
             return encontrado ? encontrado[1] : null;
         }
 
