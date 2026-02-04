@@ -241,5 +241,8 @@
             "ITAGUARI;Itaguari;5º SÁBADO;T;hmkta1jeoTnfJj7RA;10;;;T;-15.9187192;-49.6020129;DN 3N 5N;20/09/2026",
             "ORDALIA;Itauçu;5º SÁBADO;T;AnRSiHpmmBGFzVqo9;10;;;T;-16.2093576;-49.7357894;DN 5N;",
             "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;Diogo;Nereu;T;-16.7192162;-49.4341354;4N SN;",
-            "Santo Antônio de Goiás;Santo Antônio de Goiás;2º SÁBADO;N;JDVBRBe7gJxw3sQP6;10;Daniel Vieira;Gilton Pereira;T;-16.4874364;-49.3106424;DN 4N;"
+            "Santo Antônio de Goiás;Santo Antônio de Goiás;2º SÁBADO;N;JDVBRBe7gJxw3sQP6;10;Daniel Vieira;Gilton Pereira;T;-16.4874364;-49.3106424;DN 4N;",
+            "<B>Central - Anicuns</B>;<B>Anicuns</B>;1º SÁBADO;<B>N</B>;xigt3JEX3779AxsF7;7;Itamar;Jackson;T;-16.457100306491736;-49.96682791886014;;",
+            "<B>Central - Avelinópolis</B>;<B>Avelinópolis</B>;;<B>N</B>;r2fcUrhT1xb4wfjw9;7;;;T;-16.467250288620487;-49.76033178969629;;",
+            "<B>Central - Nazário</B>;<B>Nazário</B>;;<B>N</B>;xYu57f4yPQZDjYRN7;7;;;T;-16.586661532981644;-49.88542322792637;;",
         ];
