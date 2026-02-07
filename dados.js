@@ -64,7 +64,7 @@
             "Setor Estrela Dalva;Goiânia;1ª SEXTA-FEIRA;N;DJJ1EU8izHd3iVkh6;4;Jardel Mendes;Jackson;T;-16.6023639;-49.3233046;DN 4N 6N;",
             "Jardim Ipanema;Aparecida;1º SáBADO;T;8gmFtFfCeVx2NvVx7;6;João Evangelista;;T;-16.7926965;-49.2432523;3N SN;",
             "Setor Perim;Goiânia;1º SáBADO;T;jBCcBz3r4Ko1LF3o7;5;Antonio Lima;Rogerio Rosemberg;T;-16.6467999;-49.2987273;5N SN;",
-            "Setor Palmito(confirmar);Goiânia;1º SáBADO;T;tM3Z2rcm5XthTGLn6;1;;;T;-16.6749858;-49.228321;DN 3N SN;",
+            "Setor Palmito;Goiânia;1º SáBADO;T;tM3Z2rcm5XthTGLn6;1;;;T;-16.6749858;-49.228321;DN 3N SN;",
             "Setor Goiânia Viva;Goiânia;1º SáBADO;T;KdGCYm1SVy7Qxfqc6;3;;;T;-16.7310459;-49.4522408;5N SN;",
             "Residencial Morada do Ipê;Goiânia;4ª SEXTA-FEIRA;N;GksGsiGsrxWWGYe99;5;Divino da Paixão;Rogerio Rosemberg;T;-16.5899707;-49.2623225;4N SN;",
             "Residencial Íris Ville;Goiânia;1º SáBADO;T;VyEhWKcqUz2NdD5U7;1;;;T;-16.6396134;-49.1572064;4N SN;",
@@ -245,4 +245,5 @@
             "<B>Central - Anicuns</B>;<B>Anicuns</B>;1º SÁBADO;<B>N</B>;xigt3JEX3779AxsF7;7;Itamar;Jackson;T;-16.457100306491736;-49.96682791886014;;",
             "<B>Central - Avelinópolis</B>;<B>Avelinópolis</B>;;<B>N</B>;r2fcUrhT1xb4wfjw9;7;;;T;-16.467250288620487;-49.76033178969629;;",
             "<B>Central - Nazário</B>;<B>Nazário</B>;;<B>N</B>;xYu57f4yPQZDjYRN7;7;;;T;-16.586661532981644;-49.88542322792637;;",
+            "Vila Yate/Vila Moraes;Goiânia;4º DOMINGO;T;TkdSEtZS7CChmnh47;1;Carlúcio;Ricardo Rosemberg;T;-16.6637406;-49.2239445;DN 3N 5N;24/05/2026"
         ];
