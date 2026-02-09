@@ -684,7 +684,7 @@
         <h1 id="Titulo">Ensaio Local</h1>
         <!-- Container melhorado para as consultas -->
         <div class="consultas-container">
-            <div class="consultas-titulo">Consulta por:</div>
+            <div class="consultas-titulo">Consulta por::</div>
             
             <!-- Radio buttons para escolher o tipo de consulta -->
             <div class="radio-group">
@@ -908,6 +908,7 @@
         // Função para consultar por Casa de Oracao CCB
 
 function consultarPorCasaOracao() {
+    getLocation();
     const termo = document.getElementById('casa-oracao-input').value.trim().toUpperCase();
     
     if (!termo) {
@@ -971,6 +972,7 @@ function consultarPorCasaOracao() {
 
         // Função para consultar por Encarregado Regional
 function consultarPorEncarregadoRegional() {
+    getLocation();
     document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
 
     const termo = document.getElementById('encarregado-regional-input').value.trim().toUpperCase();
@@ -1164,6 +1166,7 @@ function toggleDetalhes(index) {
 
         // Função para gerar a tabela por data
         function gerarTabelaPorData(dataInformada) {
+            getLocation();
             document.getElementById('btn-imprimir-data').disabled = false;
             const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
             const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
@@ -1322,6 +1325,7 @@ function toggleDetalhes(index) {
         });
         
         function AlteraCidade() {
+            getLocation();
             const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
             
             if (tipoConsulta === 'data') {
@@ -1337,6 +1341,7 @@ function toggleDetalhes(index) {
         }
 
 function consultarPorEncarregadoLocal() {
+    getLocation();
     const termo = document.getElementById('encarregado-local-input').value.trim().toUpperCase();
     
     if (!termo) {
@@ -1633,7 +1638,7 @@ function getLocation() {
 async function initApp() {
     try {
         console.log("Obtendo localização...");
-        await getLocation();
+        //await getLocation();
         console.log(`Localização obtida: ${minhaLat}, ${minhaLon}`);
         //aqui
         
@@ -1645,6 +1650,7 @@ async function initApp() {
 }
 
 function gerarTabelaPorEnsaioRegional() {
+    getLocation();
     document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
     //aa
     const tabela = document.querySelector('#tabela-eventos tbody');
