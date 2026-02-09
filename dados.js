@@ -206,7 +206,7 @@
             "Mariápolis;Trindade;5ª SEXTA-FEIRA;N;ffxVdsk1cX5BCRo49;7;;;T;-16.6190139;-49.4504706;DN 5N;",
             "Aracy Amaral;Senador Canedo;4ª SEXTA-FEIRA;N;DEXdyFAsmXsc3x4u5;8;;;T;-16.7394265;-49.0748651;DN 4N;",
             "Bairro das Indústrias;Senador Canedo;4º DOMINGO;T;2fhd7R8MG4TfQwjL6;8;Ederson;;T;-16.6896088;-49.1045245;DN 5N;",
-            "<B>Bonfinópolis</B>;<B>Senador Canedo</B>;2ª SEXTA-FEIRA;<B>N</B>;morZzMHTBz4cuios6;8;Moises;;T;-16.6236908;-48.9692201;DN 4N;",
+            "<B>Bonfinópolis</B>;<B>Bonfinópolis</B>;2ª SEXTA-FEIRA;<B>N</B>;morZzMHTBz4cuios6;8;Moises;;T;-16.6236908;-48.9692201;DN 4N;",
             "<B>Caldazinha</B>;<B>Caldazinha</B>;4º SáBADO;<B>N</B>;H11DTsDLBQVYJkaNA;8;Danilo;;T;-16.7159421;-48.9991636;DN 3N;",
             "Conjunto Nova Morada;Senador Canedo;2º SáBADO;T;rSFpwgzkdg8Wp3we6;8;Hernani;;T;-16.6827089;-49.1825964;4N SN;",
             "Fazenda Bom Jardim;Caldazinha;2º SáBADO;T;QxGpYiRikZ2eW9cX7;8;Gercival;;T;-16.7647635;-48.8659679;DN;",
@@ -248,3 +248,5 @@
             "Vila Yate/Vila Moraes;Goiânia;4º DOMINGO;T;TkdSEtZS7CChmnh47;1;Carlúcio;Ricardo Rosemberg;T;-16.6637406;-49.2239445;DN 3N 5N;24/05/2026",
             "Jardim flamboyant;Senador Canedo;2ª SEXTA-FEIRA;N;EHwJHJLdLy6zo3BL8;8;;Gesmar;T;-16.7162344;-49.0988305;DN 5N;"
         ];
+
+Bonfinópolis Moises 2º SEXTA 19:30
