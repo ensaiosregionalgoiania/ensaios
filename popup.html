@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup - Sistema Ensaio Local</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* ESTILOS DO POPUP */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .popup-container {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-bottom: 2px solid #1c6ea4;
+        }
+
+        .popup-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .popup-close-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-close-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .popup-content {
+            padding: 5px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: calc(90vh - 130px);
+            background-color: #f8f9fa;
+        }
+
+        .popup-image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+        }
+
+        .popup-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+        .popup-image:hover {
+            transform: scale(1.01);
+        }
+
+        .popup-timer {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .timer-icon {
+            font-size: 1.2rem;
+        }
+
+        .popup-footer {
+            padding: 15px;
+            text-align: center;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-size: 0.9rem;
+            border-top: 2px solid #34495e;
+        }
+
+        .instructions-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .instructions-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .instructions-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .instructions-list li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+            to { 
+                opacity: 0; 
+                transform: translateY(-20px);
+                visibility: hidden;
+            }
+        }
+
+        .popup-closing {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .popup-container {
+                width: 95%;
+                max-height: 85vh;
+            }
+            
+            .popup-content {
+                height: calc(85vh - 120px);
+            }
+            
+            .popup-header {
+                padding: 15px 20px;
+            }
+            
+            .popup-title {
+                font-size: 1.2rem;
+            }
+            
+            .popup-timer {
+                height: 5%;
+                padding: 5px 5px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- POPUP DE ENTRADA -->
+    <div class="popup-overlay" id="popupEntrada">
+        <div class="popup-container">
+            <div class="popup-header">
+                <h2 class="popup-title">🏛️Ensaio Regional</h2>
+                <button class="popup-close-btn" id="btnFecharPopup">×</button>
+            </div>
+            <div class="popup-content">
+                <div class="popup-image-container">
+                    <img src="ensaio.jpg" 
+                         alt="Imagem do Sistema Ensaio Local" 
+                         class="popup-image"
+                         id="popupImage">
+                </div>
+            </div>
+            <div class="popup-footer">
+                <div class="popup-timer pulse-animation" id="popupTimer">
+                    <span class="timer-icon">⏱️</span>
+                    Fecha em: <span id="contadorSegundos">10</span> segundos
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // VARIÁVEIS GLOBAIS
+        let popupTimer;
+        let segundosRestantes = 10;
+        let popupFechado = false;
+
+        // Inicializar popup quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarPopup();
+        });
+
+        // Função para inicializar o popup
+        function inicializarPopup() {
+            const popup = document.getElementById('popupEntrada');
+            const btnFechar = document.getElementById('btnFecharPopup');
+            const contadorElemento = document.getElementById('contadorSegundos');
+            const instrucoes = document.getElementById('instrucoes');
+            
+            // Iniciar contador regressivo
+            popupTimer = setInterval(() => {
+                segundosRestantes--;
+                contadorElemento.textContent = segundosRestantes;
+                
+                // Efeito visual quando faltam poucos segundos
+                if (segundosRestantes <= 3) {
+                    contadorElemento.style.color = '#e74c3c';
+                    contadorElemento.style.fontWeight = 'bold';
+                    document.getElementById('popupTimer').classList.add('pulse-animation');
+                }
+                
+                // Fechar automaticamente quando chegar a zero
+                if (segundosRestantes <= 0) {
+                    fecharPopup();
+                }
+            }, 1000);
+            
+            // Evento para fechar com botão
+            btnFechar.addEventListener('click', () => {
+                fecharPopup();
+            });
+            
+            // Evento para fechar clicando fora do popup
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) {
+                    fecharPopup();
+                }
+            });
+            
+            // Evento para fechar com tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !popupFechado) {
+                    e.preventDefault();
+                    fecharPopup();
+                }
+            });
+            
+            // Impedir rolagem da página enquanto popup está aberto
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Função para fechar o popup
+        function fecharPopup() {
+            // Evitar múltiplos fechamentos
+            if (popupFechado) return;
+            popupFechado = true;
+            
+            clearInterval(popupTimer);
+            
+            const popup = document.getElementById('popupEntrada');
+            const instrucoes = document.getElementById('instrucoes');
+            
+            // Adicionar animação de fechamento
+            popup.classList.add('popup-closing');
+            
+            // Restaurar rolagem da página
+            document.body.style.overflow = 'auto';
+            
+            // Mostrar instruções após fechar
+            setTimeout(() => {
+                popup.style.display = 'none';
+                instrucoes.style.display = 'block';
+                
+                // Mostrar mensagem no console
+                console.log('Popup fechado. Para testar novamente, recarregue a página (F5).');
+            }, 500);
+            if (window.parent !== window) {
+                window.parent.postMessage('FECHAR_POPUP', '*');
+            }
+        }
+
+        // Função para alterar a imagem do popup (para uso futuro)
+        function alterarImagemPopup(novaUrl) {
+            const imagem = document.getElementById('popupImage');
+            
+            // Adicionar efeito de fade out
+            imagem.style.opacity = '0.5';
+            imagem.style.transition = 'opacity 0.3s';
+            
+            setTimeout(() => {
+                imagem.src = novaUrl;
+                imagem.alt = "Nova imagem do sistema";
+                
+                // Restaurar opacidade com efeito
+                setTimeout(() => {
+                    imagem.style.opacity = '1';
+                }, 100);
+                
+                console.log('Imagem do popup alterada para:', novaUrl);
+            }, 300);
+        }
+
+        // Função para reiniciar o popup (para testes)
+        function reiniciarPopup() {
+            const popup = document.getElementById('popupEntrada');
+            const instrucoes = document.getElementById('instrucoes');
+            
+            // Resetar variáveis
+            popupFechado = false;
+            segundosRestantes = 10;
+            
+            // Restaurar popup
+            popup.style.display = 'flex';
+            popup.classList.remove('popup-closing');
+            popup.style.opacity = '1';
+            popup.style.transform = 'translateY(0)';
+            
+            // Esconder instruções
+            instrucoes.style.display = 'none';
+            
+            // Resetar contador visual
+            document.getElementById('contadorSegundos').textContent = '10';
+            document.getElementById('contadorSegundos').style.color = '';
+            document.getElementById('contadorSegundos').style.fontWeight = '';
+            
+            // Bloquear rolagem novamente
+            document.body.style.overflow = 'hidden';
+            
+            // Reiniciar timer
+            clearInterval(popupTimer);
+            inicializarPopup();
+            
+            console.log('Popup reiniciado para testes');
+        }
+
+        // Adicionar botão de teste (apenas para desenvolvimento)
+        if (window.location.href.includes('localhost') || window.location.href.includes('127.0.0.1')) {
+            setTimeout(() => {
+                const testeBtn = document.createElement('button');
+                testeBtn.textContent = '🔄 Testar Popup Novamente';
+                testeBtn.style.position = 'fixed';
+                testeBtn.style.bottom = '20px';
+                testeBtn.style.left = '20px';
+                testeBtn.style.padding = '10px 15px';
+                testeBtn.style.background = '#3498db';
+                testeBtn.style.color = 'white';
+                testeBtn.style.border = 'none';
+                testeBtn.style.borderRadius = '5px';
+                testeBtn.style.cursor = 'pointer';
+                testeBtn.style.zIndex = '10000';
+                testeBtn.onclick = reiniciarPopup;
+                
+                document.body.appendChild(testeBtn);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
