@@ -28,7 +28,7 @@
         const iframe = document.createElement('iframe');
         iframe.src = 'popup.html';
         iframe.style.cssText = `
-            width: 30%;
+            width: 90%;
             max-width: 400px;
             height: 90vh;
             border: none;
