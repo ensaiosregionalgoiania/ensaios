@@ -112,7 +112,7 @@
             "Jardim Goiás;Goiânia;2ª QUINTA-FEIRA;N;BbRcFyWtZLCqiRV16;1;;;T;-16.6974864;-49.2406922;DN 4N SN;",
             "Jardim Caravelas;Goiânia;2ª QUINTA-FEIRA;N;5MavwLrtVk6pbALm8;2;Waldir;Jackson;T;-16.7603651;-49.3520616;DN 3N 6N;",
             "Cond das Esmeraldas;Goiânia;2ª QUINTA-FEIRA;N;ZPVuUDLGJwsHp6jz5;2;Gustavo Ferraz;Jackson;T;-16.7857437;-49.3569831;DN 2N 6N;11/10/2026",
-            "<B>Jardim Europa</B>;<B>Goiânia</B>;2º SáBADO;<B>N</B>;wCXzwnDgT28jsN6B9;2;Pedro Machado;Hiwerson;T;-16.7124992;-49.3122056;DN 4N SN;20/12/2026",
+            "<B>Jardim Europa</B>;<B>Goiânia</B>;2º SáBADO;<B>T</B>;wCXzwnDgT28jsN6B9;2;Pedro Machado;Hiwerson;T;-16.7124992;-49.3122056;DN 4N SN;20/12/2026",
             "Setor Expansul;Aparecida;2ª SEXTA-FEIRA;N;fo5Eb6Vat9R4oTGe8;6;Tulio Gustavo;;T;-16.8174697;-49.2340006;DN 5N SN;",
             "Parque Hayala;Aparecida;2ª SEXTA-FEIRA;N;HdfXFEG8f7UbEpTXA;6;Wilian Gonçalves;;T;-16.8104392;-49.306258;DT 5N;",
             "Jardim Dom Bosco II;Aparecida;2ª SEXTA-FEIRA;N;SgRsvHqwLqXTX7HV6;6;Marcos Henrique;;P;-16.8220885;-49.3475363;DN 3N;",
@@ -248,3 +248,4 @@
             "Vila Yate/Vila Moraes;Goiânia;4º DOMINGO;T;TkdSEtZS7CChmnh47;1;Carlúcio;Ricardo Rosemberg;T;-16.6637406;-49.2239445;DN 3N 5N;24/05/2026",
             "Jardim flamboyant;Senador Canedo;2ª SEXTA-FEIRA;N;EHwJHJLdLy6zo3BL8;8;;Gesmar;T;-16.7162344;-49.0988305;DN 5N;"
         ];
+
