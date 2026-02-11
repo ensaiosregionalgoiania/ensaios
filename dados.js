@@ -165,7 +165,7 @@
             "Mansões Paraíso;Aparecida;4ª SEGUNDA-FEIRA;N;4dKHXjHzNevLrX538;6;Leonardo da Silva;;T;-16.7747862;-49.2778971;DN 3N 5N;",
             "Jardim Bonança;Aparecida;4ª SEGUNDA-FEIRA;N;rLyFkSvWcfL5TmM1A;6;José Marcelo;;T;-16.7671387;-49.2527771;DN 4N 6N;",
             "Jardim Buriti Sereno Garden;Aparecida;4ª SEGUNDA-FEIRA;N;TscgNASVCBuEjnBA8;6;Valdeir;;P;-16.7876513;-49.3190395;DN 4N 6N;15/11/2026",
-            "Residencial Triunfo;Goianira;4ª SEGUNDA-FEIRA;N;99mL3zFYwHzHGNso8;7;;;T;-16.5720476;-49.3844995;DN 3N 5N;",
+            "Residencial Triunfo;Goianira;3º DOMINGO;N;99mL3zFYwHzHGNso8;7;;;T;-16.5720476;-49.3844995;DN 3N 5N;",
             "Setor Sul (Jardim Imperial);Goianira;4ª SEGUNDA-FEIRA;N;w3ahx7ZqUy8KeEAJA;7;;;T;-16.5202346;-49.4162498;DN 4N 6N;21/06/2026",
             "Jardim Califórnia;Goiânia;4ª QUINTA-FEIRA;N;PqrrW6zSdiD1RSKs8;1;;;T;-16.6828779;-49.2084434;4N SN;",
             "Residencial Park Solar;Goiânia;4ª SEXTA-FEIRA;N;sfcXgF2igCY2nsRG6;4;Edenilson Noé;Jackson;T;-16.6281966;-49.3600363;DN 4N SN;",
