@@ -107,7 +107,7 @@
             "Setor Santa Genoveva;Goiânia;2ª QUARTA-FEIRA;N;uYp9wBLFHeQJf1rWA;5;Robson Jose Alves;Rogerio Rosemberg;T;-16.6298706;-49.2355763;DN 6N;",
             "Jardim Novo Mundo;Goiânia;2ª QUARTA-FEIRA;N;t193qgTKffUqQhDF7;1;;;T;-16.6894674;-49.2286619;DN 3N 5N;24/05/2026",
             "Jardim Paraíso;Aparecida;2ª QUINTA-FEIRA;N;3ur2XR6PRtxYagc3A;6;Assis Leandro;;T;-16.7811516;-49.2407366;DN 3N 6N;",
-            "Jardim Alto Paraíso I;Aparecida;2ª QUINTA-FEIRA;N;836KUbCkUmW9m7HAA;6;Johnathan;;T;-16.8100184;-49.3600112;DN 3N 6N;",
+            "Jardim Alto Paraíso I;Aparecida;3ª QUINTA-FEIRA;N;836KUbCkUmW9m7HAA;6;Johnathan;Thiaguinho;T;-16.8100184;-49.3600112;DN 3N 6N;",
             "Residencial Rio Verde;Goiânia;2ª QUINTA-FEIRA;N;ABiGL9zxsG7KbcMe7;3;;;T;-16.7363317;-49.3680153;DN 4N 6N;24/05/2026",
             "Jardim Goiás;Goiânia;2ª QUINTA-FEIRA;N;BbRcFyWtZLCqiRV16;1;;;T;-16.6974864;-49.2406922;DN 4N SN;",
             "Jardim Caravelas;Goiânia;2ª QUINTA-FEIRA;N;5MavwLrtVk6pbALm8;2;Waldir;Jackson;T;-16.7603651;-49.3520616;DN 3N 6N;",
