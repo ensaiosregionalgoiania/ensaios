@@ -159,7 +159,7 @@
             "Jardim Boa Esperança;Aparecida;4º DOMINGO;T;ofG7hB6yQgk9zG6h8;6;Neilton;;T;-16.7971654;-49.3297247;DN 3N 6N;",
             "Setor Goiânia II;Goiânia;4º DOMINGO;T;pkzUdw3q6PgeTebX7;5;Israel Ferreira;Gilton Pereira;T;-16.6276876;-49.2462075;DN 4N SN;",
             "Jardim Colorado;Goiânia;4º DOMINGO;T;5nuz13naXNwcWoCZ7;4;Baltazar Dias;Túlio Marcos;T;-16.6267879;-49.3358807;DN 4N 6N;",
-            "Jardim Curitiba I;Goiânia;4º DOMINGO;T;q2HGHxpSGALNVxhMA;4;Marcio Mendes;Jackson;T;-16.5959867;-49.3310037;DN 3N SN;",
+            "Jardim Curitiba I;Goiânia;4º DOMINGO;T;LCDqHoufhrRVDtrb8;4;Marcio Mendes;Jackson;T;-16.6061738;-49.333502;DN 3N SN;",
             "Jardim dos Cerrados III;Goiânia;4º DOMINGO;T;GFbqCarL74kEfejc7;3;;;T;-16.666434;-49.4253814;;",
             "Residencial Felicidade;Goiânia;4º DOMINGO;T;6JDkDNa2fx9bwthh8;5;Wanderley Gomes;Rogerio Rosemberg;T;-16.6111984;-49.2239948;DN 5N;",
             "Mansões Paraíso;Aparecida;4ª SEGUNDA-FEIRA;N;4dKHXjHzNevLrX538;6;Leonardo da Silva;;T;-16.7747862;-49.2778971;DN 3N 5N;",
