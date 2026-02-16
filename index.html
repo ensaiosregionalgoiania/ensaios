@@ -1,10 +1,35 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ensaio Local</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Título e descrição para PWA -->
+    <title>Ensaios</title>
+    <meta name="description" content="Listar os ensaios locais e regionais de Goiania e Regiao">
+    <meta name="theme-color" content="#2196F3">
+    
+    <!-- PWA - iOS/Safari específico -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ensaio Local">
+    <link rel="apple-touch-icon" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/logo.png">
+    
+    <!-- PWA - Android/Chrome específico -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Ícones para diferentes tamanhos -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/logo.png">
+    
+    <!-- Cor de fundo para splash screen -->
+    <meta name="msapplication-TileColor" content="#2196F3">
+    <meta name="msapplication-TileImage" content="/logo.png">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -656,11 +681,65 @@
         color: #000 !important;
         font-size: 12pt;
     }
-}        
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        /* Adicione estes estilos específicos para PWA */
+        .pwa-install-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .pwa-install-button.show {
+            display: block;
+        }
+        
+        /* Evitar seleção de texto em elementos interativos */
+        button, .pergunta {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Adaptações para mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+        }
+
+
 </style>
 
 </head>
 <body>
+
+    <button id="installButton" class="pwa-install-button">
+        📱 Instalar App
+    </button>
 
     <!-- Botão para abrir o menu -->
     <button class="menu1" id="menu-btn">Menu</button>
@@ -1885,6 +1964,47 @@ function imprimirTabelaAtual() {
         alert('Erro ao gerar relatório.');
     }
 }
+
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+
+        // Detecta se pode instalar PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.classList.add('show');
+        });
+
+        // Botão de instalação
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('Usuário instalou o app');
+                installButton.classList.remove('show');
+            }
+            
+            deferredPrompt = null;
+        });
+
+        // Detectar se está rodando como PWA instalado
+        function isRunningAsPWA() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true;
+        }
+
+        // Animação de destaque
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes highlight {
+                0% { background: rgba(255,255,0,0.3); }
+                100% { background: transparent; }
+            }
+        `;
+        document.head.appendChild(style);
 
 </script>
 </body>
