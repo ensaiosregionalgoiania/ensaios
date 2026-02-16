@@ -49,7 +49,7 @@
             "Chácara Savana;Hidrolândia;4ª SEGUNDA-FEIRA;N;naghoBxUC2qv6M5e8;6;Gustavo Gonçalves;Odário;T;-16.9792171;-49.8223545;DN 4N;",
             "Cidade Jardim;Goiânia;1ª TERÇA-FEIRA;N;h7aTYPFAnBYe6W427;3;;;T;-16.7001206;-49.3265792;DN 4N 6N;11/01/2026",
             "Parque Oeste Industrial;Goiânia;1º SáBADO;T;yFEJsMV1oq5Lo7BK8;3;;;T;-16.7001206;-49.3265792;DN 5N SN;01/03/2026",
-            "Parque Atheneu;Goiânia;1ª QUARTA-FEIRA;N;6JJ8NsTNgakSJVTV7;1;;;T;-16.7431441;-49.1913878;DN 3N 6N;",
+            "Parque Atheneu;Goiânia;1ª QUARTA-FEIRA;N;6JJ8NsTNgakSJVTV7;1;Wanderlei Amorim;Ricardo Rosemberg;T;-16.7431441;-49.1913878;DN 3N 6N;",
             "Vila Rizzo;Goiânia;1ª QUINTA-FEIRA;N;eNNv5dgHFbinBLL47;3;Aremi;Nereu;T;-16.7212813;-49.3760105;DN 3N 6N;13/09/2026",
             "Residencial Center Ville;Goiânia;1ª QUINTA-FEIRA;N;QfcbSL2by3fQi45TA;2;;;T;-16.7365801;-49.34932;DN 3N 6N;",
             "Jardim Santo Antônio;Goiânia;1ª QUINTA-FEIRA;N;JBvHtFB7vJAK4aC8A;2;Cleibe;André;T;-16.7296536;-49.2513112;DN 4N 6N;",
