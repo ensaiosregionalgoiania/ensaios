@@ -1,8 +1,9 @@
-// No arquivo manifest.json (na mesma pasta)
 {
-  "name": "Ensaios Goiânia",
-  "short_name": "App",
-  "start_url": "/",
+  "name": "Ensaios Regional Goiânia",
+  "short_name": "Ensaios",
+  "description": "Consulta de datas e locais dos ensaios locais e regionais",
+  "start_url": "/ensaios/",
+  "scope": "/ensaios/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
