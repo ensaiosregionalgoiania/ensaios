@@ -83,7 +83,7 @@
             "Vila Santa Helena;Goiânia;2º DOMINGO;T;8bbzMas2TnnVDXNy8;5;Dinilson Bernardes;Doralino;T;-16.6581315;-49.2869145;DN 2N 5N;",
             "Vila Pedroso;Goiânia;2º DOMINGO;T;H7qLWAEgHB1G2udx7;1;;;T;-16.6583962;-49.1815321;DN 3N SN;",
             "Setor Jaó;Goiânia;2º DOMINGO;T;TNb2ePXS5rQuxJx26;5;;;T;-16.6411345;-49.228488;DN 2N 5N;",
-            "Setor Noroeste;Goiânia;2º DOMINGO;T;JdMpUusT9jvbXuAY9;3;;;T;-16.6412358;-49.3148354;DN 5N;",
+            "Setor Noroeste;Goiânia;2º DOMINGO;T;JdMpUusT9jvbXuAY9;3;Átila Vasques;Nereu;T;-16.6412358;-49.3148354;DN 5N;",
             "Setor Finsocial;Goiânia;2º DOMINGO;T;LhYD3ZknK7MNH1tXA;4;;Túlio Marcos;T;-16.6197631;-49.3187812;DN 4N 6T SN;",
             "Setor Alto do Vale;Goiânia;3º DOMINGO;T;qPrJpePnWe5WCLh6A;4;Tiago;Túlio Marcos;T;-16.6141671;-49.3099245;DN 5N;",
             "Jardim Pompéia;Goiânia;2º DOMINGO;T;W3koKo4c4GdPf9VPA;5;Antomar da Silveira;Gilton Pereira;T;-16.6111163;-49.2404582;DN 4N SN;",
