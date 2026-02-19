@@ -1334,21 +1334,38 @@ function toggleDetalhes(index) {
 
         });
         
-        function AlteraCidade() {
-            getLocation();
-            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
-            
-            if (tipoConsulta === 'data') {
-                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
-                gerarTabelaPorData(dataSelecionada);
-            } else if (tipoConsulta === 'CasaOracao') {
-                consultarPorCasaOracao();
-            } else if (tipoConsulta === 'encarregado-local') {
-                consultarPorEncarregadoLocal();
-            } else if (tipoConsulta === 'encarregado-regional') {
-                gerarTabelaPorEnsaioRegional();
-            }
+function AlteraCidade() {
+    getLocation();
+    const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+    
+    // Verificar o estado do checkbox "todos"
+    const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
+    const checkboxes = document.querySelectorAll('input[name="cidade"]');
+    const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
+    const todosDesmarcados = Array.from(checkboxes).every(cb => !cb.checked);
+    
+    if (todosCheckbox) {
+        if (todosMarcados) {
+            todosCheckbox.checked = true;
+        } else if (todosDesmarcados) {
+            todosCheckbox.checked = false;
+        } else {
+            // Estado indeterminado (alguns marcados, outros não)
+            todosCheckbox.indeterminate = true;
         }
+    }
+    
+    if (tipoConsulta === 'data') {
+        const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+        gerarTabelaPorData(dataSelecionada);
+    } else if (tipoConsulta === 'CasaOracao') {
+        consultarPorCasaOracao();
+    } else if (tipoConsulta === 'encarregado-local') {
+        consultarPorEncarregadoLocal();
+    } else if (tipoConsulta === 'encarregado-regional') {
+        gerarTabelaPorEnsaioRegional();
+    }
+}
 
 function consultarPorEncarregadoLocal() {
     getLocation();
@@ -1475,18 +1492,25 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
         return proximoMes + ";" + proximoAno;
     }
 
-    function CriaMenu(){
-        let HTML = ""
-        for (let i = 0; i < setor.length; i++) {
-            let setorSplit = setor[i].split(';');
-            HTML += `<div class="filtro-opcao" style="height: 15px;">
-                <label>
-                    <input type="checkbox"  name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked style="height: 10px;">${setorSplit[1]}
-                </label>
-            </div>`
-        }
-        document.getElementById('setor').innerHTML = HTML
+function CriaMenu(){
+    let HTML = `
+        <div class="filtro-opcao" style="height: 25px; border-bottom: 1px solid #495057; margin-bottom: 10px;">
+            <label style="font-weight: bold; color: #fff;">
+                <input type="checkbox" id="marcar-desmarcar-todos" onclick="toggleTodos()" checked style="height: 10px;"> (Des)Marcar Todos
+            </label>
+        </div>
+    `;
+    
+    for (let i = 0; i < setor.length; i++) {
+        let setorSplit = setor[i].split(';');
+        HTML += `<div class="filtro-opcao" style="height: 15px;">
+            <label>
+                <input type="checkbox" name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked style="height: 10px;">${setorSplit[1]}
+            </label>
+        </div>`
     }
+    document.getElementById('setor').innerHTML = HTML
+}
 
     function TiraAcento(Texto) {
         return Texto.normalize('NFD')
@@ -1895,6 +1919,20 @@ function imprimirTabelaAtual() {
         alert('Erro ao gerar relatório.');
     }
 }
+
+// Adicione esta nova função:
+function toggleTodos() {
+    const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
+    const checkboxes = document.querySelectorAll('input[name="cidade"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = todosCheckbox.checked;
+    });
+    
+    // Atualizar a tabela baseado no novo estado
+    AlteraCidade();
+}
+
 
 </script>
 </body>
