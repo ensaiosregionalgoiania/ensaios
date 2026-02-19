@@ -216,7 +216,7 @@
             "Residencial Buritis;Senador Canedo;3ª SEXTA-FEIRA;N;xtNaHNaNA3XFWkpJ6;8;Kleyton;Gesmar;T;-16.690908;-49.0860527;DN 5N;",
             "Roselândia;Bela Vista;3º DOMINGO;T;a1rhog2ML8oLsnWW8;8;José Marcos;Rogério;T;-16.8632928;-49.0448407;DN 6N;",
             "Santa Edwiges;Senador Canedo;3ª SEXTA-FEIRA;N;spZgKt2EzoCtY7tf9;8;Adair;Gesmar;T;-16.7074578;-49.1270861;DN 3N;",
-            "Vila Mata Feia;Bela Vista;2ª TERÇA-FEIRA;N;LcpQV3qQMtYBWzk99;8;;Rogério;T;-16.8045837;-48.9050438;DN 6N;",
+            "Vila Mata Feia;Bela Vista;3ª TERÇA-FEIRA;N;LcpQV3qQMtYBWzk99;8;;Rogério;T;-16.8045837;-48.9050438;DN 6N;",
             "Vila Galvão;Senador Canedo;2ª TERÇA-FEIRA;N;mCD5gdLAp37sadDR6;8;;Gesmar;T;-16.6960791;-49.1850356;DN 5N;",
             "Jardim Primavera;S L Montes Belos;1º SáBADO;T;XB6yH7hTpZVmaKDs8;9;Wallison Klleuver;Jackson;T;-16.5113396;-50.3837027;DN 4N SN;",
             "Firminópolis;Firminópolis;4º SáBADO;N;Xs9cLn374eSeSXUB9;9;Wesley;Jackson;T;-16.5770476;-50.3027751;DN 5N;",
