@@ -51,7 +51,7 @@
             "Parque Oeste Industrial;Goiânia;1º SáBADO;T;yFEJsMV1oq5Lo7BK8;3;;;T;-16.7001206;-49.3265792;DN 5N SN;01/03/2026",
             "Parque Atheneu;Goiânia;1ª QUARTA-FEIRA;N;6JJ8NsTNgakSJVTV7;1;Wanderlei Amorim;Ricardo Rosemberg;T;-16.7431441;-49.1913878;DN 3N 6N;",
             "Vila Rizzo;Goiânia;1ª QUINTA-FEIRA;N;eNNv5dgHFbinBLL47;3;Aremi;Nereu;T;-16.7212813;-49.3760105;DN 3N 6N;13/09/2026",
-            "Residencial Center Ville;Goiânia;1ª QUINTA-FEIRA;N;QfcbSL2by3fQi45TA;2;;;T;-16.7365801;-49.34932;DN 3N 6N;",
+            "Residencial Center Ville/Eli Forte;Goiânia;1ª QUINTA-FEIRA;N;QfcbSL2by3fQi45TA;2;Carlos;Isaque;T;-16.7365801;-49.34932;DN 3N 6N;",
             "Jardim Santo Antônio;Goiânia;1ª QUINTA-FEIRA;N;JBvHtFB7vJAK4aC8A;2;Cleibe;André;T;-16.7296536;-49.2513112;DN 4N 6N;",
             "Jardim Balneário Meia Ponte;Goiânia;1ª SEXTA-FEIRA;N;C5erC5BGabA7aH8H7;4;Benedito Valério;Túlio Marcos;T;-16.6120263;-49.2970212;DN 2N 5N;08/03/2026",
             "Parque Ibirapuera;Aparecida;1ª SEXTA-FEIRA;N;YBz12uTTvvupg1v16;6;Lucas de Jesus;;T;-16.8108189;-49.3389015;DN 5N;",
