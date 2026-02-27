@@ -117,7 +117,7 @@
             "Parque Hayala;Aparecida;2ª SEXTA-FEIRA;N;HdfXFEG8f7UbEpTXA;6;Wilian Gonçalves;;T;-16.8104392;-49.306258;DT 5N;",
             "Jardim Dom Bosco II;Aparecida;2ª SEXTA-FEIRA;N;SgRsvHqwLqXTX7HV6;6;Marcos Henrique;;P;-16.8220885;-49.3475363;DN 3N;",
             "Setor Grajaú;Goiânia;4º DOMINGO;T;Z83wxgptUs3CpVGX6;2;Marcos;Huiwerson;T;-16.7609911;-49.3623501;DN 3N 5N;",
-            "Setor Pedro Ludovico;Goiânia;2ª SEXTA-FEIRA;N;SgUPyCuxBkm485Wi7;1;GERALDO MENDES;RICARDO ROSEMBERGUE;T;-16.7303883;-49.4522408;DN 5N;",
+            "Setor Pedro Ludovico;Goiânia;2ª SEXTA-FEIRA;N;SgUPyCuxBkm485Wi7;1;GERALDO MENDES;Helton Ricardo;T;-16.7303883;-49.4522408;DN 5N;",
             "Setor Santos Dumont;Goiânia;2ª SEXTA-FEIRA;N;vJXpG8Z6akbmuHwQ9;3;;;T;-16.7310459;-49.4522408;DN 2N 4N;",
             "Residencial Buena Vista III;Goiânia;2ª SEXTA-FEIRA;N;fWnMGPmvaCyj5tR78;3;;;T;-16.7208106;-49.3957716;DN 4N SN;26/07/2026",
             "Parque Amazônia;Goiânia;3ª QUINTA-FEIRA;N;uz5JdYhjKTGDtxNLA;2;Lynardo;Isaque/André/Jackson;T;-16.7349129;-49.2854856;DN 3N 5T SN;15/02/2026",
@@ -167,7 +167,7 @@
             "Jardim Buriti Sereno Garden;Aparecida;4ª SEGUNDA-FEIRA;N;TscgNASVCBuEjnBA8;6;Valdeir;;P;-16.7876513;-49.3190395;DN 4N 6N;15/11/2026",
             "Residencial Triunfo;Goianira;3º DOMINGO;N;99mL3zFYwHzHGNso8;7;;;T;-16.5720476;-49.3844995;DN 3N 5N;",
             "Setor Sul (Jardim Imperial);Goianira;4ª SEGUNDA-FEIRA;N;w3ahx7ZqUy8KeEAJA;7;;;T;-16.5202346;-49.4162498;DN 4N 6N;21/06/2026",
-            "Jardim Califórnia;Goiânia;4ª QUINTA-FEIRA;N;PqrrW6zSdiD1RSKs8;1;GEARLEY DUGUES;HELTON RICARDO;T;-16.6828779;-49.2084434;4N SN;",
+            "Jardim Califórnia;Goiânia;1º SáBADO;N;PqrrW6zSdiD1RSKs8;1;GEARLEY DUGUES;HELTON RICARDO;T;-16.6828779;-49.2084434;4N SN;",
             "Residencial Park Solar;Goiânia;4ª SEXTA-FEIRA;N;sfcXgF2igCY2nsRG6;4;Edenilson Noé;Jackson;T;-16.6281966;-49.3600363;DN 4N SN;",
             "Santa Rita;Goiânia;4ª SEXTA-FEIRA;N;GyvMHiMhQvVfo6uC6;2;Wesley;Hiwerson;T;-16.7312037;-49.3388978;DN 3N 5N;06/09/2026",
             "Distrito de Oloana;Hidrolândia;4º SáBADO;T;Bm6uW1fF3p9qvXsUA;6;;;3M3;-17.1148177;-49.4072942;SN;",
@@ -247,7 +247,7 @@
             "<B>Central - Nazário</B>;<B>Nazário</B>;;<B>N</B>;xYu57f4yPQZDjYRN7;7;;;T;-16.586661532981644;-49.88542322792637;;",
             "Vila Yate/Vila Moraes;Goiânia;4º DOMINGO;T;TkdSEtZS7CChmnh47;1;Carlúcio;Ricardo Rosemberg;T;-16.6637406;-49.2239445;DN 3N 5N;24/05/2026",
             "Jardim flamboyant;Senador Canedo;2ª SEXTA-FEIRA;N;EHwJHJLdLy6zo3BL8;8;;Gesmar;T;-16.7162344;-49.0988305;DN 5N;",
-            "Vila Bandeirantes;Goiânia;3º DOMINGO;T;MycWjemojRqXnNgF7;1;TONIVALDO;Ricardo Rozemberg;T;-16.6713935;-49.2221748;DN 3N SN;"
+            "Vila Bandeirantes;Goiânia;3º DOMINGO;T;MycWjemojRqXnNgF7;1;TONIVALDO;Helton Ricardo;T;-16.6713935;-49.2221748;DN 3N SN;"
         ];
 
                                                                                                        
