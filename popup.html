@@ -88,7 +88,7 @@
         }
 
         .popup-content {
-            padding: 5px;
+            padding: 20px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -97,8 +97,63 @@
             background-color: #f8f9fa;
         }
 
-        .popup-image-container {
+        /* Container principal da imagem com setas */
+        .image-slider-container {
             width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        /* Estilos das setas de navegação */
+        .nav-arrow {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .nav-arrow:hover {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .nav-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .nav-arrow:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-arrow:disabled:hover {
+            background: #bdc3c7;
+            transform: none;
+        }
+
+        /* Container da imagem */
+        .popup-image-container {
+            flex: 1;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -121,7 +176,6 @@
         .popup-image-container:hover {
             border-color: #e74c3c;
             background: linear-gradient(145deg, #e74c3c15, #c0392b15);
-            transform: scale(1.01);
             box-shadow: inset 0 0 30px rgba(231, 76, 60, 0.15);
         }
 
@@ -129,11 +183,31 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transition: transform 0.3s;
+            transition: opacity 0.5s ease;
         }
 
-        .popup-image:hover {
-            transform: scale(1.01);
+        .popup-image.fade-out {
+            opacity: 0;
+        }
+
+        .popup-image.fade-in {
+            opacity: 1;
+        }
+
+        /* Indicador de posição */
+        .image-counter {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
         }
 
         .popup-timer {
@@ -164,33 +238,6 @@
             color: #ecf0f1;
             font-size: 0.9rem;
             border-top: 2px solid #34495e;
-        }
-
-        .instructions-title {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-        }
-
-        .instructions-list {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .instructions-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-        }
-
-        .instructions-list li:before {
-            content: "✓";
-            color: #27ae60;
-            font-weight: bold;
-            margin-right: 10px;
-            font-size: 1.2rem;
         }
 
         @keyframes fadeIn {
@@ -238,6 +285,7 @@
             
             .popup-content {
                 height: calc(85vh - 120px);
+                padding: 10px;
             }
             
             .popup-header {
@@ -249,14 +297,19 @@
             }
             
             .popup-timer {
-                height: 5%;
-                padding: 5px 5px;
+                padding: 8px 15px;
                 font-size: 0.9rem;
             }
             
-            .popup-image-container {
-                font-size: 1rem;
-                padding: 15px;
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            
+            .image-counter {
+                font-size: 0.8rem;
+                padding: 4px 12px;
             }
         }
     </style>
@@ -266,20 +319,31 @@
     <div class="popup-overlay" id="popupEntrada">
         <div class="popup-container">
             <div class="popup-header">
-                <h2 class="popup-title">🏛️Ensaio Regional</h2>
+                <h2 class="popup-title">🏛️ Ensaio Regional</h2>
                 <button class="popup-close-btn" id="btnFecharPopup">×</button>
             </div>
             <div class="popup-content">
-                <div class="popup-image-container">
-                    <img src="ensaio3.jpg" 
-                         alt="Imagem do Sistema Ensaio Local" 
-                         class="popup-image"
-                         id="popupImage">
-                    <!--Próximo domingo, 22/02/2026 às 09:00h<br>
-                    Ensaio Regional no Parque Oeste Industrial<br>
-                    <span style="font-size: 0.9rem; color: #e74c3c; margin-top: 10px;">
-                        <a href="https://maps.app.goo.gl/Xv92VXytV1ZmxwWw8" target="_blank">📍Localização</a>
-                    </span>-->
+                <!-- Slider com setas de navegação -->
+                <div class="image-slider-container">
+                    <!-- Seta esquerda -->
+                    <button class="nav-arrow" id="setaEsquerda" title="Imagem anterior">←</button>
+                    
+                    <!-- Container da imagem -->
+                    <div class="popup-image-container">
+                        <img src="ensaio3.jpg" 
+                             alt="Imagem do Sistema Ensaio Local" 
+                             class="popup-image"
+                             id="popupImage"
+                             onerror="this.src='https://via.placeholder.com/800x600/3498db/ffffff?text=Ensaio+Regional'">
+                    </div>
+                    
+                    <!-- Seta direita -->
+                    <button class="nav-arrow" id="setaDireita" title="Próxima imagem">→</button>
+                    
+                    <!-- Indicador de posição -->
+                    <div class="image-counter" id="imageCounter">
+                        Imagem 1 de 3
+                    </div>
                 </div>
             </div>
             <div class="popup-footer">
@@ -296,18 +360,139 @@
         let popupTimer;
         let segundosRestantes = 10;
         let popupFechado = false;
+        let imageRotationTimer;
+        let currentImageIndex = 0;
+        
+        // Array com as URLs das imagens
+        const imagens = [
+            //'ensaio2.jpg',
+            'ensaio3.jpg',
+            'ensaio4.jpg'
+        ];
+
+        // Elementos do DOM
+        const imagemPrincipal = document.getElementById('popupImage');
+        const setaEsquerda = document.getElementById('setaEsquerda');
+        const setaDireita = document.getElementById('setaDireita');
+        const imageCounter = document.getElementById('imageCounter');
 
         // Inicializar popup quando a página carrega
         document.addEventListener('DOMContentLoaded', () => {
             inicializarPopup();
+            iniciarRotacaoImagens();
+            atualizarBotoes();
+            atualizarContador();
         });
+
+        // Função para iniciar a rotação automática das imagens
+        function iniciarRotacaoImagens() {
+            // Limpar timer anterior se existir
+            if (imageRotationTimer) {
+                clearInterval(imageRotationTimer);
+            }
+            
+            // Iniciar novo timer (alternar a cada 3 segundos)
+            imageRotationTimer = setInterval(() => {
+                if (!popupFechado) {
+                    proximaImagem();
+                }
+            }, 5000);
+        }
+
+        // Função para avançar para a próxima imagem
+        function proximaImagem() {
+            if (currentImageIndex < imagens.length - 1) {
+                currentImageIndex++;
+            } else {
+                currentImageIndex = 0; // Volta para a primeira imagem
+            }
+            trocarImagem(currentImageIndex);
+        }
+
+        // Função para voltar para a imagem anterior
+        function imagemAnterior() {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+            } else {
+                currentImageIndex = imagens.length - 1; // Vai para a última imagem
+            }
+            trocarImagem(currentImageIndex);
+        }
+
+        // Função para trocar a imagem
+        function trocarImagem(index) {
+            // Verificar se o índice é válido
+            if (index < 0 || index >= imagens.length) return;
+            
+            // Atualizar índice atual
+            currentImageIndex = index;
+            
+            // Efeito de fade out
+            imagemPrincipal.classList.add('fade-out');
+            
+            setTimeout(() => {
+                // Trocar a imagem
+                const novaUrl = imagens[currentImageIndex];
+                imagemPrincipal.src = novaUrl;
+                
+                // Atualizar contador
+                atualizarContador();
+                
+                // Atualizar estado dos botões
+                atualizarBotoes();
+                
+                // Efeito de fade in
+                imagemPrincipal.classList.remove('fade-out');
+                
+                console.log('Imagem trocada para:', novaUrl);
+            }, 250);
+        }
+
+        // Função para atualizar o contador de imagens
+        function atualizarContador() {
+            imageCounter.textContent = `Imagem ${currentImageIndex + 1} de ${imagens.length}`;
+        }
+
+        // Função para atualizar o estado dos botões (habilitar/desabilitar)
+        function atualizarBotoes() {
+            // Como agora temos navegação circular, os botões nunca estão desabilitados
+            // Mas podemos adicionar um efeito visual diferente se quiser
+            setaEsquerda.style.opacity = '1';
+            setaDireita.style.opacity = '1';
+        }
 
         // Função para inicializar o popup
         function inicializarPopup() {
             const popup = document.getElementById('popupEntrada');
             const btnFechar = document.getElementById('btnFecharPopup');
             const contadorElemento = document.getElementById('contadorSegundos');
-            const instrucoes = document.getElementById('instrucoes');
+            
+            // Adicionar eventos de clique nas setas
+            setaEsquerda.addEventListener('click', () => {
+                // Parar rotação automática temporariamente
+                clearInterval(imageRotationTimer);
+                
+                // Ir para imagem anterior
+                imagemAnterior();
+                
+                // Reiniciar rotação após 5 segundos
+                setTimeout(() => {
+                    iniciarRotacaoImagens();
+                }, 5000);
+            });
+            
+            setaDireita.addEventListener('click', () => {
+                // Parar rotação automática temporariamente
+                clearInterval(imageRotationTimer);
+                
+                // Ir para próxima imagem
+                proximaImagem();
+                
+                // Reiniciar rotação após 5 segundos
+                setTimeout(() => {
+                    iniciarRotacaoImagens();
+                }, 5000);
+            });
             
             // Iniciar contador regressivo
             popupTimer = setInterval(() => {
@@ -347,6 +532,27 @@
                 }
             });
             
+            // Eventos de teclado para as setas
+            document.addEventListener('keydown', (e) => {
+                if (!popupFechado) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        clearInterval(imageRotationTimer);
+                        imagemAnterior();
+                        setTimeout(() => {
+                            iniciarRotacaoImagens();
+                        }, 5000);
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        clearInterval(imageRotationTimer);
+                        proximaImagem();
+                        setTimeout(() => {
+                            iniciarRotacaoImagens();
+                        }, 5000);
+                    }
+                }
+            });
+            
             // Impedir rolagem da página enquanto popup está aberto
             document.body.style.overflow = 'hidden';
         }
@@ -357,10 +563,11 @@
             if (popupFechado) return;
             popupFechado = true;
             
+            // Parar timers
             clearInterval(popupTimer);
+            clearInterval(imageRotationTimer);
             
             const popup = document.getElementById('popupEntrada');
-            const instrucoes = document.getElementById('instrucoes');
             
             // Adicionar animação de fechamento
             popup.classList.add('popup-closing');
@@ -368,48 +575,38 @@
             // Restaurar rolagem da página
             document.body.style.overflow = 'auto';
             
-            // Mostrar instruções após fechar
             setTimeout(() => {
                 popup.style.display = 'none';
-                instrucoes.style.display = 'block';
-                
-                // Mostrar mensagem no console
                 console.log('Popup fechado. Para testar novamente, recarregue a página (F5).');
             }, 500);
+            
             if (window.parent !== window) {
                 window.parent.postMessage('FECHAR_POPUP', '*');
             }
         }
 
         // Função para alterar a imagem do popup (para uso futuro)
-        function alterarImagemPopup(novaUrl) {
-            const imagem = document.getElementById('popupImage');
-            
-            // Adicionar efeito de fade out
-            imagem.style.opacity = '0.5';
-            imagem.style.transition = 'opacity 0.3s';
-            
-            setTimeout(() => {
-                imagem.src = novaUrl;
-                imagem.alt = "Nova imagem do sistema";
+        function alterarImagemPopup(novaUrl, index = 0) {
+            if (index >= 0 && index < imagens.length) {
+                imagens[index] = novaUrl;
                 
-                // Restaurar opacidade com efeito
-                setTimeout(() => {
-                    imagem.style.opacity = '1';
-                }, 100);
+                // Se for a imagem atual, atualizar também a principal
+                if (index === currentImageIndex) {
+                    trocarImagem(index);
+                }
                 
-                console.log('Imagem do popup alterada para:', novaUrl);
-            }, 300);
+                console.log('Imagem', index + 1, 'alterada para:', novaUrl);
+            }
         }
 
         // Função para reiniciar o popup (para testes)
         function reiniciarPopup() {
             const popup = document.getElementById('popupEntrada');
-            const instrucoes = document.getElementById('instrucoes');
             
             // Resetar variáveis
             popupFechado = false;
             segundosRestantes = 10;
+            currentImageIndex = 0;
             
             // Restaurar popup
             popup.style.display = 'flex';
@@ -417,20 +614,22 @@
             popup.style.opacity = '1';
             popup.style.transform = 'translateY(0)';
             
-            // Esconder instruções
-            instrucoes.style.display = 'none';
-            
             // Resetar contador visual
             document.getElementById('contadorSegundos').textContent = '10';
             document.getElementById('contadorSegundos').style.color = '';
             document.getElementById('contadorSegundos').style.fontWeight = '';
             
+            // Resetar para primeira imagem
+            trocarImagem(0);
+            
             // Bloquear rolagem novamente
             document.body.style.overflow = 'hidden';
             
-            // Reiniciar timer
+            // Reiniciar timers
             clearInterval(popupTimer);
+            clearInterval(imageRotationTimer);
             inicializarPopup();
+            iniciarRotacaoImagens();
             
             console.log('Popup reiniciado para testes');
         }
