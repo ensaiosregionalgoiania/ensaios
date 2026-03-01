@@ -97,63 +97,28 @@
             background-color: #f8f9fa;
         }
 
-        /* Container principal da imagem com setas */
-        .image-slider-container {
+        /* Container principal para arrasto */
+        .swipe-container {
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             position: relative;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
-        /* Estilos das setas de navegação */
-        .nav-arrow {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            flex-shrink: 0;
+        .swipe-container:active {
+            cursor: grabbing;
         }
 
-        .nav-arrow:hover {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
-        }
-
-        .nav-arrow:active {
-            transform: scale(0.95);
-        }
-
-        .nav-arrow:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            opacity: 0.5;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .nav-arrow:disabled:hover {
-            background: #bdc3c7;
-            transform: none;
-        }
-
-        /* Container da imagem */
+        /* Container da imagem com efeito de arrasto */
         .popup-image-container {
-            flex: 1;
+            width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -170,28 +135,31 @@
             font-size: 1.2rem;
             line-height: 1.6;
             box-shadow: inset 0 0 20px rgba(52, 152, 219, 0.1);
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease, background 0.3s ease;
+            transform: translateX(0);
+            will-change: transform;
         }
 
-        .popup-image-container:hover {
+        .popup-image-container.dragging {
+            transition: none;
             border-color: #e74c3c;
             background: linear-gradient(145deg, #e74c3c15, #c0392b15);
             box-shadow: inset 0 0 30px rgba(231, 76, 60, 0.15);
+        }
+
+        .popup-image-container.transition {
+            transition: transform 0.3s ease;
         }
 
         .popup-image {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transition: opacity 0.5s ease;
-        }
-
-        .popup-image.fade-out {
-            opacity: 0;
-        }
-
-        .popup-image.fade-in {
-            opacity: 1;
+            pointer-events: none; /* Importante para não interferir no arrasto */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         /* Indicador de posição */
@@ -208,6 +176,30 @@
             font-weight: bold;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 10;
+            white-space: nowrap;
+        }
+
+        /* Dica visual para arrastar */
+        .swipe-hint {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            animation: fadeInUp 0.5s ease 1s both;
+        }
+
+        .swipe-hint span {
+            font-size: 1.2rem;
         }
 
         .popup-timer {
@@ -248,6 +240,17 @@
             to { 
                 opacity: 1; 
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 10px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
             }
         }
 
@@ -301,15 +304,16 @@
                 font-size: 0.9rem;
             }
             
-            .nav-arrow {
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-            }
-            
             .image-counter {
                 font-size: 0.8rem;
                 padding: 4px 12px;
+                bottom: -25px;
+            }
+            
+            .swipe-hint {
+                font-size: 0.7rem;
+                bottom: -50px;
+                padding: 4px 10px;
             }
         }
     </style>
@@ -323,26 +327,26 @@
                 <button class="popup-close-btn" id="btnFecharPopup">×</button>
             </div>
             <div class="popup-content">
-                <!-- Slider com setas de navegação -->
-                <div class="image-slider-container">
-                    <!-- Seta esquerda -->
-                    <button class="nav-arrow" id="setaEsquerda" title="Imagem anterior">←</button>
-                    
-                    <!-- Container da imagem -->
-                    <div class="popup-image-container">
+                <!-- Container para arrasto -->
+                <div class="swipe-container" id="swipeContainer">
+                    <!-- Container da imagem com efeito de arrasto -->
+                    <div class="popup-image-container" id="imageContainer">
                         <img src="ensaio3.jpg" 
                              alt="Imagem do Sistema Ensaio Local" 
                              class="popup-image"
                              id="popupImage"
+                             draggable="false"
                              onerror="this.src='https://via.placeholder.com/800x600/3498db/ffffff?text=Ensaio+Regional'">
                     </div>
-                    
-                    <!-- Seta direita -->
-                    <button class="nav-arrow" id="setaDireita" title="Próxima imagem">→</button>
                     
                     <!-- Indicador de posição -->
                     <div class="image-counter" id="imageCounter">
                         Imagem 1 de 3
+                    </div>
+                    
+                    <!-- Dica visual para arrastar -->
+                    <div class="swipe-hint">
+                        <span>👆</span> Arraste para navegar
                     </div>
                 </div>
             </div>
@@ -365,100 +369,227 @@
         
         // Array com as URLs das imagens
         const imagens = [
-            //'ensaio2.jpg',
+            //'ensaio1.jpg',
             'ensaio3.jpg',
             'ensaio4.jpg'
         ];
 
         // Elementos do DOM
         const imagemPrincipal = document.getElementById('popupImage');
-        const setaEsquerda = document.getElementById('setaEsquerda');
-        const setaDireita = document.getElementById('setaDireita');
+        const imageContainer = document.getElementById('imageContainer');
+        const swipeContainer = document.getElementById('swipeContainer');
         const imageCounter = document.getElementById('imageCounter');
+
+        // Variáveis para controle do arrasto
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let dragDistance = 0;
+        const DRAG_THRESHOLD = 100; // Distância mínima para trocar de imagem (em pixels)
 
         // Inicializar popup quando a página carrega
         document.addEventListener('DOMContentLoaded', () => {
             inicializarPopup();
             iniciarRotacaoImagens();
-            atualizarBotoes();
             atualizarContador();
+            inicializarDragAndSwipe();
         });
+
+        // Função para inicializar eventos de arrasto
+        function inicializarDragAndSwipe() {
+            // Eventos de mouse (desktop)
+            imageContainer.addEventListener('mousedown', iniciarDrag);
+            window.addEventListener('mousemove', duranteDrag);
+            window.addEventListener('mouseup', finalizarDrag);
+            
+            // Eventos de toque (mobile)
+            imageContainer.addEventListener('touchstart', iniciarDrag, { passive: true });
+            window.addEventListener('touchmove', duranteDrag, { passive: false });
+            window.addEventListener('touchend', finalizarDrag);
+            window.addEventListener('touchcancel', finalizarDrag);
+            
+            // Prevenir arrasto padrão de imagens
+            imageContainer.addEventListener('dragstart', (e) => e.preventDefault());
+        }
+
+        // Função para iniciar o arrasto
+        function iniciarDrag(e) {
+            if (popupFechado) return;
+            
+            // Parar rotação automática durante o arrasto
+            clearInterval(imageRotationTimer);
+            
+            // Obter posição inicial
+            if (e.type === 'mousedown') {
+                startX = e.clientX;
+            } else if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+            }
+            
+            isDragging = true;
+            currentX = startX;
+            
+            // Adicionar classes para feedback visual
+            imageContainer.classList.add('dragging');
+            imageContainer.classList.remove('transition');
+            
+            // Esconder dica visual
+            const hint = document.querySelector('.swipe-hint');
+            if (hint) hint.style.opacity = '0';
+        }
+
+        // Função durante o arrasto
+        function duranteDrag(e) {
+            if (!isDragging || popupFechado) return;
+            
+            e.preventDefault(); // Prevenir rolagem da página durante o arrasto
+            
+            // Obter posição atual
+            if (e.type === 'mousemove') {
+                currentX = e.clientX;
+            } else if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX;
+            }
+            
+            // Calcular distância arrastada
+            dragDistance = currentX - startX;
+            
+            // Aplicar transformação com limite
+            const maxDrag = 200;
+            let translateX = Math.max(-maxDrag, Math.min(maxDrag, dragDistance));
+            
+            // Aplicar efeito de resistência nas bordas
+            if ((currentImageIndex === 0 && dragDistance > 0) || 
+                (currentImageIndex === imagens.length - 1 && dragDistance < 0)) {
+                translateX = dragDistance * 0.3; // Resistência
+            }
+            
+            imageContainer.style.transform = `translateX(${translateX}px)`;
+        }
+
+        // Função para finalizar o arrasto
+        function finalizarDrag(e) {
+            if (!isDragging || popupFechado) {
+                resetarPosicao();
+                return;
+            }
+            
+            isDragging = false;
+            
+            // Remover classe dragging
+            imageContainer.classList.remove('dragging');
+            
+            // Verificar se deve trocar de imagem
+            const absDragDistance = Math.abs(dragDistance);
+            
+            if (absDragDistance > DRAG_THRESHOLD) {
+                // Arrasto para esquerda (próxima imagem)
+                if (dragDistance < 0 && currentImageIndex < imagens.length - 1) {
+                    currentImageIndex++;
+                    trocarImagemComAnimacao(currentImageIndex, 'left');
+                }
+                // Arrasto para direita (imagem anterior)
+                else if (dragDistance > 0 && currentImageIndex > 0) {
+                    currentImageIndex--;
+                    trocarImagemComAnimacao(currentImageIndex, 'right');
+                } else {
+                    // Nas bordas, apenas resetar posição
+                    resetarPosicao();
+                }
+            } else {
+                // Arrasto pequeno, resetar posição
+                resetarPosicao();
+            }
+            
+            // Reiniciar rotação após 5 segundos
+            setTimeout(() => {
+                iniciarRotacaoImagens();
+            }, 5000);
+            
+            // Resetar distância
+            dragDistance = 0;
+            
+            // Mostrar dica visual novamente
+            const hint = document.querySelector('.swipe-hint');
+            if (hint) hint.style.opacity = '1';
+        }
+
+        // Função para trocar imagem com animação
+        function trocarImagemComAnimacao(index, direction) {
+            // Adicionar classe de transição
+            imageContainer.classList.add('transition');
+            
+            // Animar saída
+            const offset = direction === 'left' ? -100 : 100;
+            imageContainer.style.transform = `translateX(${offset}%)`;
+            
+            setTimeout(() => {
+                // Trocar a imagem
+                imagemPrincipal.src = imagens[index];
+                
+                // Resetar posição para o lado oposto
+                imageContainer.style.transform = `translateX(${-offset}%)`;
+                
+                setTimeout(() => {
+                    // Animar entrada
+                    imageContainer.style.transform = 'translateX(0)';
+                    
+                    // Atualizar contador
+                    atualizarContador();
+                    
+                    console.log('Imagem trocada para:', imagens[index]);
+                }, 50);
+            }, 250);
+        }
+
+        // Função para resetar posição da imagem
+        function resetarPosicao() {
+            imageContainer.classList.add('transition');
+            imageContainer.style.transform = 'translateX(0)';
+            
+            setTimeout(() => {
+                imageContainer.classList.remove('transition');
+            }, 300);
+        }
 
         // Função para iniciar a rotação automática das imagens
         function iniciarRotacaoImagens() {
-            // Limpar timer anterior se existir
             if (imageRotationTimer) {
                 clearInterval(imageRotationTimer);
             }
             
-            // Iniciar novo timer (alternar a cada 3 segundos)
             imageRotationTimer = setInterval(() => {
-                if (!popupFechado) {
-                    proximaImagem();
+                if (!popupFechado && !isDragging) {
+                    // Avançar para próxima imagem
+                    if (currentImageIndex < imagens.length - 1) {
+                        currentImageIndex++;
+                    } else {
+                        currentImageIndex = 0;
+                    }
+                    trocarImagem(currentImageIndex);
                 }
-            }, 5000);
+            }, 3000);
         }
 
-        // Função para avançar para a próxima imagem
-        function proximaImagem() {
-            if (currentImageIndex < imagens.length - 1) {
-                currentImageIndex++;
-            } else {
-                currentImageIndex = 0; // Volta para a primeira imagem
-            }
-            trocarImagem(currentImageIndex);
-        }
-
-        // Função para voltar para a imagem anterior
-        function imagemAnterior() {
-            if (currentImageIndex > 0) {
-                currentImageIndex--;
-            } else {
-                currentImageIndex = imagens.length - 1; // Vai para a última imagem
-            }
-            trocarImagem(currentImageIndex);
-        }
-
-        // Função para trocar a imagem
+        // Função para trocar a imagem (sem animação de arrasto)
         function trocarImagem(index) {
-            // Verificar se o índice é válido
             if (index < 0 || index >= imagens.length) return;
             
-            // Atualizar índice atual
             currentImageIndex = index;
             
-            // Efeito de fade out
-            imagemPrincipal.classList.add('fade-out');
+            // Efeito de fade
+            imagemPrincipal.style.opacity = '0';
             
             setTimeout(() => {
-                // Trocar a imagem
-                const novaUrl = imagens[currentImageIndex];
-                imagemPrincipal.src = novaUrl;
-                
-                // Atualizar contador
+                imagemPrincipal.src = imagens[currentImageIndex];
+                imagemPrincipal.style.opacity = '1';
                 atualizarContador();
-                
-                // Atualizar estado dos botões
-                atualizarBotoes();
-                
-                // Efeito de fade in
-                imagemPrincipal.classList.remove('fade-out');
-                
-                console.log('Imagem trocada para:', novaUrl);
-            }, 250);
+            }, 200);
         }
 
         // Função para atualizar o contador de imagens
         function atualizarContador() {
             imageCounter.textContent = `Imagem ${currentImageIndex + 1} de ${imagens.length}`;
-        }
-
-        // Função para atualizar o estado dos botões (habilitar/desabilitar)
-        function atualizarBotoes() {
-            // Como agora temos navegação circular, os botões nunca estão desabilitados
-            // Mas podemos adicionar um efeito visual diferente se quiser
-            setaEsquerda.style.opacity = '1';
-            setaDireita.style.opacity = '1';
         }
 
         // Função para inicializar o popup
@@ -467,64 +598,29 @@
             const btnFechar = document.getElementById('btnFecharPopup');
             const contadorElemento = document.getElementById('contadorSegundos');
             
-            // Adicionar eventos de clique nas setas
-            setaEsquerda.addEventListener('click', () => {
-                // Parar rotação automática temporariamente
-                clearInterval(imageRotationTimer);
-                
-                // Ir para imagem anterior
-                imagemAnterior();
-                
-                // Reiniciar rotação após 5 segundos
-                setTimeout(() => {
-                    iniciarRotacaoImagens();
-                }, 5000);
-            });
-            
-            setaDireita.addEventListener('click', () => {
-                // Parar rotação automática temporariamente
-                clearInterval(imageRotationTimer);
-                
-                // Ir para próxima imagem
-                proximaImagem();
-                
-                // Reiniciar rotação após 5 segundos
-                setTimeout(() => {
-                    iniciarRotacaoImagens();
-                }, 5000);
-            });
-            
             // Iniciar contador regressivo
             popupTimer = setInterval(() => {
                 segundosRestantes--;
                 contadorElemento.textContent = segundosRestantes;
                 
-                // Efeito visual quando faltam poucos segundos
                 if (segundosRestantes <= 3) {
                     contadorElemento.style.color = '#e74c3c';
                     contadorElemento.style.fontWeight = 'bold';
                     document.getElementById('popupTimer').classList.add('pulse-animation');
                 }
                 
-                // Fechar automaticamente quando chegar a zero
                 if (segundosRestantes <= 0) {
                     fecharPopup();
                 }
             }, 1000);
             
-            // Evento para fechar com botão
-            btnFechar.addEventListener('click', () => {
-                fecharPopup();
-            });
+            // Eventos de fechamento
+            btnFechar.addEventListener('click', fecharPopup);
             
-            // Evento para fechar clicando fora do popup
             popup.addEventListener('click', (e) => {
-                if (e.target === popup) {
-                    fecharPopup();
-                }
+                if (e.target === popup) fecharPopup();
             });
             
-            // Evento para fechar com tecla ESC
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !popupFechado) {
                     e.preventDefault();
@@ -532,106 +628,50 @@
                 }
             });
             
-            // Eventos de teclado para as setas
-            document.addEventListener('keydown', (e) => {
-                if (!popupFechado) {
-                    if (e.key === 'ArrowLeft') {
-                        e.preventDefault();
-                        clearInterval(imageRotationTimer);
-                        imagemAnterior();
-                        setTimeout(() => {
-                            iniciarRotacaoImagens();
-                        }, 5000);
-                    } else if (e.key === 'ArrowRight') {
-                        e.preventDefault();
-                        clearInterval(imageRotationTimer);
-                        proximaImagem();
-                        setTimeout(() => {
-                            iniciarRotacaoImagens();
-                        }, 5000);
-                    }
-                }
-            });
-            
-            // Impedir rolagem da página enquanto popup está aberto
             document.body.style.overflow = 'hidden';
         }
 
         // Função para fechar o popup
         function fecharPopup() {
-            // Evitar múltiplos fechamentos
             if (popupFechado) return;
             popupFechado = true;
             
-            // Parar timers
             clearInterval(popupTimer);
             clearInterval(imageRotationTimer);
             
             const popup = document.getElementById('popupEntrada');
-            
-            // Adicionar animação de fechamento
             popup.classList.add('popup-closing');
-            
-            // Restaurar rolagem da página
             document.body.style.overflow = 'auto';
             
             setTimeout(() => {
                 popup.style.display = 'none';
-                console.log('Popup fechado. Para testar novamente, recarregue a página (F5).');
             }, 500);
-            
-            if (window.parent !== window) {
-                window.parent.postMessage('FECHAR_POPUP', '*');
-            }
-        }
-
-        // Função para alterar a imagem do popup (para uso futuro)
-        function alterarImagemPopup(novaUrl, index = 0) {
-            if (index >= 0 && index < imagens.length) {
-                imagens[index] = novaUrl;
-                
-                // Se for a imagem atual, atualizar também a principal
-                if (index === currentImageIndex) {
-                    trocarImagem(index);
-                }
-                
-                console.log('Imagem', index + 1, 'alterada para:', novaUrl);
-            }
         }
 
         // Função para reiniciar o popup (para testes)
         function reiniciarPopup() {
             const popup = document.getElementById('popupEntrada');
             
-            // Resetar variáveis
             popupFechado = false;
             segundosRestantes = 10;
             currentImageIndex = 0;
             
-            // Restaurar popup
             popup.style.display = 'flex';
             popup.classList.remove('popup-closing');
-            popup.style.opacity = '1';
-            popup.style.transform = 'translateY(0)';
             
-            // Resetar contador visual
             document.getElementById('contadorSegundos').textContent = '10';
             document.getElementById('contadorSegundos').style.color = '';
-            document.getElementById('contadorSegundos').style.fontWeight = '';
             
-            // Resetar para primeira imagem
-            trocarImagem(0);
+            imagemPrincipal.src = imagens[0];
+            imagemPrincipal.style.opacity = '1';
+            atualizarContador();
             
-            // Bloquear rolagem novamente
             document.body.style.overflow = 'hidden';
             
-            // Reiniciar timers
             clearInterval(popupTimer);
             clearInterval(imageRotationTimer);
             inicializarPopup();
             iniciarRotacaoImagens();
-            
-            console.log('Popup reiniciado para testes');
         }
 
         // Adicionar botão de teste (apenas para desenvolvimento)
