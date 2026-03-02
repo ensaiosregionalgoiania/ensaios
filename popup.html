@@ -88,7 +88,7 @@
         }
 
         .popup-content {
-            padding: 20px;
+            padding: 5px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -97,26 +97,6 @@
             background-color: #f8f9fa;
         }
 
-        /* Container principal para arrasto */
-        .swipe-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: grab;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        .swipe-container:active {
-            cursor: grabbing;
-        }
-
-        /* Container da imagem com efeito de arrasto */
         .popup-image-container {
             width: 100%;
             height: 100%;
@@ -135,71 +115,25 @@
             font-size: 1.2rem;
             line-height: 1.6;
             box-shadow: inset 0 0 20px rgba(52, 152, 219, 0.1);
-            transition: border-color 0.3s ease, background 0.3s ease;
-            transform: translateX(0);
-            will-change: transform;
+            transition: all 0.3s ease;
         }
 
-        .popup-image-container.dragging {
-            transition: none;
+        .popup-image-container:hover {
             border-color: #e74c3c;
             background: linear-gradient(145deg, #e74c3c15, #c0392b15);
+            transform: scale(1.01);
             box-shadow: inset 0 0 30px rgba(231, 76, 60, 0.15);
-        }
-
-        .popup-image-container.transition {
-            transition: transform 0.3s ease;
         }
 
         .popup-image {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            pointer-events: none; /* Importante para não interferir no arrasto */
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            transition: transform 0.3s;
         }
 
-        /* Indicador de posição */
-        .image-counter {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            white-space: nowrap;
-        }
-
-        /* Dica visual para arrastar */
-        .swipe-hint {
-            position: absolute;
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #7f8c8d;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 5px 12px;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            white-space: nowrap;
-            animation: fadeInUp 0.5s ease 1s both;
-        }
-
-        .swipe-hint span {
-            font-size: 1.2rem;
+        .popup-image:hover {
+            transform: scale(1.01);
         }
 
         .popup-timer {
@@ -232,6 +166,33 @@
             border-top: 2px solid #34495e;
         }
 
+        .instructions-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .instructions-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .instructions-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .instructions-list li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
         @keyframes fadeIn {
             from { 
                 opacity: 0; 
@@ -240,17 +201,6 @@
             to { 
                 opacity: 1; 
                 transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 10px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
             }
         }
 
@@ -288,7 +238,6 @@
             
             .popup-content {
                 height: calc(85vh - 120px);
-                padding: 10px;
             }
             
             .popup-header {
@@ -300,20 +249,14 @@
             }
             
             .popup-timer {
-                padding: 8px 15px;
+                height: 5%;
+                padding: 5px 5px;
                 font-size: 0.9rem;
             }
             
-            .image-counter {
-                font-size: 0.8rem;
-                padding: 4px 12px;
-                bottom: -25px;
-            }
-            
-            .swipe-hint {
-                font-size: 0.7rem;
-                bottom: -50px;
-                padding: 4px 10px;
+            .popup-image-container {
+                font-size: 1rem;
+                padding: 15px;
             }
         }
     </style>
@@ -323,31 +266,20 @@
     <div class="popup-overlay" id="popupEntrada">
         <div class="popup-container">
             <div class="popup-header">
-                <h2 class="popup-title">🏛️ Ensaio Regional</h2>
+                <h2 class="popup-title">🏛️Ensaio Regional</h2>
                 <button class="popup-close-btn" id="btnFecharPopup">×</button>
             </div>
             <div class="popup-content">
-                <!-- Container para arrasto -->
-                <div class="swipe-container" id="swipeContainer">
-                    <!-- Container da imagem com efeito de arrasto -->
-                    <div class="popup-image-container" id="imageContainer">
-                        <img src="ensaio3.jpg" 
-                             alt="Imagem do Sistema Ensaio Local" 
-                             class="popup-image"
-                             id="popupImage"
-                             draggable="false"
-                             onerror="this.src='https://via.placeholder.com/800x600/3498db/ffffff?text=Ensaio+Regional'">
-                    </div>
-                    
-                    <!-- Indicador de posição -->
-                    <div class="image-counter" id="imageCounter">
-                        Imagem 1 de 3
-                    </div>
-                    
-                    <!-- Dica visual para arrastar -->
-                    <div class="swipe-hint">
-                        <span>👆</span> Arraste para navegar
-                    </div>
+                <div class="popup-image-container">
+                    <img src="ensaio3.jpg" 
+                         alt="Imagem do Sistema Ensaio Local" 
+                         class="popup-image"
+                         id="popupImage">
+                    <!--Próximo domingo, 22/02/2026 às 09:00h<br>
+                    Ensaio Regional no Parque Oeste Industrial<br>
+                    <span style="font-size: 0.9rem; color: #e74c3c; margin-top: 10px;">
+                        <a href="https://maps.app.goo.gl/Xv92VXytV1ZmxwWw8" target="_blank">📍Localização</a>
+                    </span>-->
                 </div>
             </div>
             <div class="popup-footer">
@@ -364,263 +296,62 @@
         let popupTimer;
         let segundosRestantes = 10;
         let popupFechado = false;
-        let imageRotationTimer;
-        let currentImageIndex = 0;
-        
-        // Array com as URLs das imagens
+
         const imagens = [
-            //'ensaio1.jpg',
             'ensaio3.jpg',
             'ensaio4.jpg'
         ];
 
-        // Elementos do DOM
-        const imagemPrincipal = document.getElementById('popupImage');
-        const imageContainer = document.getElementById('imageContainer');
-        const swipeContainer = document.getElementById('swipeContainer');
-        const imageCounter = document.getElementById('imageCounter');
-
-        // Variáveis para controle do arrasto
-        let isDragging = false;
-        let startX = 0;
-        let currentX = 0;
-        let dragDistance = 0;
-        const DRAG_THRESHOLD = 100; // Distância mínima para trocar de imagem (em pixels)
-
         // Inicializar popup quando a página carrega
         document.addEventListener('DOMContentLoaded', () => {
             inicializarPopup();
-            iniciarRotacaoImagens();
-            atualizarContador();
-            inicializarDragAndSwipe();
         });
-
-        // Função para inicializar eventos de arrasto
-        function inicializarDragAndSwipe() {
-            // Eventos de mouse (desktop)
-            imageContainer.addEventListener('mousedown', iniciarDrag);
-            window.addEventListener('mousemove', duranteDrag);
-            window.addEventListener('mouseup', finalizarDrag);
-            
-            // Eventos de toque (mobile)
-            imageContainer.addEventListener('touchstart', iniciarDrag, { passive: true });
-            window.addEventListener('touchmove', duranteDrag, { passive: false });
-            window.addEventListener('touchend', finalizarDrag);
-            window.addEventListener('touchcancel', finalizarDrag);
-            
-            // Prevenir arrasto padrão de imagens
-            imageContainer.addEventListener('dragstart', (e) => e.preventDefault());
-        }
-
-        // Função para iniciar o arrasto
-        function iniciarDrag(e) {
-            if (popupFechado) return;
-            
-            // Parar rotação automática durante o arrasto
-            clearInterval(imageRotationTimer);
-            
-            // Obter posição inicial
-            if (e.type === 'mousedown') {
-                startX = e.clientX;
-            } else if (e.type === 'touchstart') {
-                startX = e.touches[0].clientX;
-            }
-            
-            isDragging = true;
-            currentX = startX;
-            
-            // Adicionar classes para feedback visual
-            imageContainer.classList.add('dragging');
-            imageContainer.classList.remove('transition');
-            
-            // Esconder dica visual
-            const hint = document.querySelector('.swipe-hint');
-            if (hint) hint.style.opacity = '0';
-        }
-
-        // Função durante o arrasto
-        function duranteDrag(e) {
-            if (!isDragging || popupFechado) return;
-            
-            e.preventDefault(); // Prevenir rolagem da página durante o arrasto
-            
-            // Obter posição atual
-            if (e.type === 'mousemove') {
-                currentX = e.clientX;
-            } else if (e.type === 'touchmove') {
-                currentX = e.touches[0].clientX;
-            }
-            
-            // Calcular distância arrastada
-            dragDistance = currentX - startX;
-            
-            // Aplicar transformação com limite
-            const maxDrag = 200;
-            let translateX = Math.max(-maxDrag, Math.min(maxDrag, dragDistance));
-            
-            // Aplicar efeito de resistência nas bordas
-            if ((currentImageIndex === 0 && dragDistance > 0) || 
-                (currentImageIndex === imagens.length - 1 && dragDistance < 0)) {
-                translateX = dragDistance * 0.3; // Resistência
-            }
-            
-            imageContainer.style.transform = `translateX(${translateX}px)`;
-        }
-
-        // Função para finalizar o arrasto
-        function finalizarDrag(e) {
-            if (!isDragging || popupFechado) {
-                resetarPosicao();
-                return;
-            }
-            
-            isDragging = false;
-            
-            // Remover classe dragging
-            imageContainer.classList.remove('dragging');
-            
-            // Verificar se deve trocar de imagem
-            const absDragDistance = Math.abs(dragDistance);
-            
-            if (absDragDistance > DRAG_THRESHOLD) {
-                // Arrasto para esquerda (próxima imagem)
-                if (dragDistance < 0 && currentImageIndex < imagens.length - 1) {
-                    currentImageIndex++;
-                    trocarImagemComAnimacao(currentImageIndex, 'left');
-                }
-                // Arrasto para direita (imagem anterior)
-                else if (dragDistance > 0 && currentImageIndex > 0) {
-                    currentImageIndex--;
-                    trocarImagemComAnimacao(currentImageIndex, 'right');
-                } else {
-                    // Nas bordas, apenas resetar posição
-                    resetarPosicao();
-                }
-            } else {
-                // Arrasto pequeno, resetar posição
-                resetarPosicao();
-            }
-            
-            // Reiniciar rotação após 5 segundos
-            setTimeout(() => {
-                iniciarRotacaoImagens();
-            }, 5000);
-            
-            // Resetar distância
-            dragDistance = 0;
-            
-            // Mostrar dica visual novamente
-            const hint = document.querySelector('.swipe-hint');
-            if (hint) hint.style.opacity = '1';
-        }
-
-        // Função para trocar imagem com animação
-        function trocarImagemComAnimacao(index, direction) {
-            // Adicionar classe de transição
-            imageContainer.classList.add('transition');
-            
-            // Animar saída
-            const offset = direction === 'left' ? -100 : 100;
-            imageContainer.style.transform = `translateX(${offset}%)`;
-            
-            setTimeout(() => {
-                // Trocar a imagem
-                imagemPrincipal.src = imagens[index];
-                
-                // Resetar posição para o lado oposto
-                imageContainer.style.transform = `translateX(${-offset}%)`;
-                
-                setTimeout(() => {
-                    // Animar entrada
-                    imageContainer.style.transform = 'translateX(0)';
-                    
-                    // Atualizar contador
-                    atualizarContador();
-                    
-                    console.log('Imagem trocada para:', imagens[index]);
-                }, 50);
-            }, 250);
-        }
-
-        // Função para resetar posição da imagem
-        function resetarPosicao() {
-            imageContainer.classList.add('transition');
-            imageContainer.style.transform = 'translateX(0)';
-            
-            setTimeout(() => {
-                imageContainer.classList.remove('transition');
-            }, 300);
-        }
-
-        // Função para iniciar a rotação automática das imagens
-        function iniciarRotacaoImagens() {
-            if (imageRotationTimer) {
-                clearInterval(imageRotationTimer);
-            }
-            
-            imageRotationTimer = setInterval(() => {
-                if (!popupFechado && !isDragging) {
-                    // Avançar para próxima imagem
-                    if (currentImageIndex < imagens.length - 1) {
-                        currentImageIndex++;
-                    } else {
-                        currentImageIndex = 0;
-                    }
-                    trocarImagem(currentImageIndex);
-                }
-            }, 3000);
-        }
-
-        // Função para trocar a imagem (sem animação de arrasto)
-        function trocarImagem(index) {
-            if (index < 0 || index >= imagens.length) return;
-            
-            currentImageIndex = index;
-            
-            // Efeito de fade
-            imagemPrincipal.style.opacity = '0';
-            
-            setTimeout(() => {
-                imagemPrincipal.src = imagens[currentImageIndex];
-                imagemPrincipal.style.opacity = '1';
-                atualizarContador();
-            }, 200);
-        }
-
-        // Função para atualizar o contador de imagens
-        function atualizarContador() {
-            imageCounter.textContent = `Imagem ${currentImageIndex + 1} de ${imagens.length}`;
-        }
 
         // Função para inicializar o popup
         function inicializarPopup() {
             const popup = document.getElementById('popupEntrada');
             const btnFechar = document.getElementById('btnFecharPopup');
             const contadorElemento = document.getElementById('contadorSegundos');
-            
+            const instrucoes = document.getElementById('instrucoes');
+            let imagemId = Math.floor(Math.random() * imagens.length);
+            const imagemAleatoria = imagens[imagemId];
+            //alert(imagemAleatoria)
+            document.getElementById('popupImage').src = imagemAleatoria
+            setTimeout(() => {
+                TrocarImagem(imagemId);
+            }, 5000);
+
             // Iniciar contador regressivo
             popupTimer = setInterval(() => {
                 segundosRestantes--;
                 contadorElemento.textContent = segundosRestantes;
                 
+                // Efeito visual quando faltam poucos segundos
                 if (segundosRestantes <= 3) {
                     contadorElemento.style.color = '#e74c3c';
                     contadorElemento.style.fontWeight = 'bold';
                     document.getElementById('popupTimer').classList.add('pulse-animation');
                 }
                 
+                // Fechar automaticamente quando chegar a zero
                 if (segundosRestantes <= 0) {
                     fecharPopup();
                 }
             }, 1000);
             
-            // Eventos de fechamento
-            btnFechar.addEventListener('click', fecharPopup);
-            
-            popup.addEventListener('click', (e) => {
-                if (e.target === popup) fecharPopup();
+            // Evento para fechar com botão
+            btnFechar.addEventListener('click', () => {
+                fecharPopup();
             });
             
+            // Evento para fechar clicando fora do popup
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) {
+                    fecharPopup();
+                }
+            });
+            
+            // Evento para fechar com tecla ESC
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !popupFechado) {
                     e.preventDefault();
@@ -628,50 +359,92 @@
                 }
             });
             
+            // Impedir rolagem da página enquanto popup está aberto
             document.body.style.overflow = 'hidden';
         }
 
         // Função para fechar o popup
         function fecharPopup() {
+            // Evitar múltiplos fechamentos
             if (popupFechado) return;
             popupFechado = true;
             
             clearInterval(popupTimer);
-            clearInterval(imageRotationTimer);
             
             const popup = document.getElementById('popupEntrada');
+            const instrucoes = document.getElementById('instrucoes');
+            
+            // Adicionar animação de fechamento
             popup.classList.add('popup-closing');
+            
+            // Restaurar rolagem da página
             document.body.style.overflow = 'auto';
             
+            // Mostrar instruções após fechar
             setTimeout(() => {
                 popup.style.display = 'none';
+                instrucoes.style.display = 'block';
+                
+                // Mostrar mensagem no console
+                console.log('Popup fechado. Para testar novamente, recarregue a página (F5).');
             }, 500);
+            if (window.parent !== window) {
+                window.parent.postMessage('FECHAR_POPUP', '*');
+            }
+        }
+
+        // Função para alterar a imagem do popup (para uso futuro)
+        function alterarImagemPopup(novaUrl) {
+            const imagem = document.getElementById('popupImage');
+            
+            // Adicionar efeito de fade out
+            imagem.style.opacity = '0.5';
+            imagem.style.transition = 'opacity 0.3s';
+            
+            setTimeout(() => {
+                imagem.src = novaUrl;
+                imagem.alt = "Nova imagem do sistema";
+                
+                // Restaurar opacidade com efeito
+                setTimeout(() => {
+                    imagem.style.opacity = '1';
+                }, 100);
+                
+                console.log('Imagem do popup alterada para:', novaUrl);
+            }, 300);
         }
 
         // Função para reiniciar o popup (para testes)
         function reiniciarPopup() {
             const popup = document.getElementById('popupEntrada');
+            const instrucoes = document.getElementById('instrucoes');
             
+            // Resetar variáveis
             popupFechado = false;
             segundosRestantes = 10;
-            currentImageIndex = 0;
             
+            // Restaurar popup
             popup.style.display = 'flex';
             popup.classList.remove('popup-closing');
+            popup.style.opacity = '1';
+            popup.style.transform = 'translateY(0)';
             
+            // Esconder instruções
+            instrucoes.style.display = 'none';
+            
+            // Resetar contador visual
             document.getElementById('contadorSegundos').textContent = '10';
             document.getElementById('contadorSegundos').style.color = '';
+            document.getElementById('contadorSegundos').style.fontWeight = '';
             
-            imagemPrincipal.src = imagens[0];
-            imagemPrincipal.style.opacity = '1';
-            atualizarContador();
-            
+            // Bloquear rolagem novamente
             document.body.style.overflow = 'hidden';
             
+            // Reiniciar timer
             clearInterval(popupTimer);
-            clearInterval(imageRotationTimer);
             inicializarPopup();
-            iniciarRotacaoImagens();
+            
+            console.log('Popup reiniciado para testes');
         }
 
         // Adicionar botão de teste (apenas para desenvolvimento)
@@ -694,6 +467,12 @@
                 document.body.appendChild(testeBtn);
             }, 2000);
         }
+
+        function TrocarImagem(imagemId) {
+            imagemId = imagemId == imagens.length-1 ? 0 : ++imagemId;
+            const imagemAleatoria = imagens[imagemId];
+            document.getElementById('popupImage').src = imagemAleatoria
+        }    
     </script>
 </body>
 </html>
