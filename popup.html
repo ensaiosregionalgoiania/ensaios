@@ -116,6 +116,7 @@
             line-height: 1.6;
             box-shadow: inset 0 0 20px rgba(52, 152, 219, 0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .popup-image-container:hover {
@@ -130,10 +131,7 @@
             max-height: 100%;
             object-fit: contain;
             transition: transform 0.3s;
-        }
-
-        .popup-image:hover {
-            transform: scale(1.01);
+            pointer-events: none; /* Impede que a imagem bloqueie o clique no container */
         }
 
         .popup-timer {
@@ -151,6 +149,7 @@
             align-items: center;
             gap: 8px;
             z-index: 10;
+            transition: all 0.3s ease;
         }
 
         .timer-icon {
@@ -230,34 +229,37 @@
             animation: pulse 2s infinite;
         }
 
-        @media (max-width: 768px) {
-            .popup-container {
-                width: 95%;
-                max-height: 85vh;
-            }
-            
-            .popup-content {
-                height: calc(85vh - 120px);
-            }
-            
-            .popup-header {
-                padding: 15px 20px;
-            }
-            
-            .popup-title {
-                font-size: 1.2rem;
-            }
-            
-            .popup-timer {
-                height: 5%;
-                padding: 5px 5px;
-                font-size: 0.9rem;
-            }
-            
-            .popup-image-container {
-                font-size: 1rem;
-                padding: 15px;
-            }
+        .timer-paused {
+            background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+            animation: none !important;
+        }
+
+        .image-switch-paused {
+            border-color: #e74c3c !important;
+            background: linear-gradient(145deg, #e74c3c20, #c0392b20) !important;
+        }
+
+        .pause-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 20;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInOut 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
         }
     </style>
 </head>
@@ -270,16 +272,11 @@
                 <button class="popup-close-btn" id="btnFecharPopup">×</button>
             </div>
             <div class="popup-content">
-                <div class="popup-image-container">
+                <div class="popup-image-container" id="imageContainer">
                     <img src="ensaio3.jpg" 
                          alt="Imagem do Sistema Ensaio Local" 
                          class="popup-image"
                          id="popupImage">
-                    <!--Próximo domingo, 22/02/2026 às 09:00h<br>
-                    Ensaio Regional no Parque Oeste Industrial<br>
-                    <span style="font-size: 0.9rem; color: #e74c3c; margin-top: 10px;">
-                        <a href="https://maps.app.goo.gl/Xv92VXytV1ZmxwWw8" target="_blank">📍Localização</a>
-                    </span>-->
                 </div>
             </div>
             <div class="popup-footer">
@@ -294,8 +291,14 @@
     <script>
         // VARIÁVEIS GLOBAIS
         let popupTimer;
+        let imageSwitchTimer;
         let segundosRestantes = 10;
         let popupFechado = false;
+        let timerPausado = false;
+        let imageSwitchPausado = false;
+        let pausaTimer; // Timer para a pausa de 10 segundos
+        let imagemIdAtual;
+        let imageSwitchTimeout;
 
         const imagens = [
             'ensaio3.jpg',
@@ -307,29 +310,109 @@
             inicializarPopup();
         });
 
-        // Função para inicializar o popup
-        function inicializarPopup() {
-            const popup = document.getElementById('popupEntrada');
-            const btnFechar = document.getElementById('btnFecharPopup');
-            const contadorElemento = document.getElementById('contadorSegundos');
-            const instrucoes = document.getElementById('instrucoes');
-            let imagemId = Math.floor(Math.random() * imagens.length);
-            const imagemAleatoria = imagens[imagemId];
-            //alert(imagemAleatoria)
-            document.getElementById('popupImage').src = imagemAleatoria
-            setTimeout(() => {
-                TrocarImagem(imagemId);
-            }, 5000);
+        // Função para pausar o temporizador e a troca de imagens por 10 segundos
+        function pausarTudo() {
+            // Se já estiver pausado, não faz nada
+            if (timerPausado && imageSwitchPausado) return;
+            
+            // Pausar timer
+            if (!timerPausado) {
+                clearInterval(popupTimer);
+                timerPausado = true;
+            }
+            
+            // Pausar troca de imagens
+            if (!imageSwitchPausado) {
+                clearTimeout(imageSwitchTimeout);
+                imageSwitchPausado = true;
+            }
+            
+            // Mudar aparência para indicar pausa
+            const timerElement = document.getElementById('popupTimer');
+            timerElement.classList.add('timer-paused');
+            timerElement.classList.remove('pulse-animation');
+            
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.classList.add('image-switch-paused');
+            
+            // Adicionar indicador visual de pausa
+            //const pauseIndicator = document.createElement('div');
+            //pauseIndicator.className = 'pause-indicator';
+            //pauseIndicator.id = 'pauseIndicator';
+            //pauseIndicator.textContent = '⏸️ PAUSADO - 10s';
+            //imageContainer.appendChild(pauseIndicator);
+            
+            // Mostrar mensagem no timer
+            timerElement.innerHTML = '<span class="timer-icon">⏸️</span> Pausado por 10s';
+            
+            console.log('Sistema pausado por 10 segundos');
+            
+            // Limpar pausa anterior se existir
+            if (pausaTimer) {
+                clearTimeout(pausaTimer);
+            }
+            
+            // Configurar para retomar após 10 segundos
+            pausaTimer = setTimeout(() => {
+                retomarTudo();
+            }, 10000);
+        }
 
-            // Iniciar contador regressivo
+        // Função para retomar tudo
+        function retomarTudo() {
+            if (!timerPausado && !imageSwitchPausado) return;
+            
+            // Restaurar aparência
+            const timerElement = document.getElementById('popupTimer');
+            timerElement.classList.remove('timer-paused');
+            timerElement.classList.add('pulse-animation');
+            
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.classList.remove('image-switch-paused');
+            
+            // Remover indicador visual de pausa
+            const pauseIndicator = document.getElementById('pauseIndicator');
+            if (pauseIndicator) {
+                pauseIndicator.remove();
+            }
+            
+            // Restaurar timer
+            timerElement.innerHTML = '<span class="timer-icon">⏱️</span> Fecha em: <span id="contadorSegundos">' + segundosRestantes + '</span> segundos';
+            
+            timerPausado = false;
+            imageSwitchPausado = false;
+            
+            console.log('Sistema retomado. Segundos restantes:', segundosRestantes);
+            
+            // Reinicia o timer
+            iniciarTimer();
+            
+            // Reinicia a troca de imagens
+            agendarProximaTrocaImagem();
+        }
+
+        // Função para iniciar o timer
+        function iniciarTimer() {
+            if (popupTimer) {
+                clearInterval(popupTimer);
+            }
+            
             popupTimer = setInterval(() => {
+                // Não decrementa se estiver pausado
+                if (timerPausado) return;
+                
                 segundosRestantes--;
-                contadorElemento.textContent = segundosRestantes;
+                const contadorElemento = document.getElementById('contadorSegundos');
+                if (contadorElemento) {
+                    contadorElemento.textContent = segundosRestantes;
+                }
                 
                 // Efeito visual quando faltam poucos segundos
                 if (segundosRestantes <= 3) {
-                    contadorElemento.style.color = '#e74c3c';
-                    contadorElemento.style.fontWeight = 'bold';
+                    if (contadorElemento) {
+                        contadorElemento.style.color = '#e74c3c';
+                        contadorElemento.style.fontWeight = 'bold';
+                    }
                     document.getElementById('popupTimer').classList.add('pulse-animation');
                 }
                 
@@ -338,6 +421,72 @@
                     fecharPopup();
                 }
             }, 1000);
+        }
+
+        // Função para agendar a próxima troca de imagem
+        function agendarProximaTrocaImagem() {
+            // Limpa o agendamento anterior se existir
+            if (imageSwitchTimeout) {
+                clearTimeout(imageSwitchTimeout);
+            }
+            
+            // Se estiver pausado, não agenda nova troca
+            if (imageSwitchPausado) return;
+            
+            // Agenda próxima troca para daqui a 5 segundos
+            imageSwitchTimeout = setTimeout(() => {
+                trocarImagem();
+            }, 5000);
+        }
+
+        // Função para trocar a imagem
+        function trocarImagem() {
+            // Não troca se estiver pausado
+            if (imageSwitchPausado) return;
+            
+            // Calcula próxima imagem
+            imagemIdAtual = imagemIdAtual == imagens.length - 1 ? 0 : imagemIdAtual + 1;
+            const proximaImagem = imagens[imagemIdAtual];
+            
+            // Efeito de fade
+            const imagem = document.getElementById('popupImage');
+            imagem.style.opacity = '0.5';
+            imagem.style.transition = 'opacity 0.3s';
+            
+            setTimeout(() => {
+                imagem.src = proximaImagem;
+                
+                setTimeout(() => {
+                    imagem.style.opacity = '1';
+                }, 100);
+                
+                console.log('Imagem trocada para:', proximaImagem);
+            }, 300);
+            
+            // Agenda próxima troca
+            agendarProximaTrocaImagem();
+        }
+
+        // Função para inicializar o popup
+        function inicializarPopup() {
+            const popup = document.getElementById('popupEntrada');
+            const btnFechar = document.getElementById('btnFecharPopup');
+            const imageContainer = document.getElementById('imageContainer');
+            
+            // Selecionar imagem aleatória inicial
+            imagemIdAtual = Math.floor(Math.random() * imagens.length);
+            document.getElementById('popupImage').src = imagens[imagemIdAtual];
+            
+            // Iniciar contador regressivo
+            iniciarTimer();
+            
+            // Iniciar ciclo de troca de imagens
+            agendarProximaTrocaImagem();
+            
+            // Evento para pausar tudo quando clicar na imagem
+            imageContainer.addEventListener('click', () => {
+                pausarTudo();
+            });
             
             // Evento para fechar com botão
             btnFechar.addEventListener('click', () => {
@@ -369,10 +518,12 @@
             if (popupFechado) return;
             popupFechado = true;
             
+            // Limpar todos os timers
             clearInterval(popupTimer);
+            clearTimeout(pausaTimer);
+            clearTimeout(imageSwitchTimeout);
             
             const popup = document.getElementById('popupEntrada');
-            const instrucoes = document.getElementById('instrucoes');
             
             // Adicionar animação de fechamento
             popup.classList.add('popup-closing');
@@ -380,48 +531,30 @@
             // Restaurar rolagem da página
             document.body.style.overflow = 'auto';
             
-            // Mostrar instruções após fechar
             setTimeout(() => {
                 popup.style.display = 'none';
-                instrucoes.style.display = 'block';
-                
-                // Mostrar mensagem no console
                 console.log('Popup fechado. Para testar novamente, recarregue a página (F5).');
             }, 500);
+            
             if (window.parent !== window) {
                 window.parent.postMessage('FECHAR_POPUP', '*');
             }
         }
 
-        // Função para alterar a imagem do popup (para uso futuro)
-        function alterarImagemPopup(novaUrl) {
-            const imagem = document.getElementById('popupImage');
-            
-            // Adicionar efeito de fade out
-            imagem.style.opacity = '0.5';
-            imagem.style.transition = 'opacity 0.3s';
-            
-            setTimeout(() => {
-                imagem.src = novaUrl;
-                imagem.alt = "Nova imagem do sistema";
-                
-                // Restaurar opacidade com efeito
-                setTimeout(() => {
-                    imagem.style.opacity = '1';
-                }, 100);
-                
-                console.log('Imagem do popup alterada para:', novaUrl);
-            }, 300);
-        }
-
         // Função para reiniciar o popup (para testes)
         function reiniciarPopup() {
             const popup = document.getElementById('popupEntrada');
-            const instrucoes = document.getElementById('instrucoes');
             
             // Resetar variáveis
             popupFechado = false;
             segundosRestantes = 10;
+            timerPausado = false;
+            imageSwitchPausado = false;
+            
+            // Limpar timers
+            clearInterval(popupTimer);
+            clearTimeout(pausaTimer);
+            clearTimeout(imageSwitchTimeout);
             
             // Restaurar popup
             popup.style.display = 'flex';
@@ -429,20 +562,40 @@
             popup.style.opacity = '1';
             popup.style.transform = 'translateY(0)';
             
-            // Esconder instruções
-            instrucoes.style.display = 'none';
+            // Remover indicador de pausa se existir
+            const pauseIndicator = document.getElementById('pauseIndicator');
+            if (pauseIndicator) {
+                pauseIndicator.remove();
+            }
+            
+            // Resetar classes
+            const timerElement = document.getElementById('popupTimer');
+            timerElement.classList.remove('timer-paused');
+            timerElement.classList.add('pulse-animation');
+            
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.classList.remove('image-switch-paused');
+            
+            // Resetar timer visual
+            timerElement.innerHTML = '<span class="timer-icon">⏱️</span> Fecha em: <span id="contadorSegundos">10</span> segundos';
             
             // Resetar contador visual
-            document.getElementById('contadorSegundos').textContent = '10';
-            document.getElementById('contadorSegundos').style.color = '';
-            document.getElementById('contadorSegundos').style.fontWeight = '';
+            const contadorElemento = document.getElementById('contadorSegundos');
+            contadorElemento.textContent = '10';
+            contadorElemento.style.color = '';
+            contadorElemento.style.fontWeight = '';
+            
+            // Resetar imagem
+            imagemIdAtual = Math.floor(Math.random() * imagens.length);
+            document.getElementById('popupImage').src = imagens[imagemIdAtual];
+            document.getElementById('popupImage').style.opacity = '1';
             
             // Bloquear rolagem novamente
             document.body.style.overflow = 'hidden';
             
-            // Reiniciar timer
-            clearInterval(popupTimer);
-            inicializarPopup();
+            // Reiniciar timer e troca de imagens
+            iniciarTimer();
+            agendarProximaTrocaImagem();
             
             console.log('Popup reiniciado para testes');
         }
@@ -467,12 +620,6 @@
                 document.body.appendChild(testeBtn);
             }, 2000);
         }
-
-        function TrocarImagem(imagemId) {
-            imagemId = imagemId == imagens.length-1 ? 0 : ++imagemId;
-            const imagemAleatoria = imagens[imagemId];
-            document.getElementById('popupImage').src = imagemAleatoria
-        }    
     </script>
 </body>
 </html>
