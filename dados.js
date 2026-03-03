@@ -222,7 +222,7 @@
             "Jardim Primavera;S L Montes Belos;1º SáBADO;T;XB6yH7hTpZVmaKDs8;9;Wallison Klleuver;Jackson;T;-16.5113396;-50.3837027;DN 4N SN;",
             "Firminópolis;Firminópolis;4º SáBADO;N;Xs9cLn374eSeSXUB9;9;Wesley;Jackson;T;-16.5770476;-50.3027751;DN 5N;",
             "Turvânia;Turvânia;3º SáBADO;T;ur6BTXyHSUmgd9qp9;9;Witian(instrutor);Jackson;T;-16.6076897;-50.1314661;DN 3N;",
-            "Paraúna;Paraúna;2º DOMINGO;N;UoqYSPJyvfiMMLUJ6;9;Rogério(instrutor);Jackson;T;-16.9440934;-50.4422764;DN 4N;",
+            "Paraúna;Paraúna;2º DOMINGO;T;UoqYSPJyvfiMMLUJ6;9;Rogério(instrutor);Jackson;T;-16.9440934;-50.4422764;DN 4N;",
             "Aurilândia;Aurilândia;2º DOMINGO;N;X3vxw74mzNQ3HZMx8;9;Welberty;Jackson;T;-16.6800423;-50.4647743;DN 4N SN;",
             "Sanclerlândia;Sanclerlândia;2ª SEXTA-FEIRA;N;NbEm4gPVZrU1H9vB9;9;Leonardo;Jackson;T;-16.3500972;-50.4864964;DN 5N;02/08/2026",
             "Adelândia;Adelândia;5º DOMINGO;T;8WfSCDgYps2rzjFM7;9;Wender Gomes;Jackson;I;-16.4172011;-50.1705417;DN 5N;",
