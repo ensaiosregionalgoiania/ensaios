@@ -108,7 +108,7 @@
             "Jardim Novo Mundo;Goiânia;2ª QUARTA-FEIRA;N;t193qgTKffUqQhDF7;1;CARLOS DA SILVA;HELTON RICARDO;T;-16.6894674;-49.2286619;DN 3N 5N;24/05/2026",
             "Jardim Paraíso;Aparecida;2ª QUINTA-FEIRA;N;3ur2XR6PRtxYagc3A;6;Assis Leandro;;T;-16.7811516;-49.2407366;DN 3N 6N;",
             "Jardim Alto Paraíso I;Aparecida;3ª QUINTA-FEIRA;N;836KUbCkUmW9m7HAA;6;Johnathan;Thiaguinho;T;-16.8100184;-49.3600112;DN 3N 6N;",
-            "Residencial Rio Verde;Goiânia;2ª QUINTA-FEIRA;N;ABiGL9zxsG7KbcMe7;3;;;T;-16.7363317;-49.3680153;DN 4N 6N;24/05/2026",
+            "Residencial Rio Verde;Goiânia;2ª QUINTA-FEIRA;N;ABiGL9zxsG7KbcMe7;3;DURVAL;HUMBERTO/NEREU;T;-16.7363317;-49.3680153;DN 4N 6N;24/05/2026",
             "Jardim Goiás;Goiânia;2ª QUINTA-FEIRA;N;BbRcFyWtZLCqiRV16;1;FELIPE GUSTAVO;HELTON RICARDO;T;-16.6974864;-49.2406922;DN 4N SN;",
             "Jardim Caravelas;Goiânia;2ª QUINTA-FEIRA;N;5MavwLrtVk6pbALm8;2;Waldir;Jackson;T;-16.7603651;-49.3520616;DN 3N 6N;",
             "Cond das Esmeraldas;Goiânia;2ª QUINTA-FEIRA;N;ZPVuUDLGJwsHp6jz5;2;Gustavo Ferraz;Jackson;T;-16.7857437;-49.3569831;DN 2N 6N;11/10/2026",
