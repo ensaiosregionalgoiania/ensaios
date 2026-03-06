@@ -121,7 +121,7 @@
             "Setor Santos Dumont;Goiânia;2ª SEXTA-FEIRA;N;vJXpG8Z6akbmuHwQ9;3;;;T;-16.7310459;-49.4522408;DN 2N 4N;",
             "Residencial Buena Vista III;Goiânia;2ª SEXTA-FEIRA;N;fWnMGPmvaCyj5tR78;3;;;T;-16.7208106;-49.3957716;DN 4N SN;26/07/2026",
             "Parque Amazônia;Goiânia;3ª QUINTA-FEIRA;N;uz5JdYhjKTGDtxNLA;2;Lynardo;Isaque/André/Jackson;T;-16.7349129;-49.2854856;DN 3N 5T SN;15/02/2026",
-            "Jardim das Aroeiras;Goiânia;2ª SEXTA-FEIRA;N;SDb42ockU7XadRyj7;1;SAMUEL VIEIRA;RICARDO ROSEMBERGUE;T;-16.6585214;-49.1963767;4N SN;",
+            "Jardim das Aroeiras;Goiânia;2ª SEXTA-FEIRA;N;BBAH9phMaXn9w5wz6;1;SAMUEL VIEIRA;RICARDO ROSEMBERGUE;T;-16.6591189;-49.1965138;4N SN;",
             "Vila Concórdia;Goiânia;2ª SEXTA-FEIRA;N;y5oMAfkU8WvGNYcp6;1;WILLIAN ASSIS;RICARDO ROSEMBERGUE;T;-16.6659271;-49.1873381;4N SN;",
             "Eldorado Oeste;Goiânia;2ª SEXTA-FEIRA;N;SuHs1ZRmcLgdekz56;3;;;T;-16.6911668;-49.4058882;DN 3N;11/10/2026",
             "Bairro Goyá;Goiânia;2º DOMINGO;T;cxht1iptcMjbbXEi6;2;Wermerson;Hiwerson;T;-16.6883436;-49.3374302;DN 3N 5N;22/03/2026",
