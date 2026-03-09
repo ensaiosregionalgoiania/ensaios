@@ -1,7 +1,7 @@
         // Dados completos dos ensaios
         // Nome da igreja;Cidade;Dia do Ensaio;Hora do Ensaio;Endereco Google maps;Setor;Nome Encarregado Local;Nome Encarregado Regional;Meses T=Todos, I=ímpares, P=Pares, 3M1=JAN/ABR/JUL/OUT, 3M2=FEV/MAI/AGO/NOV, 3M3=MAR/JUN/SET/DEZ;Latitude;Longitude;Dias de culto;Ensaio Regional
         const dados = [
-            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;T;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;22/03/2026",
+            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;T;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;15/03/2026",
             "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
             "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;T;cbaHom1Dz6uJrsG39;6;Ademir Francisco;Alex Flávio/Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN;14/06/2026",
             "Setor dos Bandeirantes;Aparecida;1º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
