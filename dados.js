@@ -18,7 +18,7 @@
             "Setor Bela Vista;Goiânia;1º DOMINGO;T;6FfuP1QrYMLrrHXm8;1;BENEDITO AFONSO;ANDRE ALCANTARA;T;-16.7310459;-49.4522408;DN 3T 4N SN;15/03/2026", //
             "Setor Coimbra;Goiânia;1º DOMINGO;T;AHA4PNhtdDhWqMP76;4;Euzébio Marcelino;Davi Borges;T;-16.6804397;-49.290128;DN 3N 6N;14/06/2026",
             "Setor Alphaville II;Goiânia;1º DOMINGO;T;VJfWLbqyQPxEaRhm6;3;;;T;-16.7334585;-49.3795188;DN 2N 5N;",
-            "Residencial Itaipu;Goiânia;1º DOMINGO;T;meFED6rqGuhwh9pE7;2;Fábio Augusto;Pedro Pimenta;T;-16.779655;-49.3649108;DN 4N;",
+            "Residencial Itaipu;Goiânia;2º DOMINGO;T;meFED6rqGuhwh9pE7;2;Fábio Augusto;Pedro Pimenta;T;-16.779655;-49.3649108;DN 4N;",
             "Residencial Brisas da Mata;Goiânia;1º DOMINGO;T;MvRbJroWVEVyQyo3A;4;Lourenço de Sousa;Túlio Marcos;T;-16.5942494;-49.3056839;DN 2N 5N;",
             "Parque Tremendão;Goiânia;1ª SEXTA-FEIRA;N;g8YtWxosoERd1aRJ6;4;Ferdinan Gomes;Túlio Marcos;T;-16.6124328;-49.3262289;DN 3N 5N;",
             "Parque Industrial João Braz;Goiânia;1º DOMINGO;T;YuLEdrUSCdYVVmHH9;3;;;T;-16.693511;-49.3583396;DN 4N 6N;12/04/2026",
