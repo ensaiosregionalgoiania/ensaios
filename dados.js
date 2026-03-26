@@ -205,7 +205,7 @@
             "Decolores;Trindade;4º DOMINGO;T;abZFKGwXJHVcpjy37;7;;;T;-16.6414833;-49.4684809;DN 3N;",
             "Santa Bárbara;Trindade;4º DOMINGO;T;ayoKRx8cwDZFpLvH8;7;;;I;-16.5747675;-49.6974407;DN 4N;",
             "Mariápolis;Trindade;5ª SEXTA-FEIRA;N;ffxVdsk1cX5BCRo49;7;;;T;-16.6190139;-49.4504706;DN 5N;",
-            "Aracy Amaral;Senador Canedo;4ª SEXTA-FEIRA;N;DEXdyFAsmXsc3x4u5;8;;Gesmar;T;-16.7394265;-49.0748651;DN 4N;",
+            "Aracy Amaral;Senador Canedo;4º SáBADO;N;DEXdyFAsmXsc3x4u5;8;;Gesmar;T;-16.7394265;-49.0748651;DN 4N;",
             "Bairro das Indústrias;Senador Canedo;4º DOMINGO;T;2fhd7R8MG4TfQwjL6;8;Ederson;Gesmar;T;-16.6896088;-49.1045245;DN 5N;",
             "<B>Bonfinópolis</B>;<B>Bonfinópolis</B>;2ª SEXTA-FEIRA;<B>N</B>;morZzMHTBz4cuios6;8;Moises;Rogério;T;-16.6236908;-48.9692201;DN 4N;",
             "<B>Caldazinha</B>;<B>Caldazinha</B>;4º SáBADO;<B>N</B>;H11DTsDLBQVYJkaNA;8;Danilo;Rogério;T;-16.7159421;-48.9991636;DN 3N;",
