@@ -13,7 +13,7 @@
             "Setor Leste Universitário;Goiânia;1º DOMINGO;T;f4jkwB9HdBhJMobN6;1;JOSÉ MOREL;HELTON RICARDO;T;-16.6867528;-49.2420306;DN 2N 6N;",
             "Setor Urias Magalhães;Goiânia;1º DOMINGO;T;fYH4domMCTcszBZc7;5;Josafá Silveira;Doralino;T;-16.6349013;-49.2777757;DN 3N 6N;",
             "Setor Norte Ferroviário II;Goiânia;1º DOMINGO;T;fyt967DQ1EgXkji18;5;Iris Euclenio;Doralino;T;-16.6556486;-49.261568;DN 3N 6N;",
-            "Setor Madre Germana 2;Goiânia;1º DOMINGO;T;JfvWA4JTasNrqzTo9;2;Welliton;André;T;-16.8167904;-49.3738204;DN 5N SN;12/04/2026",
+            "Setor Madre Germana 2;Goiânia;1º DOMINGO;T;JfvWA4JTasNrqzTo9;2;Welliton;André;T;-16.8167904;-49.3738204;DN 5N SN;19/04/2026",
             "Setor Faiçalville;Goiânia;1º DOMINGO;T;BnQwHq2mhdCuNmsf7;2;Josimar;Huiwerson;T;-16.7332701;-49.3194884;DN 3N 6N;",
             "Setor Bela Vista;Goiânia;1º DOMINGO;T;6FfuP1QrYMLrrHXm8;1;BENEDITO AFONSO;ANDRE ALCANTARA;T;-16.7310459;-49.4522408;DN 3T 4N SN;15/03/2026", //
             "Setor Coimbra;Goiânia;1º DOMINGO;T;AHA4PNhtdDhWqMP76;4;Euzébio Marcelino;Davi Borges;T;-16.6804397;-49.290128;DN 3N 6N;14/06/2026",
