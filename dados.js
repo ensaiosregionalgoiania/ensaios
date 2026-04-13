@@ -115,7 +115,7 @@
             "<B>Jardim Europa</B>;<B>Goiânia</B>;2º SáBADO;T;wCXzwnDgT28jsN6B9;2;Pedro Machado;Hiwerson;T;-16.7124992;-49.3122056;DN 4N SN;20/12/2026",
             "Setor Expansul;Aparecida;2ª SEXTA-FEIRA;N;fo5Eb6Vat9R4oTGe8;6;Tulio Gustavo;;T;-16.8174697;-49.2340006;DN 5N SN;",
             "Parque Hayala;Aparecida;2ª SEXTA-FEIRA;N;HdfXFEG8f7UbEpTXA;6;Wilian Gonçalves;;T;-16.8104392;-49.306258;DT 5N;",
-            "Jardim Dom Bosco II;Aparecida;2ª SEXTA-FEIRA;N;SgRsvHqwLqXTX7HV6;6;Marcos Henrique;;P;-16.8220885;-49.3475363;DN 3N;",
+            "Jardim Dom Bosco II;Aparecida;1º DOMINGO;T;SgRsvHqwLqXTX7HV6;6;Marcos Henrique;;T;-16.8220885;-49.3475363;DN 3N;",
             "Setor Grajaú;Goiânia;4º DOMINGO;T;Z83wxgptUs3CpVGX6;2;Marcos;Huiwerson;T;-16.7609911;-49.3623501;DN 3N 5N;",
             "Setor Pedro Ludovico;Goiânia;2ª SEXTA-FEIRA;N;SgUPyCuxBkm485Wi7;1;GERALDO MENDES;Helton Ricardo;T;-16.7303883;-49.4522408;DN 5N;",
             "Setor Santos Dumont;Goiânia;2ª SEXTA-FEIRA;N;vJXpG8Z6akbmuHwQ9;3;Welinton;José Humberto;T;-16.7310459;-49.4522408;DN 2N 4N;",
