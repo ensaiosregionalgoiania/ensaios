@@ -766,7 +766,7 @@
 <script src="setor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<script src="popup-loader.js"></script>
+<!--<script src="popup-loader.js"></script>-->
 <script>
         /*const dados = [
             "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;<B>T</B>;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;22/03/2026",
@@ -804,7 +804,20 @@
             }
             
             if (configMeses === 'I') {
+                //console.log(mes % 2 === 1)
                 return mes % 2 === 1;
+            }
+
+            if (configMeses === '3M1') {
+               return mes % 3 === 1
+            }
+
+            if (configMeses === '3M2') {
+               return mes % 3 === 2
+            }
+
+            if (configMeses === '3M3') {
+                return mes % 3 === 0
             }
             
             const mesesPermitidos = configMeses.split('!').map(m => parseInt(m));
@@ -1114,7 +1127,7 @@ function toggleDetalhes(index) {
             
             select.innerHTML = '';
             
-            for (let i = 0; i < 62; i++) {
+            for (let i = 0; i < 120; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
                 
@@ -1203,7 +1216,6 @@ function toggleDetalhes(index) {
             
             let encontrouEventos = false;
             let index = 0;
-
             dados.forEach(item => {
                 try {
                     const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
@@ -1222,7 +1234,6 @@ function toggleDetalhes(index) {
                     } else {
                         dataEvento = calcularDataEvento(descricaoDia, mes, ano);
                     }   
-                    
                     if (dataEvento && 
                         dataEvento.getDate() === dia &&
                         dataEvento.getMonth() === mes - 1 &&
