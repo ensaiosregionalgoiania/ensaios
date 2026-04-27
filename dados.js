@@ -4,7 +4,7 @@
             "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;T;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;15/03/2026",
             "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
             "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;T;cbaHom1Dz6uJrsG39;6;Ademir Francisco;Alex Flávio/Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN;14/06/2026",
-            "Setor dos Bandeirantes;Aparecida;1º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
+            "Setor dos Bandeirantes;Aparecida;2º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
             "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N;",
             "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N;21/04/2026", //aqui
             "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;;;T;-16.8256386;-49.229775;DN 4N;",
@@ -190,7 +190,7 @@
             "Ind Setor Antônio (T Prometida);Aparecida;2ª SEXTA-FEIRA;N;TvaUyyRADcfky5eaA;6;Agnaldo;Ordario Benedito;P;-16.821769;-49.4139953;DN 4N;",
             "Jardim Buriti Sereno I;Aparecida;4ª SEGUNDA-FEIRA;N;Zdk6Tqvsp9oZsavS7;6;Wanderson;;I;-16.787518;-49.3911538;DN 3N 5N;",
             "Nova Olinda;Aparecida;4º DOMINGO;T;LZcYBBYJ4qhgPJ9U9;6;Lucas Fhellipe;Luciano;T;-16.821769;-49.4139953;DN 3N 6N;",
-            "Setor Aeroporto Sul;Aparecida;5º DOMINGO;T;kJnN5yAhCJAfm9gd9;6;Leonel Rodrigues;;T;-16.7983601;-49.3419623;DN 5N;",
+            "Setor Aeroporto Sul;Aparecida;5ª SEGUNDA-FEIRA;T;kJnN5yAhCJAfm9gd9;6;Leonel Rodrigues;;T;-16.7983601;-49.3419623;DN 5N;",
             "Jardim Alto Paraíso II;Aparecida;2ª QUARTA-FEIRA;N;c8kRiGzwVfpy43yPA;6;Eliezer;Pedro Moreira;T;-16.8093567;-49.3445913;DN 4N;",
             "Pontakaiana;Trindade;2ª SEXTA-FEIRA;N;g5JM3crwXzVCd1GY9;7;Wanderllon da Silva;Uaslei Ribeiro;T;-16.6408976;-49.4412916;DN 4N SN;21/06/2026",
             "Jardim Imperial II - Dona Iris II;Trindade;2º SáBADO;T;bTQiPYLCFB4wwYzm9;7;;;T;-16.6540722;-49.5151021;3N SN;",
