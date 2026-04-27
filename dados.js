@@ -190,7 +190,7 @@
             "Ind Setor Antônio (T Prometida);Aparecida;2ª SEXTA-FEIRA;N;TvaUyyRADcfky5eaA;6;Agnaldo;Ordario Benedito;P;-16.821769;-49.4139953;DN 4N;",
             "Jardim Buriti Sereno I;Aparecida;4ª SEGUNDA-FEIRA;N;Zdk6Tqvsp9oZsavS7;6;Wanderson;;I;-16.787518;-49.3911538;DN 3N 5N;",
             "Nova Olinda;Aparecida;4º DOMINGO;T;LZcYBBYJ4qhgPJ9U9;6;Lucas Fhellipe;Luciano;T;-16.821769;-49.4139953;DN 3N 6N;",
-            "Setor Aeroporto Sul;Aparecida;5ª SEGUNDA-FEIRA;T;kJnN5yAhCJAfm9gd9;6;Leonel Rodrigues;;T;-16.7983601;-49.3419623;DN 5N;",
+            "Setor Aeroporto Sul;Aparecida;5ª SEGUNDA-FEIRA;N;kJnN5yAhCJAfm9gd9;6;Leonel Rodrigues;;T;-16.7983601;-49.3419623;DN 5N;",
             "Jardim Alto Paraíso II;Aparecida;2ª QUARTA-FEIRA;N;c8kRiGzwVfpy43yPA;6;Eliezer;Pedro Moreira;T;-16.8093567;-49.3445913;DN 4N;",
             "Pontakaiana;Trindade;2ª SEXTA-FEIRA;N;g5JM3crwXzVCd1GY9;7;Wanderllon da Silva;Uaslei Ribeiro;T;-16.6408976;-49.4412916;DN 4N SN;21/06/2026",
             "Jardim Imperial II - Dona Iris II;Trindade;2º SáBADO;T;bTQiPYLCFB4wwYzm9;7;;;T;-16.6540722;-49.5151021;3N SN;",
