@@ -214,7 +214,7 @@
             "Jardim Canedo I;Senador Canedo;4º SáBADO;T;XGZjH6uoV8urG5jt9;8;Heverton;Gesmar;T;-16.700145;-49.1058639;4N SN;",
             "Morada do Morro;Senador Canedo;2ª SEXTA-FEIRA;N;h7ktHfGk2n2mbGFq5;8;Paulo Seguro;Gesmar;T;-16.6902801;-49.1205798;DN 5N;",
             "Residencial Boa Vista;Senador Canedo;4ª SEXTA-FEIRA;N;w3LGb9Mt2MG8fRRj9;8;Paulo Silva;Gesmar;T;-16.6753379;-49.1156796;DN 4N;",
-            "Residencial Buritis;Senador Canedo;3ª SEXTA-FEIRA;N;xtNaHNaNA3XFWkpJ6;8;Kleyton;Gesmar;T;-16.690908;-49.0860527;DN 5N;",
+            "Residencial Buritis;Senador Canedo;3ª SEXTA-FEIRA;N;xtNaHNaNA3XFWkpJ6;8;;Gesmar;T;-16.690908;-49.0860527;DN 5N;",
             "Roselândia;Bela Vista;3º DOMINGO;T;a1rhog2ML8oLsnWW8;8;José Marcos;Rogério;T;-16.8632928;-49.0448407;DN 6N;",
             "Santa Edwiges;Senador Canedo;3ª SEXTA-FEIRA;N;spZgKt2EzoCtY7tf9;8;Adair;Gesmar;T;-16.7074578;-49.1270861;DN 3N;",
             "Vila Mata Feia;Bela Vista;3ª TERÇA-FEIRA;N;LcpQV3qQMtYBWzk99;8;Vagmar Faleiro;Rogério;T;-16.8045837;-48.9050438;DN 6N;",
