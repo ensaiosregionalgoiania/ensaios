@@ -226,7 +226,7 @@
             "Aurilândia;Aurilândia;2º DOMINGO;N;X3vxw74mzNQ3HZMx8;9;Welberty;Jackson;T;-16.6800423;-50.4647743;DN 4N SN;",
             "Sanclerlândia;Sanclerlândia;2ª SEXTA-FEIRA;N;NbEm4gPVZrU1H9vB9;9;Leonardo;Jackson;T;-16.3500972;-50.4864964;DN 5N;02/08/2026",
             "Adelândia;Adelândia;5º DOMINGO;T;8WfSCDgYps2rzjFM7;9;Wender Gomes;Jackson;I;-16.4172011;-50.1705417;DN 5N;",
-            "Palminópolis;Palminópolis;2º SáBADO;N;DTR9vz7ZECR6Bpqq6;9;João;Jackson;T;-16.7914765;-50.1668213;DN 4N;07/06/2026",
+            "Palminópolis;Palminópolis;2º SáBADO;N;DTR9vz7ZECR6Bpqq6;9;João;Jackson;T;-16.7914765;-50.1668213;DN 4N;",
             "Jardim Barcelona;Bela Vista;3ª SEXTA-FEIRA;N;sBkqgEbx5CxVcsaZ6;8;Ednaldo;Rogério;T;-16.7898609;-49.0945961;DN 3N;",
             "Inhumas-Central;Inhumas;1ª TERÇA-FEIRA;N;AtCDRmyAZfVmcbZP6;10;;;T;-16.3767255;-49.4939544;DN 4N SN;26/04/2026",
             "Taquaral;Taquaral;1º SÁBADO;T;HPudBBd7sQsjMsXJA;10;;;T;-16.055609;-49.6009784;DN 3N 6N;08/02/2026",
