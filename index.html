@@ -666,8 +666,17 @@
         color: #000 !important;
         font-size: 12pt;
     }
-}        
-</style>
+    }
+            
+    .blink {
+    animation: blink-animation 1s step-start infinite;
+    }
+
+    @keyframes blink-animation {
+    50% {
+        opacity: 0;
+    }
+    }</style>
 
 </head>
 <body>
@@ -1485,7 +1494,7 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
             </tr>
             <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
                 <td>${descricaoDia}${complemento}</td>
-                <td>${horario == "T" ? "17:00" : "19:30"}</td>
+                <td>${horario == "T" ? "17:00" : horario == "T1" ? '<span class="blink">16:30</span>' : "19:30"}</td>
                 <td>${encarregadoLocal || 'Não informado'}</td>
                 <td>${encarregadoRegional || 'Não informado'}</td>
             </tr>

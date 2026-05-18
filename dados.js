@@ -1,5 +1,5 @@
         // Dados completos dos ensaios
-        // Nome da igreja;Cidade;Dia do Ensaio;Hora do Ensaio;Endereco Google maps;Setor;Nome Encarregado Local;Nome Encarregado Regional;Meses T=Todos, I=ímpares, P=Pares, 3M1=JAN/ABR/JUL/OUT, 3M2=FEV/MAI/AGO/NOV, 3M3=MAR/JUN/SET/DEZ;Latitude;Longitude;Dias de culto;Ensaio Regional
+        // Nome da igreja;Cidade;Dia do Ensaio;Hora do Ensaio(T1=16:30);Endereco Google maps;Setor;Nome Encarregado Local;Nome Encarregado Regional;Meses T=Todos, I=ímpares, P=Pares, 3M1=JAN/ABR/JUL/OUT, 3M2=FEV/MAI/AGO/NOV, 3M3=MAR/JUN/SET/DEZ;Latitude;Longitude;Dias de culto;Ensaio Regional
         const dados = [
             "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;T;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;15/03/2026",
             "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
@@ -136,7 +136,7 @@
             "Setor Gentil Meireles;Goiânia;3º DOMINGO;T;THhmWwk9CepizSS6A;5;Leonel Sousa;Doralino;T;-16.6498496;-49.2865026;DN 4N 6N;",
             "Residencial BarraVento;Goiânia;3º DOMINGO;T;mDHg64SGZM5z1Rd16;4;Santil Tomaz;Túlio Marcos;T;-16.6232582;-49.3063065;DN 3N 6N;08/11/2026",
             "Parque Maracanã;Goiânia;3º DOMINGO;T;CxBqm41inwY99xPz8;4;Marcelo Mello;Davi Borges;T;-16.6134904;-49.3570018;DN 3N;",
-            "Privê das Oliveiras;Goiânia;3º DOMINGO;T;DJD9PxZ3N6uWYSvy5;2;Bruno Rodrigues;André;T;-16.8184213;-49.3799289;2N 6N;",
+            "Privê das Oliveiras;Goiânia;3º DOMINGO;T1;DJD9PxZ3N6uWYSvy5;2;Bruno Rodrigues;André;T;-16.8184213;-49.3799289;2N 6N;",
             "Água Branca;Goiânia;3º DOMINGO;T;2YothebbxUbFvadD6;1;BRUNO MEDEIROS;HELTON RICARDO;T;-16.6972214;-49.2187246;DN 6N;",
             "Bairro Floresta;Goiânia;3º DOMINGO;T;5jMca7ZaDZzQ5ZMc8;4;Edjam Divino;Jackson;T;-16.5898354;-49.3368316;DN 3N 5N;11/01/2026",
             "Vila João Vaz;Goiânia;3ª SEGUNDA-FEIRA;N;Q3j61hDhWYLYythDA;3;Elias Rosa;Nereu;T;-16.6498468;-49.3114878;DN 4N 6N;",
