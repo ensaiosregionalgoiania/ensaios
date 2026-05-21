@@ -249,5 +249,5 @@
             "Vila Yate/Vila Moraes;Goiânia;4º DOMINGO;T;TkdSEtZS7CChmnh47;1;Carlúcio;Ricardo Rosemberg;T;-16.6637406;-49.2239445;DN 3N 5N;24/05/2026",
             "Jardim flamboyant;Senador Canedo;2ª SEXTA-FEIRA;N;EHwJHJLdLy6zo3BL8;8;;Gesmar;T;-16.7162344;-49.0988305;DN 5N;",
             "Vila Bandeirantes;Goiânia;3º DOMINGO;T;MycWjemojRqXnNgF7;1;TONIVALDO;HELTON RICARDO;T;-16.6713935;-49.2221748;DN 3N SN;",
-            "Residencial Juscelino Kubitschek(JK);Goiânia;2ª TERÇA-FEIRA;N;WmQy2TizxLt65jyw6;4;;Jackson;T;-16.5846278;-49.3548674;DN 5N;",
+            "Residencial Juscelino Kubitschek(JK);Goiânia;5º DOMINGO;T1;WmQy2TizxLt65jyw6;4;;Jackson;T;-16.5846278;-49.3548674;DN 5N;",
         ];
