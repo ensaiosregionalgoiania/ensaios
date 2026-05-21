@@ -1481,7 +1481,6 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
     if (meses == "3M2") complemento = " - Meses FEV,<BR>MAI, AGO e NOV"
     if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
 
-
     
     detalhesCell.innerHTML = `
         <table>
@@ -1493,7 +1492,7 @@ function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregado
                 <td rowspan="2" valign="center"><button class="btn-maps" onclick="abrirMaps('${localizacao}')"><div class="vertical-text">MAPS</div></button></td>
             </tr>
             <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
-                <td>${descricaoDia}${complemento}</td>
+                <td>${descricaoDia.replace(/5º/g, 'ÚLTIMO').replace(/5ª/g, 'ÚLTIMA')}${complemento}</td>
                 <td>${horario == "T" ? "17:00" : horario == "T1" ? '<span class="blink">16:30</span>' : "19:30"}</td>
                 <td>${encarregadoLocal || 'Não informado'}</td>
                 <td>${encarregadoRegional || 'Não informado'}</td>
