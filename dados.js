@@ -96,7 +96,7 @@
             "Jardim dos Buritis;Aparecida;2ª SEGUNDA-FEIRA;N;TayGSqjSSEow244m8;6;Osires Elias;;T;-16.7681759;-49.236295;DN 4N 6N;",
             "Setor Criméia Leste;Goiânia;2ª SEGUNDA-FEIRA;N;BpjzdrtJ2dDbwLjKA;5;Darciano Gonçalves;Doralino;T;-16.6452838;-49.2583937;DN 5N;",
             "Parque Los Angeles I;Goianira;2ª SEGUNDA-FEIRA;N;nGUY8PSRHYXz8qJ67;7;ISAEL DA SILVA;PETERSON BENONI;T;-16.5195012;-49.4109269;DN 5N SN;",
-            "Capuava;Goiânia;2ª SEGUNDA-FEIRA;N;VSSC4zA2MYhZCbm26;3;José Aparecido;NEREU;T;-16.6585788;-49.3254611;DN 4T 5N SN;24/05/2026",
+            "Capuava;Goiânia;2ª SEGUNDA-FEIRA;N;VSSC4zA2MYhZCbm26;3;José Aparecido;NEREU;T;-16.6585788;-49.3254611;DN 4T 5N SN;30/08/2026",
             "Vila Rosa;Goiânia;2ª TERÇA-FEIRA;N;1cFS7ezbQ3qPUWDy7;2;Joilson;Isaque;T;-16.7453343;-49.2996847;DN 4N 6N;",
             "Residencial Fonte das Águas;Goiânia;2ª TERÇA-FEIRA;N;aVP46SN2a81qnUxz6;4;Acrício Vieira;Davi Borges;T;-16.6037414;-49.4505603;DN 5N;",
             "Fama - Setor Marechal Rondon;Goiânia;2ª TERÇA-FEIRA;N;5TyhAmrtwvYnvwfw8;5;Elson Aguiar;Doralino;T;-16.7310459;-49.4522408;DM DN 4N SN;26/04/2026", //
