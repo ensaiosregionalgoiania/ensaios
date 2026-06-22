@@ -2,1086 +2,1957 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Eventos Musicais - 1 - Regional Goiânia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensaios Locais e Regionais Goiânia</title>
     
-    <!-- ===== CONFIGURAÇÕES PWA ===== -->
-    <link rel="manifest" href="manifest.json">
+    <!-- Favicon padrão (para abas do navegador) -->
+    <link rel="icon" type="image/png" href="logo-192.png">
     
-    <!-- ===== FAVICON GERAL ===== -->
-    <link rel="icon" type="image/png" href="presenca.png">
-    
-    <!-- ===== iOS - APPLE TOUCH ICONS ===== -->
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="icons/icon-76.png">
-    
-    <!-- ===== iOS - SPLASH SCREENS ===== -->
-    <!-- iPhone 14/15/16 (6.7") -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/iPhone-15-Pro-Max-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="splash/iPhone-15-Pro-Max-Landscape.png">
-    
-    <!-- iPhone 14/15/16 (6.1") -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/iPhone-15-Pro-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="splash/iPhone-15-Pro-Landscape.png">
-    
-    <!-- iPhone 13/14 (6.1") -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/iPhone-14-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="splash/iPhone-14-Landscape.png">
-    
-    <!-- iPhone 13 mini (5.4") -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/iPhone-13-mini-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="splash/iPhone-13-mini-Landscape.png">
-    
-    <!-- iPhone SE (2022) (4.7") -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/iPhone-SE-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="splash/iPhone-SE-Landscape.png">
-    
-    <!-- iPad Pro 12.9" -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/iPad-Pro-12.9-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="splash/iPad-Pro-12.9-Landscape.png">
-    
-    <!-- iPad Air 10.9" -->
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/iPad-Air-Portrait.png">
-    <link rel="apple-touch-startup-image" media="screen and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="splash/iPad-Air-Landscape.png">
-    
-    <!-- ===== iOS - CONFIGURAÇÕES DE STATUS BAR ===== -->
+    <!-- Ícones e configurações para iPhone/iOS -->
+    <link rel="apple-touch-icon" href="logo-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Identidade">
-    
-    <!-- ===== iOS - PREVENIR ZOOM AUTOMÁTICO ===== -->
-    <meta name="format-detection" content="telephone=no">
-    <meta name="format-detection" content="address=no">
-    
-    <!-- ===== ANDROID - CONFIGURAÇÕES ===== -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#667eea">
-    <meta name="background-color" content="#667eea">
-    
-    <!-- ===== CORES DA STATUS BAR ===== -->
-    <meta name="apple-status-bar-style" content="black-translucent">
-    <meta name="msapplication-navbutton-color" content="#667eea">
-    
-    <!-- ===== SCRIPTS DO FIREBASE ===== -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    
+    <meta name="apple-mobile-web-app-title" content="Ensaios">
+    <link rel="manifest" href="manifest.json">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        .top-bar {
-            background: white;
-            border-radius: 15px;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-        .logo h1 { color: #2c3e50; font-size: 1.3rem; }
-        .admin-info {
-            background: #667eea;
-            padding: 5px 15px;
-            border-radius: 20px;
-            color: white;
-            font-size: 0.9rem;
-        }
-        .admin-info small {
-            display: block;
-            font-size: 0.7rem;
-            opacity: 0.8;
-        }
-        .top-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn-evento { background: #f39c12; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
-        .btn-presenca { background: #9b59b6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
-        .btn-congregacao { background: #1abc9c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
-        .btn-instrumento { background: #e67e22; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
-        .btn-nivel { background: #16a085; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
-        .btn-novo { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-qrcode { background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-left: 10px; }
-        .btn-sair { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        
-        .card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .card-header { border-bottom: 2px solid #e0e0e0; margin-bottom: 20px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .card-header h2 { color: #2c3e50; }
-        
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
-        
-        button { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background: #219a52; }
-        .btn-danger { background: #e74c3c; }
-        .btn-edit { background: #3498db; }
-        
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
-        thead { background: #2c3e50; color: white; }
-        tr:hover { background: #f8f9fa; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; border-radius: 15px; padding: 25px; width: 90%; max-width: 500px; text-align: center; }
-        .modal-buttons { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
-        
-        .search-box { width: 100%; padding: 10px; margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
-        
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white; padding: 12px 24px; border-radius: 8px; z-index: 1000; animation: fadeIn 0.3s ease; }
-        .toast.error { background: #e74c3c; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .loading { text-align: center; padding: 20px; color: #999; }
-        
-        .qr-area {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-        .qr-area img {
-            max-width: 200px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            margin: 0;
             padding: 10px;
-            background: white;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
         
-        .cidade-info {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            display: block;
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
         }
-        .status-ativo { background: #27ae60; color: white; }
-        .status-inativo { background: #e74c3c; color: white; }
         
-        .contador {
+        .consultas-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 2px;
+            margin-bottom: 2px;
+        }
+        
+        .consultas-titulo {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 2px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+        
+        .radio-option input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .input-group {
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 15px; 
+            gap: 5px;       
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        #data-select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .botao-consultar-imprimir {
+            padding: 5px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: #27ae60;
+        }
+        
+        .botao-consultar-imprimir:hover {
+            background-color: #3498db;
+        }
+
+        .botao-consultar-imprimir:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0px;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        /* Estilos para a linha expansível */
+        .detalhes-row {
+            background-color: #f8f9fa;
+        }
+        
+.detalhes-content {
+    display: none;
+}
+
+.detalhe-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px; /* Permite que o item encolha */
+    flex: 1; /* Ocupa espaço disponível */
+}
+
+.detalhes-content.visible {
+    display: table-row;
+}
+
+.detalhe-label {
+    font-weight: bold;
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+        
+.detalhe-valor {
+    color: #333;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+        
+        .btn-expandir {
             background: #3498db;
             color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
         }
         
-        .filtro-info {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 10px;
+        .btn-expandir:hover {
+            background: #2980b9;
+        }
+        
+.btn-maps {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 5px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 2px;
+    width: 25px;
+    height: 80px;
+    transition: background-color 0.3s;
+}
+        
+.btn-maps:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+        
+        .no-events {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (min-width: 600px) {
+            .container {
+                max-width: 800px;
+                padding: 20px;
+            }
+            
+            label {
+                margin-right: 10px;
+                margin-bottom: 0;
+                width: 80px;
+            }
+            
+            #data-select, input[type="text"] {
+                flex-grow: 1;
+                margin-right: 10px;
+                margin-bottom: 0;
+            }
+            
+            button {
+                width: auto;
+            }
+            
+            .radio-group {
+                gap: 20px;
+            }
+            
+            .radio-option {
+                padding: 2px 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .radio-group {
+                gap: 8px;
+            }
+            
+            .radio-option {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .radio-option label {
+                font-size: 0.85rem;
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            th, td {
+                padding: 4px 4px;
+            }
+        }
+    
+         /*.tooltip {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }*/
+        .visible {
+            opacity: 1;
+        }
+        
+        /* Menu Lateral */
+        .menu-lateral {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background-color: #343a40;
+            color: #f8f9fa;
+            padding: 20px 15px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .menu-aberto .menu-lateral {
+            transform: translateX(0);
+        }
+        
+        .menu-aberto body {
+            overflow: hidden;
+        }
+        
+        .menu-lateral h2 {
+            color: #fff;
+            margin-bottom: 5px;
+            text-align: center;
+            font-size: 18px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #495057;
+        }
+        
+        .filtro-grupo {
+            margin-bottom: 25px;
+        }
+        
+        .filtro-grupo h3 {
+            color: #adb5bd;
             margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #2980b9;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
         }
         
-        .loading-screen {
+        .filtro-grupo h3::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #6c757d;
+            margin-right: 10px;
+            border-radius: 50%;
+
+        }
+        
+        .filtro-opcao {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .filtro-opcao label {
+            display: flex;
+            align-items: center;
+            color: #e9ecef;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .filtro-opcao label:hover {
+            background-color: #495057;
+        }
+
+        .menu-aberto .conteudo-principal {
+                transform: translateX(85%);
+            }
+        
+        .filtro-opcao input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        /* Botão do Menu */
+        .menu-btn {
+            position: fixed;
+            left: 15px;
+            top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .menu-btn:hover {
+            background-color: #0069d9;
+        }
+        
+        .menu-btn:focus {
+            outline: none;
+        }
+        
+        /* Conteúdo Principal */
+        .conteudo-principal {
+            padding: 80px 20px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-aberto .conteudo-principal {
+            transform: translateX(280px);
+            opacity: 0.7;
+            filter: blur(2px);
+            pointer-events: none;
+        }
+        
+        /* Overlay para fechar o menu */
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            flex-direction: column;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
-        .loading-screen .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .loading-screen p {
-            color: white;
-            margin-top: 20px;
-            font-size: 1.2rem;
+        /* Animação de carregamento */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        select:disabled {
-            background: #f0f0f0;
-            cursor: not-allowed;
+        .filtro-opcao {
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
         }
         
-        .id-info {
-            background: #e8f4fd;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #2980b9;
-            text-align: center;
-        }
-        
-        .btn-instrumento.hidden,
-        .btn-nivel.hidden {
-            display: none;
-        }
-    </style>
-</head>
+        .filtro-opcao:nth-child(1) { animation-delay: 0.1s; }
+        .filtro-opcao:nth-child(2) { animation-delay: 0.2s; }
+        .filtro-opcao:nth-child(3) { animation-delay: 0.3s; }
+        .filtro-opcao:nth-child(4) { animation-delay: 0.4s; }
+        .filtro-opcao:nth-child(5) { animation-delay: 0.5s; }
 
-<body>
-    <div id="loadingScreen" class="loading-screen">
-        <div class="spinner"></div>
-        <p>🔐 Verificando autenticação...</p>
-    </div>
-
-    <div class="container" id="mainContent" style="display: none;">
-        <div class="top-bar">
-            <div class="logo">
-                <h1>🎵 Participação Eventos Musicais - Regional Goiânia</h1>
-            </div>
-            <div id="adminInfo" class="admin-info" style="display: none;"></div>
-            <div class="top-buttons">
-                <button class="btn-presenca" onclick="window.location.href='presenca.html'">✅ Presença</button>
-                <button class="btn-evento" id="btnEvento" onclick="window.location.href='cadastro_evento.html'">🎉 Cadastrar Evento</button>
-                <button class="btn-congregacao" id="btnCongregacao" onclick="window.location.href='cadastro_congregacao.html'">🏛️ Cadastrar Congregação</button>
-                <button id="btnInstrumento" class="btn-instrumento" onclick="window.location.href='cadastro_instrumento.html'">🎸 Cadastrar Instrumento</button>
-                <button id="btnNivel" class="btn-nivel" onclick="window.location.href='cadastro_niveis.html'">📊 Cadastrar Níveis</button>
-                <button class="btn-novo" id="btnNovoMembro" onclick="abrirFormularioNovo()">➕ Novo Membro</button>
-                <button class="btn-novo" id="btnNovoAdmin" onclick="window.open('cadastrar_admin.html', '_blank')" style="background:#e74c3c;">👑 Novo Admin</button>
-                <button class="btn-sair" id="btnSair" onclick="logout()">🚪 Sair</button>
-            </div>
-        </div>
-
-        <div class="card" id="cardLista">
-            <div class="card-header">
-                <h2>📋 Membros Cadastrados <span id="contadorMembros" class="contador">0</span></h2>
-                <button id="btnAtualizar" onclick="carregarMembros()" style="background:#3498db; margin:0;">🔄 Atualizar</button>
-            </div>
-            <div id="filtroInfo" class="filtro-info" style="display: none;"></div>
-            <input type="text" id="busca" class="search-box" placeholder="🔍 Buscar por nome..." onkeyup="filtrarMembros()">
-            <div class="table-container">
-                <table id="tabelaMembros">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Instrumento</th>
-                            <th>Congregação</th>
-                            <th>Cargo</th>
-                            <th>Nível</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpoTabela">
-                        <tr><td colspan="7" class="loading">🔄 Carregando membros...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card" id="cardFormulario" style="display: none;">
-            <div class="card-header"><h2 id="formTitle">➕ Adicionar Membro</h2></div>
-            <form id="formMembro">
-                <input type="hidden" id="membroDocId">
-                <input type="hidden" id="membroIdHidden">
-                
-                <div id="idInfo" class="id-info" style="display: none;">
-                    🔢 <strong>ID do Membro:</strong> <span id="displayMembroId">-</span>
-                </div>
-                
-                <div class="form-group"><label>Nome Completo *</label><input type="text" id="nome" required></div>
-                <div class="form-group"><label>Instrumento *</label><select id="instrumentoId" required></select></div>
-                <div class="form-group">
-                    <label>Congregação *</label>
-                    <select id="congregacaoId" required></select>
-                </div>
-                <div class="form-group"><label>Cargo *</label><select id="cargoId" required></select></div>
-                <div class="form-group"><label>Nível *</label><select id="nivelId" required></select></div>
-                
-                <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
-                    <button type="submit">💾 Salvar</button>
-                    <button type="button" id="btnGerarQRCode" class="btn-qrcode" style="display: none;">📱 Gerar QR Code</button>
-                </div>
-                <button type="button" class="btn-danger" onclick="cancelarEdicao()" style="margin-top: 10px;">❌ Cancelar</button>
-                
-                <div id="qrArea" class="qr-area" style="display: none;">
-                    <h3>📱 QR Code do Membro</h3>
-                    <div id="qrCodeImage"></div>
-                    <button type="button" id="btnBaixarQRCode" style="background: #9b59b6;">💾 Baixar QR Code (PNG)</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="modalExcluir" class="modal">
-        <div class="modal-content">
-            <h3>Confirmar exclusão</h3>
-            <p id="modalMsg"></p>
-            <div class="modal-buttons">
-                <button onclick="confirmarExclusao()">Excluir</button>
-                <button onclick="fecharModalExcluir()" style="background:#95a5a6;">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyA4COgeJSENsHrQHDx39gpZvif3zVrGjYE",
-            authDomain: "identidadeccb.firebaseapp.com",
-            projectId: "identidadeccb",
-            storageBucket: "identidadeccb.firebasestorage.app",
-            messagingSenderId: "385467794937",
-            appId: "1:385467794937:web:d2eb32429586f018e2a928"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        let usuarioLogado = null;
-        let congregacoesIdUsuario = null;
-        let congregacaoNomeUsuario = null;
-        let papelUsuario = null;
-        
-        let instrumentos = [];
-        let congregacoes = [];
-        let cargos = [];
-        let niveis = [];
-        let membros = [];
-        let membroParaExcluir = null;
-
-        function mostrarToast(msg, tipo = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo === 'error' ? 'error' : ''}`;
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        /* Correções para o menu lateral */
+       .menu-aberto .overlay {
+            opacity: 1;
+            visibility: visible;
         }
 
-// Substitua a função getPrimeiroNome por esta versão:
-
-function getPrimeiroNome(nomeCompleto) {
-    if (!nomeCompleto) return '';
-    const nomeTrim = nomeCompleto.trim();
-    
-    // Verifica se há texto entre parênteses
-    const regexParenteses = /\(([^)]+)\)/;
-    const match = nomeTrim.match(regexParenteses);
-    
-    // Se encontrar algo entre parênteses, usa esse texto
-    if (match && match[1]) {
-        return match[1].trim();
-    }
-    
-    // Se não houver parênteses, mantém a lógica original
-    const partes = nomeTrim.split(' ');
-    if (partes.length === 1) return partes[0];
-    
-    const conectores = ['DA', 'DE', 'DO', 'DAS', 'DOS', 'E', 'A', 'O', 'AS', 'OS', 'COM', 'SEM', 'POR', 'PARA', 'PRA'];
-    
-    let primeiro = partes[0];
-    let segundo = null;
-    
-    for (let i = 1; i < partes.length; i++) {
-        const palavra = partes[i].toUpperCase();
-        if (!conectores.includes(palavra) && palavra.length > 2) {
-            segundo = partes[i];
-            break;
+        .menu-aberto .conteudo-principal {
+            transform: translateX(280px);
+            opacity: 0.5;
+            pointer-events: none;
         }
-    }
-    
-    if (segundo) {
-        return primeiro + ' ' + segundo;
-    }
-    return primeiro;
+
+        .container {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+.detalhes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-        function getInstrumentoNome(id) {
-            if (!id) return '?';
-            const item = instrumentos.find(i => i.id == id);
-            return item ? item.nome : '?';
+    .suporte {
+        cursor: pointer;
+        position: fixed;
+        top: 5px;      /* Distância do topo */
+        right: 20px;    /* Distância da direita */
+        width: 80px;
+        height: 25px;
+        background: #4CAF50;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 1000;  /* Para ficar acima de outros elementos */
+        color: white; 
+        font-size: 22px; 
+        text-align: center;   
+        vertical-align: center;  
+        display: flex;
+        align-items: center;
+        justify-content: center;         
+    }
+    .menu1 {
+        cursor: pointer;
+        position: fixed;
+        top: 5px;      /* Distância do topo */
+        left: 20px;    /* Distância da direita */
+        width: 80px;
+        height: 35px;
+        background-color: #007bff;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 1000;  /* Para ficar acima de outros elementos */
+        color: white; 
+        font-size: 22px; 
+        text-align: center;   
+        vertical-align: center;   
+    }
+       .vertical-text {
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: 2px;
+            font-size: 12px;
         }
 
-        function getNome(lista, id) {
-            if (!id) return '?';
-            const item = lista.find(i => i.id == id);
-            return item ? item.nome : '?';
+/* Estilos para impressão */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    .container, .container * {
+        visibility: visible;
+    }
+    
+    .container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        box-shadow: none;
+    }
+    
+    /* Ocultar elementos não necessários na impressão */
+    .menu1, .suporte, .overlay, .menu-lateral,
+    .consultas-container, .input-group, #error-msg,
+    .btn-expandir, .btn-maps {
+        display: none !important;
+    }
+    
+    /* Mostrar todos os detalhes na impressão */
+    .detalhes-content {
+        display: table-row !important;
+        visibility: visible !important;
+        page-break-inside: avoid;
+    }
+    
+    /* Ajustar tabela para impressão */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+    }
+    
+    th, td {
+        padding: 4px;
+        border: 1px solid #000;
+    }
+    
+    th {
+        background-color: #ddd !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Ajustar detalhes para impressão */
+    .detalhes-container {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        padding: 10px;
+    }
+    
+    .detalhe-item {
+        min-width: auto;
+    }
+    
+    /* Remover cores de fundo */
+    tr:nth-child(even) {
+        background-color: transparent !important;
+    }
+    
+    /* Ajustar layout dos detalhes na tabela */
+    .detalhes-content td {
+        border: 1px solid #ccc;
+    }
+    
+    /* Cabeçalho da impressão */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+    }
+    
+    .print-title {
+        font-size: 14pt;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .print-date {
+        font-size: 10pt;
+        color: #666;
+    }
+    
+    /* Quebra de página */
+    .page-break {
+        page-break-before: always;
+    }
+    
+    h1 {
+        color: #000 !important;
+        font-size: 12pt;
+    }
+    }
+            
+    .blink {
+    animation: blink-animation 1s step-start infinite;
+    }
+
+    @keyframes blink-animation {
+    50% {
+        opacity: 0;
+    }
+    }</style>
+
+</head>
+<body>
+
+    <!-- Botão para abrir o menu -->
+    <button class="menu1" id="menu-btn">Menu</button>
+    <!--☰-->
+    <!-- Overlay para fechar o menu -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Menu Lateral -->
+    <div class="menu-lateral" id="menu-lateral">
+        <h2>Filtrar Cidades/Setor</h2>
+        <div class="filtro-grupo" id ="setor">
+        </div>
+    </div>
+
+    <a href="https://wa.me/5562996037779">
+        <div class="suporte">
+            Suporte
+        </div>
+    </a>
+    <div class="container">
+        <h1 id="Titulo">Ensaio Local</h1>
+        <!-- Container melhorado para as consultas -->
+        <div class="consultas-container">
+            <div class="consultas-titulo">Consulta por::</div>
+            
+            <!-- Radio buttons para escolher o tipo de consulta -->
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="consulta-data" name="tipo-consulta" value="data" checked onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
+                    <label for="consulta-data">Data</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-CasaOracao" name="tipo-consulta" value="CasaOracao" onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
+                    <label for="consulta-CasaOracao">Casa de Oração</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local" onchange="document.getElementById('Titulo').innerText='Ensaio Local'">
+                    <label for="consulta-encarregado-local">Encarregado</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional" onchange="document.getElementById('Titulo').innerText='Ensaio Regional'">
+                    <label for="consulta-encarregado-regional"><b>Ensaio Regional</b></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consulta por Data -->
+        <div id="consulta-data-group" class="input-group">
+            <select id="data-select" style="width: 70%;"></select>
+            <button id="btn-listar" class="botao-consultar-imprimir" style="width: 15%;">Consultar</button>
+            <button id="btn-imprimir-data" class="botao-consultar-imprimir" style="width: 15%;" disabled>Imprimir</button>
+        </div>
+
+        <!-- Consulta por Casa de Oração CCB -->
+        <div id="consulta-casa-oracao-group" class="input-group hidden">
+            <input type="text" id="casa-oracao-input"  style="width: 70%;" placeholder="Digite o nome da Casa de Oração CCB">
+            <button id="btn-consultar-casa-oracao" class="botao-consultar-imprimir" style="width: 15%;">Consultar</button>
+            <button id="btn-imprimir-casa-oracao" class="botao-consultar-imprimir" style="width: 15%;" disabled>Imprimir</button>
+        </div>
+
+        <!-- Consulta por Encarregado Local -->
+        <div id="consulta-encarregado-local-group" class="input-group hidden">
+            <input type="text" id="encarregado-local-input" style="width: 70%;" placeholder="Digite o nome do Encarregado Local">
+            <button id="btn-consultar-encarregado-local" class="botao-consultar-imprimir" style="width: 15%;">Consultar</button>
+            <button id="btn-imprimir-encarregado-local" class="botao-consultar-imprimir" style="width: 15%;" disabled>Imprimir</button>
+        </div>
+
+        <!-- Consulta por Encarregado Regional -->
+        <div id="consulta-encarregado-regional-group" class="input-group hidden">
+            <input type="text" id="encarregado-regional-input" style="width: 70%;" placeholder="Digite o nome do Encarregado Regional" style="visibility:hidden;">
+            <button id="btn-consultar-encarregado-regional" class="botao-consultar-imprimir" style="width: 15%;">Consultar</button>
+            <button id="btn-imprimir-ensaio-regional" class="botao-consultar-imprimir" style="width: 15%;" disabled>Imprimir</button>
+        </div>
+
+        <span id="error-msg" class="error"></span>
+        <!--<div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>-->
+
+        <table id="tabela-eventos">
+            <thead>
+                <tr>
+                    <th>Local</th>
+                    <th>Cidade</th>
+                    <th>Dist<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
+                    <th>Data</th>                  
+                    <!--<th>Horário</th>-->
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+<script src="dados.js"></script>
+<script src="setor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="popup-loader.js"></script>
+<script>
+        /*const dados = [
+            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;<B>T</B>;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;22/03/2026",
+            "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
+            "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;<B>T</B>;cbaHom1Dz6uJrsG39;6;Alex Flávio;Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN;14/06/2026",
+            "Setor dos Bandeirantes;Aparecida;1º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
+            "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N;",
+            "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N;20/04/2026", //aqui
+            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;Gustavo Rodrigo;;T;-16.8256386;-49.229775;DN 4N;",
+            "Bairro Independência;Aparecida;1º DOMINGO;T;d58NBSKruwc735pA9;6;Roberto Santana;Odário;T;-16.8080739;-49.3235699;DN 3N SN;01/05/2026",
+            "Vila São José;Goiânia;1º DOMINGO;T;5kdjpLgQreAGofYKA;5;;;T;-16.6596485;-49.299886;DN 3N 5N;"
+        ];
+
+        const setor = [
+            "1;Goiânia-Setor 1",
+            "2;Goiânia-Setor 2",
+            "3;Goiânia-Setor 3",
+            "4;Goiânia-Setor 4",
+            "5;Goiânia-Setor 5",
+            "6;Aparecida",
+            "7;Trindade",
+            "8;Senador Canedo",
+            "9;S L Montes Belos",
+            "10;Inhumas"
+        ];*/
+
+        // Função para verificar se um mês deve ser exibido baseado na configuração de meses
+        function deveExibirMes(mes, configMeses) {
+            if (!configMeses || configMeses === 'T') {
+                return true;
+            }
+            
+            if (configMeses === 'P') {
+                return mes % 2 === 0;
+            }
+            
+            if (configMeses === 'I') {
+                //console.log(mes % 2 === 1)
+                return mes % 2 === 1;
+            }
+
+            if (configMeses === '3M1') {
+               return mes % 3 === 1
+            }
+
+            if (configMeses === '3M2') {
+               return mes % 3 === 2
+            }
+
+            if (configMeses === '3M3') {
+                return mes % 3 === 0
+            }
+            
+            const mesesPermitidos = configMeses.split('!').map(m => parseInt(m));
+            return mesesPermitidos.includes(mes);
         }
 
-        async function gerarProximoId() {
-            try {
-                const snapshot = await membrosCollection.get();
-                let maiorId = 0;
-                
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.id && !isNaN(Number(data.id))) {
-                        const idNum = Number(data.id);
-                        if (idNum > maiorId) {
-                            maiorId = idNum;
+        // Função para calcular a próxima data do evento
+        function calcularProximaData(descricaoDia, meses) {
+            let hoje = new Date(new Date().setHours(0, 0, 0, 0));
+            const mesAtual = hoje.getMonth() + 1;
+            const anoAtual = hoje.getFullYear();
+            let proximoMes = mesAtual;
+            let proximoAno = anoAtual;
+            let contador = 0
+            //while (true) {
+                dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+                if (dataEvento === null) {
+                    descricaoDia = descricaoDia.replace("5", "4");
+                    dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+                }
+                if (dataEvento && dataEvento < hoje) {
+                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                    const nextMesAno = MesAno.split(';');
+                    proximoMes = nextMesAno[0];
+                    proximoAno = nextMesAno[1];
+                }
+                if (meses === "I" && proximoMes % 2 === 0) {
+                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                    const nextMesAno = MesAno.split(';');
+                    proximoMes = nextMesAno[0];
+                    proximoAno = nextMesAno[1];
+                } else { 
+                    if (meses === "I" && proximoMes % 2 === 0) {
+                        const MesAno = proximoMesAno(proximoMes, proximoAno);
+                        const nextMesAno = MesAno.split(';');
+                        proximoMes = nextMesAno[0];
+                        proximoAno = nextMesAno[1];
+                    } else {
+                        if (meses === "P" && proximoMes % 2 === 1) {
+                            const MesAno = proximoMesAno(proximoMes, proximoAno);
+                            const nextMesAno = MesAno.split(';');
+                            proximoMes = nextMesAno[0];
+                            proximoAno = nextMesAno[1];
+                        } else { 
+                            if (meses == "3M1") { 
+                                while (!(proximoMes == 1 || proximoMes == 4 || proximoMes == 7 || proximoMes == 10)) {
+                                    const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                    const nextMesAno = MesAno.split(';');
+                                    proximoMes = nextMesAno[0];
+                                    proximoAno = nextMesAno[1];
+                                }
+                            } else { 
+                                if (meses == "3M2") {
+                                    while (!(proximoMes == 2 || proximoMes == 5 || proximoMes == 8 || proximoMes == 11)) {
+                                        const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                        const nextMesAno = MesAno.split(';');
+                                        proximoMes = nextMesAno[0];
+                                        proximoAno = nextMesAno[1];
+                                    }
+                                } else { 
+                                    if (meses == "3M3") {
+                                        while (!(proximoMes == 3 || proximoMes == 6 || proximoMes == 9 || proximoMes == 12)) {
+                                            const MesAno = proximoMesAno(proximoMes, proximoAno);
+                                            const nextMesAno = MesAno.split(';');
+                                            proximoMes = nextMesAno[0];
+                                            proximoAno = nextMesAno[1];
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                });
-                
-                const proximoId = maiorId + 1;
-                console.log(`Próximo ID disponível: ${proximoId}`);
-                return proximoId;
-                
-            } catch(error) {
-                console.error('Erro ao gerar próximo ID:', error);
-                return Date.now();
+                }
+                //}
+            //}
+            dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+            return dataEvento;
+        }
+
+        // Função para alternar entre os tipos de consulta
+        function alternarTipoConsulta() {
+            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+            
+            document.getElementById('consulta-data-group').classList.add('hidden');
+            document.getElementById('consulta-casa-oracao-group').classList.add('hidden');
+            document.getElementById('consulta-encarregado-local-group').classList.add('hidden');
+            document.getElementById('consulta-encarregado-regional-group').classList.add('hidden');
+            
+            if (tipoConsulta === 'data') {
+                document.getElementById('consulta-data-group').classList.remove('hidden');
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            } else if (tipoConsulta === 'CasaOracao') {
+                document.getElementById('consulta-casa-oracao-group').classList.remove('hidden');
+                limparTabela();
+            } else if (tipoConsulta === 'encarregado-local') {
+                document.getElementById('consulta-encarregado-local-group').classList.remove('hidden');
+                limparTabela();
+            } else if (tipoConsulta === 'encarregado-regional') {
+                document.getElementById('consulta-encarregado-regional-group').classList.remove('hidden');
+                limparTabela();
             }
         }
 
-        async function verificarECorrigirMembrosSemId() {
-            console.log("=== VERIFICANDO MEMBROS SEM ID ===");
-            
-            try {
-                const snapshot = await membrosCollection.get();
-                let corrigidos = 0;
-                
-                for (const doc of snapshot.docs) {
-                    const data = doc.data();
+        // Função para limpar a tabela
+        function limparTabela() {
+            const tabela = document.querySelector('#tabela-eventos tbody');
+            tabela.innerHTML = '';
+        }
+
+        // Função para consultar por Casa de Oracao CCB
+
+function consultarPorCasaOracao() {
+    getLocation();
+    const termo = document.getElementById('casa-oracao-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome da Casa de Oração CCB.");
+        return;
+    }
+    document.getElementById('btn-imprimir-casa-oracao').disabled = false;
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            let localSemAcento = TiraAcento(local)
+            if (localSemAcento.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+                    // Linha principal
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                     
-                    if (!data.id || data.id === '' || data.id === undefined || data.id === null) {
-                        console.log(`⚠️ Membro sem ID encontrado: ${data.nome} (Doc: ${doc.id})`);
-                        
-                        const novoId = await gerarProximoId();
-                        
-                        await membrosCollection.doc(doc.id).update({
-                            id: novoId
-                        });
-                        
-                        console.log(`✅ Corrigido: ${data.nome} recebeu ID ${novoId}`);
-                        corrigidos++;
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para esta Casa de Oração CCB.";
+        cell.className = "no-events";
+    //} else {
+    //    MostrarMsg();
+    }
+}
+
+
+        // Função para consultar por Encarregado Regional
+function consultarPorEncarregadoRegional() {
+    getLocation();
+    document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
+
+    const termo = document.getElementById('encarregado-regional-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome do Encarregado Regional.");
+        return;
+    }
+    
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            let encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional)
+
+            if (encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+                    
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para este Encarregado Regional.";
+        cell.className = "no-events";
+    //} else {
+    //    MostrarMsg();
+    }
+}
+
+// Função para alternar os detalhes - VERSÃO DEBUG
+function toggleDetalhes(index) {
+    const detalhes = document.getElementById(`detalhes-${index}`);
+    const expandirBtn = document.querySelector(`#evento-${index} .btn-expandir`);
+    
+    if (!detalhes || !expandirBtn) return;
+    
+    if (detalhes.classList.contains('visible')) {
+        detalhes.classList.remove('visible');
+        expandirBtn.textContent = '+';
+    } else {
+        document.querySelectorAll('.detalhes-content.visible').forEach(d => {
+            d.classList.remove('visible');
+            const otherIndex = d.id.split('-')[1];
+            const otherBtn = document.querySelector(`#evento-${otherIndex} .btn-expandir`);
+            if (otherBtn) otherBtn.textContent = '+';
+        });
+        
+        detalhes.classList.add('visible');
+        expandirBtn.textContent = '-';
+    }
+}
+        // Função para abrir o Maps
+        function abrirMaps(localizacao) {
+            if (localizacao) {
+                window.open("https://maps.app.goo.gl/" + localizacao, "_blank");
+            }
+        }
+
+        // Função para formatar data como dd/mm/aaaa
+        function formatarData(data) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        // Função para obter o nome do dia da semana
+        function getDiaSemana(data) {
+            const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            let NumeroSemana = ""
+           if (data.getDate() <= 7) {
+                NumeroSemana = "1";
+           } else if (data.getDate() <= 14) {
+                NumeroSemana = "2";
+           } else if (data.getDate() <= 21) {
+                NumeroSemana = "3";
+           } else if (data.getDate() <= 28) {
+                NumeroSemana = "4";
+           } else {
+                NumeroSemana = "5";
+           }
+           let Ordem = "ª"
+           if (data.getDay() == 0 || data.getDay() == 6) {
+                Ordem = "º";
+           }
+
+            return NumeroSemana + Ordem + " " + dias[data.getDay()];
+        }
+
+        // Função para preencher o select com as datas
+        function preencherSelectDatas() {
+            const select = document.getElementById('data-select');
+            const hoje = new Date();
+            
+            select.innerHTML = '';
+            
+            for (let i = 0; i < 120; i++) {
+                const data = new Date(hoje);
+                data.setDate(hoje.getDate() + i);
+                
+                const dataFormatada = formatarData(data);
+                const diaSemana = getDiaSemana(data);
+                
+                const option = document.createElement('option');
+                option.value = dataFormatada + "|" + diaSemana;
+                option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
+                
+                if (i === 0) {
+                    option.selected = true;
+                }
+                
+                select.appendChild(option);
+            }
+        }
+
+        // Função CORRIGIDA para calcular a data do evento
+        function calcularDataEvento(descricao, mes, ano) {
+            const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
+            if (!match) return null;
+            
+            const ordem = parseInt(match[1]);
+            let diaSemana = match[2].trim().toUpperCase();
+            
+            diaSemana = diaSemana
+                .replace(/-/g, ' ')
+                .replace(/FEIRA/g, '')
+                .trim();
+            
+            const diasMap = {
+                'DOMINGO': 0,
+                'SEGUNDA': 1,
+                'TERÇA': 2, 'TERCA': 2,
+                'QUARTA': 3,
+                'QUINTA': 4,
+                'SEXTA': 5,
+                'SÁBADO': 6, 'SABADO': 6
+            };
+
+            const diaNum = diasMap[diaSemana];
+            if (diaNum === undefined) return null;
+
+            let data = new Date(ano, mes - 1, 1);
+            let contador = 0;
+            
+            while (data.getMonth() === mes - 1) {
+                if (data.getDay() === diaNum) {
+                    contador++;
+                    if (contador === ordem) {
+                        return new Date(data);
                     }
                 }
-                
-                if (corrigidos > 0) {
-                    console.log(`✅ Total de membros corrigidos: ${corrigidos}`);
-                    mostrarToast(`✅ ${corrigidos} membros foram corrigidos com ID automático`, 'success');
-                } else {
-                    console.log("✅ Todos os membros já possuem ID");
-                }
-                
-                await carregarMembros();
-                
-            } catch(error) {
-                console.error('Erro ao verificar membros sem ID:', error);
+                data.setDate(data.getDate() + 1);
             }
+            return null;
         }
 
-        function popularSelects() {
-            const instSelect = document.getElementById('instrumentoId');
-            if (instSelect) {
-                instSelect.innerHTML = '<option value="">Selecione...</option>';
-                for (let i = 0; i < instrumentos.length; i++) {
-                    instSelect.innerHTML += '<option value="' + instrumentos[i].id + '">' + instrumentos[i].nome + '</option>';
-                }
-            }
-
-            const congSelect = document.getElementById('congregacaoId');
-            if (congSelect) {
-                congSelect.innerHTML = '<option value="">Selecione...</option>';
-                
-                if (congregacoes.length > 0) {
-                    for (let i = 0; i < congregacoes.length; i++) {
-                        const cidadeTexto = congregacoes[i].cidade ? ` (${congregacoes[i].cidade})` : '';
-                        congSelect.innerHTML += '<option value="' + congregacoes[i].id + '">' + congregacoes[i].nome + cidadeTexto + '</option>';
-                    }
-                } else {
-                    congSelect.innerHTML = '<option value="">Nenhuma congregação disponível</option>';
-                }
-                
-                congSelect.disabled = false;
-            }
-
-            const cargoSelect = document.getElementById('cargoId');
-            if (cargoSelect) {
-                cargoSelect.innerHTML = '<option value="">Selecione...</option>';
-                for (let i = 0; i < cargos.length; i++) {
-                    cargoSelect.innerHTML += '<option value="' + cargos[i].id + '">' + cargos[i].nome + '</option>';
-                }
-            }
-
-            const nivelSelect = document.getElementById('nivelId');
-            if (nivelSelect) {
-                nivelSelect.innerHTML = '<option value="">Selecione...</option>';
-                for (let i = 0; i < niveis.length; i++) {
-                    nivelSelect.innerHTML += '<option value="' + niveis[i].id + '">' + niveis[i].nome + '</option>';
-                }
-            }
-        }
-
-        async function carregarDados() {
-            console.log("Carregando dados do Firebase...");
+        // Função para gerar a tabela por data
+        function gerarTabelaPorData(dataInformada) {
+            getLocation();
+            document.getElementById('btn-imprimir-data').disabled = false;
+            const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+            const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+            const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
             
-            try {
-                const instSnap = await instrumentosCollection.get();
-                instrumentos = [];
-                instSnap.forEach(doc => {
-                    const data = doc.data();
-                    instrumentos.push({ id: data.id, nome: data.nome });
-                });
-                instrumentos.sort((a, b) => a.id - b.id);
-                console.log("Instrumentos carregados:", instrumentos.length);
+            if (checkboxes.length === 0) {
+                alert("Nenhuma cidade foi selecionada.");
+                return;
+            }
+            
+            let cidades = "|";
+            
+            checkboxes.forEach((checkbox) => {
+                cidades += `|${checkbox.value}|`;
+            });
+            const tabela = document.querySelector('#tabela-eventos tbody');
+            tabela.innerHTML = '';
 
-                const congSnap = await congregacoesCollection.get();
-                congregacoes = [];
-                
-                console.log("Total de congregações no Firestore:", congSnap.size);
-                console.log("ID do usuário (número):", congregacoesIdUsuario);
-                
-                for (const doc of congSnap.docs) {
-                    const data = doc.data();
-                    const congregacao = { 
-                        docId: doc.id,
-                        id: data.id,
-                        nome: data.nome, 
-                        cidade: data.cidade || ""
-                    };
+            const [diaStr, mesStr, anoStr] = dataInformada.split('/');
+            const dia = parseInt(diaStr);
+            const mes = parseInt(mesStr);
+            const ano = parseInt(anoStr);
+            const ultimoDia = new Date(ano, mes, 0).getDate();
+            
+            let encontrouEventos = false;
+            let index = 0;
+            dados.forEach(item => {
+                try {
+                    const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
                     
-                    if (congregacoesIdUsuario && congregacoesIdUsuario !== 0 && congregacoesIdUsuario !== '0') {
-                        if (String(data.id) === String(congregacoesIdUsuario)) {
-                            congregacoes.push(congregacao);
-                            console.log("✅ Congregação permitida:", congregacao.nome, "(Número:", data.id, ")");
+                    if (!deveExibirMes(mes, meses)) {
+                        return;
+                    }
+                    
+                    let dataEvento = ""
+                    if ((dia >= 22 && dia <= 28)) {
+                        if (dia + 7 > ultimoDia) {
+                            dataEvento = calcularDataEvento(descricaoDia.replace("5ª", "4ª").replace("5º", "4º"), mes, ano);
+                        } else {
+                            dataEvento = calcularDataEvento(descricaoDia, mes, ano);
                         }
                     } else {
-                        congregacoes.push(congregacao);
-                    }
-                }
-                
-                console.log("Congregações carregadas:", congregacoes.length);
+                        dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    }   
+                    if (dataEvento && 
+                        dataEvento.getDate() === dia &&
+                        dataEvento.getMonth() === mes - 1 &&
+                        dataEvento.getFullYear() === ano) {
+                        
+                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                            const dataFormatada = dataInformada;
 
-                const cargoSnap = await cargosCollection.get();
-                cargos = [];
-                cargoSnap.forEach(doc => {
-                    const data = doc.data();
-                    cargos.push({ id: data.id, nome: data.nome });
-                });
-                cargos.sort((a, b) => a.id - b.id);
-                console.log("Cargos carregados:", cargos.length);
-
-                const nivelSnap = await niveisCollection.get();
-                niveis = [];
-                nivelSnap.forEach(doc => {
-                    const data = doc.data();
-                    niveis.push({ id: data.id, nome: data.nome, descricao: data.descricao || '' });
-                });
-                niveis.sort((a, b) => a.id - b.id);
-                console.log("Níveis carregados:", niveis.length);
-
-                await carregarMembros();
-                popularSelects();
-                
-            } catch(error) {
-                console.error("Erro ao carregar dados:", error);
-                mostrarToast("Erro ao carregar dados: " + error.message, "error");
-            }
-        }
-
-        async function carregarMembros() {
-            console.log("Carregando membros...");
-            
-            try {
-                let query = membrosCollection;
-                
-                if (congregacoesIdUsuario && congregacoesIdUsuario !== 0 && congregacoesIdUsuario !== '0') {
-                    console.log(`Filtrando membros pelo ID numérico: ${congregacoesIdUsuario}`);
-                    query = membrosCollection.where('congregacaoId', '==', String(congregacoesIdUsuario));
-                }
-                
-                const snap = await query.get();
-                membros = [];
-                
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    if (data.nome) {
-                        membros.push({
-                            docId: doc.id,
-                            nomeId: data.id,
-                            nome: data.nome || '',
-                            instrumentoId: data.instrumentoId || data.instrumento || 0,
-                            congregacaoId: data.congregacaoId || data.congregacao || '',
-                            cargoId: data.cargoId || data.cargo || 0,
-                            nivelId: data.nivelId || data.nivel || 0
-                        });
-                    }
-                });
-                
-                console.log(`Total de membros carregados: ${membros.length}`);
-                if (membros.length > 0) {
-                    console.log("Membros encontrados:", membros.map(m => `${m.nome} (cong: ${m.congregacaoId})`));
-                }
-                
-                const contadorSpan = document.getElementById('contadorMembros');
-                if (contadorSpan) contadorSpan.textContent = membros.length;
-                
-                if (membros.length === 0) {
-                    let mensagemVazio = '📭 Nenhum membro cadastrado ainda. Clique em "Novo Membro" para adicionar.';
-                    if (congregacoesIdUsuario && congregacoesIdUsuario !== 0) {
-                        mensagemVazio = `📭 Nenhum membro cadastrado na congregação com ID ${congregacoesIdUsuario}. Clique em "Novo Membro" para adicionar.`;
-                    }
-                    document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="7" class="loading">${mensagemVazio}</td></tr>`;
-                } else {
-                    renderizarTabela();
-                }
-                
-            } catch(error) {
-                console.error("Erro ao carregar membros:", error);
-                document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="7" class="loading">❌ Erro ao carregar membros: ${error.message}</td></tr>`;
-            }
-        }
-
-        function renderizarTabela() {
-            const busca = document.getElementById('busca').value.toLowerCase();
-            const filtrados = membros.filter(m => m.nome.toLowerCase().includes(busca));
-            const tbody = document.getElementById('corpoTabela');
-            
-            if (filtrados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="loading">🔍 Nenhum membro encontrado com este nome</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < filtrados.length; i++) {
-                const m = filtrados[i];
-                const congregacao = congregacoes.find(c => String(c.id) === String(m.congregacaoId));
-                const congregacaoTexto = congregacao ? `${congregacao.nome}${congregacao.cidade ? ` (${congregacao.cidade})` : ''}` : (m.congregacaoId || '?');
-                const instrumentoTexto = getInstrumentoNome(m.instrumentoId);
-                const idTexto = m.nomeId || '-';
-                
-                html += '<tr>';
-                html += '<td><strong>' + idTexto + '</strong></td>';
-                html += '<td><strong>' + m.nome + '</strong></td>';
-                html += '<td>' + instrumentoTexto + '</td>';
-                html += '<td>' + congregacaoTexto + '</td>';
-                html += '<td>' + getNome(cargos, m.cargoId) + '</td>';
-                html += '<td>' + getNome(niveis, m.nivelId) + '</td>';
-                html += '<td>';
-                html += '<button class="btn-edit" onclick="editarMembro(\'' + m.docId + '\')">✏️ Editar</button> ';
-                html += '<button class="btn-danger" onclick="abrirModalExcluir(\'' + m.docId + '\', \'' + m.nome.replace(/'/g, "\\'") + '\')">🗑️ Excluir</button>';
-                html += '</td>';
-                html += '</tr>';
-            }
-            tbody.innerHTML = html;
-        }
-
-        function abrirFormularioNovo() {
-            document.getElementById('formTitle').innerHTML = '➕ Adicionar Membro';
-            document.getElementById('membroDocId').value = '';
-            document.getElementById('membroIdHidden').value = '';
-            document.getElementById('nome').value = '';
-            document.getElementById('instrumentoId').value = '';
-            
-            const congSelect = document.getElementById('congregacaoId');
-            if (!congSelect.disabled) {
-                congSelect.value = '';
-            }
-            
-            document.getElementById('cargoId').value = '';
-            document.getElementById('nivelId').value = '';
-            document.getElementById('qrArea').style.display = 'none';
-            document.getElementById('btnGerarQRCode').style.display = 'none';
-            document.getElementById('idInfo').style.display = 'none';
-            document.getElementById('cardLista').style.display = 'none';
-            document.getElementById('cardFormulario').style.display = 'block';
-        }
-
-        function cancelarEdicao() {
-            document.getElementById('cardLista').style.display = 'block';
-            document.getElementById('cardFormulario').style.display = 'none';
-            carregarMembros();
-        }
-
-        function editarMembro(docId) {
-            const membro = membros.find(m => m.docId === docId);
-            if (membro) {
-                document.getElementById('formTitle').innerHTML = '✏️ Editar Membro';
-                document.getElementById('membroDocId').value = membro.docId;
-                document.getElementById('membroIdHidden').value = membro.nomeId || '';
-                document.getElementById('nome').value = membro.nome;
-                document.getElementById('qrArea').style.display = 'none';
-                document.getElementById('btnGerarQRCode').style.display = 'inline-block';
-                
-                if (membro.nomeId) {
-                    document.getElementById('idInfo').style.display = 'block';
-                    document.getElementById('displayMembroId').textContent = membro.nomeId;
-                } else {
-                    document.getElementById('idInfo').style.display = 'none';
-                }
-                
-                document.getElementById('cardLista').style.display = 'none';
-                document.getElementById('cardFormulario').style.display = 'block';
-                
-                setTimeout(function() {
-                    document.getElementById('instrumentoId').value = membro.instrumentoId;
-                    
-                    const congSelect = document.getElementById('congregacaoId');
-                    if (!congSelect.disabled) {
-                        congSelect.value = membro.congregacaoId;
-                    }
-                    
-                    document.getElementById('cargoId').value = membro.cargoId;
-                    document.getElementById('nivelId').value = membro.nivelId;
-                }, 100);
-                
-                const btnGerar = document.getElementById('btnGerarQRCode');
-                const novoBtn = btnGerar.cloneNode(true);
-                btnGerar.parentNode.replaceChild(novoBtn, btnGerar);
-                novoBtn.style.display = 'inline-block';
-                novoBtn.onclick = function() { mostrarQRCode(membro.docId); };
-            } else {
-                mostrarToast('❌ Membro não encontrado!');
-            }
-        }
-
-        function gerarQRCodeIndividual(membroId, membroNome, membroNomeId, instrumentoNome) {
-            return new Promise((resolve) => {
-                const container = document.createElement('div');
-                container.style.width = '150px';
-                container.style.height = '150px';
-                
-                const dadosQR = JSON.stringify({ id: membroNomeId });
-                
-                try {
-                    new QRCode(container, {
-                        text: dadosQR,
-                        width: 150,
-                        height: 150,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.M
-                    });
-                    
-                    setTimeout(() => {
-                        const canvas = container.querySelector('canvas');
-                        if (canvas) {
-                            const finalCanvas = document.createElement('canvas');
-                            const ctx = finalCanvas.getContext('2d');
+                            // Linha principal
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
                             
-                            const qrSize = 150;
-                            const padding = 10;
-                            let alturaTexto = 40;
-                            
-                            let instrumentoExibicao = instrumentoNome;
-                            if (instrumentoExibicao && instrumentoExibicao.toLowerCase() === 'orgao') {
-                                instrumentoExibicao = 'Órgão';
-                            }
-                            
-                            if (instrumentoExibicao && instrumentoExibicao.toLowerCase() !== 'nao tem' && instrumentoExibicao.toLowerCase() !== 'não tem') {
-                                alturaTexto = 60;
-                            }
-                            
-                            finalCanvas.width = qrSize + (padding * 2);
-                            finalCanvas.height = qrSize + (padding * 2) + alturaTexto;
-                            
-                            ctx.fillStyle = '#FFFFFF';
-                            ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-                            
-                            ctx.drawImage(canvas, padding, padding, qrSize, qrSize);
-                            
-                            const nomeExibido = getPrimeiroNome(membroNome);
-                            ctx.font = 'bold 14px "Segoe UI", Arial';
-                            ctx.fillStyle = '#2c3e50';
-                            ctx.textAlign = 'center';
-                            ctx.fillText(nomeExibido, finalCanvas.width / 2, qrSize + padding + 25);
-                            
-                            let yOffset = qrSize + padding + 40;
-                            
-                            if (instrumentoExibicao && instrumentoExibicao.toLowerCase() !== 'nao tem' && instrumentoExibicao.toLowerCase() !== 'não tem') {
-                                ctx.font = 'italic 11px "Segoe UI", Arial';
-                                ctx.fillStyle = '#27ae60';
-                                ctx.fillText(`🎵 ${instrumentoExibicao}`, finalCanvas.width / 2, yOffset);
-                            }
-                            
-                            resolve(finalCanvas.toDataURL('image/png'));
-                        } else {
-                            resolve(null);
+                            // Detalhes (MÉTODO CORRIGIDO)
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                            index++;
+                            encontrouEventos = true;
                         }
-                    }, 300);
-                } catch(error) {
-                    console.error('Erro ao gerar QR Code:', error);
-                    resolve(null);
+                    }
+                } catch (e) {
+                    console.error("Erro ao processar item:", item, e);
                 }
             });
-        }
 
-        async function mostrarQRCode(membroDocId) {
-            const membro = membros.find(m => m.docId === membroDocId);
-            if (!membro) {
-                mostrarToast('❌ Membro não encontrado!');
-                return;
-            }
-            
-            if (!membro.nomeId) {
-                mostrarToast('⚠️ Este membro não possui ID. Salve o membro novamente para gerar o ID.', 'warning');
-                return;
-            }
-            
-            const instrumento = instrumentos.find(i => i.id == membro.instrumentoId);
-            const instrumentoNome = instrumento ? instrumento.nome : null;
-            
-            document.getElementById('qrArea').style.display = 'block';
-            document.getElementById('qrCodeImage').innerHTML = '<div class="loading">Gerando QR Code...</div>';
-            
-            const imgData = await gerarQRCodeIndividual(membro.docId, membro.nome, membro.nomeId, instrumentoNome);
-            
-            if (imgData) {
-                document.getElementById('qrCodeImage').innerHTML = '<img src="' + imgData + '" style="max-width:200px;">';
-                window.qrCodeData = imgData;
-            } else {
-                document.getElementById('qrCodeImage').innerHTML = '<div class="loading">❌ Erro ao gerar QR Code</div>';
+            if (!encontrouEventos) {
+                const row = tabela.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 5;
+                cell.textContent = "Nenhum ensaio encontrado para esta data.";
+                cell.className = "no-events";
+            //} else {
+                //console.log("bbbbb")
+                //MostrarMsg();
             }
         }
 
-        function baixarQRCode() {
-            if (window.qrCodeData) {
-                const link = document.createElement('a');
-                const membroNome = document.getElementById('nome').value;
-                const primeiroNome = getPrimeiroNome(membroNome);
-                link.download = 'qrcode_' + primeiroNome + '.png';
-                link.href = window.qrCodeData;
-                link.click();
-                mostrarToast('✅ QR Code baixado!');
-            } else {
-                mostrarToast('❌ Gere o QR Code primeiro');
-            }
-        }
-
-        document.getElementById('formMembro').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const docId = document.getElementById('membroDocId').value;
+        //function MostrarMsg()  { 
+        //
+        //    const tooltip = document.getElementById('infoTooltip');
+        //    tooltip.classList.add('visible');
+        //    setTimeout(() => {
+        //        tooltip.classList.remove('visible');
+        //    }, 4000);
+        // }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                carregarPopup();
+            }, 500);
+            initApp();
+            preencherSelectDatas();
             
-            let congregacaoId = document.getElementById('congregacaoId').value;
-            if (!congregacaoId && congregacoesIdUsuario && congregacoesIdUsuario !== 0) {
-                if (congregacoes.length > 0) {
-                    congregacaoId = String(congregacoes[0].id);
-                } else {
-                    congregacaoId = String(congregacoesIdUsuario);
+            document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
+                radio.addEventListener('change', alternarTipoConsulta);
+            });
+            
+            document.getElementById('btn-consultar-casa-oracao').addEventListener('click', consultarPorCasaOracao);
+            document.getElementById('btn-consultar-encarregado-local').addEventListener('click', consultarPorEncarregadoLocal);
+            document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', gerarTabelaPorEnsaioRegional);
+            
+            document.getElementById('btn-listar').addEventListener('click', () => {
+                //document.getElementById('btn-imprimir').disabled = false;
+                const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+                gerarTabelaPorData(dataSelecionada);
+            });
+            document.getElementById('casa-oracao-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorCasaOracao();
                 }
+            });
+            document.getElementById('encarregado-local-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    consultarPorEncarregadoLocal();
+                }
+            });
+            document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('btn-imprimir').disabled = false;
+                    gerarTabelaPorEnsaioRegional();
+                }
+            });
+
+    document.getElementById('btn-imprimir-data').addEventListener('click', imprimirTabelaAtual);
+    document.getElementById('btn-imprimir-casa-oracao').addEventListener('click', imprimirTabelaAtual);
+    document.getElementById('btn-imprimir-encarregado-local').addEventListener('click', imprimirTabelaAtual);
+    document.getElementById('btn-imprimir-ensaio-regional').addEventListener('click', imprimirTabelaAtual);
+
+
+            CriaMenu()
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            //gerarTabelaPorData(dataSelecionada);
+            
+            document.getElementById('data-select').addEventListener('change', (e) => {
+                if (document.getElementById('consulta-data').checked) {
+                    const dataSelecionada = e.target.value.split('|')[0];
+                    gerarTabelaPorData(dataSelecionada);
+                }
+            });
+
+            // Controles do menu
+            const menuBtn = document.getElementById('menu-btn');
+            const overlay = document.getElementById('overlay');
+            
+            function toggleMenu() {
+                document.body.classList.toggle('menu-aberto');
             }
             
-            try {
-                if (docId) {
-                    const membroExistente = membros.find(m => m.docId === docId);
-                    const dados = {
-                        nome: document.getElementById('nome').value,
-                        instrumentoId: parseInt(document.getElementById('instrumentoId').value),
-                        congregacaoId: congregacaoId,
-                        cargoId: parseInt(document.getElementById('cargoId').value),
-                        nivelId: parseInt(document.getElementById('nivelId').value),
-                        atualizadoEm: new Date().toISOString()
-                    };
-                    
-                    if (membroExistente && membroExistente.nomeId) {
-                        dados.id = membroExistente.nomeId;
-                    }
-                    
-                    await membrosCollection.doc(docId).update(dados);
-                    mostrarToast('✅ Membro atualizado!');
-                    
-                } else {
-                    const novoId = await gerarProximoId();
-                    
-                    const dados = {
-                        id: novoId,
-                        nome: document.getElementById('nome').value,
-                        instrumentoId: parseInt(document.getElementById('instrumentoId').value),
-                        congregacaoId: congregacaoId,
-                        cargoId: parseInt(document.getElementById('cargoId').value),
-                        nivelId: parseInt(document.getElementById('nivelId').value),
-                        criadoEm: new Date().toISOString(),
-                        atualizadoEm: new Date().toISOString()
-                    };
-                    
-                    console.log(`➕ Adicionando novo membro com ID: ${novoId}, Congregação: ${congregacaoId}`);
-                    await membrosCollection.add(dados);
-                    mostrarToast(`✅ Membro adicionado! ID: ${novoId}`);
-                }
-                
-                cancelarEdicao();
-                
-            } catch(error) {
-                console.error('Erro ao salvar:', error);
-                mostrarToast('❌ Erro: ' + error.message, 'error');
-            }
+            menuBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
         });
+        
+function AlteraCidade() {
+    getLocation();
+    const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+    
+    // Verificar o estado do checkbox "todos"
+    const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
+    const checkboxes = document.querySelectorAll('input[name="cidade"]');
+    const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
+    const todosDesmarcados = Array.from(checkboxes).every(cb => !cb.checked);
+    
+    if (todosCheckbox) {
+        if (todosMarcados) {
+            todosCheckbox.checked = true;
+        } else if (todosDesmarcados) {
+            todosCheckbox.checked = false;
+        } else {
+            // Estado indeterminado (alguns marcados, outros não)
+            todosCheckbox.indeterminate = true;
+        }
+    }
+    
+    if (tipoConsulta === 'data') {
+        const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+        gerarTabelaPorData(dataSelecionada);
+    } else if (tipoConsulta === 'CasaOracao') {
+        consultarPorCasaOracao();
+    } else if (tipoConsulta === 'encarregado-local') {
+        consultarPorEncarregadoLocal();
+    } else if (tipoConsulta === 'encarregado-regional') {
+        gerarTabelaPorEnsaioRegional();
+    }
+}
 
-        document.getElementById('btnBaixarQRCode').addEventListener('click', baixarQRCode);
+function consultarPorEncarregadoLocal() {
+    getLocation();
+    const termo = document.getElementById('encarregado-local-input').value.trim().toUpperCase();
+    
+    if (!termo) {
+        alert("Por favor, digite o nome do Encarregado Local.");
+        return;
+    }
+    document.getElementById('btn-imprimir-encarregado-local').disabled = false;
 
-        function abrirModalExcluir(docId, nome) {
-            membroParaExcluir = docId;
-            document.getElementById('modalMsg').innerHTML = 'Excluir <strong>' + nome + '</strong>?';
-            document.getElementById('modalExcluir').style.display = 'flex';
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
+            //aqui
+            encarregadoLocalSemAcento = TiraAcento(encarregadoLocal)
+            encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional)
+            if (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo) || encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo)) {
+                if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+
+                    // Linha principal
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+
+                    // Detalhes
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                    index++;
+                    encontrouEventos = true;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio encontrado para este Encarregado Local.";
+        cell.className = "no-events";
+    //} else {
+    //    MostrarMsg();
+    }
+}
+
+    function dataString(dataFormatada) {
+        // Divide a string dd/mm/aaaa
+        const partes = dataFormatada.split('/');
+        const dia = partes[0];
+        const mes = parseInt(partes[1]) - 1; // -1 porque meses começam em 0
+        const ano = partes[2];
+        
+        // Array com abreviações dos meses
+        const meses = [
+            'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN',
+            'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'
+        ];
+        
+        return `${dia} ${meses[mes]}`;
+    }
+ 
+function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
+    const detalhesRow = tabela.insertRow();
+    detalhesRow.className = 'detalhes-content';
+    detalhesRow.id = `detalhes-${index}`;
+    const detalhesCell = detalhesRow.insertCell(0);
+    detalhesCell.colSpan = 5;
+    let complemento = ""
+    if (meses == "I") complemento = " - Meses Impares"
+    if (meses == "P") complemento = " - Meses Pares"
+    if (meses == "3M1") complemento = " - Meses JAN,<BR>ABR, JUL e OUT"
+    if (meses == "3M2") complemento = " - Meses FEV,<BR>MAI, AGO e NOV"
+    if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
+
+    
+    detalhesCell.innerHTML = `
+        <table>
+            <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
+                <td>Data Ensaio</td>
+                <td>Hora</td>
+                <td>Enc Local</td>
+                <td>Enc Regional</td>
+                <td rowspan="2" valign="center"><button class="btn-maps" onclick="abrirMaps('${localizacao}')"><div class="vertical-text">MAPS</div></button></td>
+            </tr>
+            <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
+                <td>${descricaoDia.replace(/5º/g, 'ÚLTIMO').replace(/5ª/g, 'ÚLTIMA')}${complemento}</td>
+                <td>${horario == "T" ? "17:00" : horario == "T1" ? '<span class="blink">16:30</span>' : "19:30"}</td>
+                <td>${encarregadoLocal || 'Não informado'}</td>
+                <td>${encarregadoRegional || 'Não informado'}</td>
+            </tr>
+        </table>`;
+        ordemDistancia = true;
+        trocaSeta()
+}
+
+    function proximoMesAno(proximoMes, proximoAno) {
+        proximoMes = parseInt(proximoMes) + 1;
+        if (proximoMes > 12) {
+            proximoMes = 1;
+            proximoAno = proximoAno + 1;
+        }
+        return proximoMes + ";" + proximoAno;
+    }
+
+function CriaMenu(){
+    let HTML = `
+        <div class="filtro-opcao" style="height: 25px; border-bottom: 1px solid #495057; margin-bottom: 10px;">
+            <label style="font-weight: bold; color: #fff;">
+                <input type="checkbox" id="marcar-desmarcar-todos" onclick="toggleTodos()" checked style="height: 10px;"> (Des)Marcar Todos
+            </label>
+        </div>
+    `;
+    
+    for (let i = 0; i < setor.length; i++) {
+        let setorSplit = setor[i].split(';');
+        HTML += `<div class="filtro-opcao" style="height: 15px;">
+            <label>
+                <input type="checkbox" name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked style="height: 10px;">${setorSplit[1]}
+            </label>
+        </div>`
+    }
+    document.getElementById('setor').innerHTML = HTML
+}
+
+    function TiraAcento(Texto) {
+        return Texto.normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[ºª]/g, '')           // Remove símbolos de ordem
+        .replace(/[^\w\s]/g, ' ')       // Substitui outros símbolos por espaço
+        .replace(/\s+/g, ' ')           // Normaliza espaços
+        .toLowerCase()
+        .trim(); 
+    }
+
+// Função para calcular distância usando a fórmula de Haversine
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Raio da Terra em quilômetros
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distância em km
+}
+
+// Função atualizada para criar linha principal da tabela
+function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon) {
+    const row = tabela.insertRow();
+    row.id = `evento-${index}`;
+    row.insertCell(0).innerHTML = local;
+    row.insertCell(1).innerHTML = cidade;
+    
+    // Cálculo da distância
+    //console.log(minhaLat);
+
+    const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
+
+    let distanciaAtual = minhaLat != 0 ? `${distanciaKm.toFixed(1)} km` : "";
+    row.insertCell(2).textContent = distanciaAtual;
+    if (document.getElementById('consulta-encarregado-regional').checked == false) {
+        row.insertCell(3).textContent = dataString(dataFormatada);
+    } else {
+        row.insertCell(3).textContent = dataFormatada;
+    }
+        //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
+    const acoesCell = row.insertCell(4);
+    acoesCell.style.textAlign = "center";
+    
+    const expandirBtn = document.createElement('button');
+    expandirBtn.className = 'btn-expandir';
+    expandirBtn.textContent = '+';
+    const indexTemp = index;
+    expandirBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleDetalhes(indexTemp);
+    };
+    acoesCell.appendChild(expandirBtn);
+}    
+
+    let ordemDistancia = true; // true = A-Z, false = Z-A
+    function trocaSeta(){
+        const tabela = document.getElementById('tabela-eventos');
+        const tbody = tabela.querySelector('tbody');
+        const todasLinhas = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Separar linhas de evento e seus detalhes
+        const eventosComDetalhes = [];
+        
+        for (let i = 0; i < todasLinhas.length; i++) {
+            const linha = todasLinhas[i];
+            
+            if (linha.id.startsWith('evento-')) {
+                // Encontrar a linha de detalhes correspondente
+                const idNum = linha.id.split('-')[1];
+                const detalhes = document.getElementById(`detalhes-${idNum}`);
+                
+                eventosComDetalhes.push({
+                    evento: linha,
+                    detalhes: detalhes
+                });
+            }
         }
         
-        function fecharModalExcluir() {
-            document.getElementById('modalExcluir').style.display = 'none';
-            membroParaExcluir = null;
-        }
+        // Ordenar pela distancia (terceira coluna, índice 2)
+        eventosComDetalhes.sort((a, b) => {
+            let valorA, valorB;
+            if (document.getElementById('consulta-encarregado-regional').checked == false) {
+                let distanciaA = a.evento.cells[2].textContent.trim().toLowerCase();
+                distanciaA = distanciaA.replace(',', '.').replace(' km', '')
+                distanciaA = parseFloat(distanciaA) || 0;
+                //console.log(distanciaA)
+                //console.log(document.getElementById('consulta-encarregado-regional').checked)
+                let distanciaB = b.evento.cells[2].textContent.trim().toLowerCase();
+                distanciaB = distanciaB.replace(',', '.').replace(' km', '')
+                distanciaB = parseFloat(distanciaB) || 0;
+            } else {
+                // Para Ensaio Regional: ordenar por data (formato dd/mm/aaaa)
+                const partesA = a.evento.cells[3].textContent.split('/');
+                const partesB = b.evento.cells[3].textContent.split('/');
+                
+                // Criar objeto Date para comparação
+                const dataA = new Date(partesA[2], partesA[1] - 1, partesA[0]);
+                const dataB = new Date(partesB[2], partesB[1] - 1, partesB[0]);
+                
+                valorA = dataA.getTime();
+                valorB = dataB.getTime();
+            }
+            
+            //alert(distanciaB)
+            //parseFloat("9,7 km".replace(',', '.'))            
+            
+            // Usar localeCompare para ordenação correta em português
+            //const comparacao = distanciaA - distanciaB;
+            
+            return ordemDistancia ? valorA - valorB : valorB - valorA;
+        });
         
-        async function confirmarExclusao() {
-            if (membroParaExcluir) {
-                await membrosCollection.doc(membroParaExcluir).delete();
-                mostrarToast('✅ Membro excluído!');
-                fecharModalExcluir();
-                carregarMembros();
-            }
-        }
-
-        function filtrarMembros() { renderizarTabela(); }
-
-        async function inicializarSistema() {
-            console.log("🚀 Inicializando sistema de manutenção...");
-            
-            if (papelUsuario === 'Secretário') {
-                console.log("🔒 Usuário Secretário - redirecionando para presenca.html");
-                window.location.href = 'presenca.html';
-                return;
-            }
-            
-            console.log("👑 Usuário Administrador - carregando sistema");
-            await carregarDados();
-            await verificarECorrigirMembrosSemId();
-            console.log("✅ Sistema inicializado!");
-        }
-
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            try {
-                const adminDoc = await db.collection("administradores").doc(user.uid).get();
-                
-                if (!adminDoc.exists || !adminDoc.data().ativo) {
-                    await auth.signOut();
-                    window.location.href = 'login.html';
-                    return;
-                }
-                
-                const adminData = adminDoc.data();
-                
-                papelUsuario = adminData.papel || 'Administrador';
-                
-                usuarioLogado = {
-                    uid: user.uid,
-                    email: user.email,
-                    nome: adminData.nome || 'Administrador',
-                    congregacoes_id: adminData.congregacoes_id || 0,
-                    papel: papelUsuario
-                };
-                
-                congregacoesIdUsuario = usuarioLogado.congregacoes_id;
-                
-                if (papelUsuario === 'Secretário') {
-                    console.log("🔒 Usuário Secretário - redirecionando para presenca.html");
-                    window.location.href = 'presenca.html';
-                    return;
-                }
-                
-                // CONTROLE DO BOTÃO DE INSTRUMENTOS - Só aparece se congregacoes_id = 0
-                const btnInstrumento = document.getElementById('btnInstrumento');
-                const btnNivel = document.getElementById('btnNivel');
-                
-                if (congregacoesIdUsuario === 0 || congregacoesIdUsuario === '0') {
-                    // Acesso total - mostra os botões
-                    if (btnInstrumento) {
-                        btnInstrumento.classList.remove('hidden');
-                        btnInstrumento.style.display = 'inline-block';
-                    }
-                    if (btnNivel) {
-                        btnNivel.classList.remove('hidden');
-                        btnNivel.style.display = 'inline-block';
-                    }
-                    console.log("✅ Botões 'Cadastrar Instrumento' e 'Cadastrar Níveis' visíveis (acesso total)");
-                } else {
-                    // Acesso restrito - oculta os botões
-                    if (btnInstrumento) {
-                        btnInstrumento.classList.add('hidden');
-                        btnInstrumento.style.display = 'none';
-                    }
-                    if (btnNivel) {
-                        btnNivel.classList.add('hidden');
-                        btnNivel.style.display = 'none';
-                    }
-                    console.log("🔒 Botões 'Cadastrar Instrumento' e 'Cadastrar Níveis' ocultos (acesso restrito à congregação)");
-                }
-                
-                // Exibir informações do admin
-                const adminInfoDiv = document.getElementById('adminInfo');
-                adminInfoDiv.style.display = 'inline-block';
-                let infoText = `👤 ${usuarioLogado.nome} (${usuarioLogado.email})`;
-                infoText += `<br><small>🎭 Papel: ${papelUsuario}</small>`;
-                
-                if (congregacoesIdUsuario && congregacoesIdUsuario !== 0 && congregacoesIdUsuario !== '0') {
-                    infoText += `<br><small>📍 Acesso restrito à congregação ID: ${congregacoesIdUsuario}</small>`;
-                } else {
-                    infoText += `<br><small>🌍 Acesso: Todas as congregações</small>`;
-                }
-                adminInfoDiv.innerHTML = infoText;
-                
-                const filtroInfo = document.getElementById('filtroInfo');
-                if (congregacoesIdUsuario && congregacoesIdUsuario !== 0 && congregacoesIdUsuario !== '0') {
-                    filtroInfo.style.display = 'block';
-                    filtroInfo.innerHTML = `📍 <strong>Filtro ativo:</strong> Exibindo apenas membros da congregação com ID ${congregacoesIdUsuario}`;
-                } else {
-                    filtroInfo.style.display = 'none';
-                }
-                
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                
-                await inicializarSistema();
-                
-            } catch(error) {
-                console.error('Erro ao verificar admin:', error);
-                window.location.href = 'login.html';
+        // Reconstruir o tbody na nova ordem
+        tbody.innerHTML = '';
+        eventosComDetalhes.forEach(item => {
+            tbody.appendChild(item.evento);
+            if (item.detalhes) {
+                tbody.appendChild(item.detalhes);
             }
         });
+        
+        // Atualizar a seta
+        const seta = document.getElementById('Seta');
+        seta.innerHTML = ordemDistancia ? "▲" : "▼";
+        
+        // Alternar ordem para próxima vez
+        ordemDistancia = !ordemDistancia;
+    }
 
-        async function logout() {
-            try {
-                await auth.signOut();
-                sessionStorage.removeItem('adminLogado');
-                window.location.href = 'login.html';
-            } catch(error) {
-                console.error('Erro ao sair:', error);
-                mostrarToast('Erro ao sair: ' + error.message, 'error');
-            }
+let minhaLat = 0;
+let minhaLon = 0;
+
+// Função que retorna uma Promise para a geolocalização
+function getLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    minhaLat = position.coords.latitude;
+                    minhaLon = position.coords.longitude;
+                    resolve({ minhaLat, minhaLon });
+                },
+                (error) => {
+                    console.error("Erro na geolocalização:", error);
+                    reject(error);
+                }
+            );
+        } else {
+            reject(new Error("Geolocalização não suportada"));
         }
+    });
+}
 
-        const membrosCollection = db.collection("membros");
-        const instrumentosCollection = db.collection("instrumentos");
-        const congregacoesCollection = db.collection("congregacoes");
-        const cargosCollection = db.collection("cargos");
-        const niveisCollection = db.collection("niveis");
+// Função principal que inicializa tudo
+async function initApp() {
+    try {
+        console.log("Obtendo localização...");
+        //await getLocation();
+        //console.log(`Localização obtida: ${minhaLat}, ${minhaLon}`);
+        //aqui
+        
+    } catch (error) {
+        console.error("Falha ao obter localização:", error);
+        // Pode usar uma localização padrão ou pedir manualmente
+        usarLocalizacaoPadrao();
+    }
+}
 
-    </script>
+function gerarTabelaPorEnsaioRegional() {
+    getLocation();
+    document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
+    //aa
+    const tabela = document.querySelector('#tabela-eventos tbody');
+    tabela.innerHTML = '';
+    const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+    const todosCheckboxes = document.querySelectorAll('input[name="cidade"]');
+    const totalNaoMarcados = todosCheckboxes.length - checkboxes.length;
+    
+    if (checkboxes.length === 0) {
+        alert("Nenhuma cidade foi selecionada.");
+        return;
+    }
+    
+    let cidades = "|";
+    checkboxes.forEach((checkbox) => {
+        cidades += `|${checkbox.value}|`;
+    });
+
+    let encontrouEventos = false;
+    let index = 0;
+    const hoje = new Date(new Date().setHours(0, 0, 0, 0)); // Data atual sem horas
+
+    dados.forEach(item => {
+        try {
+            const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = item.split(';');
+            
+            if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
+                // Verificar se a data do ensaio regional é futura
+                const partesData = dataEnsaioRegional.split('/');
+                if (partesData.length === 3) {
+                    const dia = parseInt(partesData[0]);
+                    const mes = parseInt(partesData[1]) - 1; // Meses começam em 0
+                    const ano = parseInt(partesData[2]);
+                    const dataEvento = new Date(ano, mes, dia);
+                    
+                    // Comparar apenas data (ignorar horas)
+                    dataEvento.setHours(0, 0, 0, 0);
+                    
+                    // Verificar se é data futura ou é hoje
+                    if (dataEvento >= hoje) {
+                        if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
+                            // Linha principal
+                            LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario, lat, lon)
+
+                            // Detalhes
+                            const dataFormatada = dataEnsaioRegional; // Usar a mesma data
+                            CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
+                            index++;
+                            encontrouEventos = true;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao processar item:", item, e);
+        }
+    });
+
+    if (!encontrouEventos) {
+        const row = tabela.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = "Nenhum ensaio regional futuro encontrado.";
+        cell.className = "no-events";
+    }
+}
+
+// Versão simplificada que funciona em todos os celulares
+function imprimirTabelaAtual() {
+    try {
+        // Determinar qual tipo de consulta está ativa
+        const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+        let titulo = '';
+        
+        switch(tipoConsulta) {
+            case 'data':
+                titulo = 'Ensaio Local por Data';
+                break;
+            case 'CasaOracao':
+                titulo = 'Ensaio Local por Casa de Oração';
+                break;
+            case 'encarregado-local':
+                titulo = 'Ensaio Local por Encarregado Local';
+                break;
+            case 'encarregado-regional':
+                titulo = 'Ensaio Regional';
+                break;
+        }
+        
+        // Criar HTML para PDF
+        let html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>${titulo}</title>
+                <style>
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        margin: 15px;
+                        font-size: 12px;
+                    }
+                    h1 { 
+                        color: #2c3e50; 
+                        text-align: center;
+                        margin-bottom: 10px;
+                    }
+                    .header-info {
+                        text-align: center;
+                        margin-bottom: 20px;
+                        color: #666;
+                        font-size: 11px;
+                    }
+                    .main-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    .main-table th {
+                        background-color: #3498db;
+                        color: white;
+                        padding: 8px;
+                        text-align: left;
+                        border: 1px solid #2980b9;
+                    }
+                    .main-table td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        vertical-align: top;
+                    }
+                    .details-section {
+                        margin: 10px 0;
+                        padding: 10px;
+                        background-color: #f8f9fa;
+                        border: 1px solid #dee2e6;
+                        border-radius: 4px;
+                    }
+                    .details-title {
+                        font-weight: bold;
+                        color: #2c3e50;
+                        margin-bottom: 5px;
+                        font-size: 11px;
+                    }
+                    .details-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 10px;
+                    }
+                    .details-table td {
+                        border: 1px solid #ccc;
+                        padding: 5px;
+                    }
+                    .details-label {
+                        background-color: #e9ecef;
+                        font-weight: bold;
+                        width: 25%;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        font-size: 10px;
+                        color: #6c757d;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>${titulo}</h1>
+                <div class="header-info">
+                    Gerado em: ${new Date().toLocaleString('pt-BR')}
+                </div>
+        `;
+        
+        // Coletar dados da tabela
+        const tbody = document.querySelector('#tabela-eventos tbody');
+        const linhas = tbody.querySelectorAll('tr');
+        let contador = 0;
+        html += `
+        <table class="main-table">
+            <tr>
+                <td><strong>Local:</strong></td>
+                <td><strong>Cidade:</strong></td>
+                <td><strong>Data:</strong></td>
+                <td><strong>Dia Ensaio:</strong></td>
+                <td><strong>Hora Ensaio:</strong></td>
+                <td><strong>Encarregado Local:</strong></td>
+                <td><strong>Encarregado Regional:</strong></td>
+            </tr>`;
+        let Quantidade = 0
+        for (let i = 0; i < linhas.length; i++) {
+            const linha = linhas[i];
+            const celulasPrimeiraLinha = linha.querySelectorAll('td');
+            if (i % 4 === 0) {
+                html += `
+                    <tr>
+                        <td>${celulasPrimeiraLinha[0].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[1].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[3].innerHTML}</td>`;
+            }    
+            if (i % 4 === 1) {
+                 html += `
+                        <td>${celulasPrimeiraLinha[6].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[7].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[8].innerHTML}</td>
+                        <td>${celulasPrimeiraLinha[9].innerHTML}</td>
+                    </tr>`;
+                    Quantidade += 1
+            } 
+        }
+        html += `
+        </table>`;
+
+        // Rodapé
+        html += `
+            <div class="footer">
+                Total de registros: ${Quantidade} | Sistema Ensaio Local
+            </div>
+        </body>
+        </html>`;
+        
+        // Abrir em nova janela
+        const janela = window.open('', '_blank');
+        janela.document.write(html);
+        janela.document.close();
+        
+        // Gerar PDF/Imprimir
+        setTimeout(() => {
+            janela.print();
+        }, 500);
+        
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao gerar relatório.');
+    }
+}
+
+// Adicione esta nova função:
+function toggleTodos() {
+    const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
+    const checkboxes = document.querySelectorAll('input[name="cidade"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = todosCheckbox.checked;
+    });
+    
+    // Atualizar a tabela baseado no novo estado
+    AlteraCidade();
+}
+
+
+</script>
 </body>
 </html>
