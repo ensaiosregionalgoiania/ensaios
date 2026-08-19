@@ -152,7 +152,7 @@
             "<B>Varjão - Central</B>;<B>Varjão</B>;3ª SEXTA-FEIRA;<B>N</B>;wePyJHKwj3dns28M7;7;;Luis Dias;T;-17.0485755;-49.633602;DN 4N;",
             "Vila Itatiaia;Goiânia;3ª SEXTA-FEIRA;N;hgVm1kTF3Zv93XtJ7;5;Valdeir Luiz;Rogerio Rosemberg;T;-16.6058717;-49.2548916;DN 3N 5N;",
             "Cruzeiro do Sul;Aparecida;3ª SEXTA-FEIRA;N;iCpCaCbwqBV2vAVG8;6;Gildemar;;T;-16.7640167;-49.2770757;DN 3N 5N;04/06/2026",
-            "Recanto das Minas Gerais;Goiânia;3ª SEXTA-FEIRA;N;E9GE2mEnjtiPRuHA8;1;PAULO ALVES;RICARDO ROSEMBERGUE;T;-16.6482919;-49.1831607;DN 5N;20/09/2026",
+            "Recanto das Minas Gerais;Goiânia;4º DOMINGO;T;E9GE2mEnjtiPRuHA8;1;PAULO ALVES;RICARDO ROSEMBERGUE;T;-16.6482919;-49.1831607;DN 5N;20/09/2026",
             "Residencial Campos Dourados;Goiânia;3ª SEXTA-FEIRA;N;RWjhyBhNg4SVaCrE9;2;Anselmo;Jackson;T;-16.8011067;-49.3636744;DN 4N;",
             "Chão de Estrelas;Aragoiânia;3ª SEXTA-FEIRA;N;Z9psCkC3UPfagmZFA;6;Saulo Nogueira;;T;-16.8183534;-49.452015;DN 5N;",
             "Garavelo Sul II;Hidrolândia;3º SáBADO;T;LoWB7rwcnvpwq5JAA;6;Maurino;;T;-16.8771643;-49.2563869;4N SN;",
