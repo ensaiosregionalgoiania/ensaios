@@ -150,7 +150,7 @@
             "Setor Pontal Sul II;Aparecida;3ª SEXTA-FEIRA;N;XX6ErRQMTNx4UQQS9;6;Jocirono Bispo;;T;-16.8057417;-49.2933837;DN 4N;",
             "Indepedência Mansões II;Aparecida;3ª SEXTA-FEIRA;N;gidwYzPgTvZ5b31Y9;6;Ismael;;T;-16.8239385;-49.306964;DN 4N SN;",
             "<B>Varjão - Central</B>;<B>Varjão</B>;3ª SEXTA-FEIRA;<B>N</B>;wePyJHKwj3dns28M7;7;;Luis Dias;T;-17.0485755;-49.633602;DN 4N;",
-            "Vila Itatiaia;Goiânia;3ª SEXTA-FEIRA;N;hgVm1kTF3Zv93XtJ7;5;Valdeir Luiz;Rogerio Rosemberg;T;-16.6058717;-49.2548916;DN 3N 5N;",
+            "Vila Itatiaia;Goiânia;1º DOMINGO;T;hgVm1kTF3Zv93XtJ7;5;Valdeir Luiz;Rogerio Rosemberg;T;-16.6058717;-49.2548916;DN 3N 5N;",
             "Cruzeiro do Sul;Aparecida;3ª SEXTA-FEIRA;N;iCpCaCbwqBV2vAVG8;6;Gildemar;;T;-16.7640167;-49.2770757;DN 3N 5N;04/06/2026",
             "Recanto das Minas Gerais;Goiânia;4º DOMINGO;T;E9GE2mEnjtiPRuHA8;1;PAULO ALVES;RICARDO ROSEMBERGUE;T;-16.6482919;-49.1831607;DN 5N;20/09/2026",
             "Residencial Campos Dourados;Goiânia;3ª SEXTA-FEIRA;N;RWjhyBhNg4SVaCrE9;2;Anselmo;Jackson;T;-16.8011067;-49.3636744;DN 4N;",
