@@ -274,7 +274,7 @@
             </div>
             <div class="popup-content">
                 <div class="popup-image-container" id="imageContainer">
-                    <img src="ensaio7.jpg" 
+                    <img src="ensai22.jpg" 
                          alt="Imagem do Sistema Ensaio Local" 
                          class="popup-image"
                          id="popupImage">
@@ -302,14 +302,19 @@
         let imageSwitchTimeout;
 
         const imagens = [
-            'ensaio22.jpeg',
-            'ensaio23.jpeg'
+            'ensaio23.jpeg',
+            'ensaio22.jpeg'
         ];
 
         // Inicializar popup quando a página carrega
         document.addEventListener('DOMContentLoaded', () => {
             inicializarPopup();
         });
+
+  const audio = document.getElementById('meuAudio');
+          audio.play()
+audio.addEventListener('canplaythrough', () => console.log('Áudio carregado e pronto!'));
+  audio.addEventListener('error', (e) => console.error('Erro ao carregar:', e));
 
         // Função para pausar o temporizador e a troca de imagens por 10 segundos
         function pausarTudo() {
@@ -621,6 +626,7 @@
                 document.body.appendChild(testeBtn);
             }, 2000);
         }
+
     </script>
 </body>
 </html>
