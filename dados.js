@@ -36,7 +36,7 @@
             "Jardim das Oliveiras;Senador Canedo;1º DOMINGO;T;kZ3a1w8SaeHBRkcE9;8;Patricio;Ricardo Rosemberg;T;-16.6507913;-49.1533527;DN 3N 6N;",
             "Parque Alvorada;Senador Canedo;1º DOMINGO;T;cB2KSg7McQrJAiwm6;8;Adão;Ricardo Rosemberg;T;-16.6590072;-49.165532;DN 5N;",
             "Papillon Parque;Aparecida;2ª SEGUNDA-FEIRA;N;sCcHRBoU7KGSrsYn7;6;Daniel Pedrosa;Thiaguinho;T;-16.7808505;-49.2745449;DN 4N 6N;20/09/2026",
-            "Cidade Vera Cruz II;Aparecida;1ª SEGUNDA-FEIRA;N;fJiiuLUyTgePVdoRA;6;Cleiton;;T;-16.7612622;-49.2899177;DN 4N 6N;",
+            "Cidade Vera Cruz II;Aparecida;1ª TERÇA-FEIRA;N;fJiiuLUyTgePVdoRA;6;Cleiton;;T;-16.7612622;-49.2899177;DN 4N 6N;",
             "Colina Azul II;Aparecida;1ª SEGUNDA-FEIRA;N;nE1oznfqzcFHZNNv8;6;Joel Soares;;T;-16.8282837;-49.293651;DN 5N;",
             "Serra Azul;Goiânia;1ª SEGUNDA-FEIRA;N;b6RKsb7ZjbWLZsyeA;3;Daniel Siqueira;José Humberto;T;-16.6838555;-49.3462293;DN 4N;",
             "Residencial Recanto do Bosque;Goiânia;1ª SEGUNDA-FEIRA;N;beu4rSFcierdzrTL7;4;Martim Pinto;Jackson;T;-16.6086014;-49.3117139;3N SN;",
