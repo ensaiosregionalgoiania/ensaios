@@ -178,7 +178,7 @@
             "Jardim dos Ipês I;Aparecida;3º DOMINGO;T;tXtR21baRaCyFiHG6;6;Wesley de Jesus;;3M3;-16.828571;-49.3748437;DN 3N;",
             "Jardim dos Ipês II;Aparecida;3º DOMINGO;T;MXJiuPGyAUtKCLaAA;6;;;3M1;-16.8535833;-49.3753889;DN 4N;",
             "Jardim Dom Bosco I;Aparecida;5º DOMINGO;T;MFFnzngWsYEhBm1V7;6;Eleone;Alex Flávio;T;-16.8176194;-49.3630784;DN 5N;",
-            "Jardim Ipiranga;Aparecida;5ª SEXTA-FEIRA;N;d6PEBRnhFiwiBrPw7;6;Juscélio;;T;-16.821769;-49.3418975;DN 2N 5N;07/09/2026",
+            "Jardim Ipiranga;Aparecida;5ª SEXTA-FEIRA;N;d6PEBRnhFiwiBrPw7;6;Juscélio;Odário;T;-16.821769;-49.3418975;DN 2N 5N;07/09/2026",
             "Jardim Helvécia;Aparecida;3ª SEGUNDA-FEIRA;N;vvzTZ4gNRCtqVaU97;6;EDLANEI;Thiago Caetano;P;-16.7267538;-49.377375;DN 3N 5N;",
             "Guapó - Cidade Nova;Guapó;3ª SEGUNDA-FEIRA;N;V8nFr4CRJMs78NVc8;7;;;P;-16.8426765;-49.5443809;5N SN;",
             "Guapó - Vila João Pedro;Guapó;3ª SEGUNDA-FEIRA;N;GMFbPuVZB5a8cHGG7;7;;Luis Dias;I;-16.8299274;-49.5410174;3N 6N;",
