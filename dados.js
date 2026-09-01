@@ -256,8 +256,8 @@
             "Povoado Santa Maria;Trindade;;N;aNXXjWUV4CYtm4sK9;7;;;T;-16.7455723;-49.6073325;2N SN;",
             "Povoado Capelinha;Anicuns;;N;xigt3JEX3779AxsF7;7;Itamar;Jackson;T;-16.457100306491736;-49.96682791886014;;12/07/2026",
             "Cezarina-Central;Cezarina;2ª SEXTA-FEIRA;N;a1wQvArnHkKFhp1B7;11;Luiz Dario;Samuel;T;-16.974271;-49.7740941;DN 5N;",
-            "Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;;T;-16.3977085;-49.2673413;3N 6N;",
-            "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;;T;-16.410909;-49.2428934;3N 6N;",
-            "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;;T;-16.410909;-49.2428934;3N 6N;"
+            "Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;Gilton Pereira;T;-16.3977085;-49.2673413;3N 6N;",
+            "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;",
+            "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;"
 
         ];
