@@ -255,7 +255,5 @@
             "Solar Sao Francisco;Trindade;;N;AwcSY8Ks9BASumbi9;7;;;T;-16.5730941;-49.4172667;2N SN;",
             "Povoado Santa Maria;Trindade;;N;aNXXjWUV4CYtm4sK9;7;;;T;-16.7455723;-49.6073325;2N SN;",
             "Povoado Capelinha;Anicuns;;N;xigt3JEX3779AxsF7;7;Itamar;Jackson;T;-16.457100306491736;-49.96682791886014;;12/07/2026",
-  
-                                                                        
-               
+            "Cezarina-Central;Cezarina;2ª SEXTA-FEIRA;N;a1wQvArnHkKFhp1B7;11;Luiz Dario;Samuel;T;-16.974271;-49.7740941;DN 5N;"
 ];

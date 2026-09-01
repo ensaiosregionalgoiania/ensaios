@@ -10,5 +10,10 @@
             "7;Trindade",
             "8;Senador Canedo",
             "9;S L Montes Belos",
-            "10;Inhumas"
+            "10;Inhumas",
+            "11;Indiara"
         ];
+
+
+
+        
