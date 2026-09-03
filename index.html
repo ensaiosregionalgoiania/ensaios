@@ -14,6 +14,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Ensaios">
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
+    <!-- html2canvas para capturar imagem -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         body {
@@ -248,6 +251,22 @@
     background: #c0392b;
     transform: translateY(-1px);
 }
+
+/* Estilo para o botão Convite */
+.btn-convite {
+    background: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.3s;
+    margin-left: 4px;
+}
+.btn-convite:hover {
+    background: #e67e22;
+}
         
         .no-events {
             text-align: center;
@@ -314,20 +333,6 @@
             }
         }
     
-         /*.tooltip {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }*/
         .visible {
             opacity: 1;
         }
@@ -676,14 +681,191 @@
     50% {
         opacity: 0;
     }
-    }</style>
+    }
+
+/* ===== Estilos do Convite ===== */
+#convite-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#convite-container {
+    position: relative;
+    width: 95%;
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+#convite-imagem {
+    width: 100%;
+    display: block;
+    height: auto;
+}
+
+/* Divs do convite – ajuste as posições conforme sua imagem de fundo */
+.convite-texto {
+    position: absolute;
+    color: #030303;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-weight: bold;
+    padding: 0 10px;
+    box-sizing: border-box;
+    width: 50%;
+    pointer-events: none; /* permite clicar nos botões por baixo? */
+    border-style: outset;  
+    border-color: coral; 
+    border-width: 1px;
+    text-align:center;
+}
+
+#DivEnsaio {
+    position: absolute;
+    top: 10%;           /* ajuste conforme necessário */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 50%;       /* para garantir que o texto ocupe toda a largura */
+    font-size: 36px;   /* aumente para o tamanho desejado */
+    font-family: 'Great Vibes', cursive;
+    color: #2d0202;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    padding: 0 10px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+#DivEnsaio {
+    position: absolute;
+    top: 8%;               /* ajuste vertical */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+    font-size: 42px;       /* tamanho grande */
+    font-family: 'Great Vibes', cursive;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    padding: 0 10px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+#DivIgreja {
+    position: absolute;
+    top: 20%;              /* posicione abaixo da DivEnsaio */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+    font-size: 36px;       /* aumente conforme desejar */
+    font-family: 'Oleo Script', cursive;
+    color: #060000;
+    text-shadow: 2px 2px 4px rgba(59, 58, 58, 0.8);
+    padding: 0 10px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+#DivHoje {
+    position: absolute;
+    top: 20%;                /* centralizado verticalmente */
+    right: 2%;               /* colado na direita */
+    transform: translateY(-50%) rotate(315deg); /* perpendicular (90°) */
+    transform-origin: center center;
+    font-size: 28px;
+    color: #ff0000;
+    font-weight: bold;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+    animation: blink 0.7s step-start infinite; /* nome correto do keyframe */
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: 2px;
+    width: auto;             /* largura automática para não cortar */
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+#DivData {
+    top: 50%;
+    left: 37%;
+    font-size: 18px;
+    text-align: left;
+}
+#DivHora {
+    top: 55%;
+    left: 37%;
+    font-size: 18px;
+    text-align: left;
+
+}
+#DivLocal {
+    top: 60%;
+    left: 28%;
+    font-size: 16px;
+}
+#DivLocal a {
+    color: #fff;
+    text-decoration: underline;
+    pointer-events: auto;
+}
+
+/* Botões do convite */
+.convite-acoes {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+.convite-acoes button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+}
+.convite-acoes button:hover {
+    transform: scale(1.05);
+}
+.btn-salvar {
+    background: #27ae60;
+}
+.btn-whatsapp {
+    background: #25D366;
+}
+.btn-fechar {
+    background: #e74c3c;
+}
+    </style>
 
 </head>
 <body>
 
     <!-- Botão para abrir o menu -->
     <button class="menu1" id="menu-btn">Menu</button>
-    <!--☰-->
     <!-- Overlay para fechar o menu -->
     <div class="overlay" id="overlay"></div>
     
@@ -695,10 +877,9 @@
     </div>
 
     <a href="https://wa.me/5562996037779">
-        <div class="suporte">
-            Suporte
-        </div>
+        <div class="suporte">Suporte</div>
     </a>
+
     <div class="container">
         <h1 id="Titulo">Ensaio Local</h1>
         <!-- Container melhorado para as consultas -->
@@ -755,7 +936,6 @@
         </div>
 
         <span id="error-msg" class="error"></span>
-        <!--<div id="infoTooltip" class="tooltip">Clique sobre qualquer linha para acessar a localização</div>-->
 
         <table id="tabela-eventos">
             <thead>
@@ -764,43 +944,43 @@
                     <th>Cidade</th>
                     <th>Dist<span id="Seta" style="cursor: pointer;" onclick='this.innerHTML = this.innerHTML == "▲" ? "▼" : "▲"; trocaSeta()'>▲</span></th>
                     <th>Data</th>                  
-                    <!--<th>Horário</th>-->
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
-<script src="dados.js"></script>
-<script src="setor.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<script src="popup-loader.js"></script>
-<script>
-        /*const dados = [
-            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;<B>T</B>;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;22/03/2026",
-            "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
-            "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;<B>T</B>;cbaHom1Dz6uJrsG39;6;Alex Flávio;Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN;14/06/2026",
-            "Setor dos Bandeirantes;Aparecida;1º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
-            "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N;",
-            "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N;20/04/2026", //aqui
-            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;Gustavo Rodrigo;;T;-16.8256386;-49.229775;DN 4N;",
-            "Bairro Independência;Aparecida;1º DOMINGO;T;d58NBSKruwc735pA9;6;Roberto Santana;Odário;T;-16.8080739;-49.3235699;DN 3N SN;01/05/2026",
-            "Vila São José;Goiânia;1º DOMINGO;T;5kdjpLgQreAGofYKA;5;;;T;-16.6596485;-49.299886;DN 3N 5N;"
-        ];
 
-        const setor = [
-            "1;Goiânia-Setor 1",
-            "2;Goiânia-Setor 2",
-            "3;Goiânia-Setor 3",
-            "4;Goiânia-Setor 4",
-            "5;Goiânia-Setor 5",
-            "6;Aparecida",
-            "7;Trindade",
-            "8;Senador Canedo",
-            "9;S L Montes Belos",
-            "10;Inhumas"
-        ];*/
+    <!-- ===== OVERLAY DO CONVITE ===== -->
+    <div id="convite-overlay">
+        <div id="convite-container">
+            <img id="convite-imagem" src="convite01.png" alt="Convite">
+            <!-- Divs sobrepostas -->
+            <div id="DivEnsaio" class="convite-texto">Ensaio Local</div>
+            <div id="DivIgreja" class="convite-texto">Nome da Igreja</div>
+            <div id="DivHoje" class="convite-texto">Hoje</div>
+            <div id="DivData" class="convite-texto">Data</div>
+            <div id="DivHora" class="convite-texto">Hora</div>
+            <div id="DivLocal" class="convite-texto"><a href="#" target="_blank">Local</a></div>
+            <!-- Botões -->
+            <div class="convite-acoes">
+                <button class="btn-salvar" id="btn-salvar-imagem">📷 Salvar</button>
+                <button class="btn-whatsapp" id="btn-enviar-whatsapp">📱 WhatsApp</button>
+                <button class="btn-fechar" id="btn-fechar-convite">✕ Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="dados.js"></script>
+    <script src="setor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="popup-loader.js"></script>
+    <script>
+        // ============================================================
+        // SEU CÓDIGO ORIGINAL (com as modificações para o botão Convite)
+        // ============================================================
 
         // Função auxiliar para verificar se o termo é "todas" ou "todos"
         function isTodos(termo) {
@@ -819,7 +999,6 @@
             }
             
             if (configMeses === 'I') {
-                //console.log(mes % 2 === 1)
                 return mes % 2 === 1;
             }
 
@@ -847,7 +1026,6 @@
             let proximoMes = mesAtual;
             let proximoAno = anoAtual;
             let contador = 0
-            //while (true) {
                 dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
                 if (dataEvento === null) {
                     descricaoDia = descricaoDia.replace("5", "4");
@@ -906,8 +1084,6 @@
                         }
                     }
                 }
-                //}
-            //}
             dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
             return dataEvento;
         }
@@ -970,7 +1146,6 @@
                 cidades += `|${checkbox.value}|`;
             });
 
-            // Verifica se o termo é "todas" ou "todos"
             const termoEhTodos = isTodos(termo);
 
             let encontrouEventos = false;
@@ -981,7 +1156,6 @@
                     const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
                     let localSemAcento = TiraAcento(local);
                     
-                    // Se não for "todas", aplica o filtro pelo nome
                     const localMatch = termoEhTodos || localSemAcento.toUpperCase().includes(termo.toUpperCase());
                     
                     if (localMatch) {
@@ -989,7 +1163,7 @@
                             const proximaData = calcularProximaData(descricaoDia, meses);
                             const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
                             // Linha principal
-                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia)
                             
                             // Detalhes
                             CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
@@ -1038,7 +1212,6 @@
                 cidades += `|${checkbox.value}|`;
             });
 
-            // Verifica se o termo é "todas" ou "todos"
             const termoEhTodos = isTodos(termo);
 
             let encontrouEventos = false;
@@ -1050,7 +1223,6 @@
                     let encarregadoLocalSemAcento = TiraAcento(encarregadoLocal);
                     let encarregadoRegionalSemAcento = TiraAcento(encarregadoRegional);
                     
-                    // Se não for "todas", aplica o filtro pelo nome (local ou regional)
                     const encMatch = termoEhTodos || 
                                     (encarregadoLocalSemAcento && encarregadoLocalSemAcento.toUpperCase().includes(termo.toUpperCase())) ||
                                     (encarregadoRegionalSemAcento && encarregadoRegionalSemAcento.toUpperCase().includes(termo.toUpperCase()));
@@ -1060,10 +1232,7 @@
                             const proximaData = calcularProximaData(descricaoDia, meses);
                             const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
 
-                            // Linha principal
-                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
-
-                            // Detalhes
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia)
                             CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                             index++;
                             encontrouEventos = true;
@@ -1084,18 +1253,10 @@
         }
 
         function dataString(dataFormatada) {
-            // Divide a string dd/mm/aaaa
             const partes = dataFormatada.split('/');
             const dia = partes[0];
-            const mes = parseInt(partes[1]) - 1; // -1 porque meses começam em 0
-            const ano = partes[2];
-            
-            // Array com abreviações dos meses
-            const meses = [
-                'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN',
-                'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'
-            ];
-            
+            const mes = parseInt(partes[1]) - 1;
+            const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
             return `${dia} ${meses[mes]}`;
         }
  
@@ -1112,7 +1273,6 @@
             if (meses == "3M2") complemento = " - Meses FEV,<BR>MAI, AGO e NOV"
             if (meses == "3M3") complemento = " - Meses MAR,<BR>JUN, SET e DEZ"
 
-            
             detalhesCell.innerHTML = `
                 <table>
                     <tr style="height: 15px; padding: 1px; border-style: outset;  border-color: coral; border-width: 1px;">
@@ -1164,17 +1324,16 @@
 
         function TiraAcento(Texto) {
             return Texto.normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-            .replace(/[ºª]/g, '')           // Remove símbolos de ordem
-            .replace(/[^\w\s]/g, ' ')       // Substitui outros símbolos por espaço
-            .replace(/\s+/g, ' ')           // Normaliza espaços
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[ºª]/g, '')
+            .replace(/[^\w\s]/g, ' ')
+            .replace(/\s+/g, ' ')
             .toLowerCase()
             .trim(); 
         }
 
-        // Função para calcular distância usando a fórmula de Haversine
         function calcularDistancia(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Raio da Terra em quilômetros
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = 
@@ -1182,21 +1341,19 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c; // Distância em km
+            return R * c;
         }
 
-        // Função atualizada para criar linha principal da tabela
-        function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon) {
+        // ===== FUNÇÃO LinhaPrincipal MODIFICADA com botão "C" e armazenamento =====
+        window.linhasDados = []; // array global para armazenar dados de cada linha
+
+        function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
             const row = tabela.insertRow();
             row.id = `evento-${index}`;
             row.insertCell(0).innerHTML = local;
             row.insertCell(1).innerHTML = cidade;
             
-            // Cálculo da distância
-            //console.log(minhaLat);
-
             const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon); 
-
             let distanciaAtual = minhaLat != 0 ? `${distanciaKm.toFixed(1)} km` : "";
             row.insertCell(2).textContent = distanciaAtual;
             if (document.getElementById('consulta-encarregado-regional').checked == false) {
@@ -1204,38 +1361,59 @@
             } else {
                 row.insertCell(3).textContent = dataFormatada;
             }
-                //row.insertCell(4).innerHTML = horario.replace("N", "19:30 H").replace("T", "17:00 H");
             const acoesCell = row.insertCell(4);
             acoesCell.style.textAlign = "center";
             
+            // Botão expandir (+)
             const expandirBtn = document.createElement('button');
             expandirBtn.className = 'btn-expandir';
             expandirBtn.textContent = '+';
-            const indexTemp = index;
             expandirBtn.onclick = (e) => {
                 e.stopPropagation();
-                toggleDetalhes(indexTemp);
+                toggleDetalhes(index);
             };
             acoesCell.appendChild(expandirBtn);
-        }    
 
-        let ordemDistancia = true; // true = A-Z, false = Z-A
+            // Botão Convite (C)
+            const conviteBtn = document.createElement('button');
+            conviteBtn.className = 'btn-convite';
+            conviteBtn.textContent = 'C';
+            conviteBtn.onclick = (e) => {
+                e.stopPropagation();
+                abrirConvite(index);
+            };
+            acoesCell.appendChild(conviteBtn);
+
+            // Armazenar dados da linha para uso no convite
+            window.linhasDados[index] = {
+                local,
+                cidade,
+                dataFormatada,
+                horario,
+                localizacao,
+                setor,
+                encarregadoLocal,
+                encarregadoRegional,
+                meses,
+                lat,
+                lon,
+                descricaoDia
+            };
+        }
+
+        let ordemDistancia = true;
         function trocaSeta(){
             const tabela = document.getElementById('tabela-eventos');
             const tbody = tabela.querySelector('tbody');
             const todasLinhas = Array.from(tbody.querySelectorAll('tr'));
             
-            // Separar linhas de evento e seus detalhes
             const eventosComDetalhes = [];
             
             for (let i = 0; i < todasLinhas.length; i++) {
                 const linha = todasLinhas[i];
-                
                 if (linha.id.startsWith('evento-')) {
-                    // Encontrar a linha de detalhes correspondente
                     const idNum = linha.id.split('-')[1];
                     const detalhes = document.getElementById(`detalhes-${idNum}`);
-                    
                     eventosComDetalhes.push({
                         evento: linha,
                         detalhes: detalhes
@@ -1243,41 +1421,28 @@
                 }
             }
             
-            // Ordenar pela distancia (terceira coluna, índice 2)
             eventosComDetalhes.sort((a, b) => {
                 let valorA, valorB;
                 if (document.getElementById('consulta-encarregado-regional').checked == false) {
                     let distanciaA = a.evento.cells[2].textContent.trim().toLowerCase();
                     distanciaA = distanciaA.replace(',', '.').replace(' km', '')
                     distanciaA = parseFloat(distanciaA) || 0;
-                    //console.log(distanciaA)
-                    //console.log(document.getElementById('consulta-encarregado-regional').checked)
                     let distanciaB = b.evento.cells[2].textContent.trim().toLowerCase();
                     distanciaB = distanciaB.replace(',', '.').replace(' km', '')
                     distanciaB = parseFloat(distanciaB) || 0;
+                    valorA = distanciaA;
+                    valorB = distanciaB;
                 } else {
-                    // Para Ensaio Regional: ordenar por data (formato dd/mm/aaaa)
                     const partesA = a.evento.cells[3].textContent.split('/');
                     const partesB = b.evento.cells[3].textContent.split('/');
-                    
-                    // Criar objeto Date para comparação
                     const dataA = new Date(partesA[2], partesA[1] - 1, partesA[0]);
                     const dataB = new Date(partesB[2], partesB[1] - 1, partesB[0]);
-                    
                     valorA = dataA.getTime();
                     valorB = dataB.getTime();
                 }
-                
-                //alert(distanciaB)
-                //parseFloat("9,7 km".replace(',', '.'))            
-                
-                // Usar localeCompare para ordenação correta em português
-                //const comparacao = distanciaA - distanciaB;
-                
                 return ordemDistancia ? valorA - valorB : valorB - valorA;
             });
             
-            // Reconstruir o tbody na nova ordem
             tbody.innerHTML = '';
             eventosComDetalhes.forEach(item => {
                 tbody.appendChild(item.evento);
@@ -1286,18 +1451,14 @@
                 }
             });
             
-            // Atualizar a seta
             const seta = document.getElementById('Seta');
             seta.innerHTML = ordemDistancia ? "▲" : "▼";
-            
-            // Alternar ordem para próxima vez
             ordemDistancia = !ordemDistancia;
         }
 
         let minhaLat = 0;
         let minhaLon = 0;
 
-        // Função que retorna uma Promise para a geolocalização
         function getLocation() {
             return new Promise((resolve, reject) => {
                 if (navigator.geolocation) {
@@ -1318,17 +1479,11 @@
             });
         }
 
-        // Função principal que inicializa tudo
         async function initApp() {
             try {
                 console.log("Obtendo localização...");
-                //await getLocation();
-                //console.log(`Localização obtida: ${minhaLat}, ${minhaLon}`);
-                //aqui
-                
             } catch (error) {
                 console.error("Falha ao obter localização:", error);
-                // Pode usar uma localização padrão ou pedir manualmente
                 usarLocalizacaoPadrao();
             }
         }
@@ -1339,9 +1494,6 @@
             document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
             
             const termo = document.getElementById('encarregado-regional-input').value.trim();
-            // Se o termo estiver vazio, pode alertar ou simplesmente não filtrar? Vamos manter o comportamento anterior: se vazio, não filtra por nome, mas lista todos os futuros.
-            // Porém, para seguir a lógica de "todas", se vazio, não faz nada? Vamos permitir que se vazio, liste todos (já que o botão consultar foi clicado).
-            // Mas para consistência, se vazio e não for "todos", talvez deva alertar? Vou manter: se vazio, lista todos (pois o usuário pode ter clicado em consultar sem digitar, mas isso é permitido).
             
             const tabela = document.querySelector('#tabela-eventos tbody');
             tabela.innerHTML = '';
@@ -1359,42 +1511,33 @@
                 cidades += `|${checkbox.value}|`;
             });
 
-            // Verifica se o termo é "todas" ou "todos"
             const termoEhTodos = isTodos(termo);
 
             let encontrouEventos = false;
             let index = 0;
-            const hoje = new Date(new Date().setHours(0, 0, 0, 0)); // Data atual sem horas
+            const hoje = new Date(new Date().setHours(0, 0, 0, 0));
 
             dados.forEach(item => {
                 try {
                     const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = item.split(';');
                     
                     if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
-                        // Verificar se a data do ensaio regional é futura
                         const partesData = dataEnsaioRegional.split('/');
                         if (partesData.length === 3) {
                             const dia = parseInt(partesData[0]);
-                            const mes = parseInt(partesData[1]) - 1; // Meses começam em 0
+                            const mes = parseInt(partesData[1]) - 1;
                             const ano = parseInt(partesData[2]);
                             const dataEvento = new Date(ano, mes, dia);
-                            
-                            // Comparar apenas data (ignorar horas)
                             dataEvento.setHours(0, 0, 0, 0);
                             
-                            // Verificar se é data futura ou é hoje
                             if (dataEvento >= hoje) {
-                                // Se não for "todos", aplica o filtro pelo encarregado regional
                                 let encRegionalSemAcento = TiraAcento(encarregadoRegional);
                                 const encMatch = termoEhTodos || (encRegionalSemAcento && encRegionalSemAcento.toUpperCase().includes(termo.toUpperCase()));
                                 
                                 if (encMatch) {
                                     if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
-                                        // Linha principal
-                                        LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario, lat, lon)
-
-                                        // Detalhes
-                                        const dataFormatada = dataEnsaioRegional; // Usar a mesma data
+                                        LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia)
+                                        const dataFormatada = dataEnsaioRegional;
                                         CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                                         index++;
                                         encontrouEventos = true;
@@ -1417,29 +1560,17 @@
             }
         }
 
-        // Versão simplificada que funciona em todos os celulares
         function imprimirTabelaAtual() {
             try {
-                // Determinar qual tipo de consulta está ativa
                 const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
                 let titulo = '';
-                
                 switch(tipoConsulta) {
-                    case 'data':
-                        titulo = 'Ensaio Local por Data';
-                        break;
-                    case 'CasaOracao':
-                        titulo = 'Ensaio Local por Casa de Oração';
-                        break;
-                    case 'encarregado-local':
-                        titulo = 'Ensaio Local por Encarregado Local';
-                        break;
-                    case 'encarregado-regional':
-                        titulo = 'Ensaio Regional';
-                        break;
+                    case 'data': titulo = 'Ensaio Local por Data'; break;
+                    case 'CasaOracao': titulo = 'Ensaio Local por Casa de Oração'; break;
+                    case 'encarregado-local': titulo = 'Ensaio Local por Encarregado Local'; break;
+                    case 'encarregado-regional': titulo = 'Ensaio Regional'; break;
                 }
                 
-                // Criar HTML para PDF
                 let html = `
                     <!DOCTYPE html>
                     <html>
@@ -1447,164 +1578,73 @@
                         <meta charset="UTF-8">
                         <title>${titulo}</title>
                         <style>
-                            body { 
-                                font-family: Arial, sans-serif; 
-                                margin: 15px;
-                                font-size: 12px;
-                            }
-                            h1 { 
-                                color: #2c3e50; 
-                                text-align: center;
-                                margin-bottom: 10px;
-                            }
-                            .header-info {
-                                text-align: center;
-                                margin-bottom: 20px;
-                                color: #666;
-                                font-size: 11px;
-                            }
-                            .main-table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                margin-bottom: 20px;
-                            }
-                            .main-table th {
-                                background-color: #3498db;
-                                color: white;
-                                padding: 8px;
-                                text-align: left;
-                                border: 1px solid #2980b9;
-                            }
-                            .main-table td {
-                                border: 1px solid #ddd;
-                                padding: 8px;
-                                vertical-align: top;
-                            }
-                            .details-section {
-                                margin: 10px 0;
-                                padding: 10px;
-                                background-color: #f8f9fa;
-                                border: 1px solid #dee2e6;
-                                border-radius: 4px;
-                            }
-                            .details-title {
-                                font-weight: bold;
-                                color: #2c3e50;
-                                margin-bottom: 5px;
-                                font-size: 11px;
-                            }
-                            .details-table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                font-size: 10px;
-                            }
-                            .details-table td {
-                                border: 1px solid #ccc;
-                                padding: 5px;
-                            }
-                            .details-label {
-                                background-color: #e9ecef;
-                                font-weight: bold;
-                                width: 25%;
-                            }
-                            .footer {
-                                text-align: center;
-                                margin-top: 30px;
-                                font-size: 10px;
-                                color: #6c757d;
-                            }
+                            body { font-family: Arial, sans-serif; margin: 15px; font-size: 12px; }
+                            h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
+                            .header-info { text-align: center; margin-bottom: 20px; color: #666; font-size: 11px; }
+                            .main-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                            .main-table th { background-color: #3498db; color: white; padding: 8px; text-align: left; border: 1px solid #2980b9; }
+                            .main-table td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
+                            .footer { text-align: center; margin-top: 30px; font-size: 10px; color: #6c757d; }
                         </style>
                     </head>
                     <body>
                         <h1>${titulo}</h1>
-                        <div class="header-info">
-                            Gerado em: ${new Date().toLocaleString('pt-BR')}
-                        </div>
+                        <div class="header-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+                        <table class="main-table">
+                            <tr><th>Local</th><th>Cidade</th><th>Data</th><th>Dia Ensaio</th><th>Hora</th><th>Enc Local</th><th>Enc Regional</th></tr>
                 `;
                 
-                // Coletar dados da tabela
                 const tbody = document.querySelector('#tabela-eventos tbody');
                 const linhas = tbody.querySelectorAll('tr');
-                let contador = 0;
-                html += `
-                <table class="main-table">
-                    <tr>
-                        <td><strong>Local:</strong></td>
-                        <td><strong>Cidade:</strong></td>
-                        <td><strong>Data:</strong></td>
-                        <td><strong>Dia Ensaio:</strong></td>
-                        <td><strong>Hora Ensaio:</strong></td>
-                        <td><strong>Encarregado Local:</strong></td>
-                        <td><strong>Encarregado Regional:</strong></td>
-                    </tr>`;
-                let Quantidade = 0
+                let Quantidade = 0;
                 for (let i = 0; i < linhas.length; i++) {
                     const linha = linhas[i];
-                    const celulasPrimeiraLinha = linha.querySelectorAll('td');
-                    if (i % 4 === 0) {
-                        html += `
-                            <tr>
-                                <td>${celulasPrimeiraLinha[0].innerHTML}</td>
-                                <td>${celulasPrimeiraLinha[1].innerHTML}</td>
-                                <td>${celulasPrimeiraLinha[3].innerHTML}</td>`;
-                    }    
-                    if (i % 4 === 1) {
-                         html += `
-                                <td>${celulasPrimeiraLinha[6].innerHTML}</td>
-                                <td>${celulasPrimeiraLinha[7].innerHTML}</td>
-                                <td>${celulasPrimeiraLinha[8].innerHTML}</td>
-                                <td>${celulasPrimeiraLinha[9].innerHTML}</td>
-                            </tr>`;
-                            Quantidade += 1
-                    } 
+                    const celulas = linha.querySelectorAll('td');
+                    if (i % 4 === 0 && celulas.length >= 4) {
+                        // Pega os detalhes da linha de detalhes (i+1)
+                        const detalhesRow = linhas[i+1];
+                        const detalhesCelulas = detalhesRow ? detalhesRow.querySelectorAll('td') : [];
+                        const diaEnsaio = detalhesCelulas[6] ? detalhesCelulas[6].innerHTML : '';
+                        const horaEnsaio = detalhesCelulas[7] ? detalhesCelulas[7].innerHTML : '';
+                        const encLocal = detalhesCelulas[8] ? detalhesCelulas[8].innerHTML : '';
+                        const encRegional = detalhesCelulas[9] ? detalhesCelulas[9].innerHTML : '';
+                        html += `<tr>
+                            <td>${celulas[0].innerHTML}</td>
+                            <td>${celulas[1].innerHTML}</td>
+                            <td>${celulas[3].innerHTML}</td>
+                            <td>${diaEnsaio}</td>
+                            <td>${horaEnsaio}</td>
+                            <td>${encLocal}</td>
+                            <td>${encRegional}</td>
+                        </tr>`;
+                        Quantidade++;
+                    }
                 }
-                html += `
-                </table>`;
-
-                // Rodapé
-                html += `
-                    <div class="footer">
-                        Total de registros: ${Quantidade} | Sistema Ensaio Local
-                    </div>
-                </body>
-                </html>`;
+                html += `</table><div class="footer">Total de registros: ${Quantidade} | Sistema Ensaio Local</div></body></html>`;
                 
-                // Abrir em nova janela
                 const janela = window.open('', '_blank');
                 janela.document.write(html);
                 janela.document.close();
-                
-                // Gerar PDF/Imprimir
-                setTimeout(() => {
-                    janela.print();
-                }, 500);
-                
+                setTimeout(() => { janela.print(); }, 500);
             } catch (error) {
                 console.error('Erro:', error);
                 alert('Erro ao gerar relatório.');
             }
         }
 
-        // Adicione esta nova função:
         function toggleTodos() {
             const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
             const checkboxes = document.querySelectorAll('input[name="cidade"]');
-            
             checkboxes.forEach(checkbox => {
                 checkbox.checked = todosCheckbox.checked;
             });
-            
-            // Atualizar a tabela baseado no novo estado
             AlteraCidade();
         }
 
-        // Função para alternar os detalhes
         function toggleDetalhes(index) {
             const detalhes = document.getElementById(`detalhes-${index}`);
             const expandirBtn = document.querySelector(`#evento-${index} .btn-expandir`);
-            
             if (!detalhes || !expandirBtn) return;
-            
             if (detalhes.classList.contains('visible')) {
                 detalhes.classList.remove('visible');
                 expandirBtn.textContent = '+';
@@ -1615,20 +1655,17 @@
                     const otherBtn = document.querySelector(`#evento-${otherIndex} .btn-expandir`);
                     if (otherBtn) otherBtn.textContent = '+';
                 });
-                
                 detalhes.classList.add('visible');
                 expandirBtn.textContent = '-';
             }
         }
 
-        // Função para abrir o Maps
         function abrirMaps(localizacao) {
             if (localizacao) {
                 window.open("https://maps.app.goo.gl/" + localizacao, "_blank");
             }
         }
 
-        // Função para formatar data como dd/mm/aaaa
         function formatarData(data) {
             const dia = String(data.getDate()).padStart(2, '0');
             const mes = String(data.getMonth() + 1).padStart(2, '0');
@@ -1636,97 +1673,59 @@
             return `${dia}/${mes}/${ano}`;
         }
 
-        // Função para obter o nome do dia da semana
         function getDiaSemana(data) {
             const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
             let NumeroSemana = ""
-           if (data.getDate() <= 7) {
-                NumeroSemana = "1";
-           } else if (data.getDate() <= 14) {
-                NumeroSemana = "2";
-           } else if (data.getDate() <= 21) {
-                NumeroSemana = "3";
-           } else if (data.getDate() <= 28) {
-                NumeroSemana = "4";
-           } else {
-                NumeroSemana = "5";
-           }
-           let Ordem = "ª"
-           if (data.getDay() == 0 || data.getDay() == 6) {
-                Ordem = "º";
-           }
-
-            return NumeroSemana + Ordem + " " + dias[data.getDay()];
+           if (data.getDate() <= 7) NumeroSemana = "1";
+           else if (data.getDate() <= 14) NumeroSemana = "2";
+           else if (data.getDate() <= 21) NumeroSemana = "3";
+           else if (data.getDate() <= 28) NumeroSemana = "4";
+           else NumeroSemana = "5";
+           let Ordem = (data.getDay() == 0 || data.getDay() == 6) ? "º" : "ª";
+           return NumeroSemana + Ordem + " " + dias[data.getDay()];
         }
 
-        // Função para preencher o select com as datas
         function preencherSelectDatas() {
             const select = document.getElementById('data-select');
             const hoje = new Date();
-            
             select.innerHTML = '';
-            
             for (let i = 0; i < 120; i++) {
                 const data = new Date(hoje);
                 data.setDate(hoje.getDate() + i);
-                
                 const dataFormatada = formatarData(data);
                 const diaSemana = getDiaSemana(data);
-                
                 const option = document.createElement('option');
                 option.value = dataFormatada + "|" + diaSemana;
                 option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
-                
-                if (i === 0) {
-                    option.selected = true;
-                }
-                
+                if (i === 0) option.selected = true;
                 select.appendChild(option);
             }
         }
 
-        // Função CORRIGIDA para calcular a data do evento
         function calcularDataEvento(descricao, mes, ano) {
             const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
             if (!match) return null;
-            
             const ordem = parseInt(match[1]);
             let diaSemana = match[2].trim().toUpperCase();
-            
-            diaSemana = diaSemana
-                .replace(/-/g, ' ')
-                .replace(/FEIRA/g, '')
-                .trim();
-            
+            diaSemana = diaSemana.replace(/-/g, ' ').replace(/FEIRA/g, '').trim();
             const diasMap = {
-                'DOMINGO': 0,
-                'SEGUNDA': 1,
-                'TERÇA': 2, 'TERCA': 2,
-                'QUARTA': 3,
-                'QUINTA': 4,
-                'SEXTA': 5,
-                'SÁBADO': 6, 'SABADO': 6
+                'DOMINGO': 0, 'SEGUNDA': 1, 'TERÇA': 2, 'TERCA': 2,
+                'QUARTA': 3, 'QUINTA': 4, 'SEXTA': 5, 'SÁBADO': 6, 'SABADO': 6
             };
-
             const diaNum = diasMap[diaSemana];
             if (diaNum === undefined) return null;
-
             let data = new Date(ano, mes - 1, 1);
             let contador = 0;
-            
             while (data.getMonth() === mes - 1) {
                 if (data.getDay() === diaNum) {
                     contador++;
-                    if (contador === ordem) {
-                        return new Date(data);
-                    }
+                    if (contador === ordem) return new Date(data);
                 }
                 data.setDate(data.getDate() + 1);
             }
             return null;
         }
 
-        // Função para gerar a tabela por data
         function gerarTabelaPorData(dataInformada) {
             getLocation();
             document.getElementById('btn-imprimir-data').disabled = false;
@@ -1740,7 +1739,6 @@
             }
             
             let cidades = "|";
-            
             checkboxes.forEach((checkbox) => {
                 cidades += `|${checkbox.value}|`;
             });
@@ -1759,9 +1757,7 @@
                 try {
                     const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = item.split(';');
                     
-                    if (!deveExibirMes(mes, meses)) {
-                        return;
-                    }
+                    if (!deveExibirMes(mes, meses)) return;
                     
                     let dataEvento = ""
                     if ((dia >= 22 && dia <= 28)) {
@@ -1780,11 +1776,7 @@
                         
                         if (totalNaoMarcados == 0 || cidades.indexOf("|"+setor+"|") > 0)  {
                             const dataFormatada = dataInformada;
-
-                            // Linha principal
-                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon)
-                            
-                            // Detalhes (MÉTODO CORRIGIDO)
+                            LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia)
                             CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario)
                             index++;
                             encontrouEventos = true;
@@ -1804,7 +1796,106 @@
             }
         }
 
-        // Inicialização
+        // ===== FUNÇÕES DO CONVITE =====
+        function abrirConvite(index) {
+            const dadosLinha = window.linhasDados[index];
+            if (!dadosLinha) {
+                alert('Dados não disponíveis para este ensaio.');
+                return;
+            }
+
+            // Preencher divs
+            document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
+            document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
+            
+            // Converter horário
+            let horaTexto = dadosLinha.horario;
+            if (horaTexto === 'T') horaTexto = '17:00';
+            else if (horaTexto === 'T1') horaTexto = '16:30';
+            else if (horaTexto === 'N') horaTexto = '19:30';
+            else horaTexto = horaTexto || '19:30';
+            document.getElementById('DivHora').textContent = horaTexto;
+            
+            // Local (link maps)
+            const divLocal = document.getElementById('DivLocal');
+            if (dadosLinha.localizacao) {
+                divLocal.innerHTML = `<a href="https://maps.app.goo.gl/${dadosLinha.localizacao}" target="_blank" style="color:#fff; text-decoration:underline;">Localização</a>`;
+            } else {
+                divLocal.textContent = 'Local não informado';
+            }
+            
+            // Mostrar overlay
+            document.getElementById('convite-overlay').style.display = 'flex';
+        }
+
+        // Fechar convite
+        document.getElementById('btn-fechar-convite').addEventListener('click', function() {
+            document.getElementById('convite-overlay').style.display = 'none';
+        });
+
+        // Fechar ao clicar no fundo escuro
+        document.getElementById('convite-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Salvar imagem do convite
+        document.getElementById('btn-salvar-imagem').addEventListener('click', function() {
+            const container = document.getElementById('convite-container');
+            html2canvas(container, {
+                scale: 2, // melhor qualidade
+                useCORS: true,
+                backgroundColor: '#fff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'convite.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert('Erro ao gerar imagem: ' + err.message);
+            });
+        });
+
+        // Enviar para WhatsApp
+        document.getElementById('btn-enviar-whatsapp').addEventListener('click', function() {
+            const container = document.getElementById('convite-container');
+            html2canvas(container, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#fff'
+            }).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    const file = new File([blob], 'convite.png', { type: 'image/png' });
+                    // Tenta usar Web Share API (mobile)
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'Convite Ensaio',
+                            files: [file]
+                        }).catch(err => {
+                            console.log('Erro no compartilhamento:', err);
+                            // Fallback: baixar
+                            const link = document.createElement('a');
+                            link.download = 'convite.png';
+                            link.href = canvas.toDataURL('image/png');
+                            link.click();
+                            alert('Imagem baixada. Envie pelo WhatsApp manualmente.');
+                        });
+                    } else {
+                        // Fallback para desktop
+                        const link = document.createElement('a');
+                        link.download = 'convite.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        alert('Imagem baixada. Envie pelo WhatsApp manualmente.');
+                    }
+                });
+            }).catch(err => {
+                alert('Erro ao gerar imagem: ' + err.message);
+            });
+        });
+
+        // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 carregarPopup();
@@ -1825,14 +1916,10 @@
                 gerarTabelaPorData(dataSelecionada);
             });
             document.getElementById('casa-oracao-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    consultarPorCasaOracao();
-                }
+                if (e.key === 'Enter') consultarPorCasaOracao();
             });
             document.getElementById('encarregado-local-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    consultarPorEncarregadoLocal();
-                }
+                if (e.key === 'Enter') consultarPorEncarregadoLocal();
             });
             document.getElementById('encarregado-regional-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
@@ -1857,24 +1944,19 @@
                 }
             });
 
-            // Controles do menu
             const menuBtn = document.getElementById('menu-btn');
             const overlay = document.getElementById('overlay');
-            
             function toggleMenu() {
                 document.body.classList.toggle('menu-aberto');
             }
-            
             menuBtn.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
-
         });
         
         function AlteraCidade() {
             getLocation();
             const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
             
-            // Verificar o estado do checkbox "todos"
             const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
             const checkboxes = document.querySelectorAll('input[name="cidade"]');
             const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
@@ -1886,7 +1968,6 @@
                 } else if (todosDesmarcados) {
                     todosCheckbox.checked = false;
                 } else {
-                    // Estado indeterminado (alguns marcados, outros não)
                     todosCheckbox.indeterminate = true;
                 }
             }
@@ -1903,13 +1984,11 @@
             }
         }
 
-        // Função para usar localização padrão (fallback)
         function usarLocalizacaoPadrao() {
-            // Coordenadas aproximadas de Goiânia
             minhaLat = -16.6869;
             minhaLon = -49.2648;
             console.log("Usando localização padrão (Goiânia)");
         }
-</script>
+    </script>
 </body>
 </html>
