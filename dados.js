@@ -102,7 +102,7 @@
             "Fama - Setor Marechal Rondon;Goiânia;2ª TERÇA-FEIRA;N;5TyhAmrtwvYnvwfw8;5;Elson Aguiar;Doralino;T;-16.7310459;-49.4522408;DM DN 4N SN;26/04/2026", //
             "Jardim Itapuã;Aparecida;2ª TERÇA-FEIRA;N;MEfkGCz8dp56TEL79;6;Mizael Balduíno;;T;-16.7899094;-49.2982941;DN 6N;",
             "Parque Flamboyant;Aparecida;2ª QUARTA-FEIRA;N;p1cv8v1pXmtsUyiq8;6;Gideon;;T;-16.7408375;-49.2197766;DN 2N 5N;08/02/2026",
-            "Vila Roriz - Urias Magalhães 2;Goiânia;4º DOMINGO;T;YwXrcBbGEWvqpZb87;5;Thales Silva;Doralino;T;-16.6393546;-49.265602;2N 5N;",
+            "Vila Roriz - Urias Magalhães 2;Goiânia;4º DOMINGO;T;YwXrcBbGEWvqpZb87;5;;Doralino;T;-16.6393546;-49.265602;2N 5N;",
             "Setor São Judas Tadeu;Goiânia;3º DOMINGO;T;z7SA5X6QjFSF47D89;5;Roberto Lara;Rogerio Rosemberg;T;-16.617153;-49.2478092;DN 2N 6N;",
             "Setor Santa Genoveva;Goiânia;2ª QUARTA-FEIRA;N;uYp9wBLFHeQJf1rWA;5;Robson Jose Alves;Rogerio Rosemberg;T;-16.6298706;-49.2355763;DN 6N;",
             "Jardim Novo Mundo;Goiânia;2ª QUARTA-FEIRA;N;t193qgTKffUqQhDF7;1;CARLOS DA SILVA;HELTON RICARDO;T;-16.6894674;-49.2286619;DN 3N 5N;24/05/2026",
@@ -259,5 +259,4 @@
             "Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;Gilton Pereira;T;-16.3977085;-49.2673413;3N 6N;",
             "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;",
             "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;"
-
         ];
