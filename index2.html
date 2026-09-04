@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensaios Locais e Regionais Goiânia</title>
+    
+    <link rel="icon" type="image/png" href="logo-192.png">
+    <link rel="apple-touch-icon" href="logo-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ensaios">
+    <link rel="manifest" href="manifest.json">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* ===== ESTILOS GERAIS ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+        }
+        .consultas-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 2px;
+            margin-bottom: 2px;
+        }
+        .consultas-titulo {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 2px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .radio-option:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+        .radio-option input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .radio-option label {
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        #data-select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            flex: 1;
+        }
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            flex: 1;
+        }
+        .botao-consultar-imprimir {
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: #27ae60;
+        }
+        .botao-consultar-imprimir:hover {
+            background-color: #3498db;
+        }
+        .botao-consultar-imprimir:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0px;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .detalhes-content {
+            display: none;
+        }
+        .detalhes-content.visible {
+            display: table-row;
+        }
+        .btn-expandir {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
+        }
+        .btn-expandir:hover {
+            background: #2980b9;
+        }
+        .btn-maps {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 5px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 2px;
+            width: 25px;
+            height: 80px;
+            transition: background-color 0.3s;
+        }
+        .btn-maps:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+        .btn-convite {
+            background: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
+            margin-left: 4px;
+        }
+        .btn-convite:hover {
+            background: #e67e22;
+        }
+        .no-events {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        .hidden {
+            display: none !important;
+        }
+        @media (min-width: 600px) {
+            .container { max-width: 800px; padding: 20px; }
+            .radio-group { gap: 20px; }
+            .radio-option { padding: 2px 5px; }
+        }
+        @media (max-width: 480px) {
+            .radio-group { gap: 8px; }
+            .radio-option { padding: 6px 10px; font-size: 0.85rem; }
+            .radio-option label { font-size: 0.85rem; }
+            table { font-size: 0.8rem; }
+            th, td { padding: 4px 4px; }
+        }
+
+        /* Menu Lateral */
+        .menu-lateral {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background-color: #343a40;
+            color: #f8f9fa;
+            padding: 20px 15px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .menu-aberto .menu-lateral { transform: translateX(0); }
+        .menu-lateral h2 {
+            color: #fff;
+            margin-bottom: 5px;
+            text-align: center;
+            font-size: 18px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #495057;
+        }
+        .filtro-grupo { margin-bottom: 25px; }
+        .filtro-opcao {
+            margin-bottom: 8px;
+        }
+        .filtro-opcao label {
+            display: flex;
+            align-items: center;
+            color: #e9ecef;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        .filtro-opcao label:hover { background-color: #495057; }
+        .filtro-opcao input {
+            margin-right: 12px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .menu-aberto .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        .menu-aberto .container {
+            transform: translateX(280px);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .suporte {
+            cursor: pointer;
+            position: fixed;
+            top: 5px;
+            right: 20px;
+            width: 80px;
+            height: 25px;
+            background: #4CAF50;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            color: white;
+            font-size: 22px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .menu1 {
+            cursor: pointer;
+            position: fixed;
+            top: 5px;
+            left: 20px;
+            width: 80px;
+            height: 35px;
+            background-color: #007bff;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            color: white;
+            font-size: 22px;
+            text-align: center;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vertical-text {
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
+
+        /* ===== ESTILOS DO CONVITE ===== */
+        #convite-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #convite-overlay.ativo {
+            display: flex;
+        }
+
+        #convite-container {
+            position: relative;
+            width: 95%;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            aspect-ratio: 9 / 16;
+            min-height: 450px;
+            background-color: #1a0a2e;
+        }
+
+        #convite-imagem {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;
+            display: block;
+        }
+
+        #convite-container.sem-imagem #convite-imagem {
+            display: none;
+        }
+        #convite-container.sem-imagem {
+            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #4a2a6a 60%, #2d1b4e 90%, #1a0a2e 100%);
+        }
+
+        #convite-container .convite-texto {
+            position: absolute;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 90%;
+            pointer-events: none;
+            font-weight: bold;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 2;
+        }
+
+        #DivEnsaio { top: 8%; font-size: 42px; font-family: 'Great Vibes', cursive; width: 100%; color: #ffd700; }
+        #DivIgreja { top: 22%; font-size: 32px; font-family: 'Oleo Script', cursive; width: 100%; color: #f0e6d3; }
+        #DivHoje { top: 18%; right: 2%; transform: translateY(-50%) rotate(90deg); transform-origin: center center; font-size: 28px; color: #ff0000; font-weight: bold; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); pointer-events: none; white-space: nowrap; letter-spacing: 2px; width: auto; left: auto; right: 5%; z-index: 3; }
+        #DivData { top: 48%; left: 10%; font-size: 20px; text-align: left; transform: none; color: #f0e6d3; }
+        #DivHora { top: 56%; left: 10%; font-size: 20px; text-align: left; transform: none; color: #f0e6d3; }
+        #DivLocal { bottom: 12%; left: 10%; font-size: 16px; transform: none; top: auto; color: #f0e6d3; }
+        #DivLocal a { color: #ffd700; text-decoration: underline; pointer-events: auto; }
+
+        .convite-acoes {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            z-index: 10;
+        }
+        .convite-acoes button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        .convite-acoes button:hover { transform: scale(1.05); }
+        .btn-copiar-convite { background: #27ae60; }
+        .btn-copiar-link { background: #2980b9; }
+        .btn-fechar { background: #e74c3c; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .container, .container * { visibility: visible; }
+            .container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 10px;
+                box-shadow: none;
+            }
+            .menu1, .suporte, .overlay, .menu-lateral,
+            .consultas-container, .input-group, #error-msg,
+            .btn-expandir, .btn-maps, .btn-convite,
+            #convite-overlay { display: none !important; }
+            .detalhes-content { display: table-row !important; visibility: visible !important; page-break-inside: avoid; }
+            table { width: 100%; border-collapse: collapse; font-size: 10pt; }
+            th, td { padding: 4px; border: 1px solid #000; }
+            th { background-color: #ddd !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            tr:nth-child(even) { background-color: transparent !important; }
+            .detalhes-content td { border: 1px solid #ccc; }
+            h1 { color: #000 !important; font-size: 12pt; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu1" id="menu-btn">☰ Menu</button>
+    <div class="overlay" id="overlay"></div>
+    <div class="menu-lateral" id="menu-lateral">
+        <h2>Filtrar Cidades/Setor</h2>
+        <div class="filtro-grupo" id="setor"></div>
+    </div>
+
+    <a href="https://wa.me/5562996037779" class="suporte">Suporte</a>
+
+    <div class="container">
+        <h1 id="Titulo">Ensaio Local</h1>
+        <div class="consultas-container">
+            <div class="consultas-titulo">Consulta por:</div>
+            <div class="radio-group">
+                <div class="radio-option"><input type="radio" id="consulta-data" name="tipo-consulta" value="data" checked><label for="consulta-data">Data</label></div>
+                <div class="radio-option"><input type="radio" id="consulta-CasaOracao" name="tipo-consulta" value="CasaOracao"><label for="consulta-CasaOracao">Casa de Oração</label></div>
+                <div class="radio-option"><input type="radio" id="consulta-encarregado-local" name="tipo-consulta" value="encarregado-local"><label for="consulta-encarregado-local">Encarregado</label></div>
+                <div class="radio-option"><input type="radio" id="consulta-encarregado-regional" name="tipo-consulta" value="encarregado-regional"><label for="consulta-encarregado-regional"><b>Ensaio Regional</b></label></div>
+            </div>
+        </div>
+
+        <div id="consulta-data-group" class="input-group">
+            <select id="data-select"></select>
+            <button id="btn-listar" class="botao-consultar-imprimir">Consultar</button>
+            <button id="btn-imprimir-data" class="botao-consultar-imprimir" disabled>Imprimir</button>
+        </div>
+        <div id="consulta-casa-oracao-group" class="input-group hidden">
+            <input type="text" id="casa-oracao-input" placeholder="Digite o nome da Casa de Oração CCB">
+            <button id="btn-consultar-casa-oracao" class="botao-consultar-imprimir">Consultar</button>
+            <button id="btn-imprimir-casa-oracao" class="botao-consultar-imprimir" disabled>Imprimir</button>
+        </div>
+        <div id="consulta-encarregado-local-group" class="input-group hidden">
+            <input type="text" id="encarregado-local-input" placeholder="Digite o nome do Encarregado Local">
+            <button id="btn-consultar-encarregado-local" class="botao-consultar-imprimir">Consultar</button>
+            <button id="btn-imprimir-encarregado-local" class="botao-consultar-imprimir" disabled>Imprimir</button>
+        </div>
+        <div id="consulta-encarregado-regional-group" class="input-group hidden">
+            <input type="text" id="encarregado-regional-input" placeholder="Digite o nome do Encarregado Regional">
+            <button id="btn-consultar-encarregado-regional" class="botao-consultar-imprimir">Consultar</button>
+            <button id="btn-imprimir-ensaio-regional" class="botao-consultar-imprimir" disabled>Imprimir</button>
+        </div>
+
+        <span id="error-msg" class="error"></span>
+
+        <table id="tabela-eventos">
+            <thead>
+                <tr>
+                    <th>Local</th>
+                    <th>Cidade</th>
+                    <th>Dist<span id="Seta" style="cursor:pointer;">▲</span></th>
+                    <th>Data</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- ===== OVERLAY DO CONVITE ===== -->
+    <div id="convite-overlay">
+        <div id="convite-container">
+            <img id="convite-imagem" src="convite01.png" alt="Convite" crossorigin="anonymous">
+            <div id="DivEnsaio" class="convite-texto">Ensaio<br>Local</div>
+            <div id="DivIgreja" class="convite-texto">Nome da Igreja</div>
+            <div id="DivHoje" class="convite-texto">Hoje</div>
+            <div id="DivData" class="convite-texto">Data</div>
+            <div id="DivHora" class="convite-texto">Hora</div>
+            <div id="DivLocal" class="convite-texto"><a href="#" target="_blank">Local</a></div>
+            <div class="convite-acoes">
+                <button class="btn-copiar-convite" id="btn-copiar-convite">📋 Copiar</button>
+                <button class="btn-copiar-link" id="btn-copiar-link">🔗 Link</button>
+                <button class="btn-fechar" id="btn-fechar-convite">✕</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dados.js"></script>
+    <script src="setor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+    // ============================================================
+    // CÓDIGO COMPLETO
+    // ============================================================
+
+    window.linhasDados = [];
+    let minhaLat = 0, minhaLon = 0;
+    let ordemDistancia = true;
+
+    function isTodos(termo) {
+        const t = termo.trim().toLowerCase();
+        return t === 'todas' || t === 'todos';
+    }
+
+    function TiraAcento(texto) {
+        if (!texto) return '';
+        return String(texto).normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[ºª]/g, '')
+            .replace(/[^\w\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .toLowerCase()
+            .trim();
+    }
+
+    function formatarData(data) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    function dataString(dataFormatada) {
+        const partes = dataFormatada.split('/');
+        const dia = partes[0];
+        const mes = parseInt(partes[1]) - 1;
+        const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+        return `${dia} ${meses[mes]}`;
+    }
+
+    function getDiaSemana(data) {
+        const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        let NumeroSemana = "";
+        if (data.getDate() <= 7) NumeroSemana = "1";
+        else if (data.getDate() <= 14) NumeroSemana = "2";
+        else if (data.getDate() <= 21) NumeroSemana = "3";
+        else if (data.getDate() <= 28) NumeroSemana = "4";
+        else NumeroSemana = "5";
+        let Ordem = (data.getDay() == 0 || data.getDay() == 6) ? "º" : "ª";
+        return NumeroSemana + Ordem + " " + dias[data.getDay()];
+    }
+
+    function proximoMesAno(proximoMes, proximoAno) {
+        proximoMes = parseInt(proximoMes) + 1;
+        if (proximoMes > 12) { proximoMes = 1; proximoAno = proximoAno + 1; }
+        return proximoMes + ";" + proximoAno;
+    }
+
+    function calcularDataEvento(descricao, mes, ano) {
+        const match = descricao.match(/(\d+)[ºª]\s+([^;]+)/i);
+        if (!match) return null;
+        const ordem = parseInt(match[1]);
+        let diaSemana = match[2].trim().toUpperCase();
+        diaSemana = diaSemana.replace(/-/g, ' ').replace(/FEIRA/g, '').trim();
+        const diasMap = {
+            'DOMINGO': 0, 'SEGUNDA': 1, 'TERÇA': 2, 'TERCA': 2,
+            'QUARTA': 3, 'QUINTA': 4, 'SEXTA': 5, 'SÁBADO': 6, 'SABADO': 6
+        };
+        const diaNum = diasMap[diaSemana];
+        if (diaNum === undefined) return null;
+        let data = new Date(ano, mes - 1, 1);
+        let contador = 0;
+        while (data.getMonth() === mes - 1) {
+            if (data.getDay() === diaNum) {
+                contador++;
+                if (contador === ordem) return new Date(data);
+            }
+            data.setDate(data.getDate() + 1);
+        }
+        return null;
+    }
+
+    function deveExibirMes(mes, configMeses) {
+        if (!configMeses || configMeses === 'T') return true;
+        if (configMeses === 'P') return mes % 2 === 0;
+        if (configMeses === 'I') return mes % 2 === 1;
+        if (configMeses === '3M1') return mes % 3 === 1;
+        if (configMeses === '3M2') return mes % 3 === 2;
+        if (configMeses === '3M3') return mes % 3 === 0;
+        const mesesPermitidos = configMeses.split('!').map(m => parseInt(m));
+        return mesesPermitidos.includes(mes);
+    }
+
+    function calcularProximaData(descricaoDia, meses) {
+        let hoje = new Date(new Date().setHours(0,0,0,0));
+        const mesAtual = hoje.getMonth() + 1;
+        const anoAtual = hoje.getFullYear();
+        let proximoMes = mesAtual;
+        let proximoAno = anoAtual;
+        let dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+        if (dataEvento === null) {
+            descricaoDia = descricaoDia.replace("5", "4");
+            dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+        }
+        if (dataEvento && dataEvento < hoje) {
+            const MesAno = proximoMesAno(proximoMes, proximoAno);
+            const nextMesAno = MesAno.split(';');
+            proximoMes = parseInt(nextMesAno[0]);
+            proximoAno = parseInt(nextMesAno[1]);
+        }
+        if (meses === "I") {
+            while (proximoMes % 2 === 0) {
+                const MesAno = proximoMesAno(proximoMes, proximoAno);
+                const nextMesAno = MesAno.split(';');
+                proximoMes = parseInt(nextMesAno[0]);
+                proximoAno = parseInt(nextMesAno[1]);
+            }
+        } else if (meses === "P") {
+            while (proximoMes % 2 === 1) {
+                const MesAno = proximoMesAno(proximoMes, proximoAno);
+                const nextMesAno = MesAno.split(';');
+                proximoMes = parseInt(nextMesAno[0]);
+                proximoAno = parseInt(nextMesAno[1]);
+            }
+        } else if (meses === "3M1") {
+            while (!(proximoMes == 1 || proximoMes == 4 || proximoMes == 7 || proximoMes == 10)) {
+                const MesAno = proximoMesAno(proximoMes, proximoAno);
+                const nextMesAno = MesAno.split(';');
+                proximoMes = parseInt(nextMesAno[0]);
+                proximoAno = parseInt(nextMesAno[1]);
+            }
+        } else if (meses === "3M2") {
+            while (!(proximoMes == 2 || proximoMes == 5 || proximoMes == 8 || proximoMes == 11)) {
+                const MesAno = proximoMesAno(proximoMes, proximoAno);
+                const nextMesAno = MesAno.split(';');
+                proximoMes = parseInt(nextMesAno[0]);
+                proximoAno = parseInt(nextMesAno[1]);
+            }
+        } else if (meses === "3M3") {
+            while (!(proximoMes == 3 || proximoMes == 6 || proximoMes == 9 || proximoMes == 12)) {
+                const MesAno = proximoMesAno(proximoMes, proximoAno);
+                const nextMesAno = MesAno.split(';');
+                proximoMes = parseInt(nextMesAno[0]);
+                proximoAno = parseInt(nextMesAno[1]);
+            }
+        }
+        dataEvento = calcularDataEvento(descricaoDia, proximoMes, proximoAno);
+        return dataEvento;
+    }
+
+    function calcularDistancia(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function usarLocalizacaoPadrao() {
+        minhaLat = -16.6869;
+        minhaLon = -49.2648;
+    }
+
+    function getLocation() {
+        return new Promise((resolve) => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        minhaLat = position.coords.latitude;
+                        minhaLon = position.coords.longitude;
+                        resolve({ minhaLat, minhaLon });
+                    },
+                    (error) => {
+                        console.error(error);
+                        usarLocalizacaoPadrao();
+                        resolve({ minhaLat, minhaLon });
+                    }
+                );
+            } else {
+                usarLocalizacaoPadrao();
+                resolve({ minhaLat, minhaLon });
+            }
+        });
+    }
+
+    function limparTabela() {
+        const tabela = document.querySelector('#tabela-eventos tbody');
+        if (tabela) tabela.innerHTML = '';
+    }
+
+    function ordenarTabelaAtual(inverter = true) {
+        const tabela = document.getElementById('tabela-eventos');
+        const tbody = tabela.querySelector('tbody');
+        const eventosComDetalhes = [];
+
+        tbody.querySelectorAll('tr[id^="evento-"]').forEach(linha => {
+            const idNum = linha.id.replace('evento-', '');
+            const detalhes = document.getElementById(`detalhes-${idNum}`);
+            eventosComDetalhes.push({ evento: linha, detalhes });
+        });
+
+        const regional = document.getElementById('consulta-encarregado-regional').checked;
+
+        eventosComDetalhes.sort((a, b) => {
+            let valorA = 0;
+            let valorB = 0;
+
+            if (!regional) {
+                valorA = parseFloat(a.evento.cells[2].textContent.replace(',', '.')) || 0;
+                valorB = parseFloat(b.evento.cells[2].textContent.replace(',', '.')) || 0;
+            } else {
+                const partesA = a.evento.cells[3].textContent.trim().split('/');
+                const partesB = b.evento.cells[3].textContent.trim().split('/');
+
+                if (partesA.length === 3 && partesB.length === 3) {
+                    valorA = new Date(+partesA[2], +partesA[1] - 1, +partesA[0]).getTime();
+                    valorB = new Date(+partesB[2], +partesB[1] - 1, +partesB[0]).getTime();
+                }
+            }
+
+            return ordemDistancia ? valorA - valorB : valorB - valorA;
+        });
+
+        eventosComDetalhes.forEach(item => {
+            tbody.appendChild(item.evento);
+            if (item.detalhes) tbody.appendChild(item.detalhes);
+        });
+
+        const seta = document.getElementById('Seta');
+        if (seta) seta.textContent = ordemDistancia ? '▲' : '▼';
+
+        if (inverter) ordemDistancia = !ordemDistancia;
+    }
+
+    function trocaSeta() {
+        ordenarTabelaAtual(true);
+    }
+
+    function toggleDetalhes(index) {
+        const detalhes = document.getElementById(`detalhes-${index}`);
+        const expandirBtn = document.querySelector(`#evento-${index} .btn-expandir`);
+        if (!detalhes || !expandirBtn) return;
+        if (detalhes.classList.contains('visible')) {
+            detalhes.classList.remove('visible');
+            expandirBtn.textContent = '+';
+        } else {
+            document.querySelectorAll('.detalhes-content.visible').forEach(d => {
+                d.classList.remove('visible');
+                const otherIndex = d.id.split('-')[1];
+                const otherBtn = document.querySelector(`#evento-${otherIndex} .btn-expandir`);
+                if (otherBtn) otherBtn.textContent = '+';
+            });
+            detalhes.classList.add('visible');
+            expandirBtn.textContent = '-';
+        }
+    }
+
+    function abrirMaps(localizacao) {
+        if (!localizacao) return;
+        const destino = /^https?:\/\//i.test(localizacao)
+            ? localizacao
+            : `https://maps.app.goo.gl/${localizacao}`;
+        window.open(destino, '_blank', 'noopener,noreferrer');
+    }
+
+    function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
+        const detalhesRow = tabela.insertRow();
+        detalhesRow.className = 'detalhes-content';
+        detalhesRow.id = `detalhes-${index}`;
+        const detalhesCell = detalhesRow.insertCell(0);
+        detalhesCell.colSpan = 5;
+        let complemento = "";
+        if (meses == "I") complemento = " - Meses Impares";
+        else if (meses == "P") complemento = " - Meses Pares";
+        else if (meses == "3M1") complemento = " - Meses JAN, ABR, JUL e OUT";
+        else if (meses == "3M2") complemento = " - Meses FEV, MAI, AGO e NOV";
+        else if (meses == "3M3") complemento = " - Meses MAR, JUN, SET e DEZ";
+        
+        let horaTexto = horario == "T" ? "17:00" : horario == "T1" ? '16:30' : "19:30";
+        const diaTexto = descricaoDia.replace(/5º/g, 'ÚLTIMO').replace(/5ª/g, 'ÚLTIMA');
+        
+        detalhesCell.innerHTML = `
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <tr style="border:1px solid #e67e22;">
+                    <td style="padding:4px;"><strong>Data Ensaio:</strong> ${diaTexto}${complemento}</td>
+                    <td style="padding:4px;"><strong>Hora:</strong> ${horaTexto}</td>
+                    <td style="padding:4px;"><strong>Enc Local:</strong> ${encarregadoLocal || 'Não informado'}</td>
+                    <td style="padding:4px;"><strong>Enc Regional:</strong> ${encarregadoRegional || 'Não informado'}</td>
+                    <td style="padding:4px;text-align:center;">
+                        <button class="btn-maps" onclick="abrirMaps('${localizacao}')" style="height:60px;width:40px;font-size:10px;">
+                            <div class="vertical-text">MAPS</div>
+                        </button>
+                    </td>
+                </tr>
+            </table>`;
+    }
+
+    function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
+        const row = tabela.insertRow();
+        row.id = `evento-${index}`;
+        row.insertCell(0).innerHTML = local || '---';
+        row.insertCell(1).innerHTML = cidade || '---';
+        
+        const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
+        let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
+        row.insertCell(2).textContent = distanciaAtual;
+        
+        if (document.getElementById('consulta-encarregado-regional').checked == false) {
+            row.insertCell(3).textContent = dataString(dataFormatada);
+        } else {
+            row.insertCell(3).textContent = dataFormatada;
+        }
+        
+        const acoesCell = row.insertCell(4);
+        acoesCell.style.textAlign = "center";
+        acoesCell.style.whiteSpace = "nowrap";
+
+        const expandirBtn = document.createElement('button');
+        expandirBtn.className = 'btn-expandir';
+        expandirBtn.textContent = '+';
+        expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
+        acoesCell.appendChild(expandirBtn);
+
+        const conviteBtn = document.createElement('button');
+        conviteBtn.className = 'btn-convite';
+        conviteBtn.textContent = 'C';
+        conviteBtn.title = 'Abrir convite';
+        conviteBtn.onclick = (e) => { e.stopPropagation(); abrirConvite(index); };
+        acoesCell.appendChild(conviteBtn);
+
+        window.linhasDados[index] = {
+            local, cidade, dataFormatada, horario, localizacao, setor,
+            encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
+        };
+    }
+
+    function preencherSelectDatas() {
+        const select = document.getElementById('data-select');
+        const hoje = new Date();
+        select.innerHTML = '';
+        for (let i = 0; i < 120; i++) {
+            const data = new Date(hoje);
+            data.setDate(hoje.getDate() + i);
+            const dataFormatada = formatarData(data);
+            const diaSemana = getDiaSemana(data);
+            const option = document.createElement('option');
+            option.value = dataFormatada + "|" + diaSemana;
+            option.textContent = `${dataFormatada} (${diaSemana.replace("-FEIRA", "")})`;
+            if (i === 0) option.selected = true;
+            select.appendChild(option);
+        }
+    }
+
+    async function gerarTabelaPorData(dataInformada) {
+        await getLocation();
+        document.getElementById('btn-imprimir-data').disabled = false;
+        
+        const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+        if (checkboxes.length === 0) { 
+            alert("Nenhuma cidade foi selecionada."); 
+            return; 
+        }
+        
+        let cidades = "|";
+        checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
+        
+        const tabela = document.querySelector('#tabela-eventos tbody');
+        tabela.innerHTML = '';
+        
+        const [diaStr, mesStr, anoStr] = dataInformada.split('/');
+        const dia = parseInt(diaStr);
+        const mes = parseInt(mesStr);
+        const ano = parseInt(anoStr);
+        const ultimoDia = new Date(ano, mes, 0).getDate();
+        
+        let encontrouEventos = false;
+        let index = 0;
+        
+        if (typeof dados === 'undefined') {
+            alert('Arquivo dados.js não carregado ou vazio.');
+            return;
+        }
+        
+        dados.forEach(item => {
+            try {
+                const partes = item.split(';');
+                if (partes.length < 11) return;
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
+                
+                if (!deveExibirMes(mes, meses)) return;
+                
+                let dataEvento = null;
+                if (dia >= 22 && dia <= 28) {
+                    if (dia + 7 > ultimoDia) {
+                        dataEvento = calcularDataEvento(descricaoDia.replace("5ª", "4ª").replace("5º", "4º"), mes, ano);
+                    } else {
+                        dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                    }
+                } else {
+                    dataEvento = calcularDataEvento(descricaoDia, mes, ano);
+                }
+                
+                if (dataEvento && dataEvento.getDate() === dia && 
+                    dataEvento.getMonth() === mes - 1 && 
+                    dataEvento.getFullYear() === ano) {
+                    if (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0) {
+                        LinhaPrincipal(tabela, index, local, cidade, dataInformada, horario, 
+                            parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                            encarregadoLocal, encarregadoRegional, meses, descricaoDia);
+                        CriaDetalhe(tabela, index, dataInformada, encarregadoLocal, encarregadoRegional, 
+                            localizacao, descricaoDia, meses, horario);
+                        index++;
+                        encontrouEventos = true;
+                    }
+                }
+            } catch (e) { console.error('Erro ao processar item:', e); }
+        });
+        
+        if (!encontrouEventos) {
+            const row = tabela.insertRow();
+            const cell = row.insertCell(0);
+            cell.colSpan = 5;
+            cell.textContent = "Nenhum ensaio encontrado para esta data.";
+            cell.className = "no-events";
+        } else {
+            ordemDistancia = true;
+            ordenarTabelaAtual(false);
+        }
+    }
+
+    async function consultarPorCasaOracao() {
+        await getLocation();
+        const termoOriginal = document.getElementById('casa-oracao-input').value.trim();
+        const termo = TiraAcento(termoOriginal);
+        if (!termo) {
+            alert("Por favor, digite o nome da Casa de Oração CCB.");
+            return;
+        }
+        document.getElementById('btn-imprimir-casa-oracao').disabled = false;
+        
+        const tabela = document.querySelector('#tabela-eventos tbody');
+        tabela.innerHTML = '';
+        
+        const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+        if (checkboxes.length === 0) {
+            alert("Nenhuma cidade foi selecionada.");
+            return;
+        }
+        
+        let cidades = "|";
+        checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
+        const termoEhTodos = isTodos(termoOriginal);
+        let encontrouEventos = false;
+        let index = 0;
+        
+        if (typeof dados === 'undefined') {
+            alert('Arquivo dados.js não carregado ou vazio.');
+            return;
+        }
+        
+        dados.forEach(item => {
+            try {
+                const partes = item.split(';');
+                if (partes.length < 11) return;
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
+                
+                let localSemAcento = TiraAcento(local);
+                const localMatch = termoEhTodos || localSemAcento.includes(termo);
+                
+                if (localMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, 
+                        parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                        encarregadoLocal, encarregadoRegional, meses, descricaoDia);
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, 
+                        localizacao, descricaoDia, meses, horario);
+                    index++;
+                    encontrouEventos = true;
+                }
+            } catch (e) { console.error(e); }
+        });
+        
+        if (!encontrouEventos) {
+            const row = tabela.insertRow();
+            const cell = row.insertCell(0);
+            cell.colSpan = 5;
+            cell.textContent = "Nenhum ensaio encontrado para esta Casa de Oração.";
+            cell.className = "no-events";
+        } else {
+            ordemDistancia = true;
+            ordenarTabelaAtual(false);
+        }
+    }
+
+    async function consultarPorEncarregadoLocal() {
+        await getLocation();
+        const termoOriginal = document.getElementById('encarregado-local-input').value.trim();
+        const termo = TiraAcento(termoOriginal);
+        if (!termo) {
+            alert("Por favor, digite o nome do Encarregado Local.");
+            return;
+        }
+        document.getElementById('btn-imprimir-encarregado-local').disabled = false;
+        
+        const tabela = document.querySelector('#tabela-eventos tbody');
+        tabela.innerHTML = '';
+        
+        const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+        if (checkboxes.length === 0) {
+            alert("Nenhuma cidade foi selecionada.");
+            return;
+        }
+        
+        let cidades = "|";
+        checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
+        const termoEhTodos = isTodos(termoOriginal);
+        let encontrouEventos = false;
+        let index = 0;
+        
+        if (typeof dados === 'undefined') {
+            alert('Arquivo dados.js não carregado ou vazio.');
+            return;
+        }
+        
+        dados.forEach(item => {
+            try {
+                const partes = item.split(';');
+                if (partes.length < 11) return;
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
+                
+                let encLocalSemAcento = TiraAcento(encarregadoLocal);
+                let encRegionalSemAcento = TiraAcento(encarregadoRegional);
+                const encMatch = termoEhTodos ||
+                    (encLocalSemAcento && encLocalSemAcento.includes(termo)) ||
+                    (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
+                
+                if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
+                    const proximaData = calcularProximaData(descricaoDia, meses);
+                    const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, 
+                        parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                        encarregadoLocal, encarregadoRegional, meses, descricaoDia);
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, 
+                        localizacao, descricaoDia, meses, horario);
+                    index++;
+                    encontrouEventos = true;
+                }
+            } catch (e) { console.error(e); }
+        });
+        
+        if (!encontrouEventos) {
+            const row = tabela.insertRow();
+            const cell = row.insertCell(0);
+            cell.colSpan = 5;
+            cell.textContent = "Nenhum ensaio encontrado para este Encarregado.";
+            cell.className = "no-events";
+        } else {
+            ordemDistancia = true;
+            ordenarTabelaAtual(false);
+        }
+    }
+
+    async function gerarTabelaPorEnsaioRegional() {
+        await getLocation();
+        const termoOriginal = document.getElementById('encarregado-regional-input').value.trim();
+        const termo = TiraAcento(termoOriginal);
+        document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
+        
+        const tabela = document.querySelector('#tabela-eventos tbody');
+        tabela.innerHTML = '';
+        
+        const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
+        if (checkboxes.length === 0) {
+            alert("Nenhuma cidade foi selecionada.");
+            return;
+        }
+        
+        let cidades = "|";
+        checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
+        const termoEhTodos = isTodos(termoOriginal);
+        let encontrouEventos = false;
+        let index = 0;
+        const hoje = new Date(new Date().setHours(0,0,0,0));
+        
+        if (typeof dados === 'undefined') {
+            alert('Arquivo dados.js não carregado ou vazio.');
+            return;
+        }
+        
+        dados.forEach(item => {
+            try {
+                const partes = item.split(';');
+                if (partes.length < 13) return;
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = partes;
+                
+                if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
+                    const partesData = dataEnsaioRegional.split('/');
+                    if (partesData.length === 3) {
+                        const dia = parseInt(partesData[0]);
+                        const mes = parseInt(partesData[1]) - 1;
+                        const ano = parseInt(partesData[2]);
+                        const dataEvento = new Date(ano, mes, dia);
+                        dataEvento.setHours(0,0,0,0);
+                        
+                        if (dataEvento >= hoje) {
+                            let encRegionalSemAcento = TiraAcento(encarregadoRegional);
+                            const encMatch = termoEhTodos || 
+                                (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
+                            
+                            if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
+                                LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario, 
+                                    parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                                    encarregadoLocal, encarregadoRegional, meses, descricaoDia);
+                                CriaDetalhe(tabela, index, dataEnsaioRegional, encarregadoLocal, encarregadoRegional, 
+                                    localizacao, descricaoDia, meses, horario);
+                                index++;
+                                encontrouEventos = true;
+                            }
+                        }
+                    }
+                }
+            } catch (e) { console.error(e); }
+        });
+        
+        if (!encontrouEventos) {
+            const row = tabela.insertRow();
+            const cell = row.insertCell(0);
+            cell.colSpan = 5;
+            cell.textContent = "Nenhum ensaio regional futuro encontrado.";
+            cell.className = "no-events";
+        } else {
+            ordemDistancia = true;
+            ordenarTabelaAtual(false);
+        }
+    }
+
+    function alternarTipoConsulta() {
+        const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+        const titulo = document.getElementById('Titulo');
+        titulo.innerText = tipoConsulta === 'encarregado-regional' ? 'Ensaio Regional' : 'Ensaio Local';
+        
+        document.getElementById('consulta-data-group').classList.add('hidden');
+        document.getElementById('consulta-casa-oracao-group').classList.add('hidden');
+        document.getElementById('consulta-encarregado-local-group').classList.add('hidden');
+        document.getElementById('consulta-encarregado-regional-group').classList.add('hidden');
+        
+        if (tipoConsulta === 'data') {
+            document.getElementById('consulta-data-group').classList.remove('hidden');
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
+        } else if (tipoConsulta === 'CasaOracao') {
+            document.getElementById('consulta-casa-oracao-group').classList.remove('hidden');
+            limparTabela();
+        } else if (tipoConsulta === 'encarregado-local') {
+            document.getElementById('consulta-encarregado-local-group').classList.remove('hidden');
+            limparTabela();
+        } else if (tipoConsulta === 'encarregado-regional') {
+            document.getElementById('consulta-encarregado-regional-group').classList.remove('hidden');
+            limparTabela();
+        }
+    }
+
+    async function AlteraCidade() {
+        await getLocation();
+        const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+        
+        const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
+        const checkboxes = document.querySelectorAll('input[name="cidade"]');
+        if (todosCheckbox && checkboxes.length > 0) {
+            const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
+            todosCheckbox.checked = todosMarcados;
+        }
+        
+        if (tipoConsulta === 'data') {
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
+        } else if (tipoConsulta === 'CasaOracao') {
+            consultarPorCasaOracao();
+        } else if (tipoConsulta === 'encarregado-local') {
+            consultarPorEncarregadoLocal();
+        } else if (tipoConsulta === 'encarregado-regional') {
+            gerarTabelaPorEnsaioRegional();
+        }
+    }
+
+    function toggleTodos() {
+        const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
+        const checkboxes = document.querySelectorAll('input[name="cidade"]');
+        checkboxes.forEach(checkbox => { checkbox.checked = todosCheckbox.checked; });
+        AlteraCidade();
+    }
+
+    function imprimirTabelaAtual() {
+        try {
+            const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
+            let titulo = '';
+            switch(tipoConsulta) {
+                case 'data': titulo = 'Ensaio Local por Data'; break;
+                case 'CasaOracao': titulo = 'Ensaio Local por Casa de Oração'; break;
+                case 'encarregado-local': titulo = 'Ensaio Local por Encarregado Local'; break;
+                case 'encarregado-regional': titulo = 'Ensaio Regional'; break;
+            }
+            
+            let html = `<!DOCTYPE html>
+            <html><head><meta charset="UTF-8"><title>${titulo}</title>
+            <style>
+                body{font-family:Arial;margin:15px;font-size:12px;}
+                h1{color:#2c3e50;text-align:center;margin-bottom:10px;}
+                .header-info{text-align:center;margin-bottom:20px;color:#666;font-size:11px;}
+                .main-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+                .main-table th{background-color:#3498db;color:#fff;padding:8px;border:1px solid #2980b9;text-align:left;}
+                .main-table td{border:1px solid #ddd;padding:8px;vertical-align:top;}
+                .footer{text-align:center;margin-top:30px;font-size:10px;color:#6c757d;}
+            </style></head><body>
+                <h1>${titulo}</h1>
+                <div class="header-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+                <table class="main-table">
+                    <tr><th>Local</th><th>Cidade</th><th>Data</th><th>Dia Ensaio</th><th>Hora</th><th>Enc Local</th><th>Enc Regional</th></tr>`;
+            
+            const tbody = document.querySelector('#tabela-eventos tbody');
+            const linhas = tbody.querySelectorAll('tr');
+            let Quantidade = 0;
+            
+            for (let i = 0; i < linhas.length; i++) {
+                const linha = linhas[i];
+                const celulas = linha.querySelectorAll('td');
+                if (linha.id && linha.id.startsWith('evento-') && celulas.length >= 4) {
+                    const detalhesRow = linhas[i+1];
+                    const detalhesCelulas = detalhesRow ? detalhesRow.querySelectorAll('td') : [];
+                    const diaEnsaio = detalhesCelulas.length > 0 && detalhesCelulas[0] ? detalhesCelulas[0].textContent : '';
+                    const horaEnsaio = detalhesCelulas.length > 1 && detalhesCelulas[1] ? detalhesCelulas[1].textContent : '';
+                    const encLocal = detalhesCelulas.length > 2 && detalhesCelulas[2] ? detalhesCelulas[2].textContent : '';
+                    const encRegional = detalhesCelulas.length > 3 && detalhesCelulas[3] ? detalhesCelulas[3].textContent : '';
+                    
+                    html += `<tr><td>${celulas[0].innerHTML}</td><td>${celulas[1].innerHTML}</td><td>${celulas[3].innerHTML}</td><td>${diaEnsaio}</td><td>${horaEnsaio}</td><td>${encLocal}</td><td>${encRegional}</td></tr>`;
+                    Quantidade++;
+                }
+            }
+            
+            html += `</table><div class="footer">Total de registros: ${Quantidade} | Sistema Ensaio Local</div></body></html>`;
+            
+            const janela = window.open('', '_blank');
+            if (janela) {
+                janela.document.write(html);
+                janela.document.close();
+                setTimeout(() => { janela.print(); }, 500);
+            } else {
+                alert('Pop-up bloqueado. Permita pop-ups para imprimir.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao gerar relatório: ' + error.message);
+        }
+    }
+
+    function CriaMenu() {
+        if (typeof setor === 'undefined' || !setor || setor.length === 0) {
+            document.getElementById('setor').innerHTML = '<p style="color:#888;">Nenhum setor disponível</p>';
+            return;
+        }
+        
+        let HTML = `
+            <div class="filtro-opcao" style="border-bottom:1px solid #495057;margin-bottom:10px;padding-bottom:8px;">
+                <label style="font-weight:bold;color:#fff;">
+                    <input type="checkbox" id="marcar-desmarcar-todos" onclick="toggleTodos()" checked> (Des)Marcar Todos
+                </label>
+            </div>
+        `;
+        
+        for (let i = 0; i < setor.length; i++) {
+            let setorSplit = setor[i].split(';');
+            if (setorSplit.length >= 2) {
+                HTML += `<div class="filtro-opcao">
+                    <label>
+                        <input type="checkbox" name="cidade" value="${setorSplit[0]}" onclick="AlteraCidade()" checked> ${setorSplit[1]}
+                    </label>
+                </div>`;
+            }
+        }
+        document.getElementById('setor').innerHTML = HTML;
+    }
+
+    // ===== FUNÇÕES DO CONVITE =====
+    function abrirConvite(index) {
+        const dadosLinha = window.linhasDados[index];
+        if (!dadosLinha) {
+            alert('Dados não disponíveis para este ensaio.');
+            return;
+        }
+
+        document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
+        document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
+
+        let horaTexto = dadosLinha.horario;
+        if (horaTexto === 'T') horaTexto = '17:00';
+        else if (horaTexto === 'T1') horaTexto = '16:30';
+        else if (horaTexto === 'N') horaTexto = '19:30';
+        else horaTexto = horaTexto || '19:30';
+        document.getElementById('DivHora').textContent = horaTexto;
+
+        const divLocal = document.getElementById('DivLocal');
+        if (dadosLinha.localizacao) {
+            divLocal.innerHTML = `<a href="https://maps.app.goo.gl/${dadosLinha.localizacao}" target="_blank" style="color:#ffd700; text-decoration:underline;">Localização</a>`;
+        } else {
+            divLocal.textContent = 'Local não informado';
+        }
+
+        const overlay = document.getElementById('convite-overlay');
+        overlay.classList.add('ativo');
+        overlay.style.display = 'flex';
+    }
+
+    function fecharConvite() {
+        const overlay = document.getElementById('convite-overlay');
+        overlay.classList.remove('ativo');
+        overlay.style.display = 'none';
+        const botoes = document.querySelector('#convite-container .convite-acoes');
+        if (botoes) botoes.style.display = 'flex';
+    }
+
+    function copiarConvite() {
+        const container = document.getElementById('convite-container');
+        const botoes = container.querySelector('.convite-acoes');
+        const originalDisplay = botoes.style.display;
+        botoes.style.display = 'none';
+
+        html2canvas(container, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: null,
+            logging: false,
+        }).then(canvas => {
+            canvas.toBlob(function(blob) {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.write) {
+                        navigator.clipboard.write([
+                            new ClipboardItem({ [blob.type]: blob })
+                        ]).then(() => {
+                            alert('✅ Imagem do convite copiada!');
+                            botoes.style.display = originalDisplay || 'flex';
+                        }).catch(() => {
+                            const link = document.createElement('a');
+                            link.download = 'convite.png';
+                            link.href = canvas.toDataURL('image/png');
+                            link.click();
+                            alert('✅ Imagem baixada!');
+                            botoes.style.display = originalDisplay || 'flex';
+                        });
+                    } else {
+                        const link = document.createElement('a');
+                        link.download = 'convite.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        alert('✅ Imagem baixada!');
+                        botoes.style.display = originalDisplay || 'flex';
+                    }
+                } catch (e) {
+                    const link = document.createElement('a');
+                    link.download = 'convite.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    alert('✅ Imagem baixada!');
+                    botoes.style.display = originalDisplay || 'flex';
+                }
+            }, 'image/png');
+        }).catch(err => {
+            alert('Erro ao gerar imagem: ' + err.message);
+            botoes.style.display = originalDisplay || 'flex';
+        });
+    }
+
+    // ===== EVENTOS =====
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar
+        preencherSelectDatas();
+
+        // Convite
+        document.getElementById('btn-fechar-convite').addEventListener('click', fecharConvite);
+        document.getElementById('convite-overlay').addEventListener('click', function(e) {
+            if (e.target === this) fecharConvite();
+        });
+        document.getElementById('btn-copiar-convite').addEventListener('click', copiarConvite);
+
+        document.getElementById('btn-copiar-link').addEventListener('click', function() {
+            const divLocal = document.getElementById('DivLocal');
+            const linkElement = divLocal.querySelector('a');
+            let link = linkElement ? linkElement.href : '';
+            if (link && link !== '#' && link !== '') {
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('✅ Link copiado!');
+                }).catch(() => {
+                    const input = document.createElement('input');
+                    input.value = link;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    alert('✅ Link copiado!');
+                });
+            } else {
+                alert('Nenhum link de localização disponível.');
+            }
+        });
+
+        // Imagem do convite
+        const img = document.getElementById('convite-imagem');
+        if (img) {
+            img.addEventListener('load', function() {
+                document.getElementById('convite-container').classList.remove('sem-imagem');
+            });
+            img.addEventListener('error', function() {
+                document.getElementById('convite-container').classList.add('sem-imagem');
+            });
+        }
+
+        // Radios
+        document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
+            radio.addEventListener('change', alternarTipoConsulta);
+        });
+
+        // Botões de consulta
+        document.getElementById('btn-listar').addEventListener('click', function() {
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
+        });
+        document.getElementById('btn-consultar-casa-oracao').addEventListener('click', consultarPorCasaOracao);
+        document.getElementById('btn-consultar-encarregado-local').addEventListener('click', consultarPorEncarregadoLocal);
+        document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', gerarTabelaPorEnsaioRegional);
+
+        // Enter
+        document.getElementById('casa-oracao-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') consultarPorCasaOracao();
+        });
+        document.getElementById('encarregado-local-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') consultarPorEncarregadoLocal();
+        });
+        document.getElementById('encarregado-regional-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') gerarTabelaPorEnsaioRegional();
+        });
+
+        // Imprimir
+        document.getElementById('btn-imprimir-data').addEventListener('click', imprimirTabelaAtual);
+        document.getElementById('btn-imprimir-casa-oracao').addEventListener('click', imprimirTabelaAtual);
+        document.getElementById('btn-imprimir-encarregado-local').addEventListener('click', imprimirTabelaAtual);
+        document.getElementById('btn-imprimir-ensaio-regional').addEventListener('click', imprimirTabelaAtual);
+
+        // Data select
+        document.getElementById('data-select').addEventListener('change', function(e) {
+            if (document.getElementById('consulta-data').checked) {
+                const dataSelecionada = e.target.value.split('|')[0];
+                if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
+            }
+        });
+
+        // Seta
+        document.getElementById('Seta').addEventListener('click', trocaSeta);
+
+        // Menu
+        const menuBtn = document.getElementById('menu-btn');
+        const overlay = document.getElementById('overlay');
+        function toggleMenu() {
+            document.body.classList.toggle('menu-aberto');
+        }
+        menuBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        CriaMenu();
+
+        (async function inicializarTabela() {
+            await initApp();
+            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+            if (dataSelecionada) await gerarTabelaPorData(dataSelecionada);
+        })();
+    });
+
+    async function initApp() {
+        try {
+            await getLocation();
+        } catch (error) {
+            console.error('Erro ao obter localização:', error);
+            usarLocalizacaoPadrao();
+        }
+    }
+
+    window.trocaSeta = trocaSeta;
+    window.toggleDetalhes = toggleDetalhes;
+    window.abrirMaps = abrirMaps;
+    window.abrirConvite = abrirConvite;
+    window.fecharConvite = fecharConvite;
+    window.AlteraCidade = AlteraCidade;
+    window.toggleTodos = toggleTodos;
+    window.imprimirTabelaAtual = imprimirTabelaAtual;
+    window.gerarTabelaPorData = gerarTabelaPorData;
+    window.consultarPorCasaOracao = consultarPorCasaOracao;
+    window.consultarPorEncarregadoLocal = consultarPorEncarregadoLocal;
+    window.gerarTabelaPorEnsaioRegional = gerarTabelaPorEnsaioRegional;
+    </script>
+</body>
+</html>
