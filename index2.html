@@ -426,10 +426,9 @@
 
 #DivHoje { 
     position: absolute;
-    top: 20%;
-    right: 0%;
-    transform: translateY(-50%) rotate(305deg) !important;
-    transform-origin: center center !important;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 28px; 
     color: #ff0000; 
     font-weight: bold; 
@@ -437,8 +436,7 @@
     pointer-events: none; 
     white-space: nowrap; 
     letter-spacing: 2px; 
-    width: auto; 
-    left: auto; 
+    width: auto;
     z-index: 3;
     border: 2px solid rgba(255,255,255,0.8);
     padding: 5px 15px;
@@ -918,45 +916,48 @@
             </table>`;
     }
 
-    function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
-        const row = tabela.insertRow();
-        row.id = `evento-${index}`;
-        row.insertCell(0).innerHTML = local || '---';
-        row.insertCell(1).innerHTML = cidade || '---';
-        
-        const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
-        let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
-        row.insertCell(2).textContent = distanciaAtual;
-        
-        if (document.getElementById('consulta-encarregado-regional').checked == false) {
-            row.insertCell(3).textContent = dataString(dataFormatada);
-        } else {
-            row.insertCell(3).textContent = dataFormatada;
-        }
-        
-        const acoesCell = row.insertCell(4);
-        acoesCell.style.textAlign = "center";
-        acoesCell.style.whiteSpace = "nowrap";
+function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
+    const row = tabela.insertRow();
+    row.id = `evento-${index}`;
+    row.insertCell(0).innerHTML = local || '---';
+    row.insertCell(1).innerHTML = cidade || '---';
+    
+    const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
+    let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
+    row.insertCell(2).textContent = distanciaAtual;
+    
+    if (document.getElementById('consulta-encarregado-regional').checked == false) {
+        row.insertCell(3).textContent = dataString(dataFormatada);
+    } else {
+        row.insertCell(3).textContent = dataFormatada;
+    }
+    
+    const acoesCell = row.insertCell(4);
+    acoesCell.style.textAlign = "center";
+    acoesCell.style.whiteSpace = "nowrap";
 
-        const expandirBtn = document.createElement('button');
-        expandirBtn.className = 'btn-expandir';
-        expandirBtn.textContent = '+';
-        expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
-        acoesCell.appendChild(expandirBtn);
+    const expandirBtn = document.createElement('button');
+    expandirBtn.className = 'btn-expandir';
+    expandirBtn.textContent = '+';
+    expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
+    acoesCell.appendChild(expandirBtn);
 
+    // Só mostra o botão de convite se a data estiver nos próximos 6 dias
+    const temConvite = isProximosDias(dataFormatada);
+    if (temConvite) {
         const conviteBtn = document.createElement('button');
         conviteBtn.className = 'btn-convite';
         conviteBtn.textContent = 'C';
         conviteBtn.title = 'Abrir convite';
         conviteBtn.onclick = (e) => { e.stopPropagation(); abrirConvite(index); };
         acoesCell.appendChild(conviteBtn);
-
-        window.linhasDados[index] = {
-            local, cidade, dataFormatada, horario, localizacao, setor,
-            encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
-        };
     }
 
+    window.linhasDados[index] = {
+        local, cidade, dataFormatada, horario, localizacao, setor,
+        encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
+    };
+}
     function preencherSelectDatas() {
         const select = document.getElementById('data-select');
         const hoje = new Date();
@@ -1405,34 +1406,38 @@
     }
 
     // ===== FUNÇÕES DO CONVITE =====
-    function abrirConvite(index) {
-        const dadosLinha = window.linhasDados[index];
-        if (!dadosLinha) {
-            alert('Dados não disponíveis para este ensaio.');
-            return;
-        }
-
-        document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
-        document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
-
-        let horaTexto = dadosLinha.horario;
-        if (horaTexto === 'T') horaTexto = '17:00';
-        else if (horaTexto === 'T1') horaTexto = '16:30';
-        else if (horaTexto === 'N') horaTexto = '19:30';
-        else horaTexto = horaTexto || '19:30';
-        document.getElementById('DivHora').textContent = horaTexto;
-
-        const divLocal = document.getElementById('DivLocal');
-        if (dadosLinha.localizacao) {
-            divLocal.innerHTML = `<a href="https://maps.app.goo.gl/${dadosLinha.localizacao}" target="_blank" style="color:#ffd700; text-decoration:underline;">Localização</a>`;
-        } else {
-            divLocal.textContent = 'Local não informado';
-        }
-
-        const overlay = document.getElementById('convite-overlay');
-        overlay.classList.add('ativo');
-        overlay.style.display = 'flex';
+function abrirConvite(index) {
+    const dadosLinha = window.linhasDados[index];
+    if (!dadosLinha) {
+        alert('Dados não disponíveis para este ensaio.');
+        return;
     }
+
+    document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
+    document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
+
+    let horaTexto = dadosLinha.horario;
+    if (horaTexto === 'T') horaTexto = '17:00';
+    else if (horaTexto === 'T1') horaTexto = '16:30';
+    else if (horaTexto === 'N') horaTexto = '19:30';
+    else horaTexto = horaTexto || '19:30';
+    document.getElementById('DivHora').textContent = horaTexto;
+
+    // Define o texto do dia (HOJE, AMANHÃ ou dia da semana)
+    const diaTexto = getDiaTexto(dadosLinha.dataFormatada);
+    document.getElementById('DivHoje').textContent = diaTexto;
+
+    const divLocal = document.getElementById('DivLocal');
+    if (dadosLinha.localizacao) {
+        divLocal.innerHTML = `<a href="https://maps.app.goo.gl/${dadosLinha.localizacao}" target="_blank" style="color:#ffd700; text-decoration:underline;">Localização</a>`;
+    } else {
+        divLocal.textContent = 'Local não informado';
+    }
+
+    const overlay = document.getElementById('convite-overlay');
+    overlay.classList.add('ativo');
+    overlay.style.display = 'flex';
+}
 
     function fecharConvite() {
         const overlay = document.getElementById('convite-overlay');
@@ -1442,57 +1447,69 @@
         if (botoes) botoes.style.display = 'flex';
     }
 
-    function copiarConvite() {
-        const container = document.getElementById('convite-container');
-        const botoes = container.querySelector('.convite-acoes');
-        const originalDisplay = botoes.style.display;
-        botoes.style.display = 'none';
+function copiarConvite() {
+    const container = document.getElementById('convite-container');
+    const botoes = container.querySelector('.convite-acoes');
+    const originalDisplay = botoes.style.display;
+    botoes.style.display = 'none';
 
-        html2canvas(container, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: null,
-            logging: false,
-        }).then(canvas => {
-            canvas.toBlob(function(blob) {
-                try {
-                    if (navigator.clipboard && navigator.clipboard.write) {
-                        navigator.clipboard.write([
-                            new ClipboardItem({ [blob.type]: blob })
-                        ]).then(() => {
-                            alert('✅ Imagem do convite copiada!');
-                            botoes.style.display = originalDisplay || 'flex';
-                        }).catch(() => {
-                            const link = document.createElement('a');
-                            link.download = 'convite.png';
-                            link.href = canvas.toDataURL('image/png');
-                            link.click();
-                            alert('✅ Imagem baixada!');
-                            botoes.style.display = originalDisplay || 'flex';
-                        });
-                    } else {
-                        const link = document.createElement('a');
-                        link.download = 'convite.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        alert('✅ Imagem baixada!');
+    html2canvas(container, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: container.scrollWidth,
+        height: container.scrollHeight,
+        windowWidth: container.scrollWidth,
+        windowHeight: container.scrollHeight,
+        onclone: function(clonedDoc) {
+            const clonedContainer = clonedDoc.getElementById('convite-container');
+            if (clonedContainer) {
+                clonedContainer.style.transform = 'none';
+            }
+        }
+    }).then(canvas => {
+        canvas.toBlob(function(blob) {
+            try {
+                if (navigator.clipboard && navigator.clipboard.write) {
+                    navigator.clipboard.write([
+                        new ClipboardItem({
+                            [blob.type]: blob
+                        })
+                    ]).then(() => {
+                        alert('✅ Imagem do convite copiada! (Envie como imagem)');
                         botoes.style.display = originalDisplay || 'flex';
-                    }
-                } catch (e) {
+                    }).catch(() => {
+                        const link = document.createElement('a');
+                        link.download = 'convite_ensaio.png';
+                        link.href = canvas.toDataURL('image/png', 1.0);
+                        link.click();
+                        alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
+                        botoes.style.display = originalDisplay || 'flex';
+                    });
+                } else {
                     const link = document.createElement('a');
-                    link.download = 'convite.png';
-                    link.href = canvas.toDataURL('image/png');
+                    link.download = 'convite_ensaio.png';
+                    link.href = canvas.toDataURL('image/png', 1.0);
                     link.click();
-                    alert('✅ Imagem baixada!');
+                    alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
                     botoes.style.display = originalDisplay || 'flex';
                 }
-            }, 'image/png');
-        }).catch(err => {
-            alert('Erro ao gerar imagem: ' + err.message);
-            botoes.style.display = originalDisplay || 'flex';
-        });
-    }
+            } catch (e) {
+                const link = document.createElement('a');
+                link.download = 'convite_ensaio.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+                alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
+                botoes.style.display = originalDisplay || 'flex';
+            }
+        }, 'image/png', 1.0);
+    }).catch(err => {
+        alert('Erro ao gerar imagem: ' + err.message);
+        botoes.style.display = originalDisplay || 'flex';
+    });
+}
 
     // ===== EVENTOS =====
     document.addEventListener('DOMContentLoaded', function() {
@@ -1619,6 +1636,60 @@
     window.consultarPorCasaOracao = consultarPorCasaOracao;
     window.consultarPorEncarregadoLocal = consultarPorEncarregadoLocal;
     window.gerarTabelaPorEnsaioRegional = gerarTabelaPorEnsaioRegional;
+    
+// Função para verificar se a data está nos próximos 6 dias
+function isProximosDias(dataFormatada) {
+    if (!dataFormatada || dataFormatada === 'Data não disponível') return false;
+    
+    const partes = dataFormatada.split('/');
+    if (partes.length !== 3) return false;
+    
+    const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+    dataEvento.setHours(0, 0, 0, 0);
+    
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    const diffTime = dataEvento.getTime() - hoje.getTime();
+    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDias >= 0 && diffDias <= 6;
+}
+
+// Função para obter o texto do dia (HOJE, AMANHÃ ou nome do dia)
+// Função para obter o texto do dia (HOJE, AMANHÃ ou PRÓXIMO/PRÓXIMA + dia da semana)
+function getDiaTexto(dataFormatada) {
+    if (!dataFormatada || dataFormatada === 'Data não disponível') return '';
+    
+    const partes = dataFormatada.split('/');
+    if (partes.length !== 3) return '';
+    
+    const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+    dataEvento.setHours(0, 0, 0, 0);
+    
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    const diffTime = dataEvento.getTime() - hoje.getTime();
+    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Se for hoje
+    if (diffDias === 0) return 'HOJE';
+    
+    // Se for amanhã
+    if (diffDias === 1) return 'AMANHÃ';
+    
+    // Se for depois de amanhã ou mais
+    const diasSemana = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
+    const nomeDia = diasSemana[dataEvento.getDay()];
+    
+    // Define se usa PRÓXIMO (masculino) ou PRÓXIMA (feminino)
+    const diasFemininos = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
+    const artigo = diasFemininos.includes(nomeDia) ? 'PRÓXIMA' : 'PRÓXIMO';
+    
+    return `${artigo} ${nomeDia}`;
+}    
+    
     </script>
 </body>
 </html>
