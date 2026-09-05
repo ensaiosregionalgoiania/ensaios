@@ -426,7 +426,7 @@
 
 #DivHoje { 
     position: absolute;
-    top: 30%;
+    top: 25%;
     left: 50%;
     transform: translateX(-50%);
     font-size: 28px; 
@@ -1413,7 +1413,8 @@ function abrirConvite(index) {
         return;
     }
 
-    document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
+    const nomeIgreja = dadosLinha.local || 'Igreja';
+    document.getElementById('DivIgreja').textContent = nomeIgreja;
     document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
 
     let horaTexto = dadosLinha.horario;
@@ -1423,9 +1424,24 @@ function abrirConvite(index) {
     else horaTexto = horaTexto || '19:30';
     document.getElementById('DivHora').textContent = horaTexto;
 
-    // Define o texto do dia (HOJE, AMANHÃ ou dia da semana)
+    // Define o texto do dia (HOJE, AMANHÃ ou PRÓXIMO/PRÓXIMA + dia)
     const diaTexto = getDiaTexto(dadosLinha.dataFormatada);
     document.getElementById('DivHoje').textContent = diaTexto;
+
+    // Ajuste dinâmico baseado no tamanho do nome
+    const divHoje = document.getElementById('DivHoje');
+    const divIgreja = document.getElementById('DivIgreja');
+    
+    // Tamanhos base (ajuste fino)
+    const topBase = 25; // posição base em %
+    const topExtra = 5; // quanto adicionar se o nome for grande
+    
+    // Verifica se o nome tem mais de 17 caracteres
+    if (nomeIgreja.length > 17) {
+        divHoje.style.top = (topBase + topExtra) + '%';
+    } else {
+        divHoje.style.top = topBase + '%';
+    }
 
     const divLocal = document.getElementById('DivLocal');
     if (dadosLinha.localizacao) {
@@ -1453,58 +1469,95 @@ function copiarConvite() {
     const originalDisplay = botoes.style.display;
     botoes.style.display = 'none';
 
+    // Força o container a ter o tamanho correto antes de capturar
+    const rect = container.getBoundingClientRect();
+    const larguraOriginal = rect.width;
+    const alturaOriginal = rect.height;
+
+    // Usa uma escala maior para melhor qualidade
+    const scale = 4; // Aumentado de 3 para 4
+    
     html2canvas(container, {
-        scale: 3,
+        scale: scale,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         backgroundColor: '#ffffff',
         logging: false,
-        width: container.scrollWidth,
-        height: container.scrollHeight,
-        windowWidth: container.scrollWidth,
-        windowHeight: container.scrollHeight,
+        width: larguraOriginal,
+        height: alturaOriginal,
+        windowWidth: larguraOriginal,
+        windowHeight: alturaOriginal,
         onclone: function(clonedDoc) {
             const clonedContainer = clonedDoc.getElementById('convite-container');
             if (clonedContainer) {
+                // Garante que a imagem de fundo carregue completamente
                 clonedContainer.style.transform = 'none';
+                clonedContainer.style.backgroundImage = 'url("convite01.png")';
+                clonedContainer.style.backgroundSize = '100% 100%';
+                clonedContainer.style.backgroundPosition = 'center';
+                clonedContainer.style.backgroundRepeat = 'no-repeat';
             }
         }
     }).then(canvas => {
-        canvas.toBlob(function(blob) {
+        // Cria um canvas em alta resolução para melhor qualidade
+        const finalCanvas = document.createElement('canvas');
+        const finalWidth = canvas.width * 1.5; // Aumenta ainda mais a resolução
+        const finalHeight = canvas.height * 1.5;
+        finalCanvas.width = finalWidth;
+        finalCanvas.height = finalHeight;
+        
+        const ctx = finalCanvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(canvas, 0, 0, finalWidth, finalHeight);
+        
+        // Converte para PNG com compressão mínima e alta qualidade
+        finalCanvas.toBlob(function(blob) {
             try {
+                // Tenta copiar para a área de transferência
                 if (navigator.clipboard && navigator.clipboard.write) {
-                    navigator.clipboard.write([
-                        new ClipboardItem({
-                            [blob.type]: blob
-                        })
-                    ]).then(() => {
-                        alert('✅ Imagem do convite copiada! (Envie como imagem)');
-                        botoes.style.display = originalDisplay || 'flex';
-                    }).catch(() => {
-                        const link = document.createElement('a');
-                        link.download = 'convite_ensaio.png';
-                        link.href = canvas.toDataURL('image/png', 1.0);
-                        link.click();
-                        alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
-                        botoes.style.display = originalDisplay || 'flex';
+                    // Cria um ClipboardItem com o blob
+                    const clipboardItem = new ClipboardItem({
+                        [blob.type]: blob
                     });
+                    
+                    navigator.clipboard.write([clipboardItem])
+                        .then(() => {
+                            alert('✅ Imagem do convite copiada com alta qualidade!');
+                            botoes.style.display = originalDisplay || 'flex';
+                        })
+                        .catch(() => {
+                            // Fallback: baixar a imagem
+                            const link = document.createElement('a');
+                            link.download = 'convite_ensaio.png';
+                            link.href = URL.createObjectURL(blob);
+                            link.click();
+                            URL.revokeObjectURL(link.href);
+                            alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
+                            botoes.style.display = originalDisplay || 'flex';
+                        });
                 } else {
+                    // Fallback para navegadores sem suporte a clipboard
                     const link = document.createElement('a');
                     link.download = 'convite_ensaio.png';
-                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.href = URL.createObjectURL(blob);
                     link.click();
+                    URL.revokeObjectURL(link.href);
                     alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
                     botoes.style.display = originalDisplay || 'flex';
                 }
             } catch (e) {
+                // Fallback final
                 const link = document.createElement('a');
                 link.download = 'convite_ensaio.png';
-                link.href = canvas.toDataURL('image/png', 1.0);
+                link.href = URL.createObjectURL(blob);
                 link.click();
+                URL.revokeObjectURL(link.href);
                 alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
                 botoes.style.display = originalDisplay || 'flex';
             }
-        }, 'image/png', 1.0);
+        }, 'image/png', 1.0); // Qualidade máxima (1.0)
+        
     }).catch(err => {
         alert('Erro ao gerar imagem: ' + err.message);
         botoes.style.display = originalDisplay || 'flex';
