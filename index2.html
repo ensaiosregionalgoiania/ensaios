@@ -374,13 +374,12 @@
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     aspect-ratio: 9 / 16;
     min-height: 450px;
-    /* ===== A IMAGEM AQUI ===== */
+    /* A IMAGEM COMO BACKGROUND - PREENCHE TODA A DIV */
     background-image: url('convite01.png');
-    background-size: contain;        /* ← MUDOU DE 100% 100% para contain */
+    background-size: 100% 100%;     /* ← ESTICA PARA PREENCHER TOTALMENTE */
     background-position: center;
     background-repeat: no-repeat;
-    /* FALLBACK */
-    background-color: #1a0a2e;
+    /* SEM COR DE FUNDO (removido o roxo) */
 }
 
 #convite-container .convite-texto {
@@ -398,6 +397,7 @@
     z-index: 2;
 }
 
+/* Ajuste fino das posições - você pode ajustar os valores percentuais */
 #DivEnsaio {
     top: 8%;
     font-size: 42px;
@@ -406,7 +406,7 @@
     color: #ff0000;
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);   /* ← Centraliza horizontalmente */
+    transform: translateX(-50%);
     text-align: center;
     z-index: 2;
 }
@@ -419,7 +419,7 @@
     color: #280638;
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);   /* ← Centraliza horizontalmente */
+    transform: translateX(-50%);
     text-align: center;
     z-index: 2;
 }
@@ -428,22 +428,18 @@
     position: absolute;
     top: 20%;
     right: 0%;
-
     transform: translateY(-50%) rotate(305deg) !important;
     transform-origin: center center !important;
-
     font-size: 28px; 
     color: #ff0000; 
     font-weight: bold; 
     text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
-
     pointer-events: none; 
     white-space: nowrap; 
     letter-spacing: 2px; 
     width: auto; 
     left: auto; 
     z-index: 3;
-    
     border: 2px solid rgba(255,255,255,0.8);
     padding: 5px 15px;
     border-radius: 10px;
@@ -454,14 +450,12 @@
     position: absolute;
     top: 49%; 
     left: 40%; 
-    font-size: 20px; 
-    text-align: left; 
-    transform: none; 
     font-size: 28px; 
     font-weight: bold; 
     text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
     color: #070707; 
 }
+
 #DivHora {
     position: absolute; 
     top: 54%; 
@@ -470,7 +464,7 @@
     font-weight: bold; 
     text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
     color: #070707; 
- }
+}
 
 #DivLocal {
     position: absolute; 
@@ -508,7 +502,6 @@
 .btn-copiar-convite { background: #27ae60; }
 .btn-copiar-link { background: #2980b9; }
 .btn-fechar { background: #e74c3c; }
-
 
 
 
@@ -606,7 +599,6 @@
     <!-- ===== OVERLAY DO CONVITE ===== -->
     <div id="convite-overlay">
         <div id="convite-container">
-            <img id="convite-imagem" src="convite01.png" alt="Convite" crossorigin="anonymous">
             <div id="DivEnsaio">Ensaio Local</div>
             <div id="DivIgreja">Nome da Igreja</div>
             <div id="DivHoje">HOJE</div>
@@ -1421,7 +1413,6 @@
         }
 
         document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
-        //console.log(document.getElementById('DivIgreja').textContent)
         document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
 
         let horaTexto = dadosLinha.horario;
