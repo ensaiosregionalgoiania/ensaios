@@ -342,106 +342,180 @@
             font-size: 12px;
         }
 
-        /* ===== ESTILOS DO CONVITE ===== */
-        #convite-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        #convite-overlay.ativo {
-            display: flex;
-        }
 
-        #convite-container {
-            position: relative;
-            width: 95%;
-            max-width: 400px;
-            margin: auto;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            aspect-ratio: 9 / 16;
-            min-height: 450px;
-            background-color: #1a0a2e;
-        }
 
-        #convite-imagem {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: 0;
-            pointer-events: none;
-            display: block;
-        }
 
-        #convite-container.sem-imagem #convite-imagem {
-            display: none;
-        }
-        #convite-container.sem-imagem {
-            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #4a2a6a 60%, #2d1b4e 90%, #1a0a2e 100%);
-        }
+/* ===== ESTILOS DO CONVITE ===== */
+#convite-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#convite-overlay.ativo {
+    display: flex;
+}
 
-        #convite-container .convite-texto {
-            position: absolute;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            padding: 0 10px;
-            box-sizing: border-box;
-            width: 90%;
-            pointer-events: none;
-            font-weight: bold;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 2;
-        }
+#convite-container {
+    position: relative;
+    width: 95%;
+    max-width: 400px;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    aspect-ratio: 9 / 16;
+    min-height: 450px;
+    /* ===== A IMAGEM AQUI ===== */
+    background-image: url('convite01.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* FALLBACK */
+    background-color: #1a0a2e;
+}
 
-        #DivEnsaio { top: 8%; font-size: 42px; font-family: 'Great Vibes', cursive; width: 100%; color: #ffd700; }
-        #DivIgreja { top: 22%; font-size: 32px; font-family: 'Oleo Script', cursive; width: 100%; color: #f0e6d3; }
-        #DivHoje { top: 18%; right: 2%; transform: translateY(-50%) rotate(90deg); transform-origin: center center; font-size: 28px; color: #ff0000; font-weight: bold; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); pointer-events: none; white-space: nowrap; letter-spacing: 2px; width: auto; left: auto; right: 5%; z-index: 3; }
-        #DivData { top: 48%; left: 10%; font-size: 20px; text-align: left; transform: none; color: #f0e6d3; }
-        #DivHora { top: 56%; left: 10%; font-size: 20px; text-align: left; transform: none; color: #f0e6d3; }
-        #DivLocal { bottom: 12%; left: 10%; font-size: 16px; transform: none; top: auto; color: #f0e6d3; }
-        #DivLocal a { color: #ffd700; text-decoration: underline; pointer-events: auto; }
+#convite-container .convite-texto {
+    position: absolute;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    padding: 0 10px;
+    box-sizing: border-box;
+    width: 90%;
+    pointer-events: none;
+    font-weight: bold;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+}
 
-        .convite-acoes {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            z-index: 10;
-        }
-        .convite-acoes button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            transition: all 0.2s;
-        }
-        .convite-acoes button:hover { transform: scale(1.05); }
-        .btn-copiar-convite { background: #27ae60; }
-        .btn-copiar-link { background: #2980b9; }
-        .btn-fechar { background: #e74c3c; }
+#DivEnsaio {
+    top: 8%;
+    font-size: 42px;
+    font-family: 'Great Vibes', cursive;
+    width: 100%;
+    color: #ff0000;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);   /* ← Centraliza horizontalmente */
+    text-align: center;
+    z-index: 2;
+}
+
+#DivIgreja { 
+    top: 15%; 
+    font-size: 42px; 
+    font-family: 'Oleo Script', cursive; 
+    width: 100%; 
+    color: #280638;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);   /* ← Centraliza horizontalmente */
+    text-align: center;
+    z-index: 2;
+}
+
+#DivHoje { 
+    position: absolute;
+    top: 20%;
+    right: 0%;
+
+    transform: translateY(-50%) rotate(305deg) !important;
+    transform-origin: center center !important;
+
+    font-size: 28px; 
+    color: #ff0000; 
+    font-weight: bold; 
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
+
+    pointer-events: none; 
+    white-space: nowrap; 
+    letter-spacing: 2px; 
+    width: auto; 
+    left: auto; 
+    z-index: 3;
+    
+    border: 2px solid rgba(255,255,255,0.8);
+    padding: 5px 15px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.2);
+}
+
+#DivData { 
+    position: absolute;
+    top: 49%; 
+    left: 40%; 
+    font-size: 20px; 
+    text-align: left; 
+    transform: none; 
+    font-size: 28px; 
+    font-weight: bold; 
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
+    color: #070707; 
+}
+#DivHora {
+    position: absolute; 
+    top: 54%; 
+    left: 40%; 
+    font-size: 28px; 
+    font-weight: bold; 
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
+    color: #070707; 
+ }
+
+#DivLocal {
+    position: absolute; 
+    top: 59%; 
+    left: 43%; 
+    font-size: 28px; 
+    font-weight: bold; 
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
+    color: #070707; 
+}
+#DivLocal a { color: #ffd700; text-decoration: underline; pointer-events: auto; }
+
+.convite-acoes {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    z-index: 10;
+}
+.convite-acoes button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+}
+.convite-acoes button:hover { transform: scale(1.05); }
+.btn-copiar-convite { background: #27ae60; }
+.btn-copiar-link { background: #2980b9; }
+.btn-fechar { background: #e74c3c; }
+
+
+
+
+
+
+
+
 
         @media print {
             body * { visibility: hidden; }
@@ -533,12 +607,12 @@
     <div id="convite-overlay">
         <div id="convite-container">
             <img id="convite-imagem" src="convite01.png" alt="Convite" crossorigin="anonymous">
-            <div id="DivEnsaio" class="convite-texto">Ensaio<br>Local</div>
-            <div id="DivIgreja" class="convite-texto">Nome da Igreja</div>
-            <div id="DivHoje" class="convite-texto">Hoje</div>
-            <div id="DivData" class="convite-texto">Data</div>
-            <div id="DivHora" class="convite-texto">Hora</div>
-            <div id="DivLocal" class="convite-texto"><a href="#" target="_blank">Local</a></div>
+            <div id="DivEnsaio">Ensaio Local</div>
+            <div id="DivIgreja">Nome da Igreja</div>
+            <div id="DivHoje">HOJE</div>
+            <div id="DivData">Data</div>
+            <div id="DivHora">Hora</div>
+            <div id="DivLocal"><a href="#" target="_blank">Local</a></div>
             <div class="convite-acoes">
                 <button class="btn-copiar-convite" id="btn-copiar-convite">📋 Copiar</button>
                 <button class="btn-copiar-link" id="btn-copiar-link">🔗 Link</button>
@@ -1347,6 +1421,7 @@
         }
 
         document.getElementById('DivIgreja').textContent = dadosLinha.local || 'Igreja';
+        //console.log(document.getElementById('DivIgreja').textContent)
         document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
 
         let horaTexto = dadosLinha.horario;
