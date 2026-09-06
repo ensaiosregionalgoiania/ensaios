@@ -14,9 +14,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* ===== ESTILOS GERAIS ===== */
+        /* ===== RESET E ESTILOS GERAIS ===== */
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -228,7 +230,7 @@
             th, td { padding: 4px 4px; }
         }
 
-        /* Menu Lateral */
+        /* ===== MENU LATERAL ===== */
         .menu-lateral {
             position: fixed;
             left: 0;
@@ -342,171 +344,205 @@
             font-size: 12px;
         }
 
+        /* ===== ESTILOS DO CONVITE ===== */
+        #convite-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #convite-overlay.ativo {
+            display: flex;
+        }
 
+        #convite-container {
+            position: relative;
+            width: 95%;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            aspect-ratio: 9 / 16;
+            min-height: 450px;
+            background-image: url('convite01.png');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
 
+        #DivEnsaio {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 42px;
+            font-family: 'Great Vibes', cursive;
+            width: 100%;
+            color: #ff0000;
+            text-align: center;
+            z-index: 2;
+            line-height: 1.1;
+            pointer-events: none;
+        }
 
-/* ===== ESTILOS DO CONVITE ===== */
-#convite-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    box-sizing: border-box;
-}
-#convite-overlay.ativo {
-    display: flex;
-}
+        #DivIgreja { 
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 46px;
+            font-family: 'Oleo Script', cursive;
+            width: 100%;
+            color: #280638;
+            text-align: center;
+            z-index: 2;
+            line-height: 0.8;
+            padding: 0 15px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            pointer-events: none;
+        }
 
-#convite-container {
-    position: relative;
-    width: 95%;
-    max-width: 400px;
-    margin: auto;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    aspect-ratio: 9 / 16;
-    min-height: 450px;
-    /* A IMAGEM COMO BACKGROUND - PREENCHE TODA A DIV */
-    background-image: url('convite01.png');
-    background-size: 100% 100%;     /* ← ESTICA PARA PREENCHER TOTALMENTE */
-    background-position: center;
-    background-repeat: no-repeat;
-    /* SEM COR DE FUNDO (removido o roxo) */
-}
+        #DivHoje { 
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+            pointer-events: none;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            width: auto;
+            z-index: 3;
+            border: 2px solid rgba(255,255,255,0.8);
+            padding: 5px 15px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+            line-height: 1.0;
+        }
 
-#convite-container .convite-texto {
-    position: absolute;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    padding: 0 10px;
-    box-sizing: border-box;
-    width: 90%;
-    pointer-events: none;
-    font-weight: bold;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 2;
-}
+        #DivData { 
+            position: absolute;
+            top: 49%;
+            left: 40%;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+            color: #070707;
+            line-height: 1.2;
+            pointer-events: none;
+        }
 
-/* Ajuste fino das posições - você pode ajustar os valores percentuais */
-#DivEnsaio {
-    top: 8%;
-    font-size: 42px;
-    font-family: 'Great Vibes', cursive;
-    width: 100%;
-    color: #ff0000;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 2;
-}
+        #DivHora {
+            position: absolute;
+            top: 54%;
+            left: 40%;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+            color: #070707;
+            line-height: 1.2;
+            pointer-events: none;
+        }
 
-#DivIgreja { 
-    top: 15%; 
-    font-size: 36px; 
-    font-family: 'Oleo Script', cursive; 
-    width: 100%; 
-    color: #280638;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 2;
-}
+        #DivLocal {
+            position: absolute;
+            top: 59%;
+            left: 43%;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+            color: #070707;
+            line-height: 1.2;
+            pointer-events: none;
+        }
+        #DivLocal a { 
+            color: #ffd700;
+            text-decoration: underline;
+            pointer-events: auto;
+        }
 
-#DivHoje { 
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 28px; 
-    color: #ff0000; 
-    font-weight: bold; 
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
-    pointer-events: none; 
-    white-space: nowrap; 
-    letter-spacing: 2px; 
-    width: auto;
-    z-index: 3;
-    border: 2px solid rgba(255,255,255,0.8);
-    padding: 5px 15px;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.2);
-}
+        #DivQRCode {
+            position: absolute;
+            bottom: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        #DivQRCode canvas {
+            display: block;
+            width: 120px !important;
+            height: 120px !important;
+            pointer-events: none;
+        }
+        #DivQRCode:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+        }
 
-#DivData { 
-    position: absolute;
-    top: 49%; 
-    left: 40%; 
-    font-size: 28px; 
-    font-weight: bold; 
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
-    color: #070707; 
-}
+        .btn-fechar-convite {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-fechar-convite:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
 
-#DivHora {
-    position: absolute; 
-    top: 54%; 
-    left: 40%; 
-    font-size: 28px; 
-    font-weight: bold; 
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
-    color: #070707; 
-}
-
-#DivLocal {
-    position: absolute; 
-    top: 59%; 
-    left: 43%; 
-    font-size: 28px; 
-    font-weight: bold; 
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
-    color: #070707; 
-}
-#DivLocal a { color: #ffd700; text-decoration: underline; pointer-events: auto; }
-
-.convite-acoes {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    z-index: 10;
-}
-.convite-acoes button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    transition: all 0.2s;
-}
-.convite-acoes button:hover { transform: scale(1.05); }
-.btn-copiar-convite { background: #27ae60; }
-.btn-copiar-link { background: #2980b9; }
-.btn-fechar { background: #e74c3c; }
-
-
-
-
-
-
-
+        .btn-baixar-qr {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .btn-baixar-qr:hover {
+            background: #6c3483;
+            transform: scale(1.05);
+        }
 
         @media print {
             body * { visibility: hidden; }
@@ -597,17 +633,15 @@
     <!-- ===== OVERLAY DO CONVITE ===== -->
     <div id="convite-overlay">
         <div id="convite-container">
+            <button class="btn-fechar-convite" id="btn-fechar-convite">✕</button>
             <div id="DivEnsaio">Ensaio Local</div>
             <div id="DivIgreja">Nome da Igreja</div>
             <div id="DivHoje">HOJE</div>
             <div id="DivData">Data</div>
             <div id="DivHora">Hora</div>
             <div id="DivLocal"><a href="#" target="_blank">Local</a></div>
-            <div class="convite-acoes">
-                <button class="btn-copiar-convite" id="btn-copiar-convite">📋 Copiar</button>
-                <button class="btn-copiar-link" id="btn-copiar-link">🔗 Link</button>
-                <button class="btn-fechar" id="btn-fechar-convite">✕</button>
-            </div>
+            <div id="DivQRCode"><div id="qrcode"></div></div>
+            <button class="btn-baixar-qr" id="btn-baixar-qr">📥 QR</button>
         </div>
     </div>
 
@@ -618,12 +652,18 @@
     
     <script>
     // ============================================================
-    // CÓDIGO COMPLETO
+    // CONFIGURAÇÕES GLOBAIS
     // ============================================================
 
     window.linhasDados = [];
     let minhaLat = 0, minhaLon = 0;
     let ordemDistancia = true;
+    let qrCodeInstance = null;
+    let linkAtual = '';
+
+    // ============================================================
+    // FUNÇÕES AUXILIARES
+    // ============================================================
 
     function isTodos(termo) {
         const t = termo.trim().toLowerCase();
@@ -809,6 +849,10 @@
         if (tabela) tabela.innerHTML = '';
     }
 
+    // ============================================================
+    // FUNÇÕES DE ORDENAÇÃO E TABELA
+    // ============================================================
+
     function ordenarTabelaAtual(inverter = true) {
         const tabela = document.getElementById('tabela-eventos');
         const tbody = tabela.querySelector('tbody');
@@ -884,6 +928,267 @@
         window.open(destino, '_blank', 'noopener,noreferrer');
     }
 
+    // ============================================================
+    // FUNÇÕES DO CONVITE
+    // ============================================================
+
+    function isProximosDias(dataFormatada) {
+        if (!dataFormatada || dataFormatada === 'Data não disponível') return false;
+        
+        const partes = dataFormatada.split('/');
+        if (partes.length !== 3) return false;
+        
+        const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+        dataEvento.setHours(0, 0, 0, 0);
+        
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        
+        const diffTime = dataEvento.getTime() - hoje.getTime();
+        const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return diffDias >= 0 && diffDias <= 6;
+    }
+
+    function getDiaTexto(dataFormatada) {
+        if (!dataFormatada || dataFormatada === 'Data não disponível') return '';
+        
+        const partes = dataFormatada.split('/');
+        if (partes.length !== 3) return '';
+        
+        const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+        dataEvento.setHours(0, 0, 0, 0);
+        
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        
+        const diffTime = dataEvento.getTime() - hoje.getTime();
+        const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDias === 0) return 'HOJE';
+        if (diffDias === 1) return 'AMANHÃ';
+        
+        const diasSemana = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
+        const nomeDia = diasSemana[dataEvento.getDay()];
+        const diasFemininos = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
+        const artigo = diasFemininos.includes(nomeDia) ? 'PRÓXIMA' : 'PRÓXIMO';
+        
+        return `${artigo} ${nomeDia}`;
+    }
+
+    function gerarQRCode(link) {
+        const container = document.getElementById('qrcode');
+        const divQRCode = document.getElementById('DivQRCode');
+        
+        linkAtual = link || '';
+        
+        if (!link || link === '#' || link === '') {
+            if (divQRCode) divQRCode.style.display = 'none';
+            return;
+        }
+        
+        if (divQRCode) {
+            divQRCode.style.display = 'block';
+        }
+        container.innerHTML = '';
+        
+        try {
+            qrCodeInstance = new QRCode(container, {
+                text: link,
+                width: 120,
+                height: 120,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } catch (e) {
+            console.error('Erro ao gerar QR Code:', e);
+            container.innerHTML = '<div style="font-size: 10px; color: #999; padding: 10px; text-align: center;">Erro</div>';
+        }
+    }
+
+    function abrirLinkQRCode(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        if (linkAtual) {
+            window.open(linkAtual, '_blank', 'noopener,noreferrer');
+        } else {
+            alert('Nenhum link disponível.');
+        }
+    }
+
+    function abrirConvite(index) {
+        const dadosLinha = window.linhasDados[index];
+        if (!dadosLinha) {
+            alert('Dados não disponíveis para este ensaio.');
+            return;
+        }
+
+        const nomeIgreja = dadosLinha.local || 'Igreja';
+        const divIgreja = document.getElementById('DivIgreja');
+        divIgreja.textContent = nomeIgreja;
+        
+        // Ajusta tamanho da fonte baseado no nome
+        if (nomeIgreja.length > 25) {
+            divIgreja.style.fontSize = '32px';
+            divIgreja.style.lineHeight = '0.9';
+        } else if (nomeIgreja.length > 17) {
+            divIgreja.style.fontSize = '36px';
+            divIgreja.style.lineHeight = '0.9';
+        } else {
+            divIgreja.style.fontSize = '46px';
+            divIgreja.style.lineHeight = '0.8';
+        }
+        
+        document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
+
+        let horaTexto = dadosLinha.horario;
+        if (horaTexto === 'T') horaTexto = '17:00';
+        else if (horaTexto === 'T1') horaTexto = '16:30';
+        else if (horaTexto === 'N') horaTexto = '19:30';
+        else horaTexto = horaTexto || '19:30';
+        document.getElementById('DivHora').textContent = horaTexto;
+
+        const diaTexto = getDiaTexto(dadosLinha.dataFormatada);
+        document.getElementById('DivHoje').textContent = diaTexto;
+
+        // Ajusta posição do HOJE baseado no tamanho do nome
+        const divHoje = document.getElementById('DivHoje');
+        if (nomeIgreja.length > 17) {
+            divHoje.style.top = '30%';
+        } else {
+            divHoje.style.top = '25%';
+        }
+
+        // Configura link e QR Code
+        const divLocal = document.getElementById('DivLocal');
+        let linkCompleto = '';
+        if (dadosLinha.localizacao) {
+            if (dadosLinha.localizacao.startsWith('http')) {
+                linkCompleto = dadosLinha.localizacao;
+            } else {
+                linkCompleto = `https://maps.app.goo.gl/${dadosLinha.localizacao}`;
+            }
+            divLocal.innerHTML = `<a href="${linkCompleto}" target="_blank" style="color:#ffd700; text-decoration:underline;">Localização</a>`;
+        } else {
+            linkCompleto = '';
+            divLocal.textContent = 'Local não informado';
+        }
+
+        gerarQRCode(linkCompleto);
+
+        const overlay = document.getElementById('convite-overlay');
+        overlay.classList.add('ativo');
+        overlay.style.display = 'flex';
+    }
+
+    function fecharConvite() {
+        const overlay = document.getElementById('convite-overlay');
+        overlay.classList.remove('ativo');
+        overlay.style.display = 'none';
+    }
+
+    function baixarQRCode() {
+        const qrContainer = document.getElementById('qrcode');
+        const canvas = qrContainer.querySelector('canvas');
+        
+        if (!canvas) {
+            alert('QR Code não disponível.');
+            return;
+        }
+        
+        const link = document.createElement('a');
+        link.download = 'qrcode_ensaio.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+
+    function copiarConvite() {
+        const container = document.getElementById('convite-container');
+        const botoes = container.querySelectorAll('.btn-fechar-convite, .btn-baixar-qr');
+        const originalDisplay = [];
+        
+        botoes.forEach(btn => {
+            originalDisplay.push(btn.style.display);
+            btn.style.display = 'none';
+        });
+
+        html2canvas(container, {
+            scale: 5,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#ffffff',
+            logging: false,
+            onclone: function(clonedDoc) {
+                const clonedContainer = clonedDoc.getElementById('convite-container');
+                if (clonedContainer) {
+                    clonedContainer.style.transform = 'none';
+                    clonedContainer.style.backgroundImage = 'url("convite01.png")';
+                    clonedContainer.style.backgroundSize = '100% 100%';
+                    clonedContainer.style.backgroundPosition = 'center';
+                    clonedContainer.style.backgroundRepeat = 'no-repeat';
+                }
+            }
+        }).then(canvas => {
+            // Aumenta ainda mais a resolução
+            const finalCanvas = document.createElement('canvas');
+            const finalWidth = canvas.width * 2;
+            const finalHeight = canvas.height * 2;
+            finalCanvas.width = finalWidth;
+            finalCanvas.height = finalHeight;
+            
+            const ctx = finalCanvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(canvas, 0, 0, finalWidth, finalHeight);
+            
+            finalCanvas.toBlob(function(blob) {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.write) {
+                        navigator.clipboard.write([
+                            new ClipboardItem({ [blob.type]: blob })
+                        ]).then(() => {
+                            alert('✅ Imagem copiada! O QR Code pode ser escaneado pelo WhatsApp.');
+                            restaurarBotoes();
+                        }).catch(() => {
+                            baixarImagem(blob);
+                            restaurarBotoes();
+                        });
+                    } else {
+                        baixarImagem(blob);
+                        restaurarBotoes();
+                    }
+                } catch (e) {
+                    baixarImagem(blob);
+                    restaurarBotoes();
+                }
+            }, 'image/png', 1.0);
+        }).catch(err => {
+            alert('Erro ao gerar imagem: ' + err.message);
+            restaurarBotoes();
+        });
+
+        function restaurarBotoes() {
+            botoes.forEach((btn, i) => {
+                btn.style.display = originalDisplay[i] || 'block';
+            });
+        }
+
+        function baixarImagem(blob) {
+            const link = document.createElement('a');
+            link.download = 'convite_ensaio.png';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
+            alert('✅ Imagem baixada! Envie para o WhatsApp.');
+        }
+    }
+
+    // ============================================================
+    // FUNÇÕES DA TABELA PRINCIPAL
+    // ============================================================
+
     function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
         const detalhesRow = tabela.insertRow();
         detalhesRow.className = 'detalhes-content';
@@ -916,48 +1221,52 @@
             </table>`;
     }
 
-function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
-    const row = tabela.insertRow();
-    row.id = `evento-${index}`;
-    row.insertCell(0).innerHTML = local || '---';
-    row.insertCell(1).innerHTML = cidade || '---';
-    
-    const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
-    let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
-    row.insertCell(2).textContent = distanciaAtual;
-    
-    if (document.getElementById('consulta-encarregado-regional').checked == false) {
-        row.insertCell(3).textContent = dataString(dataFormatada);
-    } else {
-        row.insertCell(3).textContent = dataFormatada;
+    function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
+        const row = tabela.insertRow();
+        row.id = `evento-${index}`;
+        row.insertCell(0).innerHTML = local || '---';
+        row.insertCell(1).innerHTML = cidade || '---';
+        
+        const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
+        let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
+        row.insertCell(2).textContent = distanciaAtual;
+        
+        if (document.getElementById('consulta-encarregado-regional').checked == false) {
+            row.insertCell(3).textContent = dataString(dataFormatada);
+        } else {
+            row.insertCell(3).textContent = dataFormatada;
+        }
+        
+        const acoesCell = row.insertCell(4);
+        acoesCell.style.textAlign = "center";
+        acoesCell.style.whiteSpace = "nowrap";
+
+        const expandirBtn = document.createElement('button');
+        expandirBtn.className = 'btn-expandir';
+        expandirBtn.textContent = '+';
+        expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
+        acoesCell.appendChild(expandirBtn);
+
+        const temConvite = isProximosDias(dataFormatada);
+        if (temConvite) {
+            const conviteBtn = document.createElement('button');
+            conviteBtn.className = 'btn-convite';
+            conviteBtn.textContent = 'C';
+            conviteBtn.title = 'Abrir convite';
+            conviteBtn.onclick = (e) => { e.stopPropagation(); abrirConvite(index); };
+            acoesCell.appendChild(conviteBtn);
+        }
+
+        window.linhasDados[index] = {
+            local, cidade, dataFormatada, horario, localizacao, setor,
+            encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
+        };
     }
-    
-    const acoesCell = row.insertCell(4);
-    acoesCell.style.textAlign = "center";
-    acoesCell.style.whiteSpace = "nowrap";
 
-    const expandirBtn = document.createElement('button');
-    expandirBtn.className = 'btn-expandir';
-    expandirBtn.textContent = '+';
-    expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
-    acoesCell.appendChild(expandirBtn);
+    // ============================================================
+    // FUNÇÕES DE CONSULTA
+    // ============================================================
 
-    // Só mostra o botão de convite se a data estiver nos próximos 6 dias
-    const temConvite = isProximosDias(dataFormatada);
-    if (temConvite) {
-        const conviteBtn = document.createElement('button');
-        conviteBtn.className = 'btn-convite';
-        conviteBtn.textContent = 'C';
-        conviteBtn.title = 'Abrir convite';
-        conviteBtn.onclick = (e) => { e.stopPropagation(); abrirConvite(index); };
-        acoesCell.appendChild(conviteBtn);
-    }
-
-    window.linhasDados[index] = {
-        local, cidade, dataFormatada, horario, localizacao, setor,
-        encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
-    };
-}
     function preencherSelectDatas() {
         const select = document.getElementById('data-select');
         const hoje = new Date();
@@ -1259,6 +1568,10 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
         }
     }
 
+    // ============================================================
+    // FUNÇÕES DE INTERFACE
+    // ============================================================
+
     function alternarTipoConsulta() {
         const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
         const titulo = document.getElementById('Titulo');
@@ -1405,208 +1718,33 @@ function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, la
         document.getElementById('setor').innerHTML = HTML;
     }
 
-    // ===== FUNÇÕES DO CONVITE =====
-function abrirConvite(index) {
-    const dadosLinha = window.linhasDados[index];
-    if (!dadosLinha) {
-        alert('Dados não disponíveis para este ensaio.');
-        return;
-    }
+    // ============================================================
+    // EVENTOS E INICIALIZAÇÃO
+    // ============================================================
 
-    const nomeIgreja = dadosLinha.local || 'Igreja';
-    document.getElementById('DivIgreja').textContent = nomeIgreja;
-    document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
-
-    let horaTexto = dadosLinha.horario;
-    if (horaTexto === 'T') horaTexto = '17:00';
-    else if (horaTexto === 'T1') horaTexto = '16:30';
-    else if (horaTexto === 'N') horaTexto = '19:30';
-    else horaTexto = horaTexto || '19:30';
-    document.getElementById('DivHora').textContent = horaTexto;
-
-    // Define o texto do dia (HOJE, AMANHÃ ou PRÓXIMO/PRÓXIMA + dia)
-    const diaTexto = getDiaTexto(dadosLinha.dataFormatada);
-    document.getElementById('DivHoje').textContent = diaTexto;
-
-    // Ajuste dinâmico baseado no tamanho do nome
-    const divHoje = document.getElementById('DivHoje');
-    const divIgreja = document.getElementById('DivIgreja');
-    
-    // Tamanhos base (ajuste fino)
-    const topBase = 25; // posição base em %
-    const topExtra = 5; // quanto adicionar se o nome for grande
-    
-    // Verifica se o nome tem mais de 17 caracteres
-    if (nomeIgreja.length > 17) {
-        divHoje.style.top = (topBase + topExtra) + '%';
-    } else {
-        divHoje.style.top = topBase + '%';
-    }
-
-    const divLocal = document.getElementById('DivLocal');
-    if (dadosLinha.localizacao) {
-        divLocal.innerHTML = `<a href="https://maps.app.goo.gl/${dadosLinha.localizacao}" target="_blank" style="color:#ffd700; text-decoration:underline;">Localização</a>`;
-    } else {
-        divLocal.textContent = 'Local não informado';
-    }
-
-    const overlay = document.getElementById('convite-overlay');
-    overlay.classList.add('ativo');
-    overlay.style.display = 'flex';
-}
-
-    function fecharConvite() {
-        const overlay = document.getElementById('convite-overlay');
-        overlay.classList.remove('ativo');
-        overlay.style.display = 'none';
-        const botoes = document.querySelector('#convite-container .convite-acoes');
-        if (botoes) botoes.style.display = 'flex';
-    }
-
-function copiarConvite() {
-    const container = document.getElementById('convite-container');
-    const botoes = container.querySelector('.convite-acoes');
-    const originalDisplay = botoes.style.display;
-    botoes.style.display = 'none';
-
-    // Força o container a ter o tamanho correto antes de capturar
-    const rect = container.getBoundingClientRect();
-    const larguraOriginal = rect.width;
-    const alturaOriginal = rect.height;
-
-    // Usa uma escala maior para melhor qualidade
-    const scale = 4; // Aumentado de 3 para 4
-    
-    html2canvas(container, {
-        scale: scale,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        logging: false,
-        width: larguraOriginal,
-        height: alturaOriginal,
-        windowWidth: larguraOriginal,
-        windowHeight: alturaOriginal,
-        onclone: function(clonedDoc) {
-            const clonedContainer = clonedDoc.getElementById('convite-container');
-            if (clonedContainer) {
-                // Garante que a imagem de fundo carregue completamente
-                clonedContainer.style.transform = 'none';
-                clonedContainer.style.backgroundImage = 'url("convite01.png")';
-                clonedContainer.style.backgroundSize = '100% 100%';
-                clonedContainer.style.backgroundPosition = 'center';
-                clonedContainer.style.backgroundRepeat = 'no-repeat';
-            }
-        }
-    }).then(canvas => {
-        // Cria um canvas em alta resolução para melhor qualidade
-        const finalCanvas = document.createElement('canvas');
-        const finalWidth = canvas.width * 1.5; // Aumenta ainda mais a resolução
-        const finalHeight = canvas.height * 1.5;
-        finalCanvas.width = finalWidth;
-        finalCanvas.height = finalHeight;
-        
-        const ctx = finalCanvas.getContext('2d');
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(canvas, 0, 0, finalWidth, finalHeight);
-        
-        // Converte para PNG com compressão mínima e alta qualidade
-        finalCanvas.toBlob(function(blob) {
-            try {
-                // Tenta copiar para a área de transferência
-                if (navigator.clipboard && navigator.clipboard.write) {
-                    // Cria um ClipboardItem com o blob
-                    const clipboardItem = new ClipboardItem({
-                        [blob.type]: blob
-                    });
-                    
-                    navigator.clipboard.write([clipboardItem])
-                        .then(() => {
-                            alert('✅ Imagem do convite copiada com alta qualidade!');
-                            botoes.style.display = originalDisplay || 'flex';
-                        })
-                        .catch(() => {
-                            // Fallback: baixar a imagem
-                            const link = document.createElement('a');
-                            link.download = 'convite_ensaio.png';
-                            link.href = URL.createObjectURL(blob);
-                            link.click();
-                            URL.revokeObjectURL(link.href);
-                            alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
-                            botoes.style.display = originalDisplay || 'flex';
-                        });
-                } else {
-                    // Fallback para navegadores sem suporte a clipboard
-                    const link = document.createElement('a');
-                    link.download = 'convite_ensaio.png';
-                    link.href = URL.createObjectURL(blob);
-                    link.click();
-                    URL.revokeObjectURL(link.href);
-                    alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
-                    botoes.style.display = originalDisplay || 'flex';
-                }
-            } catch (e) {
-                // Fallback final
-                const link = document.createElement('a');
-                link.download = 'convite_ensaio.png';
-                link.href = URL.createObjectURL(blob);
-                link.click();
-                URL.revokeObjectURL(link.href);
-                alert('✅ Imagem baixada! Envie como arquivo no WhatsApp.');
-                botoes.style.display = originalDisplay || 'flex';
-            }
-        }, 'image/png', 1.0); // Qualidade máxima (1.0)
-        
-    }).catch(err => {
-        alert('Erro ao gerar imagem: ' + err.message);
-        botoes.style.display = originalDisplay || 'flex';
-    });
-}
-
-    // ===== EVENTOS =====
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar
         preencherSelectDatas();
 
-        // Convite
+        // Eventos do convite
         document.getElementById('btn-fechar-convite').addEventListener('click', fecharConvite);
         document.getElementById('convite-overlay').addEventListener('click', function(e) {
             if (e.target === this) fecharConvite();
         });
-        document.getElementById('btn-copiar-convite').addEventListener('click', copiarConvite);
-
-        document.getElementById('btn-copiar-link').addEventListener('click', function() {
-            const divLocal = document.getElementById('DivLocal');
-            const linkElement = divLocal.querySelector('a');
-            let link = linkElement ? linkElement.href : '';
-            if (link && link !== '#' && link !== '') {
-                navigator.clipboard.writeText(link).then(() => {
-                    alert('✅ Link copiado!');
-                }).catch(() => {
-                    const input = document.createElement('input');
-                    input.value = link;
-                    document.body.appendChild(input);
-                    input.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(input);
-                    alert('✅ Link copiado!');
-                });
-            } else {
-                alert('Nenhum link de localização disponível.');
+        document.getElementById('btn-baixar-qr').addEventListener('click', baixarQRCode);
+        
+        // Clique no QR Code para abrir o link
+        document.getElementById('DivQRCode').addEventListener('click', abrirLinkQRCode);
+        
+        // Clique na imagem do convite para copiar
+        document.getElementById('convite-container').addEventListener('click', function(e) {
+            // Evita que o clique nos botões ou QR Code dispare a cópia
+            if (e.target.closest('.btn-fechar-convite') || 
+                e.target.closest('.btn-baixar-qr') ||
+                e.target.closest('#DivQRCode')) {
+                return;
             }
+            copiarConvite();
         });
-
-        // Imagem do convite
-        const img = document.getElementById('convite-imagem');
-        if (img) {
-            img.addEventListener('load', function() {
-                document.getElementById('convite-container').classList.remove('sem-imagem');
-            });
-            img.addEventListener('error', function() {
-                document.getElementById('convite-container').classList.add('sem-imagem');
-            });
-        }
 
         // Radios
         document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
@@ -1652,12 +1790,12 @@ function copiarConvite() {
 
         // Menu
         const menuBtn = document.getElementById('menu-btn');
-        const overlay = document.getElementById('overlay');
+        const overlayMenu = document.getElementById('overlay');
         function toggleMenu() {
             document.body.classList.toggle('menu-aberto');
         }
         menuBtn.addEventListener('click', toggleMenu);
-        overlay.addEventListener('click', toggleMenu);
+        overlayMenu.addEventListener('click', toggleMenu);
 
         CriaMenu();
 
@@ -1677,6 +1815,10 @@ function copiarConvite() {
         }
     }
 
+    // ============================================================
+    // EXPORTAÇÃO PARA O GLOBAL
+    // ============================================================
+
     window.trocaSeta = trocaSeta;
     window.toggleDetalhes = toggleDetalhes;
     window.abrirMaps = abrirMaps;
@@ -1689,60 +1831,9 @@ function copiarConvite() {
     window.consultarPorCasaOracao = consultarPorCasaOracao;
     window.consultarPorEncarregadoLocal = consultarPorEncarregadoLocal;
     window.gerarTabelaPorEnsaioRegional = gerarTabelaPorEnsaioRegional;
-    
-// Função para verificar se a data está nos próximos 6 dias
-function isProximosDias(dataFormatada) {
-    if (!dataFormatada || dataFormatada === 'Data não disponível') return false;
-    
-    const partes = dataFormatada.split('/');
-    if (partes.length !== 3) return false;
-    
-    const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
-    dataEvento.setHours(0, 0, 0, 0);
-    
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    
-    const diffTime = dataEvento.getTime() - hoje.getTime();
-    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    return diffDias >= 0 && diffDias <= 6;
-}
-
-// Função para obter o texto do dia (HOJE, AMANHÃ ou nome do dia)
-// Função para obter o texto do dia (HOJE, AMANHÃ ou PRÓXIMO/PRÓXIMA + dia da semana)
-function getDiaTexto(dataFormatada) {
-    if (!dataFormatada || dataFormatada === 'Data não disponível') return '';
-    
-    const partes = dataFormatada.split('/');
-    if (partes.length !== 3) return '';
-    
-    const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
-    dataEvento.setHours(0, 0, 0, 0);
-    
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    
-    const diffTime = dataEvento.getTime() - hoje.getTime();
-    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Se for hoje
-    if (diffDias === 0) return 'HOJE';
-    
-    // Se for amanhã
-    if (diffDias === 1) return 'AMANHÃ';
-    
-    // Se for depois de amanhã ou mais
-    const diasSemana = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
-    const nomeDia = diasSemana[dataEvento.getDay()];
-    
-    // Define se usa PRÓXIMO (masculino) ou PRÓXIMA (feminino)
-    const diasFemininos = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
-    const artigo = diasFemininos.includes(nomeDia) ? 'PRÓXIMA' : 'PRÓXIMO';
-    
-    return `${artigo} ${nomeDia}`;
-}    
-    
+    window.copiarConvite = copiarConvite;
+    window.baixarQRCode = baixarQRCode;
+    window.abrirLinkQRCode = abrirLinkQRCode;
     </script>
 </body>
 </html>
