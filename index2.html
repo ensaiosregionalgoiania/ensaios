@@ -1082,7 +1082,7 @@
                 linkCompleto = `https://maps.app.goo.gl/${dadosLinha.localizacao}`;
             }
             linkAtual = linkCompleto;
-            divLocal.innerHTML = `<a href="${linkCompleto}" target="_blank" style="color:#ffd700; text-decoration:underline;">📍 Localização</a>`;
+            divLocal.innerHTML = `🔴👇`;
         } else {
             linkAtual = '';
             divLocal.textContent = 'Local não informado';
@@ -1167,11 +1167,10 @@
         // ============================================================
         // MONTA A MENSAGEM
         // ============================================================
-        let mensagem = '📩 Convite para o Ensaio!';
         if (linkParaEnviar) {
-            mensagem += `\n\n📍 Localização: ${linkParaEnviar}`;
+            mensagem = `${linkParaEnviar}`;
         } else {
-            mensagem += '\n\n📍 Localização não disponível';
+            mensagem = 'Localização não disponível';
         }
         
         console.log('📨 MENSAGEM QUE SERÁ ENVIADA:');
