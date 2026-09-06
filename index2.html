@@ -1144,68 +1144,137 @@
         alert('✅ Link da localização copiado!');
     }
 
-    // ============================================================
-    // COMPARTILHAR NO WHATSAPP
-    // ============================================================
-    function compartilharWhatsApp() {
-        const container = document.getElementById('convite-container');
-        const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
-        const originalDisplay = [];
-        
-        botoes.forEach(btn => {
-            originalDisplay.push(btn.style.display);
-            btn.style.display = 'none';
-        });
-
-        html2canvas(container, {
-            scale: 4,
-            useCORS: true,
-            allowTaint: false,
-            backgroundColor: '#ffffff',
-            logging: false
-        }).then(canvas => {
-            canvas.toBlob(function(blob) {
-                restaurarBotoes();
-                
-                // Tenta usar a Web Share API (celular)
-                if (navigator.share) {
-                    const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
-                    navigator.share({
-                        title: 'Convite Ensaio',
-                        text: '📩 Convite para o Ensaio!',
-                        files: [file]
-                    }).catch((err) => {
-                        if (err.name !== 'AbortError') {
-                            baixarImagem(blob);
-                            alert('📱 Para compartilhar no WhatsApp, baixe a imagem e envie manualmente.');
-                        }
-                    });
+function compartilharWhatsApp() {
+    // Captura o link novamente para garantir
+    const divLocal = document.getElementById('DivLocal');
+    const linkElement = divLocal.querySelector('a');
+    let linkParaEnviar = linkAtual;
+    
+    // Se linkAtual estiver vazio, tenta pegar do elemento
+    if (!linkParaEnviar && linkElement) {
+        linkParaEnviar = linkElement.href || '';
+    }
+    
+    // Se ainda estiver vazio, tenta pegar do dadosLinha
+    if (!linkParaEnviar) {
+        // Procura o índice do convite aberto
+        for (let i in window.linhasDados) {
+            const dados = window.linhasDados[i];
+            if (dados && dados.localizacao) {
+                if (dados.localizacao.startsWith('http')) {
+                    linkParaEnviar = dados.localizacao;
                 } else {
-                    // Desktop: baixa a imagem
-                    baixarImagem(blob);
-                    alert('📱 Para compartilhar no WhatsApp, baixe a imagem e envie manualmente.');
+                    linkParaEnviar = `https://maps.app.goo.gl/${dados.localizacao}`;
                 }
-            }, 'image/png', 0.95);
-        }).catch(err => {
-            alert('Erro ao gerar imagem: ' + err.message);
-            restaurarBotoes();
-        });
-
-        function restaurarBotoes() {
-            botoes.forEach((btn, i) => {
-                btn.style.display = originalDisplay[i] || 'block';
-            });
-        }
-
-        function baixarImagem(blob) {
-            const link = document.createElement('a');
-            link.download = 'convite_ensaio.png';
-            link.href = URL.createObjectURL(blob);
-            link.click();
-            URL.revokeObjectURL(link.href);
+                break;
+            }
         }
     }
+    
+    // Monta a mensagem com o link
+    let mensagem = '📩 Convite para o Ensaio!';
+    if (linkParaEnviar) {
+        mensagem += `\n\n📍 Localização: ${linkParaEnviar}`;
+    } else {
+        mensagem += '\n\n📍 Localização não disponível';
+    }
+    
+    // PERGUNTA SE QUER ENVIAR PARA SI MESMO
+    const opcao = confirm(
+        '📱 Compartilhar convite:\n\n' +
+        '✅ Clique em "OK" para enviar para VOCÊ MESMO\n' +
+        '❌ Clique em "Cancelar" para escolher outro contato'
+    );
+    
+    let numero = '';
+    
+    if (!opcao) {
+        numero = prompt(
+            '📱 Digite o número do WhatsApp (com DDD):\n' +
+            'Exemplo: 62996037779\n\n' +
+            '(Deixe em branco para escolher depois)'
+        );
+        if (numero !== null) {
+            numero = numero.replace(/\D/g, '');
+        } else {
+            return;
+        }
+    } else {
+        // Número fixo - coloque SEU número aqui
+        numero = '5562996037779';
+    }
+    
+    // Gera a imagem
+    const container = document.getElementById('convite-container');
+    const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
+    const originalDisplay = [];
+    
+    botoes.forEach(btn => {
+        originalDisplay.push(btn.style.display);
+        btn.style.display = 'none';
+    });
 
+    html2canvas(container, {
+        scale: 4,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        logging: false
+    }).then(canvas => {
+        canvas.toBlob(function(blob) {
+            restaurarBotoes();
+            
+            // Tenta usar Web Share (celular)
+            if (navigator.share && !numero) {
+                const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
+                navigator.share({
+                    title: 'Convite Ensaio',
+                    text: mensagem,
+                    files: [file]
+                }).catch((err) => {
+                    if (err.name !== 'AbortError') {
+                        abrirWhatsApp(numero, mensagem);
+                    }
+                });
+            } else {
+                // Abre WhatsApp com o número
+                abrirWhatsApp(numero, mensagem);
+                
+                // Se não tiver Web Share, baixa a imagem também
+                if (!navigator.share) {
+                    baixarImagem(blob);
+                }
+            }
+        }, 'image/png', 0.95);
+    }).catch(err => {
+        alert('Erro ao gerar imagem: ' + err.message);
+        restaurarBotoes();
+    });
+
+    function abrirWhatsApp(numero, texto) {
+        let url;
+        if (numero) {
+            url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+        } else {
+            url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+        }
+        window.open(url, '_blank');
+    }
+
+    function restaurarBotoes() {
+        botoes.forEach((btn, i) => {
+            btn.style.display = originalDisplay[i] || 'block';
+        });
+    }
+
+    function baixarImagem(blob) {
+        const link = document.createElement('a');
+        link.download = 'convite_ensaio.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+}
     // ============================================================
     // FUNÇÕES DA TABELA PRINCIPAL
     // ============================================================
