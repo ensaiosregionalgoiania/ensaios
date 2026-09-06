@@ -502,41 +502,93 @@
 
         .botoes-convite {
             position: absolute;
-            bottom: 12%;
+            bottom: 10%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
             display: flex;
-            gap: 8px;
+            gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
             width: 100%;
-            padding: 0 10px;
+            padding: 0 15px;
             box-sizing: border-box;
         }
 
         .btn-acao-convite {
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 11px;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             transition: all 0.3s;
             flex: 1;
-            min-width: 80px;
-            max-width: 120px;
+            min-width: 100px;
+            max-width: 160px;
             text-align: center;
         }
         .btn-acao-convite:hover {
             transform: scale(1.05);
             opacity: 0.9;
         }
-        .btn-copiar-imagem { background: #27ae60; }
-        .btn-copiar-local { background: #3498db; }
-        .btn-compartilhar { background: #25D366; }
+        .btn-compartilhar { 
+            background: #25D366; 
+        }
+        .btn-fechar { 
+            background: #e74c3c; 
+        }
+
+        /* ===== TELA DE AGUARDE ===== */
+        #aguarde-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #aguarde-overlay.ativo {
+            display: flex;
+        }
+        .aguarde-box {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 90%;
+        }
+        .aguarde-box h2 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            font-size: 22px;
+        }
+        .aguarde-box p {
+            color: #666;
+            margin: 0 0 20px 0;
+            font-size: 14px;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e9ecef;
+            border-top: 5px solid #25D366;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         @media print {
             body * { visibility: hidden; }
@@ -553,7 +605,7 @@
             .menu1, .suporte, .overlay, .menu-lateral,
             .consultas-container, .input-group, #error-msg,
             .btn-expandir, .btn-maps, .btn-convite,
-            #convite-overlay { display: none !important; }
+            #convite-overlay, #aguarde-overlay { display: none !important; }
             .detalhes-content { display: table-row !important; visibility: visible !important; page-break-inside: avoid; }
             table { width: 100%; border-collapse: collapse; font-size: 10pt; }
             th, td { padding: 4px; border: 1px solid #000; }
@@ -628,7 +680,7 @@
     <div id="convite-overlay">
         <div id="convite-container">
             <button class="btn-fechar-convite" id="btn-fechar-convite">✕</button>
-            <div id="DivEnsaio">Ensaio Local 1</div>
+            <div id="DivEnsaio">Ensaio Local</div>
             <div id="DivIgreja">Nome da Igreja</div>
             <div id="DivHoje">HOJE</div>
             <div id="DivData">Data</div>
@@ -637,16 +689,21 @@
             
             <!-- BOTÕES DE AÇÃO DO CONVITE -->
             <div class="botoes-convite">
-                <button class="btn-acao-convite btn-copiar-imagem" id="btn-copiar-imagem">📋 Copiar</button>
-                <button class="btn-acao-convite btn-copiar-local" id="btn-copiar-local">📍 Local</button>
-                <button class="btn-acao-convite btn-compartilhar" id="btn-compartilhar-whats">💬 Compartilhar</button>
-                <!-- Dentro do .botoes-convite -->
-                <button class="btn-acao-convite" id="btn-enviar-para-mim" style="background:#9b59b6; color:white; border:none; border-radius:8px; padding:8px 14px; font-size:11px; font-weight:bold; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
-                    👤 Para Mim
-                </button>
+                <button class="btn-acao-convite btn-compartilhar" id="btn-compartilhar">💬 Compartilhar</button>
+                <button class="btn-acao-convite btn-fechar" id="btn-fechar">✕ Fechar</button>
             </div>
         </div>
     </div>
+
+    <!-- ===== TELA DE AGUARDE ===== -->
+    <div id="aguarde-overlay">
+        <div class="aguarde-box">
+            <div class="spinner"></div>
+            <h2>⏳ Aguarde...</h2>
+            <p>Gerando imagem do convite.<br>Isso pode levar alguns segundos.</p>
+        </div>
+    </div>
+
     <script src="dados.js"></script>
     <script src="setor.js"></script>
     
@@ -1043,9 +1100,87 @@
     }
 
     // ============================================================
-    // COPIAR IMAGEM DO CONVITE
+    // COMPARTILHAR COM WHATSAPP
     // ============================================================
-    function copiarImagemConvite() {
+    
+    function mostrarAguarde() {
+        document.getElementById('aguarde-overlay').classList.add('ativo');
+    }
+
+    function esconderAguarde() {
+        document.getElementById('aguarde-overlay').classList.remove('ativo');
+    }
+
+    function compartilharWhatsApp() {
+        // ============================================================
+        // MOSTRA TELA DE AGUARDE
+        // ============================================================
+        mostrarAguarde();
+        
+        console.log('========================================');
+        console.log('📱 INICIANDO COMPARTILHAMENTO');
+        console.log('========================================');
+        
+        // ============================================================
+        // CAPTURA O LINK DA LOCALIZAÇÃO
+        // ============================================================
+        let linkParaEnviar = '';
+        
+        // 1 - Tenta pegar do linkAtual
+        linkParaEnviar = linkAtual || '';
+        console.log('🔍 [1] linkAtual:', linkParaEnviar);
+        
+        // 2 - Tenta pegar do elemento DivLocal
+        if (!linkParaEnviar) {
+            const divLocal = document.getElementById('DivLocal');
+            const linkElement = divLocal ? divLocal.querySelector('a') : null;
+            if (linkElement) {
+                linkParaEnviar = linkElement.href || '';
+                console.log('🔍 [2] Pego do DivLocal:', linkParaEnviar);
+            }
+        }
+        
+        // 3 - Tenta pegar dos dados do evento
+        if (!linkParaEnviar) {
+            for (let i in window.linhasDados) {
+                const dados = window.linhasDados[i];
+                if (dados && dados.localizacao) {
+                    if (dados.localizacao.startsWith('http')) {
+                        linkParaEnviar = dados.localizacao;
+                    } else {
+                        linkParaEnviar = `https://maps.app.goo.gl/${dados.localizacao}`;
+                    }
+                    console.log('🔍 [3] Pego do linhasDados[' + i + ']:', linkParaEnviar);
+                    break;
+                }
+            }
+        }
+        
+        // ============================================================
+        // EXIBE O LINK NO CONSOLE
+        // ============================================================
+        console.log('========================================');
+        console.log('📍 LINK DA LOCALIZAÇÃO:');
+        console.log(linkParaEnviar || '❌ NENHUM LINK ENCONTRADO');
+        console.log('========================================');
+        
+        // ============================================================
+        // MONTA A MENSAGEM
+        // ============================================================
+        let mensagem = '📩 Convite para o Ensaio!';
+        if (linkParaEnviar) {
+            mensagem += `\n\n📍 Localização: ${linkParaEnviar}`;
+        } else {
+            mensagem += '\n\n📍 Localização não disponível';
+        }
+        
+        console.log('📨 MENSAGEM QUE SERÁ ENVIADA:');
+        console.log(mensagem);
+        console.log('========================================');
+        
+        // ============================================================
+        // GERA A IMAGEM E ENVIA
+        // ============================================================
         const container = document.getElementById('convite-container');
         const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
         const originalDisplay = [];
@@ -1056,215 +1191,64 @@
         });
 
         html2canvas(container, {
-            scale: 5,
+            scale: 4,
             useCORS: true,
             allowTaint: false,
             backgroundColor: '#ffffff',
             logging: false
         }).then(canvas => {
-            const finalCanvas = document.createElement('canvas');
-            const finalWidth = canvas.width * 2;
-            const finalHeight = canvas.height * 2;
-            finalCanvas.width = finalWidth;
-            finalCanvas.height = finalHeight;
-            
-            const ctx = finalCanvas.getContext('2d');
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            ctx.drawImage(canvas, 0, 0, finalWidth, finalHeight);
-            
-            finalCanvas.toBlob(function(blob) {
-                try {
-                    if (navigator.clipboard && navigator.clipboard.write) {
-                        navigator.clipboard.write([
-                            new ClipboardItem({ [blob.type]: blob })
-                        ]).then(() => {
-                            alert('✅ Imagem copiada para a área de transferência!');
-                            restaurarBotoes();
-                        }).catch(() => {
-                            baixarImagem(blob);
-                            restaurarBotoes();
-                        });
-                    } else {
-                        baixarImagem(blob);
-                        restaurarBotoes();
-                    }
-                } catch (e) {
+            canvas.toBlob(function(blob) {
+                // Restaura os botões
+                botoes.forEach((btn, i) => {
+                    btn.style.display = originalDisplay[i] || 'block';
+                });
+                
+                console.log('✅ Imagem gerada com sucesso!');
+                esconderAguarde();
+                
+                // Tenta usar Web Share (celular)
+                if (navigator.share) {
+                    console.log('📤 Usando Web Share para compartilhar');
+                    const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
+                    navigator.share({
+                        title: 'Convite Ensaio',
+                        text: mensagem,
+                        files: [file]
+                    }).then(() => {
+                        console.log('✅ Compartilhado com sucesso via Web Share');
+                    }).catch((err) => {
+                        if (err.name !== 'AbortError') {
+                            console.log('⚠️ Web Share falhou, abrindo WhatsApp');
+                            abrirWhatsApp(mensagem);
+                        } else {
+                            console.log('ℹ️ Usuário cancelou o compartilhamento');
+                        }
+                    });
+                } else {
+                    // Desktop: abre WhatsApp com a mensagem
+                    console.log('📤 Abrindo WhatsApp com a mensagem');
+                    abrirWhatsApp(mensagem);
+                    
+                    // Baixa a imagem como fallback
                     baixarImagem(blob);
-                    restaurarBotoes();
                 }
-            }, 'image/png', 1.0);
+            }, 'image/png', 0.95);
         }).catch(err => {
+            console.error('❌ Erro ao gerar imagem:', err);
+            esconderAguarde();
             alert('Erro ao gerar imagem: ' + err.message);
-            restaurarBotoes();
-        });
-
-        function restaurarBotoes() {
+            
+            // Restaura os botões mesmo com erro
             botoes.forEach((btn, i) => {
                 btn.style.display = originalDisplay[i] || 'block';
             });
-        }
-
-        function baixarImagem(blob) {
-            const link = document.createElement('a');
-            link.download = 'convite_ensaio.png';
-            link.href = URL.createObjectURL(blob);
-            link.click();
-            URL.revokeObjectURL(link.href);
-            alert('✅ Imagem baixada!');
-        }
-    }
-
-    // ============================================================
-    // COPIAR LOCALIZAÇÃO
-    // ============================================================
-    function copiarLocalizacao() {
-        if (linkAtual) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(linkAtual).then(() => {
-                    alert('✅ Link da localização copiado!');
-                }).catch(() => {
-                    copiarFallback(linkAtual);
-                });
-            } else {
-                copiarFallback(linkAtual);
-            }
-        } else {
-            alert('⚠️ Nenhuma localização disponível para este ensaio.');
-        }
-    }
-
-    function copiarFallback(texto) {
-        const input = document.createElement('input');
-        input.value = texto;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        alert('✅ Link da localização copiado!');
-    }
-
-function compartilharWhatsApp() {
-    // Captura o link novamente para garantir
-    const divLocal = document.getElementById('DivLocal');
-    const linkElement = divLocal.querySelector('a');
-    let linkParaEnviar = linkAtual;
-    
-    // Se linkAtual estiver vazio, tenta pegar do elemento
-    if (!linkParaEnviar && linkElement) {
-        linkParaEnviar = linkElement.href || '';
-    }
-    
-    // Se ainda estiver vazio, tenta pegar do dadosLinha
-    if (!linkParaEnviar) {
-        // Procura o índice do convite aberto
-        for (let i in window.linhasDados) {
-            const dados = window.linhasDados[i];
-            if (dados && dados.localizacao) {
-                if (dados.localizacao.startsWith('http')) {
-                    linkParaEnviar = dados.localizacao;
-                } else {
-                    linkParaEnviar = `https://maps.app.goo.gl/${dados.localizacao}`;
-                }
-                break;
-            }
-        }
-    }
-    
-    // Monta a mensagem com o link
-    let mensagem = '📩 Convite para o Ensaio!';
-    if (linkParaEnviar) {
-        mensagem += `\n\n📍 Localização: ${linkParaEnviar}`;
-    } else {
-        mensagem += '\n\n📍 Localização não disponível';
-    }
-    
-    // PERGUNTA SE QUER ENVIAR PARA SI MESMO
-    const opcao = confirm(
-        '📱 Compartilhar convite:\n\n' +
-        '✅ Clique em "OK" para enviar para VOCÊ MESMO\n' +
-        '❌ Clique em "Cancelar" para escolher outro contato'
-    );
-    
-    let numero = '';
-    
-    if (!opcao) {
-        numero = prompt(
-            '📱 Digite o número do WhatsApp (com DDD):\n' +
-            'Exemplo: 62996037779\n\n' +
-            '(Deixe em branco para escolher depois)'
-        );
-        if (numero !== null) {
-            numero = numero.replace(/\D/g, '');
-        } else {
-            return;
-        }
-    } else {
-        // Número fixo - coloque SEU número aqui
-        numero = '5562996037779';
-    }
-    
-    // Gera a imagem
-    const container = document.getElementById('convite-container');
-    const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
-    const originalDisplay = [];
-    
-    botoes.forEach(btn => {
-        originalDisplay.push(btn.style.display);
-        btn.style.display = 'none';
-    });
-
-    html2canvas(container, {
-        scale: 4,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        logging: false
-    }).then(canvas => {
-        canvas.toBlob(function(blob) {
-            restaurarBotoes();
-            
-            // Tenta usar Web Share (celular)
-            if (navigator.share && !numero) {
-                const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
-                navigator.share({
-                    title: 'Convite Ensaio',
-                    text: mensagem,
-                    files: [file]
-                }).catch((err) => {
-                    if (err.name !== 'AbortError') {
-                        abrirWhatsApp(numero, mensagem);
-                    }
-                });
-            } else {
-                // Abre WhatsApp com o número
-                abrirWhatsApp(numero, mensagem);
-                
-                // Se não tiver Web Share, baixa a imagem também
-                if (!navigator.share) {
-                    baixarImagem(blob);
-                }
-            }
-        }, 'image/png', 0.95);
-    }).catch(err => {
-        alert('Erro ao gerar imagem: ' + err.message);
-        restaurarBotoes();
-    });
-
-    function abrirWhatsApp(numero, texto) {
-        let url;
-        if (numero) {
-            url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
-        } else {
-            url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-        }
-        window.open(url, '_blank');
-    }
-
-    function restaurarBotoes() {
-        botoes.forEach((btn, i) => {
-            btn.style.display = originalDisplay[i] || 'block';
         });
+    }
+
+    function abrirWhatsApp(texto) {
+        const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+        console.log('🔗 URL do WhatsApp:', url);
+        window.open(url, '_blank');
     }
 
     function baixarImagem(blob) {
@@ -1273,8 +1257,9 @@ function compartilharWhatsApp() {
         link.href = URL.createObjectURL(blob);
         link.click();
         URL.revokeObjectURL(link.href);
+        console.log('💾 Imagem baixada como: convite_ensaio.png');
     }
-}
+
     // ============================================================
     // FUNÇÕES DA TABELA PRINCIPAL
     // ============================================================
@@ -1817,22 +1802,13 @@ function compartilharWhatsApp() {
 
         // Eventos do convite
         document.getElementById('btn-fechar-convite').addEventListener('click', fecharConvite);
+        document.getElementById('btn-fechar').addEventListener('click', fecharConvite);
         document.getElementById('convite-overlay').addEventListener('click', function(e) {
             if (e.target === this) fecharConvite();
         });
         
-        // Botões do convite
-        document.getElementById('btn-copiar-imagem').addEventListener('click', function(e) {
-            e.stopPropagation();
-            copiarImagemConvite();
-        });
-        
-        document.getElementById('btn-copiar-local').addEventListener('click', function(e) {
-            e.stopPropagation();
-            copiarLocalizacao();
-        });
-        
-        document.getElementById('btn-compartilhar-whats').addEventListener('click', function(e) {
+        // Botão Compartilhar
+        document.getElementById('btn-compartilhar').addEventListener('click', function(e) {
             e.stopPropagation();
             compartilharWhatsApp();
         });
@@ -1906,59 +1882,6 @@ function compartilharWhatsApp() {
         }
     }
 
-function enviarParaMim() {
-    const meuNumero = '5562996037779'; // ← SUBSTITUA PELO SEU NÚMERO
-    
-    const container = document.getElementById('convite-container');
-    const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
-    const originalDisplay = [];
-    
-    botoes.forEach(btn => {
-        originalDisplay.push(btn.style.display);
-        btn.style.display = 'none';
-    });
-
-    html2canvas(container, {
-        scale: 4,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        logging: false
-    }).then(canvas => {
-        canvas.toBlob(function(blob) {
-            restaurarBotoes();
-            
-            const mensagem = `📩 Convite para o Ensaio!\n\n📍 Localização: ${linkAtual || 'Não disponível'}`;
-            const url = `https://wa.me/${meuNumero}?text=${encodeURIComponent(mensagem)}`;
-            
-            // Abre o WhatsApp com seu próprio número
-            window.open(url, '_blank');
-            
-            // Se não tiver Web Share, baixa a imagem também
-            if (!navigator.share) {
-                const link = document.createElement('a');
-                link.download = 'convite_ensaio.png';
-                link.href = URL.createObjectURL(blob);
-                link.click();
-                URL.revokeObjectURL(link.href);
-            }
-        }, 'image/png', 0.95);
-    }).catch(err => {
-        alert('Erro ao gerar imagem: ' + err.message);
-        restaurarBotoes();
-    });
-
-    function restaurarBotoes() {
-        botoes.forEach((btn, i) => {
-            btn.style.display = originalDisplay[i] || 'block';
-        });
-    }
-}
-
-document.getElementById('btn-enviar-para-mim').addEventListener('click', function(e) {
-    e.stopPropagation();
-    enviarParaMim();
-});
     // ============================================================
     // EXPORTAÇÃO PARA O GLOBAL
     // ============================================================
@@ -1975,8 +1898,6 @@ document.getElementById('btn-enviar-para-mim').addEventListener('click', functio
     window.consultarPorCasaOracao = consultarPorCasaOracao;
     window.consultarPorEncarregadoLocal = consultarPorEncarregadoLocal;
     window.gerarTabelaPorEnsaioRegional = gerarTabelaPorEnsaioRegional;
-    window.copiarImagemConvite = copiarImagemConvite;
-    window.copiarLocalizacao = copiarLocalizacao;
     window.compartilharWhatsApp = compartilharWhatsApp;
     </script>
 </body>
