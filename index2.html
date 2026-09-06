@@ -643,7 +643,10 @@
             </div>
         </div>
     </div>
-
+<!-- Dentro do .botoes-convite -->
+<button class="btn-acao-convite" id="btn-enviar-para-mim" style="background:#9b59b6; color:white; border:none; border-radius:8px; padding:8px 14px; font-size:11px; font-weight:bold; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
+    👤 Para Mim
+</button>
     <script src="dados.js"></script>
     <script src="setor.js"></script>
     
@@ -1834,6 +1837,59 @@
         }
     }
 
+function enviarParaMim() {
+    const meuNumero = '5562996037779'; // ← SUBSTITUA PELO SEU NÚMERO
+    
+    const container = document.getElementById('convite-container');
+    const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
+    const originalDisplay = [];
+    
+    botoes.forEach(btn => {
+        originalDisplay.push(btn.style.display);
+        btn.style.display = 'none';
+    });
+
+    html2canvas(container, {
+        scale: 4,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        logging: false
+    }).then(canvas => {
+        canvas.toBlob(function(blob) {
+            restaurarBotoes();
+            
+            const mensagem = `📩 Convite para o Ensaio!\n\n📍 Localização: ${linkAtual || 'Não disponível'}`;
+            const url = `https://wa.me/${meuNumero}?text=${encodeURIComponent(mensagem)}`;
+            
+            // Abre o WhatsApp com seu próprio número
+            window.open(url, '_blank');
+            
+            // Se não tiver Web Share, baixa a imagem também
+            if (!navigator.share) {
+                const link = document.createElement('a');
+                link.download = 'convite_ensaio.png';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }
+        }, 'image/png', 0.95);
+    }).catch(err => {
+        alert('Erro ao gerar imagem: ' + err.message);
+        restaurarBotoes();
+    });
+
+    function restaurarBotoes() {
+        botoes.forEach((btn, i) => {
+            btn.style.display = originalDisplay[i] || 'block';
+        });
+    }
+}
+
+document.getElementById('btn-enviar-para-mim').addEventListener('click', function(e) {
+    e.stopPropagation();
+    enviarParaMim();
+});
     // ============================================================
     // EXPORTAÇÃO PARA O GLOBAL
     // ============================================================
