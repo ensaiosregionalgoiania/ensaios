@@ -14,7 +14,8 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         /* ===== RESET E ESTILOS GERAIS ===== */
@@ -377,7 +378,7 @@
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
-            cursor: pointer;
+            cursor: default;
         }
 
         #DivEnsaio {
@@ -476,30 +477,6 @@
             pointer-events: auto;
         }
 
-        #DivQRCode {
-            position: absolute;
-            bottom: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-            background: white;
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            cursor: pointer;
-            pointer-events: auto;
-        }
-        #DivQRCode canvas {
-            display: block;
-            width: 120px !important;
-            height: 120px !important;
-            pointer-events: none;
-        }
-        #DivQRCode:hover {
-            transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-        }
-
         .btn-fechar-convite {
             position: absolute;
             top: 10px;
@@ -523,26 +500,43 @@
             transform: scale(1.1);
         }
 
-        .btn-baixar-qr {
+        .botoes-convite {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: #8e44ad;
+            bottom: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .btn-acao-convite {
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             padding: 8px 14px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             cursor: pointer;
-            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             transition: all 0.3s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            flex: 1;
+            min-width: 80px;
+            max-width: 120px;
+            text-align: center;
         }
-        .btn-baixar-qr:hover {
-            background: #6c3483;
+        .btn-acao-convite:hover {
             transform: scale(1.05);
+            opacity: 0.9;
         }
+        .btn-copiar-imagem { background: #27ae60; }
+        .btn-copiar-local { background: #3498db; }
+        .btn-compartilhar { background: #25D366; }
 
         @media print {
             body * { visibility: hidden; }
@@ -639,16 +633,19 @@
             <div id="DivHoje">HOJE</div>
             <div id="DivData">Data</div>
             <div id="DivHora">Hora</div>
-            <div id="DivLocal"><a href="#" target="_blank">Local</a></div>
-            <div id="DivQRCode"><div id="qrcode"></div></div>
-            <button class="btn-baixar-qr" id="btn-baixar-qr">📥 QR</button>
+            <div id="DivLocal"><a href="#" target="_blank">Localização</a></div>
+            
+            <!-- BOTÕES DE AÇÃO DO CONVITE -->
+            <div class="botoes-convite">
+                <button class="btn-acao-convite btn-copiar-imagem" id="btn-copiar-imagem">📋 Copiar</button>
+                <button class="btn-acao-convite btn-copiar-local" id="btn-copiar-local">📍 Local</button>
+                <button class="btn-acao-convite btn-compartilhar" id="btn-compartilhar-whats">💬 Compartilhar</button>
+            </div>
         </div>
     </div>
 
     <script src="dados.js"></script>
     <script src="setor.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
     <script>
     // ============================================================
@@ -658,7 +655,6 @@
     window.linhasDados = [];
     let minhaLat = 0, minhaLon = 0;
     let ordemDistancia = true;
-    let qrCodeInstance = null;
     let linkAtual = '';
 
     // ============================================================
@@ -976,48 +972,6 @@
         return `${artigo} ${nomeDia}`;
     }
 
-    function gerarQRCode(link) {
-        const container = document.getElementById('qrcode');
-        const divQRCode = document.getElementById('DivQRCode');
-        
-        linkAtual = link || '';
-        
-        if (!link || link === '#' || link === '') {
-            if (divQRCode) divQRCode.style.display = 'none';
-            return;
-        }
-        
-        if (divQRCode) {
-            divQRCode.style.display = 'block';
-        }
-        container.innerHTML = '';
-        
-        try {
-            qrCodeInstance = new QRCode(container, {
-                text: link,
-                width: 120,
-                height: 120,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        } catch (e) {
-            console.error('Erro ao gerar QR Code:', e);
-            container.innerHTML = '<div style="font-size: 10px; color: #999; padding: 10px; text-align: center;">Erro</div>';
-        }
-    }
-
-    function abrirLinkQRCode(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        
-        if (linkAtual) {
-            window.open(linkAtual, '_blank', 'noopener,noreferrer');
-        } else {
-            alert('Nenhum link disponível.');
-        }
-    }
-
     function abrirConvite(index) {
         const dadosLinha = window.linhasDados[index];
         if (!dadosLinha) {
@@ -1029,7 +983,6 @@
         const divIgreja = document.getElementById('DivIgreja');
         divIgreja.textContent = nomeIgreja;
         
-        // Ajusta tamanho da fonte baseado no nome
         if (nomeIgreja.length > 25) {
             divIgreja.style.fontSize = '32px';
             divIgreja.style.lineHeight = '0.9';
@@ -1053,7 +1006,6 @@
         const diaTexto = getDiaTexto(dadosLinha.dataFormatada);
         document.getElementById('DivHoje').textContent = diaTexto;
 
-        // Ajusta posição do HOJE baseado no tamanho do nome
         const divHoje = document.getElementById('DivHoje');
         if (nomeIgreja.length > 17) {
             divHoje.style.top = '30%';
@@ -1061,7 +1013,6 @@
             divHoje.style.top = '25%';
         }
 
-        // Configura link e QR Code
         const divLocal = document.getElementById('DivLocal');
         let linkCompleto = '';
         if (dadosLinha.localizacao) {
@@ -1070,13 +1021,12 @@
             } else {
                 linkCompleto = `https://maps.app.goo.gl/${dadosLinha.localizacao}`;
             }
-            divLocal.innerHTML = `<a href="${linkCompleto}" target="_blank" style="color:#ffd700; text-decoration:underline;">Localização</a>`;
+            linkAtual = linkCompleto;
+            divLocal.innerHTML = `<a href="${linkCompleto}" target="_blank" style="color:#ffd700; text-decoration:underline;">📍 Localização</a>`;
         } else {
-            linkCompleto = '';
+            linkAtual = '';
             divLocal.textContent = 'Local não informado';
         }
-
-        gerarQRCode(linkCompleto);
 
         const overlay = document.getElementById('convite-overlay');
         overlay.classList.add('ativo');
@@ -1089,24 +1039,12 @@
         overlay.style.display = 'none';
     }
 
-    function baixarQRCode() {
-        const qrContainer = document.getElementById('qrcode');
-        const canvas = qrContainer.querySelector('canvas');
-        
-        if (!canvas) {
-            alert('QR Code não disponível.');
-            return;
-        }
-        
-        const link = document.createElement('a');
-        link.download = 'qrcode_ensaio.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    }
-
-    function copiarConvite() {
+    // ============================================================
+    // COPIAR IMAGEM DO CONVITE
+    // ============================================================
+    function copiarImagemConvite() {
         const container = document.getElementById('convite-container');
-        const botoes = container.querySelectorAll('.btn-fechar-convite, .btn-baixar-qr');
+        const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
         const originalDisplay = [];
         
         botoes.forEach(btn => {
@@ -1119,19 +1057,8 @@
             useCORS: true,
             allowTaint: false,
             backgroundColor: '#ffffff',
-            logging: false,
-            onclone: function(clonedDoc) {
-                const clonedContainer = clonedDoc.getElementById('convite-container');
-                if (clonedContainer) {
-                    clonedContainer.style.transform = 'none';
-                    clonedContainer.style.backgroundImage = 'url("convite01.png")';
-                    clonedContainer.style.backgroundSize = '100% 100%';
-                    clonedContainer.style.backgroundPosition = 'center';
-                    clonedContainer.style.backgroundRepeat = 'no-repeat';
-                }
-            }
+            logging: false
         }).then(canvas => {
-            // Aumenta ainda mais a resolução
             const finalCanvas = document.createElement('canvas');
             const finalWidth = canvas.width * 2;
             const finalHeight = canvas.height * 2;
@@ -1149,7 +1076,7 @@
                         navigator.clipboard.write([
                             new ClipboardItem({ [blob.type]: blob })
                         ]).then(() => {
-                            alert('✅ Imagem copiada! O QR Code pode ser escaneado pelo WhatsApp.');
+                            alert('✅ Imagem copiada para a área de transferência!');
                             restaurarBotoes();
                         }).catch(() => {
                             baixarImagem(blob);
@@ -1181,7 +1108,98 @@
             link.href = URL.createObjectURL(blob);
             link.click();
             URL.revokeObjectURL(link.href);
-            alert('✅ Imagem baixada! Envie para o WhatsApp.');
+            alert('✅ Imagem baixada!');
+        }
+    }
+
+    // ============================================================
+    // COPIAR LOCALIZAÇÃO
+    // ============================================================
+    function copiarLocalizacao() {
+        if (linkAtual) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(linkAtual).then(() => {
+                    alert('✅ Link da localização copiado!');
+                }).catch(() => {
+                    copiarFallback(linkAtual);
+                });
+            } else {
+                copiarFallback(linkAtual);
+            }
+        } else {
+            alert('⚠️ Nenhuma localização disponível para este ensaio.');
+        }
+    }
+
+    function copiarFallback(texto) {
+        const input = document.createElement('input');
+        input.value = texto;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('✅ Link da localização copiado!');
+    }
+
+    // ============================================================
+    // COMPARTILHAR NO WHATSAPP
+    // ============================================================
+    function compartilharWhatsApp() {
+        const container = document.getElementById('convite-container');
+        const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
+        const originalDisplay = [];
+        
+        botoes.forEach(btn => {
+            originalDisplay.push(btn.style.display);
+            btn.style.display = 'none';
+        });
+
+        html2canvas(container, {
+            scale: 4,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#ffffff',
+            logging: false
+        }).then(canvas => {
+            canvas.toBlob(function(blob) {
+                restaurarBotoes();
+                
+                // Tenta usar a Web Share API (celular)
+                if (navigator.share) {
+                    const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
+                    navigator.share({
+                        title: 'Convite Ensaio',
+                        text: '📩 Convite para o Ensaio!',
+                        files: [file]
+                    }).catch((err) => {
+                        if (err.name !== 'AbortError') {
+                            baixarImagem(blob);
+                            alert('📱 Para compartilhar no WhatsApp, baixe a imagem e envie manualmente.');
+                        }
+                    });
+                } else {
+                    // Desktop: baixa a imagem
+                    baixarImagem(blob);
+                    alert('📱 Para compartilhar no WhatsApp, baixe a imagem e envie manualmente.');
+                }
+            }, 'image/png', 0.95);
+        }).catch(err => {
+            alert('Erro ao gerar imagem: ' + err.message);
+            restaurarBotoes();
+        });
+
+        function restaurarBotoes() {
+            botoes.forEach((btn, i) => {
+                btn.style.display = originalDisplay[i] || 'block';
+            });
+        }
+
+        function baixarImagem(blob) {
+            const link = document.createElement('a');
+            link.download = 'convite_ensaio.png';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
         }
     }
 
@@ -1730,20 +1748,21 @@
         document.getElementById('convite-overlay').addEventListener('click', function(e) {
             if (e.target === this) fecharConvite();
         });
-        document.getElementById('btn-baixar-qr').addEventListener('click', baixarQRCode);
         
-        // Clique no QR Code para abrir o link
-        document.getElementById('DivQRCode').addEventListener('click', abrirLinkQRCode);
+        // Botões do convite
+        document.getElementById('btn-copiar-imagem').addEventListener('click', function(e) {
+            e.stopPropagation();
+            copiarImagemConvite();
+        });
         
-        // Clique na imagem do convite para copiar
-        document.getElementById('convite-container').addEventListener('click', function(e) {
-            // Evita que o clique nos botões ou QR Code dispare a cópia
-            if (e.target.closest('.btn-fechar-convite') || 
-                e.target.closest('.btn-baixar-qr') ||
-                e.target.closest('#DivQRCode')) {
-                return;
-            }
-            copiarConvite();
+        document.getElementById('btn-copiar-local').addEventListener('click', function(e) {
+            e.stopPropagation();
+            copiarLocalizacao();
+        });
+        
+        document.getElementById('btn-compartilhar-whats').addEventListener('click', function(e) {
+            e.stopPropagation();
+            compartilharWhatsApp();
         });
 
         // Radios
@@ -1831,9 +1850,9 @@
     window.consultarPorCasaOracao = consultarPorCasaOracao;
     window.consultarPorEncarregadoLocal = consultarPorEncarregadoLocal;
     window.gerarTabelaPorEnsaioRegional = gerarTabelaPorEnsaioRegional;
-    window.copiarConvite = copiarConvite;
-    window.baixarQRCode = baixarQRCode;
-    window.abrirLinkQRCode = abrirLinkQRCode;
+    window.copiarImagemConvite = copiarImagemConvite;
+    window.copiarLocalizacao = copiarLocalizacao;
+    window.compartilharWhatsApp = compartilharWhatsApp;
     </script>
 </body>
 </html>
