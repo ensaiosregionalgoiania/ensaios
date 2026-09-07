@@ -375,106 +375,18 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             aspect-ratio: 9 / 16;
             min-height: 450px;
-            background-image: url('convite01.png');
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             cursor: default;
         }
 
-        #DivEnsaio {
+        /* Classes base para os campos do convite - serão sobrescritas pelo JavaScript */
+        .convite-campo {
             position: absolute;
-            top: 8%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 42px;
-            font-family: 'Great Vibes', cursive;
-            width: 100%;
-            color: #ff0000;
-            text-align: center;
-            z-index: 2;
-            line-height: 1.1;
             pointer-events: none;
         }
-
-        #DivIgreja { 
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 46px;
-            font-family: 'Oleo Script', cursive;
-            width: 100%;
-            color: #280638;
-            text-align: center;
-            z-index: 2;
-            line-height: 0.8;
-            padding: 0 15px;
-            box-sizing: border-box;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            pointer-events: none;
-        }
-
-        #DivHoje { 
-            position: absolute;
-            top: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 28px;
-            color: #ff0000;
-            font-weight: bold;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-            pointer-events: none;
-            white-space: nowrap;
-            letter-spacing: 2px;
-            width: auto;
-            z-index: 3;
-            border: 2px solid rgba(255,255,255,0.8);
-            padding: 5px 15px;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.2);
-            line-height: 1.0;
-        }
-
-        #DivData { 
-            position: absolute;
-            top: 49%;
-            left: 40%;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-            color: #070707;
-            line-height: 1.2;
-            pointer-events: none;
-        }
-
-        #DivHora {
-            position: absolute;
-            top: 54%;
-            left: 40%;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-            color: #070707;
-            line-height: 1.2;
-            pointer-events: none;
-        }
-
-        #DivLocal {
-            position: absolute;
-            top: 59%;
-            left: 43%;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-            color: #070707;
-            line-height: 1.2;
-            pointer-events: none;
-        }
-        #DivLocal a { 
-            color: #ffd700;
-            text-decoration: underline;
+        .convite-campo a {
             pointer-events: auto;
         }
 
@@ -503,9 +415,6 @@
 
         .botoes-convite {
             position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 10;
             display: flex;
             gap: 12px;
@@ -629,7 +538,7 @@
     <a href="https://wa.me/5562996037779" class="suporte">Suporte</a>
 
     <div class="container">
-        <h1 id="Titulo">Ensaio Local 1</h1>
+        <h1 id="Titulo">Ensaio Local</h1>
         <div class="consultas-container">
             <div class="consultas-titulo">Consulta por:</div>
             <div class="radio-group">
@@ -681,12 +590,12 @@
     <div id="convite-overlay">
         <div id="convite-container">
             <button class="btn-fechar-convite" id="btn-fechar-convite">✕</button>
-            <div id="DivEnsaio">Ensaio Local</div>
-            <div id="DivIgreja">Nome da Igreja</div>
-            <div id="DivHoje">HOJE</div>
-            <div id="DivData">Data</div>
-            <div id="DivHora">Hora</div>
-            <div id="DivLocal"><a href="#" target="_blank">Localização</a></div>
+            <div id="DivEnsaio" class="convite-campo">Ensaio Local</div>
+            <div id="DivIgreja" class="convite-campo">Nome da Igreja</div>
+            <div id="DivHoje" class="convite-campo">HOJE</div>
+            <div id="DivData" class="convite-campo">Data</div>
+            <div id="DivHora" class="convite-campo">Hora</div>
+            <div id="DivLocal" class="convite-campo"><a href="#" target="_blank">Localização</a></div>
             
             <!-- BOTÕES DE AÇÃO DO CONVITE -->
             <div class="botoes-convite">
@@ -710,6 +619,260 @@
     
     <script>
     // ============================================================
+    // VETOR DE CONFIGURAÇÕES DOS CONVITES
+    // ============================================================
+
+    const CONVITES = {
+        // ============================================================
+        // MODELO 1 - convite01.png (Original)
+        // ============================================================
+        'convite01': {
+            imagem: 'convite01.png',
+            campos: {
+                ensaio: {
+                    top: '8%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '42px',
+                    fontFamily: "'Great Vibes', cursive",
+                    color: '#ff0000',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '1.1'
+                },
+                igreja: {
+                    top: '15%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '46px',
+                    fontFamily: "'Oleo Script', cursive",
+                    color: '#280638',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '0.8',
+                    padding: '0 15px',
+                    wordWrap: 'break-word'
+                },
+                hoje: {
+                    top: '25%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '28px',
+                    color: '#ff0000',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '2px',
+                    border: '2px solid rgba(255,255,255,0.8)',
+                    padding: '5px 15px',
+                    borderRadius: '10px',
+                    background: 'rgba(0,0,0,0.2)',
+                    lineHeight: '1.0'
+                },
+                data: {
+                    top: '49%',
+                    left: '40%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                },
+                hora: {
+                    top: '54%',
+                    left: '40%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                },
+                local: {
+                    top: '59%',
+                    left: '43%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                }
+            },
+            botoes: {
+                bottom: '10%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                gap: '12px'
+            }
+        },
+
+        // ============================================================
+        // MODELO 2 - convite02.png
+        // ============================================================
+        'convite02': {
+            imagem: 'convite02.png',
+            campos: {
+                ensaio: {
+                    top: '12%',
+                    left: '60%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '42px',
+                    fontFamily: "'Great Vibes', cursive",
+                    color: '#ff0000',
+                    textAlign: 'center',
+                    width: '80%',
+                    lineHeight: '1.1'
+                },
+                igreja: {
+                    top: '18%',
+                    left: '60%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '46px',
+                    fontFamily: "'Oleo Script', cursive",
+                    color: '#280638',
+                    textAlign: 'center',
+                    width: '80%',
+                    lineHeight: '0.8',
+                    padding: '0 15px',
+                    wordWrap: 'break-word'
+                },
+                hoje: {
+                    top: '26%',
+                    left: '60%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '28px',
+                    color: '#ff0000',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '2px',
+                    border: '2px solid rgba(255,255,255,0.8)',
+                    padding: '5px 15px',
+                    borderRadius: '10px',
+                    background: 'rgba(0,0,0,0.2)',
+                    lineHeight: '1.0'
+                },
+                data: {
+                    top: '52%',
+                    left: '71%',
+                    fontSize: '19px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                },
+                hora: {
+                    top: '60%',
+                    left: '71%',
+                    fontSize: '19px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                },
+                local: {
+                    top: '65%',
+                    left: '70%',
+                    fontSize: '19px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                }
+            },
+            botoes: {
+                bottom: '10%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                gap: '12px'
+            }
+        },
+
+        // ============================================================
+        // MODELO 3 - convite03.png
+        // ============================================================
+        'convite03': {
+            imagem: 'convite03.png',
+            campos: {
+                ensaio: {
+                    top: '10%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '38px',
+                    fontFamily: "'Great Vibes', cursive",
+                    color: '#8B0000',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '1.1'
+                },
+                igreja: {
+                    top: '20%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '40px',
+                    fontFamily: "'Oleo Script', cursive",
+                    color: '#1a1a2e',
+                    textAlign: 'center',
+                    width: '90%',
+                    lineHeight: '0.85',
+                    padding: '0 15px',
+                    wordWrap: 'break-word'
+                },
+                hoje: {
+                    top: '28%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '32px',
+                    color: '#c0392b',
+                    fontWeight: 'bold',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '3px',
+                    border: '2px solid #c0392b',
+                    padding: '5px 20px',
+                    borderRadius: '8px',
+                    background: 'rgba(255,255,255,0.1)',
+                    lineHeight: '1.0'
+                },
+                data: {
+                    top: '50%',
+                    left: '35%',
+                    fontSize: '30px',
+                    fontWeight: 'bold',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
+                    color: '#2c3e50',
+                    lineHeight: '1.2'
+                },
+                hora: {
+                    top: '56%',
+                    left: '35%',
+                    fontSize: '30px',
+                    fontWeight: 'bold',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
+                    color: '#2c3e50',
+                    lineHeight: '1.2'
+                },
+                local: {
+                    top: '62%',
+                    left: '38%',
+                    fontSize: '26px',
+                    fontWeight: 'bold',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
+                    color: '#2c3e50',
+                    lineHeight: '1.2'
+                }
+            },
+            botoes: {
+                bottom: '8%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                gap: '15px',
+                display: 'flex',
+                justifyContent: 'center'
+            }
+        }
+    };
+
+    // ============================================================
     // CONFIGURAÇÕES GLOBAIS
     // ============================================================
 
@@ -717,6 +880,7 @@
     let minhaLat = 0, minhaLon = 0;
     let ordemDistancia = true;
     let linkAtual = '';
+    let modeloConviteAtual = 'convite02';
 
     // ============================================================
     // FUNÇÕES AUXILIARES
@@ -986,8 +1150,142 @@
     }
 
     // ============================================================
-    // FUNÇÕES DO CONVITE
+    // FUNÇÕES DO CONVITE - SISTEMA DE CONFIGURAÇÕES
     // ============================================================
+
+    /**
+     * Aplica as configurações de um modelo de convite
+     * @param {string} modelo - Nome do modelo (ex: 'convite01', 'convite02')
+     * @returns {object} Configuração aplicada
+     */
+    function aplicarConfiguracaoConvite(modelo) {
+        // Pega a configuração do modelo
+        const config = CONVITES[modelo] || CONVITES['convite01'];
+        modeloConviteAtual = modelo;
+        
+        // Aplica a imagem de fundo
+        const container = document.getElementById('convite-container');
+        container.style.backgroundImage = `url('${config.imagem}')`;
+        container.style.backgroundSize = '100% 100%';
+        container.style.backgroundPosition = 'center';
+        container.style.backgroundRepeat = 'no-repeat';
+        
+        // Aplica as configurações de cada campo
+        const campos = config.campos;
+        const elementos = {
+            ensaio: document.getElementById('DivEnsaio'),
+            igreja: document.getElementById('DivIgreja'),
+            hoje: document.getElementById('DivHoje'),
+            data: document.getElementById('DivData'),
+            hora: document.getElementById('DivHora'),
+            local: document.getElementById('DivLocal')
+        };
+        
+        for (let [nome, elemento] of Object.entries(elementos)) {
+            if (elemento && campos[nome]) {
+                const style = campos[nome];
+                // Limpa estilos inline anteriores, mas mantém a classe
+                for (let prop of ['top', 'left', 'right', 'bottom', 'transform', 'fontSize', 'fontFamily', 'color', 'textAlign', 'width', 'lineHeight', 'padding', 'wordWrap', 'fontWeight', 'textShadow', 'whiteSpace', 'letterSpacing', 'border', 'borderRadius', 'background', 'transformOrigin']) {
+                    elemento.style.removeProperty(prop);
+                }
+                // Aplica os novos estilos
+                for (let [prop, valor] of Object.entries(style)) {
+                    elemento.style[prop] = valor;
+                }
+                // Garante que o elemento seja posicionado corretamente
+                elemento.style.position = 'absolute';
+                elemento.style.pointerEvents = 'none';
+                
+                // Se for o local, permite clique no link
+                if (nome === 'local') {
+                    elemento.style.pointerEvents = 'none';
+                    const link = elemento.querySelector('a');
+                    if (link) {
+                        link.style.pointerEvents = 'auto';
+                    }
+                }
+            }
+        }
+        
+        // Aplica configurações dos botões
+        const botoes = document.querySelector('.botoes-convite');
+        if (botoes && config.botoes) {
+            // Limpa estilos anteriores
+            for (let prop of ['bottom', 'left', 'right', 'transform', 'gap', 'display', 'flexWrap', 'justifyContent']) {
+                botoes.style.removeProperty(prop);
+            }
+            for (let [prop, valor] of Object.entries(config.botoes)) {
+                botoes.style[prop] = valor;
+            }
+        }
+        
+        console.log(`✅ Configuração do convite "${modelo}" aplicada!`);
+        return config;
+    }
+
+    /**
+     * Preenche o convite com os dados e aplica o modelo
+     * @param {object} dados - Dados do evento
+     * @param {string} modelo - Nome do modelo (ex: 'convite01')
+     */
+    function preencherConvite(dados, modelo) {
+        // Aplica a configuração do modelo
+        const config = aplicarConfiguracaoConvite(modelo || 'convite01');
+        
+        // Preenche os campos com os dados
+        const divIgreja = document.getElementById('DivIgreja');
+        const nomeIgreja = dados.local || 'Igreja';
+        divIgreja.innerHTML = nomeIgreja;
+        
+        // Ajusta tamanho da fonte baseado no tamanho do nome
+        const textoPuro = nomeIgreja.replace(/<[^>]*>/g, '');
+        const configIgreja = config.campos.igreja;
+        let fontSize = configIgreja.fontSize || '46px';
+        let baseSize = parseInt(fontSize);
+        
+        if (textoPuro.length > 30) {
+            divIgreja.style.fontSize = (baseSize * 0.6) + 'px';
+        } else if (textoPuro.length > 25) {
+            divIgreja.style.fontSize = (baseSize * 0.7) + 'px';
+        } else if (textoPuro.length > 17) {
+            divIgreja.style.fontSize = (baseSize * 0.8) + 'px';
+        } else {
+            divIgreja.style.fontSize = fontSize;
+        }
+        
+        // Data
+        document.getElementById('DivData').textContent = dados.dataFormatada || 'Data não disponível';
+        
+        // Hora
+        let horaTexto = dados.horario;
+        if (horaTexto === 'T') horaTexto = '17:00';
+        else if (horaTexto === 'T1') horaTexto = '16:30';
+        else if (horaTexto === 'N') horaTexto = '19:30';
+        else horaTexto = horaTexto || '19:30';
+        document.getElementById('DivHora').textContent = horaTexto;
+        
+        // HOJE / AMANHÃ / PRÓXIMO...
+        const diaTexto = getDiaTexto(dados.dataFormatada);
+        document.getElementById('DivHoje').textContent = diaTexto;
+        
+        // Localização
+        const divLocal = document.getElementById('DivLocal');
+        if (dados.localizacao) {
+            let linkCompleto = dados.localizacao.startsWith('http') 
+                ? dados.localizacao 
+                : `https://maps.app.goo.gl/${dados.localizacao}`;
+            linkAtual = linkCompleto;
+            divLocal.innerHTML = `🔴👇`;
+        } else {
+            linkAtual = '';
+            divLocal.textContent = 'Local não informado';
+        }
+        
+        // Mostra o convite
+        const overlay = document.getElementById('convite-overlay');
+        overlay.classList.add('ativo');
+        overlay.style.display = 'flex';
+    }
 
     function isProximosDias(dataFormatada) {
         if (!dataFormatada || dataFormatada === 'Data não disponível') return false;
@@ -1039,60 +1337,32 @@
             alert('Dados não disponíveis para este ensaio.');
             return;
         }
-
-        const nomeIgreja = dadosLinha.local || 'Igreja';
-        const divIgreja = document.getElementById('DivIgreja');
-        divIgreja.textContent = nomeIgreja.replace(/<[^>]*>/g, '');
-            const textoPuro = nomeIgreja.replace(/<[^>]*>/g, ''); // Remove tags HTML
-
-        if (nomeIgreja.length > 25) {
-            divIgreja.style.fontSize = '32px';
-            divIgreja.style.lineHeight = '0.9';
-        } else if (nomeIgreja.length > 17) {
-            divIgreja.style.fontSize = '36px';
-            divIgreja.style.lineHeight = '0.9';
-        } else {
-            divIgreja.style.fontSize = '46px';
-            divIgreja.style.lineHeight = '0.8';
+        
+        // ============================================================
+        // ESCOLHE O MODELO BASEADO NO TIPO DE CONSULTA
+        // ============================================================
+        let modelo = 'convite02'; // padrão
+        
+        // Se for Ensaio Regional, usa modelo 2
+        if (document.getElementById('consulta-encarregado-regional').checked) {
+            modelo = 'convite02';
         }
         
-        document.getElementById('DivData').textContent = dadosLinha.dataFormatada || 'Data não disponível';
-
-        let horaTexto = dadosLinha.horario;
-        if (horaTexto === 'T') horaTexto = '17:00';
-        else if (horaTexto === 'T1') horaTexto = '16:30';
-        else if (horaTexto === 'N') horaTexto = '19:30';
-        else horaTexto = horaTexto || '19:30';
-        document.getElementById('DivHora').textContent = horaTexto;
-
-        const diaTexto = getDiaTexto(dadosLinha.dataFormatada);
-        document.getElementById('DivHoje').textContent = diaTexto;
-
-        const divHoje = document.getElementById('DivHoje');
-        if (nomeIgreja.length > 17) {
-            divHoje.style.top = '30%';
-        } else {
-            divHoje.style.top = '25%';
-        }
-
-        const divLocal = document.getElementById('DivLocal');
-        let linkCompleto = '';
-        if (dadosLinha.localizacao) {
-            if (dadosLinha.localizacao.startsWith('http')) {
-                linkCompleto = dadosLinha.localizacao;
-            } else {
-                linkCompleto = `https://maps.app.goo.gl/${dadosLinha.localizacao}`;
-            }
-            linkAtual = linkCompleto;
-            divLocal.innerHTML = `🔴👇`;
-        } else {
-            linkAtual = '';
-            divLocal.textContent = 'Local não informado';
-        }
-
-        const overlay = document.getElementById('convite-overlay');
-        overlay.classList.add('ativo');
-        overlay.style.display = 'flex';
+        // Pode adicionar outras regras aqui:
+        // Ex: se o nome da igreja contém "Central", usa modelo 3
+        // if (dadosLinha.local && dadosLinha.local.includes('Central')) {
+        //     modelo = 'convite03';
+        // }
+        
+        // Pode escolher baseado na data também
+        // if (dadosLinha.dataFormatada && dadosLinha.dataFormatada.includes('12/')) {
+        //     modelo = 'convite03';
+        // }
+        
+        console.log(`📌 Abrindo convite com modelo: ${modelo}`);
+        
+        // Preenche o convite com os dados
+        preencherConvite(dadosLinha, modelo);
     }
 
     function fecharConvite() {
@@ -1114,25 +1384,17 @@
     }
 
     function compartilharWhatsApp() {
-        // ============================================================
-        // MOSTRA TELA DE AGUARDE
-        // ============================================================
         mostrarAguarde();
         
         console.log('========================================');
         console.log('📱 INICIANDO COMPARTILHAMENTO');
         console.log('========================================');
         
-        // ============================================================
-        // CAPTURA O LINK DA LOCALIZAÇÃO
-        // ============================================================
         let linkParaEnviar = '';
         
-        // 1 - Tenta pegar do linkAtual
         linkParaEnviar = linkAtual || '';
         console.log('🔍 [1] linkAtual:', linkParaEnviar);
         
-        // 2 - Tenta pegar do elemento DivLocal
         if (!linkParaEnviar) {
             const divLocal = document.getElementById('DivLocal');
             const linkElement = divLocal ? divLocal.querySelector('a') : null;
@@ -1142,7 +1404,6 @@
             }
         }
         
-        // 3 - Tenta pegar dos dados do evento
         if (!linkParaEnviar) {
             for (let i in window.linhasDados) {
                 const dados = window.linhasDados[i];
@@ -1158,17 +1419,12 @@
             }
         }
         
-        // ============================================================
-        // EXIBE O LINK NO CONSOLE
-        // ============================================================
         console.log('========================================');
         console.log('📍 LINK DA LOCALIZAÇÃO:');
         console.log(linkParaEnviar || '❌ NENHUM LINK ENCONTRADO');
         console.log('========================================');
         
-        // ============================================================
-        // MONTA A MENSAGEM
-        // ============================================================
+        let mensagem = '';
         if (linkParaEnviar) {
             mensagem = `${linkParaEnviar}`;
         } else {
@@ -1179,9 +1435,6 @@
         console.log(mensagem);
         console.log('========================================');
         
-        // ============================================================
-        // GERA A IMAGEM E ENVIA
-        // ============================================================
         const container = document.getElementById('convite-container');
         const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
         const originalDisplay = [];
@@ -1199,7 +1452,6 @@
             logging: false
         }).then(canvas => {
             canvas.toBlob(function(blob) {
-                // Restaura os botões
                 botoes.forEach((btn, i) => {
                     btn.style.display = originalDisplay[i] || 'block';
                 });
@@ -1207,7 +1459,6 @@
                 console.log('✅ Imagem gerada com sucesso!');
                 esconderAguarde();
                 
-                // Tenta usar Web Share (celular)
                 if (navigator.share) {
                     console.log('📤 Usando Web Share para compartilhar');
                     const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
@@ -1226,11 +1477,8 @@
                         }
                     });
                 } else {
-                    // Desktop: abre WhatsApp com a mensagem
                     console.log('📤 Abrindo WhatsApp com a mensagem');
                     abrirWhatsApp(mensagem);
-                    
-                    // Baixa a imagem como fallback
                     baixarImagem(blob);
                 }
             }, 'image/png', 0.95);
@@ -1239,7 +1487,6 @@
             esconderAguarde();
             alert('Erro ao gerar imagem: ' + err.message);
             
-            // Restaura os botões mesmo com erro
             botoes.forEach((btn, i) => {
                 btn.style.display = originalDisplay[i] || 'block';
             });
@@ -1799,7 +2046,11 @@
     // ============================================================
 
     document.addEventListener('DOMContentLoaded', function() {
-        //setTimeout(carregarPopup, 500);
+        // Carrega o popup de boas-vindas (se existir)
+        if (typeof carregarPopup === 'function') {
+            setTimeout(carregarPopup, 500);
+        }
+        
         preencherSelectDatas();
 
         // Eventos do convite
@@ -1901,6 +2152,9 @@
     window.consultarPorEncarregadoLocal = consultarPorEncarregadoLocal;
     window.gerarTabelaPorEnsaioRegional = gerarTabelaPorEnsaioRegional;
     window.compartilharWhatsApp = compartilharWhatsApp;
+    window.aplicarConfiguracaoConvite = aplicarConfiguracaoConvite;
+    window.preencherConvite = preencherConvite;
+    window.CONVITES = CONVITES;
     </script>
 </body>
 </html>
