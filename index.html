@@ -957,9 +957,9 @@
             campos: {
                 ensaio: {
                     top: '8%',
-                    left: '50%',
+                    left: '65%',
                     transform: 'translateX(-50%)',
-                    fontSize: '42px',
+                    fontSize: '50px',
                     fontFamily: "'Great Vibes', cursive",
                     color: '#ff0000',
                     textAlign: 'center',
@@ -968,26 +968,27 @@
                 },
                 igreja: {
                     top: '15%',
-                    left: '50%',
+                    left: '65%',
                     transform: 'translateX(-50%)',
                     fontSize: '46px',
                     fontFamily: "'Oleo Script', cursive",
-                    color: '#280638',
+                    color: 'white',
                     textAlign: 'center',
-                    width: '100%',
+                    width: '70%',
                     lineHeight: '0.8',
                     padding: '0 15px',
                     wordWrap: 'break-word'
                 },
                 hoje: {
-                    top: '25%',
-                    left: '50%',
+                    top: '27%',
+                    left: '67%',
                     transform: 'translateX(-50%)',
                     fontSize: '28px',
                     color: '#ff0000',
+                    textAlign: 'center',
+                    width: '60%',
                     fontWeight: 'bold',
                     textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
-                    whiteSpace: 'nowrap',
                     letterSpacing: '2px',
                     border: '2px solid rgba(255,255,255,0.8)',
                     padding: '5px 15px',
@@ -996,30 +997,30 @@
                     lineHeight: '1.0'
                 },
                 data: {
-                    top: '49%',
-                    left: '40%',
-                    fontSize: '28px',
+                    top: '40%',
+                    left: '64%',
+                    fontSize: '26px',
                     fontWeight: 'bold',
                     textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
-                    color: '#070707',
+                    color: 'white',
                     lineHeight: '1.2'
                 },
                 hora: {
-                    top: '54%',
-                    left: '40%',
+                    top: '47%',
+                    left: '64%',
                     fontSize: '28px',
                     fontWeight: 'bold',
                     textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
-                    color: '#070707',
+                    color: 'white',
                     lineHeight: '1.2'
                 },
                 local: {
-                    top: '59%',
-                    left: '43%',
+                    top: '54%',
+                    left: '64%',
                     fontSize: '28px',
                     fontWeight: 'bold',
                     textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
-                    color: '#070707',
+                    color: 'white',
                     lineHeight: '1.2'
                 }
             },
@@ -1501,7 +1502,8 @@
         // ============================================================
         // ESCOLHE O MODELO BASEADO NO TIPO DE CONSULTA
         // ============================================================
-        const modelos = ['convite01', 'convite02', 'convite03'];
+        const modelos = ['convite01', 'convite02', 'convite03', 'convite05'];
+        //const modelos = ['convite05'];
         const modelo = modelos[Math.floor(Math.random() * modelos.length)];
         // Se for Ensaio Regional, usa modelo 2
         if (document.getElementById('consulta-encarregado-regional').checked) {
