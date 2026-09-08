@@ -948,7 +948,88 @@
                 transform: 'translateX(-50%)',
                 gap: '12px'
             }
-        }
+        },
+        // ============================================================
+        // MODELO 5 - convite05.png (Original)
+        // ============================================================
+        'convite05': {
+            imagem: 'convite05.png',
+            campos: {
+                ensaio: {
+                    top: '8%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '42px',
+                    fontFamily: "'Great Vibes', cursive",
+                    color: '#ff0000',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '1.1'
+                },
+                igreja: {
+                    top: '15%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '46px',
+                    fontFamily: "'Oleo Script', cursive",
+                    color: '#280638',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '0.8',
+                    padding: '0 15px',
+                    wordWrap: 'break-word'
+                },
+                hoje: {
+                    top: '25%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '28px',
+                    color: '#ff0000',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '2px',
+                    border: '2px solid rgba(255,255,255,0.8)',
+                    padding: '5px 15px',
+                    borderRadius: '10px',
+                    background: 'rgba(0,0,0,0.2)',
+                    lineHeight: '1.0'
+                },
+                data: {
+                    top: '49%',
+                    left: '40%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                },
+                hora: {
+                    top: '54%',
+                    left: '40%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                },
+                local: {
+                    top: '59%',
+                    left: '43%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: '#070707',
+                    lineHeight: '1.2'
+                }
+            },
+            botoes: {
+                bottom: '10%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                gap: '12px'
+            }
+        }        
     };
 
     // ============================================================
@@ -1420,11 +1501,11 @@
         // ============================================================
         // ESCOLHE O MODELO BASEADO NO TIPO DE CONSULTA
         // ============================================================
-        let modelo = 'convite03'; // padrão
-        
+        const modelos = ['convite01', 'convite02', 'convite03'];
+        const modelo = modelos[Math.floor(Math.random() * modelos.length)];
         // Se for Ensaio Regional, usa modelo 2
         if (document.getElementById('consulta-encarregado-regional').checked) {
-            modelo = 'convite03';
+            modelo = 'convite05';
         }
         
         // Pode adicionar outras regras aqui:
