@@ -1192,8 +1192,88 @@
                 transform: 'translateX(-50%)',
                 gap: '12px'
             }
+        },
+        // ============================================================
+        // MODELO 8 - convite08.png (Original)
+        // ============================================================
+        'convite08': {
+            imagem: 'convite08.png',
+            campos: {
+                ensaio: {
+                    top: '20%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '42px',
+                    fontFamily: "'Great Vibes', cursive",
+                    color: '#ff0000',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '1.1'
+                },
+                igreja: {
+                    top: '27%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '46px',
+                    fontFamily: "'Oleo Script', cursive",
+                    color: 'yellow',
+                    textAlign: 'center',
+                    width: '100%',
+                    lineHeight: '0.8',
+                    padding: '0 15px',
+                    wordWrap: 'break-word'
+                },
+                hoje: {
+                    top: '36%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '28px',
+                    color: '#ff0000',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '2px',
+                    border: '2px solid rgba(255,255,255,0.8)',
+                    padding: '5px 15px',
+                    borderRadius: '10px',
+                    background: 'rgba(0,0,0,0.2)',
+                    lineHeight: '1.0'
+                },
+                data: {
+                    top: '50%',
+                    left: '37%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: 'white',
+                    lineHeight: '1.2'
+                },
+                hora: {
+                    top: '56%',
+                    left: '37%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: 'white',
+                    lineHeight: '1.2'
+                },
+                local: {
+                    top: '65%',
+                    left: '37%',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
+                    color: 'white',
+                    lineHeight: '1.2'
+                }
+            },
+            botoes: {
+                bottom: '10%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                gap: '12px'
+            }
         }
-
     };
 
     // ============================================================
@@ -1665,12 +1745,12 @@
         // ============================================================
         // ESCOLHE O MODELO BASEADO NO TIPO DE CONSULTA
         // ============================================================
-        const modelos = ['convite01', 'convite02', 'convite03', 'convite05', 'convite06', 'convite07'];
-        //const modelos = ['convite07'];
+        //const modelos = ['convite01', 'convite02', 'convite03', 'convite05', 'convite06', 'convite07', 'convite08'];
+        const modelos = ['convite08'];
         const modelo = modelos[Math.floor(Math.random() * modelos.length)];
         // Se for Ensaio Regional, usa modelo 2
         if (document.getElementById('consulta-encarregado-regional').checked) {
-            modelo = 'convite07';
+            modelo = 'convite08';
         }
         
         // Pode adicionar outras regras aqui:
