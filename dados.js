@@ -106,8 +106,7 @@
             "Setor São Judas Tadeu;Goiânia;3º DOMINGO;T;z7SA5X6QjFSF47D89;5;Roberto Lara;Rogerio Rosemberg;T;-16.617153;-49.2478092;DN 2N 6N;",
             "Setor Santa Genoveva;Goiânia;2ª QUARTA-FEIRA;N;uYp9wBLFHeQJf1rWA;5;Robson Jose Alves;Rogerio Rosemberg;T;-16.6298706;-49.2355763;DN 6N;",
             "Jardim Novo Mundo;Goiânia;2ª QUARTA-FEIRA;N;t193qgTKffUqQhDF7;1;CARLOS DA SILVA;HELTON RICARDO;T;-16.6894674;-49.2286619;DN 3N 5N;24/05/2026",
-            "Jardim Paraíso;Aparecida;2ª QUINTA-FEIRA;N;3ur2XR6PRtxYagc3A;6;Assis Leandro;;T;-16.7811516;-49.2407366;DN 3N 6N;",
-            "Jardim Alto Paraíso I;Aparecida;3ª QUINTA-FEIRA;N;836KUbCkUmW9m7HAA;6;Johnathan;Thiaguinho;T;-16.8100184;-49.3600112;DN 3N 6N;",
+            "Jardim Paraíso;Aparecida;2ª QUINTA-FEIRA;N;49BtuRobBmdZiZPM6;6;Assis Leandro;;T;-16.7811531;-49.2407407;DN 3N 6N;",
             "Residencial Rio Verde;Goiânia;3º DOMINGO;T;ABiGL9zxsG7KbcMe7;3;DURVAL;NEREU;T;-16.7363317;-49.3680153;DN 4N 6N;24/05/2026",
             "Jardim Goiás;Goiânia;2ª QUINTA-FEIRA;N;BbRcFyWtZLCqiRV16;1;FELIPE GUSTAVO;HELTON RICARDO;T;-16.6974864;-49.2406922;DN 4N SN;",
             "Jardim Caravelas;Goiânia;2ª QUINTA-FEIRA;N;5MavwLrtVk6pbALm8;2;Waldir;Jackson;T;-16.7603651;-49.3520616;DN 3N 6N;",
@@ -258,5 +257,6 @@
             "Cezarina-Central;Cezarina;2ª SEXTA-FEIRA;N;a1wQvArnHkKFhp1B7;11;Luiz Dario;Samuel;T;-16.974271;-49.7740941;DN 5N;",
             "Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;Gilton Pereira;T;-16.3977085;-49.2673413;3N 6N;",
             "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;",
-            "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;"
+            "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;",
+            "Fazenda Estrela Guia-Poço Dagua 2;Leopoldo Bulhões;2º SáBADO;T;xPPTX85qLutP7EKE8;5;Josué Silva;;T;-16.6419017;-48.8785743;DN 3N;",
         ];
