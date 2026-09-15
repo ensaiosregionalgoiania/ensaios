@@ -403,7 +403,7 @@
         }
         #DivTopo #DivEnsaio {
             font-family: 'Great Vibes', cursive;
-            font-size: 42px;
+            font-size: 60px;
             color: #ff0000;
             line-height: 1.1;
             width: 100%;
@@ -528,6 +528,9 @@
             width: 100%;
             padding: 0 15px;
             box-sizing: border-box;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .btn-acao-convite {
@@ -708,14 +711,14 @@
                 <div class="linha-dhl">
                     <img src="calendario.png" alt="data" class="icone-dhl">
                     <div class="bloco-dhl">
-                        <span class="texto-dhl">Data</span>
+                        <span id="DivtextoDataDHL" class="texto-dhl">Data</span>
                         <span id="DivDataDHL" class="valor-dhl">--/--/----</span>
                     </div>
                 </div>
                 <div class="linha-dhl">
                     <img src="relogio.png" alt="relógio" class="icone-dhl">
                     <div class="bloco-dhl">
-                        <span class="texto-dhl">Horário</span>
+                        <span id="DivtextoHoraDHL" class="texto-dhl">Horário</span>
                         <span id="DivHoraDHL" class="valor-dhl">--:--</span>
                     </div>
                 </div>
@@ -755,30 +758,38 @@
     // ============================================================
 
     const CONVITES = {
+        'convite20': {
+            imagem: 'convite20.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '5%' }
+            },
+            // 👇 NOVO: estilos aplicados em elementos internos
+            estilos: {
+                DivIgreja: { color: 'yellow' },
+                DivDataDHL: { color: '#ffffff' },
+                DivHoraDHL: { color: '#ffffff' },
+                DivtextoDataDHL: { color: '#ffffff' },
+                DivtextoHoraDHL: { color: '#ffffff' }
+            }
+        },
+        'convite21': {
+            imagem: 'convite21.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '5%' }
+            }
+        },
         'convite22': {
             imagem: 'convite22.png',
             campos: {
-                topo: {
-                    top: '8%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '90%'
-                },
-                dataHoraLocalizador: {
-                    top: '60%',
-                    left: '5%'
-                }
-            },
-            botoes: {
-                bottom: '10%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                gap: '12px'
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '5%' }
             }
         }
     };
 
-    // ============================================================
+// ============================================================
     // CONFIGURAÇÕES GLOBAIS
     // ============================================================
 
@@ -786,7 +797,7 @@
     let minhaLat = 0, minhaLon = 0;
     let ordemDistancia = true;
     let linkAtual = '';
-    let modeloConviteAtual = 'convite22';
+    let modeloConviteAtual = 'convite21';
 
     // ============================================================
     // FUNÇÕES AUXILIARES
@@ -1064,7 +1075,7 @@
     // ============================================================
 
     function aplicarConfiguracaoConvite(modelo) {
-        const config = CONVITES[modelo] || CONVITES['convite22'];
+        const config = CONVITES[modelo] || CONVITES['convite21'];
         modeloConviteAtual = modelo;
         
         // 1) Imagem de fundo do container
@@ -1103,15 +1114,14 @@
                 elemento.style.pointerEvents = 'none';
             }
         }
-        
-        // 5) Botões
-        const botoes = document.querySelector('.botoes-convite');
-        if (botoes && config.botoes) {
-            for (let prop of ['bottom', 'left', 'right', 'transform', 'gap', 'display', 'flexWrap', 'justifyContent']) {
-                botoes.style.removeProperty(prop);
-            }
-            for (let [prop, valor] of Object.entries(config.botoes)) {
-                botoes.style[prop] = valor;
+        // 6) Aplica estilos em elementos internos (color, fontSize, etc.)
+        if (config.estilos) {
+            for (let [id, props] of Object.entries(config.estilos)) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                for (let [prop, valor] of Object.entries(props)) {
+                    el.style[prop] = valor;
+                }
             }
         }
         
@@ -1120,7 +1130,7 @@
     }
 
     function preencherConvite(dados, modelo) {
-        aplicarConfiguracaoConvite(modelo || 'convite22');
+        aplicarConfiguracaoConvite(modelo || 'convite21');
         
         // ============================================================
         // DIV TOPO: ENSAIO + IGREJA + HOJE
@@ -1247,7 +1257,7 @@
             return;
         }
         
-        let modelo = 'convite22';
+        let modelo = 'convite20';
         
         console.log(`📌 Abrindo convite com modelo: ${modelo}`);
         preencherConvite(dadosLinha, modelo);
