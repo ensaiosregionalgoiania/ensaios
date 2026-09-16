@@ -758,6 +758,63 @@
     // ============================================================
 
     const CONVITES = {
+        'convite13': {
+            imagem: 'convite13.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '20%' }
+            }
+        },
+        'convite14': {
+            imagem: 'convite14.png',
+            campos: {
+                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '10%' }
+            }
+        },
+        'convite15': {
+            imagem: 'convite15.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '50%', left: '10%' }
+            }
+        },
+        'convite16': {
+            imagem: 'convite16.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '55%', left: '10%' }
+            }
+        },
+        'convite17': {
+            imagem: 'convite17.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '50%', left: '35%' }
+            },
+            // 👇 NOVO: estilos aplicados em elementos internos
+            estilos: {
+                DivIgreja: { color: 'yellow' },
+                DivDataDHL: { color: '#ffffff' },
+                DivHoraDHL: { color: '#ffffff' },
+                DivtextoDataDHL: { color: '#ffffff' },
+                DivtextoHoraDHL: { color: '#ffffff' }
+            }
+        },
+        'convite18': {
+            imagem: 'convite18.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '25%' }
+            }
+        },
+        'convite19': {
+            imagem: 'convite19.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '25%' }
+            }
+        },
         'convite20': {
             imagem: 'convite20.png',
             campos: {
@@ -1257,7 +1314,7 @@
             return;
         }
         
-        let modelo = 'convite20';
+        let modelo = 'convite13';
         
         console.log(`📌 Abrindo convite com modelo: ${modelo}`);
         preencherConvite(dadosLinha, modelo);
