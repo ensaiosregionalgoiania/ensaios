@@ -758,6 +758,13 @@
     // ============================================================
 
     const CONVITES = {
+        'convite01': {
+            imagem: 'convite01.png',
+            campos: {
+                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '45%', left: '25%' }
+            }
+        },
         'convite06': {
             imagem: 'convite06.png',
             campos: {
@@ -1363,7 +1370,7 @@
             return;
         }
         
-        let modelo = 'convite06';
+        let modelo = 'convite01';
         
         console.log(`📌 Abrindo convite com modelo: ${modelo}`);
         preencherConvite(dadosLinha, modelo);
