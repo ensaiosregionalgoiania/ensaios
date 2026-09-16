@@ -758,6 +758,55 @@
     // ============================================================
 
     const CONVITES = {
+        'convite06': {
+            imagem: 'convite06.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '48%', left: '5%' }
+            }
+        },
+        'convite07': {
+            imagem: 'convite07.png',
+            campos: {
+                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '10%' }
+            },
+            // 👇 NOVO: estilos aplicados em elementos internos
+            estilos: {
+                DivDataDHL: { color: '#ffffff' },
+                DivHoraDHL: { color: '#ffffff' },
+                DivtextoDataDHL: { color: '#ffffff' },
+                DivtextoHoraDHL: { color: '#ffffff' }
+            }
+        },
+        'convite09': {
+            imagem: 'convite09.png',
+            campos: {
+                topo: { top: '15%', left: '60%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '25%' }
+            }
+        },
+        'convite10': {
+            imagem: 'convite10.png',
+            campos: {
+                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '10%' }
+            }
+        },
+        'convite11': {
+            imagem: 'convite11.png',
+            campos: {
+                topo: { top: '15%', left: '45%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '55%', left: '28%' }
+            }
+        },
+        'convite12': {
+            imagem: 'convite12.png',
+            campos: {
+                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
+                dataHoraLocalizador: { top: '60%', left: '15%' }
+            }
+        },
         'convite13': {
             imagem: 'convite13.png',
             campos: {
@@ -1314,7 +1363,7 @@
             return;
         }
         
-        let modelo = 'convite13';
+        let modelo = 'convite06';
         
         console.log(`📌 Abrindo convite com modelo: ${modelo}`);
         preencherConvite(dadosLinha, modelo);
