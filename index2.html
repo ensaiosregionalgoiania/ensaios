@@ -258,9 +258,7 @@
             border-bottom: 1px solid #495057;
         }
         .filtro-grupo { margin-bottom: 25px; }
-        .filtro-opcao {
-            margin-bottom: 8px;
-        }
+        .filtro-opcao { margin-bottom: 8px; }
         .filtro-opcao label {
             display: flex;
             align-items: center;
@@ -365,6 +363,17 @@
             display: flex;
         }
 
+        /* Wrapper que centraliza convite + setas */
+        #convite-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 700px;
+            gap: 10px;
+        }
+
         #convite-container {
             position: relative;
             width: 95%;
@@ -381,6 +390,52 @@
             cursor: default;
         }
 
+        /* Setas de navegação */
+        .seta-convite {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.4);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            user-select: none;
+            flex-shrink: 0;
+            padding: 0;
+            line-height: 1;
+        }
+        .seta-convite:hover {
+            background: rgba(255,255,255,0.35);
+            transform: scale(1.1);
+        }
+        .seta-convite:active {
+            transform: scale(0.95);
+        }
+
+        /* Indicador do modelo atual */
+        #indicador-modelo {
+            position: absolute;
+            top: -36px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.75);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 5;
+        }
+
         .convite-campo {
             position: absolute;
             pointer-events: none;
@@ -391,7 +446,6 @@
 
         /* ============================================================
            DIV TOPO: ENSAIO + IGREJA + HOJE
-           Estrutura fixa no CSS; vetor só define posição da div-mãe
            ============================================================ */
         #DivTopo {
             display: flex;
@@ -436,7 +490,6 @@
 
         /* ============================================================
            DIV DATA / HORA / LOCALIZADOR
-           Estrutura fixa; vetor só define posição
            ============================================================ */
         #DivDataHoraLocalizador {
             display: flex;
@@ -552,12 +605,8 @@
             transform: scale(1.05);
             opacity: 0.9;
         }
-        .btn-compartilhar { 
-            background: #25D366; 
-        }
-        .btn-fechar { 
-            background: #e74c3c; 
-        }
+        .btn-compartilhar { background: #25D366; }
+        .btn-fechar { background: #e74c3c; }
 
         /* ===== TELA DE AGUARDE ===== */
         #aguarde-overlay {
@@ -573,9 +622,7 @@
             align-items: center;
             flex-direction: column;
         }
-        #aguarde-overlay.ativo {
-            display: flex;
-        }
+        #aguarde-overlay.ativo { display: flex; }
         .aguarde-box {
             background: white;
             padding: 40px 50px;
@@ -584,16 +631,8 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             max-width: 90%;
         }
-        .aguarde-box h2 {
-            color: #2c3e50;
-            margin: 0 0 10px 0;
-            font-size: 22px;
-        }
-        .aguarde-box p {
-            color: #666;
-            margin: 0 0 20px 0;
-            font-size: 14px;
-        }
+        .aguarde-box h2 { color: #2c3e50; margin: 0 0 10px 0; font-size: 22px; }
+        .aguarde-box p { color: #666; margin: 0 0 20px 0; font-size: 14px; }
         .spinner {
             width: 50px;
             height: 50px;
@@ -606,6 +645,19 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 520px) {
+            .seta-convite {
+                width: 38px;
+                height: 38px;
+                font-size: 20px;
+            }
+            #indicador-modelo {
+                font-size: 11px;
+                padding: 4px 10px;
+                top: -30px;
+            }
         }
 
         @media print {
@@ -694,45 +746,50 @@
         </table>
     </div>
 
-    <!-- ===== OVERLAY DO CONVITE ===== -->
+    <!-- ===== OVERLAY DO CONVITE (COM SETAS) ===== -->
     <div id="convite-overlay">
-        <div id="convite-container">
-            <button class="btn-fechar-convite" id="btn-fechar-convite">✕</button>
+        <div id="convite-wrapper">
+            <button class="seta-convite" id="seta-esquerda" title="Convite anterior">‹</button>
 
-            <!-- ===== DIV TOPO: ENSAIO + IGREJA + HOJE ===== -->
-            <div id="DivTopo" class="convite-campo">
-                <div id="DivEnsaio">Ensaio Local</div>
-                <div id="DivIgreja">Nome da Igreja</div>
-                <div id="DivHoje">HOJE</div>
-            </div>
+            <div id="convite-container">
+                <div id="indicador-modelo">Convite 21 de 18</div>
 
-            <!-- ===== DIV DATA / HORA / LOCALIZADOR ===== -->
-            <div id="DivDataHoraLocalizador" class="convite-campo">
-                <div class="linha-dhl">
-                    <img src="calendario.png" alt="data" class="icone-dhl">
-                    <div class="bloco-dhl">
-                        <span id="DivtextoDataDHL" class="texto-dhl">Data</span>
-                        <span id="DivDataDHL" class="valor-dhl">--/--/----</span>
+                <button class="btn-fechar-convite" id="btn-fechar-convite">✕</button>
+
+                <div id="DivTopo" class="convite-campo">
+                    <div id="DivEnsaio">Ensaio Local</div>
+                    <div id="DivIgreja">Nome da Igreja</div>
+                    <div id="DivHoje">HOJE</div>
+                </div>
+
+                <div id="DivDataHoraLocalizador" class="convite-campo">
+                    <div class="linha-dhl">
+                        <img src="calendario.png" alt="data" class="icone-dhl">
+                        <div class="bloco-dhl">
+                            <span id="DivtextoDataDHL" class="texto-dhl">Data</span>
+                            <span id="DivDataDHL" class="valor-dhl">--/--/----</span>
+                        </div>
+                    </div>
+                    <div class="linha-dhl">
+                        <img src="relogio.png" alt="relógio" class="icone-dhl">
+                        <div class="bloco-dhl">
+                            <span id="DivtextoHoraDHL" class="texto-dhl">Horário</span>
+                            <span id="DivHoraDHL" class="valor-dhl">--:--</span>
+                        </div>
+                    </div>
+                    <div class="linha-dhl localizacao">
+                        <img src="localizador.png" alt="localizador" class="icone-dhl">
+                        <span id="DivLocalDHL" class="valor-dhl">🔴👇</span>
                     </div>
                 </div>
-                <div class="linha-dhl">
-                    <img src="relogio.png" alt="relógio" class="icone-dhl">
-                    <div class="bloco-dhl">
-                        <span id="DivtextoHoraDHL" class="texto-dhl">Horário</span>
-                        <span id="DivHoraDHL" class="valor-dhl">--:--</span>
-                    </div>
-                </div>
-                <div class="linha-dhl localizacao">
-                    <img src="localizador.png" alt="localizador" class="icone-dhl">
-                    <span id="DivLocalDHL" class="valor-dhl">🔴👇</span>
+
+                <div class="botoes-convite">
+                    <button class="btn-acao-convite btn-compartilhar" id="btn-compartilhar">💬 Compartilhar</button>
+                    <button class="btn-acao-convite btn-fechar" id="btn-fechar">✕ Fechar</button>
                 </div>
             </div>
 
-            <!-- BOTÕES DE AÇÃO DO CONVITE -->
-            <div class="botoes-convite">
-                <button class="btn-acao-convite btn-compartilhar" id="btn-compartilhar">💬 Compartilhar</button>
-                <button class="btn-acao-convite btn-fechar" id="btn-fechar">✕ Fechar</button>
-            </div>
+            <button class="seta-convite" id="seta-direita" title="Próximo convite">›</button>
         </div>
     </div>
 
@@ -752,11 +809,6 @@
     // ============================================================
     // VETOR DE CONFIGURAÇÕES DOS CONVITES
     // ============================================================
-    // Cada chave em "campos" corresponde a uma div que será
-    // POSICIONADA no convite. A estrutura interna de cada uma
-    // é fixa no HTML/CSS. O vetor só define posição.
-    // ============================================================
-
     const CONVITES = {
         'convite01': {
             imagem: 'convite01.png',
@@ -778,7 +830,6 @@
                 topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
                 dataHoraLocalizador: { top: '60%', left: '10%' }
             },
-            // 👇 NOVO: estilos aplicados em elementos internos
             estilos: {
                 DivDataDHL: { color: '#ffffff' },
                 DivHoraDHL: { color: '#ffffff' },
@@ -848,7 +899,6 @@
                 topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
                 dataHoraLocalizador: { top: '50%', left: '35%' }
             },
-            // 👇 NOVO: estilos aplicados em elementos internos
             estilos: {
                 DivIgreja: { color: 'yellow' },
                 DivDataDHL: { color: '#ffffff' },
@@ -875,9 +925,8 @@
             imagem: 'convite20.png',
             campos: {
                 topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '5%' }
+                dataHoraLocalizador: { top: '60%', left: '23%' }
             },
-            // 👇 NOVO: estilos aplicados em elementos internos
             estilos: {
                 DivIgreja: { color: 'yellow' },
                 DivDataDHL: { color: '#ffffff' },
@@ -902,7 +951,14 @@
         }
     };
 
-// ============================================================
+    // Lista ordenada de chaves de modelos (ex: ['convite01', 'convite06', ...])
+    const MODELOS_ORDENADOS = Object.keys(CONVITES).sort((a, b) => {
+        const na = parseInt(a.replace(/\D/g, '')) || 0;
+        const nb = parseInt(b.replace(/\D/g, '')) || 0;
+        return na - nb;
+    });
+
+    // ============================================================
     // CONFIGURAÇÕES GLOBAIS
     // ============================================================
 
@@ -910,7 +966,16 @@
     let minhaLat = 0, minhaLon = 0;
     let ordemDistancia = true;
     let linkAtual = '';
-    let modeloConviteAtual = 'convite21';
+
+    let modeloConviteAtual = localStorage.getItem('modeloConviteEscolhido') || 'convite21';
+
+    // Garante que o modelo salvo existe; senão, usa o primeiro
+    if (!CONVITES[modeloConviteAtual]) {
+        modeloConviteAtual = MODELOS_ORDENADOS[0];
+    }
+
+    // Guarda o index da linha que está com o convite aberto
+    let indexConviteAberto = null;
 
     // ============================================================
     // FUNÇÕES AUXILIARES
@@ -1101,6 +1166,42 @@
     }
 
     // ============================================================
+    // NAVEGAÇÃO ENTRE CONVITES (SETAS)
+    // ============================================================
+
+    function atualizarIndicadorModelo() {
+        const total = MODELOS_ORDENADOS.length;
+        const pos = MODELOS_ORDENADOS.indexOf(modeloConviteAtual) + 1;
+        const numero = modeloConviteAtual.replace(/\D/g, '');
+        const indicador = document.getElementById('indicador-modelo');
+        if (indicador) {
+            indicador.textContent = `Convite ${numero}  •  ${pos} / ${total}`;
+        }
+    }
+
+    function trocarModeloConvite(direcao) {
+        if (indexConviteAberto === null) return;
+
+        const total = MODELOS_ORDENADOS.length;
+        let pos = MODELOS_ORDENADOS.indexOf(modeloConviteAtual);
+        if (pos < 0) pos = 0;
+
+        // Navegação circular
+        pos = (pos + direcao + total) % total;
+
+        modeloConviteAtual = MODELOS_ORDENADOS[pos];
+        localStorage.setItem('modeloConviteEscolhido', modeloConviteAtual);
+
+        const dadosLinha = window.linhasDados[indexConviteAberto];
+        if (dadosLinha) {
+            preencherConvite(dadosLinha, modeloConviteAtual, /*atualizarIndicador=*/ true);
+        }
+    }
+
+    function conviteAnterior() { trocarModeloConvite(-1); }
+    function conviteProximo()  { trocarModeloConvite(1); }
+
+    // ============================================================
     // FUNÇÕES DE ORDENAÇÃO E TABELA
     // ============================================================
 
@@ -1182,52 +1283,54 @@
     // ============================================================
     // FUNÇÕES DO CONVITE
     // ============================================================
-    // A estrutura interna das divs #DivTopo e
-    // #DivDataHoraLocalizador é FIXA (HTML/CSS).
-    // O vetor só fornece a POSIÇÃO (top/left/right/bottom/transform).
-    // ============================================================
 
     function aplicarConfiguracaoConvite(modelo) {
-        const config = CONVITES[modelo] || CONVITES['convite21'];
-        modeloConviteAtual = modelo;
-        
-        // 1) Imagem de fundo do container
+        const config = CONVITES[modelo] || CONVITES[MODELOS_ORDENADOS[0]];
+
+        // 1) Imagem de fundo
         const container = document.getElementById('convite-container');
         container.style.backgroundImage = `url('${config.imagem}')`;
         container.style.backgroundSize = '100% 100%';
         container.style.backgroundPosition = 'center';
         container.style.backgroundRepeat = 'no-repeat';
-        
-        // 2) Mapa nome-do-campo → elemento
+
         const campos = config.campos;
         const elementos = {
             topo: document.getElementById('DivTopo'),
             dataHoraLocalizador: document.getElementById('DivDataHoraLocalizador')
         };
-        
-        // 3) Props a limpar antes de aplicar
-        const propsLimpar = [
-            'top', 'left', 'right', 'bottom', 'transform',
-            'width', 'zIndex'
+
+        // 2) LIMPA todos os estilos inline dos elementos de posição
+        for (let elemento of Object.values(elementos)) {
+            if (!elemento) continue;
+            elemento.removeAttribute('style');
+        }
+
+        // 3) LIMPA todos os estilos inline dos elementos internos
+        const idsInternos = [
+            'DivEnsaio', 'DivIgreja', 'DivHoje',
+            'DivDataDHL', 'DivHoraDHL',
+            'DivtextoDataDHL', 'DivtextoHoraDHL',
+            'DivLocalDHL'
         ];
-        
-        // 4) Aplica cada campo
+        idsInternos.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.removeAttribute('style');
+        });
+
+        // 4) Aplica posição
         for (let [nome, elemento] of Object.entries(elementos)) {
             if (elemento && campos[nome]) {
                 const style = campos[nome];
-                
-                for (let prop of propsLimpar) {
-                    elemento.style.removeProperty(prop);
-                }
                 for (let [prop, valor] of Object.entries(style)) {
                     elemento.style[prop] = valor;
                 }
-                
                 elemento.style.position = 'absolute';
                 elemento.style.pointerEvents = 'none';
             }
         }
-        // 6) Aplica estilos em elementos internos (color, fontSize, etc.)
+
+        // 5) Aplica estilos internos específicos
         if (config.estilos) {
             for (let [id, props] of Object.entries(config.estilos)) {
                 const el = document.getElementById(id);
@@ -1237,28 +1340,23 @@
                 }
             }
         }
-        
-        console.log(`✅ Configuração do convite "${modelo}" aplicada!`);
+
         return config;
     }
 
-    function preencherConvite(dados, modelo) {
-        aplicarConfiguracaoConvite(modelo || 'convite21');
-        
-        // ============================================================
-        // DIV TOPO: ENSAIO + IGREJA + HOJE
-        // ============================================================
+    function preencherConvite(dados, modelo, atualizarIndicador) {
+        aplicarConfiguracaoConvite(modelo || modeloConviteAtual);
+
         const divEnsaio = document.getElementById('DivEnsaio');
         const divIgreja = document.getElementById('DivIgreja');
         const divHoje   = document.getElementById('DivHoje');
-        
-        // Nome da igreja (com ajuste de fonte conforme comprimento)
+
         const nomeIgreja = dados.local || 'Igreja';
         divIgreja.innerHTML = nomeIgreja;
-        
+
         const textoPuro = nomeIgreja.replace(/<[^>]*>/g, '');
-        const baseSize = 46;   // tamanho-base definido no CSS
-        
+        const baseSize = 46;
+
         if (textoPuro.length > 30) {
             divIgreja.style.fontSize = (baseSize * 0.6) + 'px';
         } else if (textoPuro.length > 25) {
@@ -1266,27 +1364,18 @@
         } else if (textoPuro.length > 17) {
             divIgreja.style.fontSize = (baseSize * 0.8) + 'px';
         } else {
-            divIgreja.style.fontSize = '';   // volta ao padrão do CSS
+            divIgreja.style.fontSize = '';
         }
-        
-        // HOJE / AMANHÃ / PRÓXIMA ...
+
         divHoje.textContent = getDiaTexto(dados.dataFormatada);
-        
-        // Texto fixo do topo — trocar aqui se quiser
         divEnsaio.textContent = 'Ensaio Local';
-        
-        // ============================================================
-        // HORA (calculada a partir do código do banco)
-        // ============================================================
+
         let horaTexto = dados.horario;
         if (horaTexto === 'T') horaTexto = '17:00';
         else if (horaTexto === 'T1') horaTexto = '16:30';
         else if (horaTexto === 'N') horaTexto = '19:30';
         else horaTexto = horaTexto || '19:30';
-        
-        // ============================================================
-        // LINK DA LOCALIZAÇÃO (para compartilhar)
-        // ============================================================
+
         if (dados.localizacao) {
             linkAtual = dados.localizacao.startsWith('http')
                 ? dados.localizacao
@@ -1294,16 +1383,13 @@
         } else {
             linkAtual = '';
         }
-        
-        // ============================================================
-        // DIV DATA / HORA / LOCALIZADOR
-        // ============================================================
+
         const dataDHL = document.getElementById('DivDataDHL');
         if (dataDHL) dataDHL.textContent = dados.dataFormatada || '--/--/----';
-        
+
         const horaDHL = document.getElementById('DivHoraDHL');
         if (horaDHL) horaDHL.textContent = horaTexto;
-        
+
         const localDHL = document.getElementById('DivLocalDHL');
         if (localDHL) {
             if (dados.localizacao) {
@@ -1312,8 +1398,12 @@
                 localDHL.textContent = '';
             }
         }
-        
-        // Mostra o convite
+
+        // Atualiza indicador ("Convite X • N / Total")
+        if (atualizarIndicador !== false) {
+            atualizarIndicadorModelo();
+        }
+
         const overlay = document.getElementById('convite-overlay');
         overlay.classList.add('ativo');
         overlay.style.display = 'flex';
@@ -1321,71 +1411,72 @@
 
     function isProximosDias(dataFormatada) {
         if (!dataFormatada || dataFormatada === 'Data não disponível') return false;
-        
+
         const partes = dataFormatada.split('/');
         if (partes.length !== 3) return false;
-        
+
         const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
         dataEvento.setHours(0, 0, 0, 0);
-        
+
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
-        
+
         const diffTime = dataEvento.getTime() - hoje.getTime();
         const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+
         return diffDias >= 0 && diffDias <= 6;
     }
 
     function getDiaTexto(dataFormatada) {
         if (!dataFormatada || dataFormatada === 'Data não disponível') return '';
-        
+
         const partes = dataFormatada.split('/');
         if (partes.length !== 3) return '';
-        
+
         const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
         dataEvento.setHours(0, 0, 0, 0);
-        
+
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
-        
+
         const diffTime = dataEvento.getTime() - hoje.getTime();
         const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+
         if (diffDias === 0) return 'HOJE';
         if (diffDias === 1) return 'AMANHÃ';
-        
+
         const diasSemana = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
         const nomeDia = diasSemana[dataEvento.getDay()];
         const diasFemininos = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
         const artigo = diasFemininos.includes(nomeDia) ? 'PRÓXIMA' : 'PRÓXIMO';
-        
+
         return `${artigo} ${nomeDia}`;
     }
 
+    // Ao clicar em "C": guarda o index e já abre o convite com o modelo atual
     function abrirConvite(index) {
         const dadosLinha = window.linhasDados[index];
         if (!dadosLinha) {
             alert('Dados não disponíveis para este ensaio.');
             return;
         }
-        
-        let modelo = 'convite01';
-        
-        console.log(`📌 Abrindo convite com modelo: ${modelo}`);
-        preencherConvite(dadosLinha, modelo);
+
+        indexConviteAberto = index;
+        console.log(`📌 Abrindo convite (index ${index}) com modelo: ${modeloConviteAtual}`);
+        preencherConvite(dadosLinha, modeloConviteAtual, true);
     }
 
     function fecharConvite() {
         const overlay = document.getElementById('convite-overlay');
         overlay.classList.remove('ativo');
         overlay.style.display = 'none';
+        indexConviteAberto = null;
     }
 
     // ============================================================
     // COMPARTILHAR COM WHATSAPP
     // ============================================================
-    
+
     function mostrarAguarde() {
         document.getElementById('aguarde-overlay').classList.add('ativo');
     }
@@ -1396,9 +1487,9 @@
 
     function compartilharWhatsApp() {
         mostrarAguarde();
-        
+
         let linkParaEnviar = linkAtual || '';
-        
+
         if (!linkParaEnviar) {
             for (let i in window.linhasDados) {
                 const dados = window.linhasDados[i];
@@ -1410,13 +1501,13 @@
                 }
             }
         }
-        
+
         let mensagem = linkParaEnviar ? `${linkParaEnviar}` : 'Localização não disponível';
-        
+
         const container = document.getElementById('convite-container');
         const botoes = container.querySelectorAll('.btn-fechar-convite, .botoes-convite');
         const originalDisplay = [];
-        
+
         botoes.forEach(btn => {
             originalDisplay.push(btn.style.display);
             btn.style.display = 'none';
@@ -1433,9 +1524,9 @@
                 botoes.forEach((btn, i) => {
                     btn.style.display = originalDisplay[i] || 'block';
                 });
-                
+
                 esconderAguarde();
-                
+
                 if (navigator.share) {
                     const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
                     navigator.share({
@@ -1489,10 +1580,10 @@
         else if (meses == "3M1") complemento = " - Meses JAN, ABR, JUL e OUT";
         else if (meses == "3M2") complemento = " - Meses FEV, MAI, AGO e NOV";
         else if (meses == "3M3") complemento = " - Meses MAR, JUN, SET e DEZ";
-        
+
         let horaTexto = horario == "T" ? "17:00" : horario == "T1" ? '16:30' : "19:30";
         const diaTexto = descricaoDia.replace(/5º/g, 'ÚLTIMO').replace(/5ª/g, 'ÚLTIMA');
-        
+
         detalhesCell.innerHTML = `
             <table style="width:100%;border-collapse:collapse;font-size:12px;">
                 <tr style="border:1px solid #e67e22;">
@@ -1514,17 +1605,17 @@
         row.id = `evento-${index}`;
         row.insertCell(0).innerHTML = local || '---';
         row.insertCell(1).innerHTML = cidade || '---';
-        
+
         const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
         let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
         row.insertCell(2).textContent = distanciaAtual;
-        
+
         if (document.getElementById('consulta-encarregado-regional').checked == false) {
             row.insertCell(3).textContent = dataString(dataFormatada);
         } else {
             row.insertCell(3).textContent = dataFormatada;
         }
-        
+
         const acoesCell = row.insertCell(4);
         acoesCell.style.textAlign = "center";
         acoesCell.style.whiteSpace = "nowrap";
@@ -1575,41 +1666,41 @@
     async function gerarTabelaPorData(dataInformada) {
         await getLocation();
         document.getElementById('btn-imprimir-data').disabled = false;
-        
+
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
-        if (checkboxes.length === 0) { 
-            alert("Nenhuma cidade foi selecionada."); 
-            return; 
+        if (checkboxes.length === 0) {
+            alert("Nenhuma cidade foi selecionada.");
+            return;
         }
-        
+
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
-        
+
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-        
+
         const [diaStr, mesStr, anoStr] = dataInformada.split('/');
         const dia = parseInt(diaStr);
         const mes = parseInt(mesStr);
         const ano = parseInt(anoStr);
         const ultimoDia = new Date(ano, mes, 0).getDate();
-        
+
         let encontrouEventos = false;
         let index = 0;
-        
+
         if (typeof dados === 'undefined') {
             alert('Arquivo dados.js não carregado ou vazio.');
             return;
         }
-        
+
         dados.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
                 const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
-                
+
                 if (!deveExibirMes(mes, meses)) return;
-                
+
                 let dataEvento = null;
                 if (dia >= 22 && dia <= 28) {
                     if (dia + 7 > ultimoDia) {
@@ -1620,15 +1711,15 @@
                 } else {
                     dataEvento = calcularDataEvento(descricaoDia, mes, ano);
                 }
-                
-                if (dataEvento && dataEvento.getDate() === dia && 
-                    dataEvento.getMonth() === mes - 1 && 
+
+                if (dataEvento && dataEvento.getDate() === dia &&
+                    dataEvento.getMonth() === mes - 1 &&
                     dataEvento.getFullYear() === ano) {
                     if (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0) {
-                        LinhaPrincipal(tabela, index, local, cidade, dataInformada, horario, 
-                            parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                        LinhaPrincipal(tabela, index, local, cidade, dataInformada, horario,
+                            parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                             encarregadoLocal, encarregadoRegional, meses, descricaoDia);
-                        CriaDetalhe(tabela, index, dataInformada, encarregadoLocal, encarregadoRegional, 
+                        CriaDetalhe(tabela, index, dataInformada, encarregadoLocal, encarregadoRegional,
                             localizacao, descricaoDia, meses, horario);
                         index++;
                         encontrouEventos = true;
@@ -1636,7 +1727,7 @@
                 }
             } catch (e) { console.error('Erro ao processar item:', e); }
         });
-        
+
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
@@ -1658,50 +1749,50 @@
             return;
         }
         document.getElementById('btn-imprimir-casa-oracao').disabled = false;
-        
+
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-        
+
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
         if (checkboxes.length === 0) {
             alert("Nenhuma cidade foi selecionada.");
             return;
         }
-        
+
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
         const termoEhTodos = isTodos(termoOriginal);
         let encontrouEventos = false;
         let index = 0;
-        
+
         if (typeof dados === 'undefined') {
             alert('Arquivo dados.js não carregado ou vazio.');
             return;
         }
-        
+
         dados.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
                 const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
-                
+
                 let localSemAcento = TiraAcento(local);
                 const localMatch = termoEhTodos || localSemAcento.includes(termo);
-                
+
                 if (localMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
-                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, 
-                        parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario,
+                        parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                         encarregadoLocal, encarregadoRegional, meses, descricaoDia);
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, 
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional,
                         localizacao, descricaoDia, meses, horario);
                     index++;
                     encontrouEventos = true;
                 }
             } catch (e) { console.error(e); }
         });
-        
+
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
@@ -1723,53 +1814,53 @@
             return;
         }
         document.getElementById('btn-imprimir-encarregado-local').disabled = false;
-        
+
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-        
+
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
         if (checkboxes.length === 0) {
             alert("Nenhuma cidade foi selecionada.");
             return;
         }
-        
+
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
         const termoEhTodos = isTodos(termoOriginal);
         let encontrouEventos = false;
         let index = 0;
-        
+
         if (typeof dados === 'undefined') {
             alert('Arquivo dados.js não carregado ou vazio.');
             return;
         }
-        
+
         dados.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
                 const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
-                
+
                 let encLocalSemAcento = TiraAcento(encarregadoLocal);
                 let encRegionalSemAcento = TiraAcento(encarregadoRegional);
                 const encMatch = termoEhTodos ||
                     (encLocalSemAcento && encLocalSemAcento.includes(termo)) ||
                     (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
-                
+
                 if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
-                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, 
-                        parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                    LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario,
+                        parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                         encarregadoLocal, encarregadoRegional, meses, descricaoDia);
-                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, 
+                    CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional,
                         localizacao, descricaoDia, meses, horario);
                     index++;
                     encontrouEventos = true;
                 }
             } catch (e) { console.error(e); }
         });
-        
+
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
@@ -1787,34 +1878,34 @@
         const termoOriginal = document.getElementById('encarregado-regional-input').value.trim();
         const termo = TiraAcento(termoOriginal);
         document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
-        
+
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-        
+
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
         if (checkboxes.length === 0) {
             alert("Nenhuma cidade foi selecionada.");
             return;
         }
-        
+
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
         const termoEhTodos = isTodos(termoOriginal);
         let encontrouEventos = false;
         let index = 0;
         const hoje = new Date(new Date().setHours(0,0,0,0));
-        
+
         if (typeof dados === 'undefined') {
             alert('Arquivo dados.js não carregado ou vazio.');
             return;
         }
-        
+
         dados.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 13) return;
                 const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = partes;
-                
+
                 if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
                     const partesData = dataEnsaioRegional.split('/');
                     if (partesData.length === 3) {
@@ -1823,17 +1914,17 @@
                         const ano = parseInt(partesData[2]);
                         const dataEvento = new Date(ano, mes, dia);
                         dataEvento.setHours(0,0,0,0);
-                        
+
                         if (dataEvento >= hoje) {
                             let encRegionalSemAcento = TiraAcento(encarregadoRegional);
-                            const encMatch = termoEhTodos || 
+                            const encMatch = termoEhTodos ||
                                 (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
-                            
+
                             if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
-                                LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario, 
-                                    parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor, 
+                                LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario,
+                                    parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                                     encarregadoLocal, encarregadoRegional, meses, descricaoDia);
-                                CriaDetalhe(tabela, index, dataEnsaioRegional, encarregadoLocal, encarregadoRegional, 
+                                CriaDetalhe(tabela, index, dataEnsaioRegional, encarregadoLocal, encarregadoRegional,
                                     localizacao, descricaoDia, meses, horario);
                                 index++;
                                 encontrouEventos = true;
@@ -1843,7 +1934,7 @@
                 }
             } catch (e) { console.error(e); }
         });
-        
+
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
@@ -1864,12 +1955,12 @@
         const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
         const titulo = document.getElementById('Titulo');
         titulo.innerText = tipoConsulta === 'encarregado-regional' ? 'Ensaio Regional' : 'Ensaio Local';
-        
+
         document.getElementById('consulta-data-group').classList.add('hidden');
         document.getElementById('consulta-casa-oracao-group').classList.add('hidden');
         document.getElementById('consulta-encarregado-local-group').classList.add('hidden');
         document.getElementById('consulta-encarregado-regional-group').classList.add('hidden');
-        
+
         if (tipoConsulta === 'data') {
             document.getElementById('consulta-data-group').classList.remove('hidden');
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
@@ -1889,14 +1980,14 @@
     async function AlteraCidade() {
         await getLocation();
         const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
-        
+
         const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
         const checkboxes = document.querySelectorAll('input[name="cidade"]');
         if (todosCheckbox && checkboxes.length > 0) {
             const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
             todosCheckbox.checked = todosMarcados;
         }
-        
+
         if (tipoConsulta === 'data') {
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
             if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
@@ -1926,7 +2017,7 @@
                 case 'encarregado-local': titulo = 'Ensaio Local por Encarregado Local'; break;
                 case 'encarregado-regional': titulo = 'Ensaio Regional'; break;
             }
-            
+
             let html = `<!DOCTYPE html>
             <html><head><meta charset="UTF-8"><title>${titulo}</title>
             <style>
@@ -1942,11 +2033,11 @@
                 <div class="header-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
                 <table class="main-table">
                     <tr><th>Local</th><th>Cidade</th><th>Data</th><th>Dia Ensaio</th><th>Hora</th><th>Enc Local</th><th>Enc Regional</th></tr>`;
-            
+
             const tbody = document.querySelector('#tabela-eventos tbody');
             const linhas = tbody.querySelectorAll('tr');
             let Quantidade = 0;
-            
+
             for (let i = 0; i < linhas.length; i++) {
                 const linha = linhas[i];
                 const celulas = linha.querySelectorAll('td');
@@ -1957,14 +2048,14 @@
                     const horaEnsaio = detalhesCelulas.length > 1 && detalhesCelulas[1] ? detalhesCelulas[1].textContent : '';
                     const encLocal = detalhesCelulas.length > 2 && detalhesCelulas[2] ? detalhesCelulas[2].textContent : '';
                     const encRegional = detalhesCelulas.length > 3 && detalhesCelulas[3] ? detalhesCelulas[3].textContent : '';
-                    
+
                     html += `<tr><td>${celulas[0].innerHTML}</td><td>${celulas[1].innerHTML}</td><td>${celulas[3].innerHTML}</td><td>${diaEnsaio}</td><td>${horaEnsaio}</td><td>${encLocal}</td><td>${encRegional}</td></tr>`;
                     Quantidade++;
                 }
             }
-            
+
             html += `</table><div class="footer">Total de registros: ${Quantidade} | Sistema Ensaio Local</div></body></html>`;
-            
+
             const janela = window.open('', '_blank');
             if (janela) {
                 janela.document.write(html);
@@ -1984,7 +2075,7 @@
             document.getElementById('setor').innerHTML = '<p style="color:#888;">Nenhum setor disponível</p>';
             return;
         }
-        
+
         let HTML = `
             <div class="filtro-opcao" style="border-bottom:1px solid #495057;margin-bottom:10px;padding-bottom:8px;">
                 <label style="font-weight:bold;color:#fff;">
@@ -1992,7 +2083,7 @@
                 </label>
             </div>
         `;
-        
+
         for (let i = 0; i < setor.length; i++) {
             let setorSplit = setor[i].split(';');
             if (setorSplit.length >= 2) {
@@ -2014,7 +2105,7 @@
         if (typeof carregarPopup === 'function') {
             setTimeout(carregarPopup, 500);
         }
-        
+
         preencherSelectDatas();
 
         document.getElementById('btn-fechar-convite').addEventListener('click', fecharConvite);
@@ -2022,10 +2113,32 @@
         document.getElementById('convite-overlay').addEventListener('click', function(e) {
             if (e.target === this) fecharConvite();
         });
-        
+
         document.getElementById('btn-compartilhar').addEventListener('click', function(e) {
             e.stopPropagation();
             compartilharWhatsApp();
+        });
+
+        // ===== Eventos das setas de navegação =====
+        document.getElementById('seta-esquerda').addEventListener('click', function(e) {
+            e.stopPropagation();
+            conviteAnterior();
+        });
+        document.getElementById('seta-direita').addEventListener('click', function(e) {
+            e.stopPropagation();
+            conviteProximo();
+        });
+
+        // Navegação por teclado (← e →)
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('convite-overlay').classList.contains('ativo')) return;
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                conviteAnterior();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                conviteProximo();
+            }
         });
 
         document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
@@ -2110,6 +2223,9 @@
     window.aplicarConfiguracaoConvite = aplicarConfiguracaoConvite;
     window.preencherConvite = preencherConvite;
     window.CONVITES = CONVITES;
+    window.conviteAnterior = conviteAnterior;
+    window.conviteProximo = conviteProximo;
+    window.trocarModeloConvite = trocarModeloConvite;
     </script>
 </body>
 </html>
