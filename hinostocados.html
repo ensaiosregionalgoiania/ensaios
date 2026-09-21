@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hinos Tocados — Manutenção e Relatórios</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    /* =====================================================
+       MENU SUPERIOR
+       ===================================================== */
+    .topbar {
+      background: #1a3a6c;
+      color: #fff;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar .logo {
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 18px 14px 0;
+      border-right: 1px solid rgba(255,255,255,0.2);
+      margin-right: 8px;
+      letter-spacing: 0.3px;
+    }
+    .menu { display: flex; }
+    .menu-item {
+      position: relative;
+    }
+    .menu-item > a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 16px 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 3px solid transparent;
+    }
+    .menu-item > a:hover,
+    .menu-item.ativo > a {
+      background: rgba(255,255,255,0.08);
+      border-bottom-color: #fbbf24;
+    }
+
+    /* Submenu (abre no hover) */
+    .submenu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 220px;
+      background: #fff;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.18s, transform 0.18s, visibility 0.18s;
+      z-index: 200;
+    }
+    .menu-item:hover .submenu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .submenu a {
+      display: block;
+      padding: 12px 20px;
+      color: #1f2937;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .submenu a:hover {
+      background: #eef2ff;
+      color: #1a3a6c;
+      border-left-color: #1a3a6c;
+    }
+
+    /* =====================================================
+       CONTEÚDO
+       ===================================================== */
+    .container {
+      max-width: 900px;
+      margin: 28px auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    h1 { font-size: 1.4rem; color: #1a3a6c; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 0.88rem; margin-bottom: 20px; }
+
+    .pagina { display: none; }
+    .pagina.ativa { display: block; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; }
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+    input, select {
+      padding: 10px 12px;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+      background: #fff;
+    }
+    input:focus, select:focus { border-color: #1a3a6c; }
+    input:disabled, select:disabled { background: #f1f5f9; cursor: wait; }
+
+    fieldset {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 20px 0;
+    }
+    legend {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1a3a6c;
+      padding: 0 8px;
+    }
+    .hinos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .hinos-grid label { font-size: 0.78rem; color: #64748b; }
+
+    .botoes {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    button:hover { filter: brightness(0.92); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-gravar  { background: #1a3a6c; color: #fff; }
+    .btn-excluir { background: #dc2626; color: #fff; }
+    .btn-limpar  { background: #e2e8f0; color: #334155; }
+    .btn-fechar  { background: #64748b; color: #fff; margin-left: auto; }
+
+    #status {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .ok   { background: #dcfce7; color: #166534; display: block; }
+    .err  { background: #fee2e2; color: #991b1b; display: block; }
+    .info { background: #dbeafe; color: #1e40af; display: block; }
+    .warn { background: #fef3c7; color: #92400e; display: block; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .badge-novo   { background: #dbeafe; color: #1e40af; }
+    .badge-edicao { background: #fef3c7; color: #92400e; }
+
+    details.diag {
+      margin-top: 24px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: #f8fafc;
+      font-size: 0.82rem;
+    }
+    details.diag summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: #475569;
+    }
+    details.diag pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 10px;
+      max-height: 320px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      white-space: pre-wrap;
+    }
+
+    /* ===== Tabelas de relatório ===== */
+    .tabela-rel {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .tabela-rel th,
+    .tabela-rel td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+    .tabela-rel th {
+      background: #1a3a6c;
+      color: #fff;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .tabela-rel tr:nth-child(even) td { background: #f8fafc; }
+    .tabela-rel tr:hover td { background: #eef2ff; }
+
+    .tabela-wrap {
+      max-height: 560px;
+      overflow-y: auto;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-top: 10px;
+    }
+
+    .rel-titulo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1a3a6c;
+      margin: 12px 0 6px;
+    }
+    .rel-info {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .qtd-badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .qtd-zero { background: #fee2e2; color: #991b1b; }
+
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .hinos-grid { grid-template-columns: 1fr 1fr; }
+      .topbar { padding: 0 12px; }
+      .menu-item > a { padding: 14px 14px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       MENU SUPERIOR
+       ===================================================== -->
+  <nav class="topbar">
+    <div class="logo">🎵 Hinos</div>
+    <div class="menu">
+
+      <div class="menu-item" data-page="inclusao" id="menuInclusao">
+        <a>➕ Inclusão</a>
+      </div>
+
+      <div class="menu-item" id="menuRelatorios">
+        <a>📊 Relatórios ▾</a>
+        <div class="submenu">
+          <a data-page="mais-tocados">🏆 Mais Tocados</a>
+          <a data-page="menos-tocados">📉 Menos Tocados</a>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- =====================================================
+       CONTEÚDO
+       ===================================================== -->
+  <div class="container">
+
+    <!-- ============ PÁGINA: INCLUSÃO ============ -->
+    <section class="pagina ativa" id="page-inclusao">
+      <h1>➕ Inclusão — Hinos Tocados <span id="badge" class="badge"></span></h1>
+      <p class="subtitle">Altere a data ou a congregação para carregar os hinos já cadastrados.</p>
+
+      <form id="form">
+        <div class="grid">
+          <div class="form-group">
+            <label for="data">Data</label>
+            <input type="date" id="data" required>
+          </div>
+          <div class="form-group">
+            <label for="congregacao">Congregação</label>
+            <select id="congregacao" required>
+              <option value="">Carregando...</option>
+            </select>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>Números dos hinos (1 a 686)</legend>
+          <div class="hinos-grid">
+            <div class="form-group"><label for="hino1">Hino 1</label><input type="number" id="hino1" min="1" max="686" step="1" inputmode="numeric"></div>
+            <div class="form-group"><label for="hino2">Hino 2</label><input type="number" id="hino2" min="1" max="686" step="1" inputmode="numeric"></div>
+            <div class="form-group"><label for="hino3">Hino 3</label><input type="number" id="hino3" min="1" max="686" step="1" inputmode="numeric"></div>
+            <div class="form-group"><label for="hino4">Hino 4</label><input type="number" id="hino4" min="1" max="686" step="1" inputmode="numeric"></div>
+            <div class="form-group"><label for="hino5">Hino 5</label><input type="number" id="hino5" min="1" max="686" step="1" inputmode="numeric"></div>
+            <div class="form-group"><label for="hino6">Hino 6</label><input type="number" id="hino6" min="1" max="686" step="1" inputmode="numeric"></div>
+          </div>
+        </fieldset>
+
+        <div class="botoes">
+          <button type="submit" class="btn-gravar" id="btnGravar">💾 Gravar</button>
+          <button type="button" class="btn-excluir" id="btnExcluir">🗑️ Excluir</button>
+          <button type="button" class="btn-limpar" id="btnLimpar">🧹 Limpar</button>
+          <button type="button" class="btn-fechar" id="btnFechar">✖ Fechar</button>
+        </div>
+      </form>
+
+      <div id="status"></div>
+    </section>
+
+    <!-- ============ PÁGINA: MAIS TOCADOS ============ -->
+    <section class="pagina" id="page-mais-tocados">
+      <h1>🏆 50 Hinos Mais Tocados</h1>
+      <p class="subtitle">Filtre por congregação e período e clique em "Gerar Relatório".</p>
+
+      <fieldset>
+        <legend>Filtros</legend>
+        <div class="grid">
+          <div class="form-group">
+            <label for="relCongregacaoMais">Congregação</label>
+            <select id="relCongregacaoMais">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group"><!-- espaçador --></div>
+
+          <div class="form-group">
+            <label for="relDataInicialMais">Data Inicial</label>
+            <select id="relDataInicialMais">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="relDataFinalMais">Data Final</label>
+            <select id="relDataFinalMais">
+              <option value="">Todas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="botoes" style="margin-top:16px;">
+          <button type="button" class="btn-gravar" id="btnGerarMais">🔎 Gerar Relatório</button>
+        </div>
+      </fieldset>
+
+      <div id="relResultadoMais"></div>
+    </section>
+
+    <!-- ============ PÁGINA: MENOS TOCADOS ============ -->
+    <section class="pagina" id="page-menos-tocados">
+      <h1>📉 50 Hinos Menos Tocados</h1>
+      <p class="subtitle">Filtre por congregação e período e clique em "Gerar Relatório".</p>
+
+      <fieldset>
+        <legend>Filtros</legend>
+        <div class="grid">
+          <div class="form-group">
+            <label for="relCongregacaoMenos">Congregação</label>
+            <select id="relCongregacaoMenos">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group"><!-- espaçador --></div>
+
+          <div class="form-group">
+            <label for="relDataInicialMenos">Data Inicial</label>
+            <select id="relDataInicialMenos">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="relDataFinalMenos">Data Final</label>
+            <select id="relDataFinalMenos">
+              <option value="">Todas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="botoes" style="margin-top:16px;">
+          <button type="button" class="btn-excluir" id="btnGerarMenos">🔎 Gerar Relatório</button>
+        </div>
+      </fieldset>
+
+      <div id="relResultadoMenos"></div>
+    </section>
+
+    <!-- ============ DIAGNÓSTICO ============ -->
+    <details class="diag" id="painelDiag">
+      <summary>🔍 Painel de diagnóstico (clique para abrir)</summary>
+      <pre id="diagOut">Aguardando inicialização...</pre>
+    </details>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ==========================================
+    // CONFIGURAÇÃO FIREBASE
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyA4COgeJSENsHrQHDx39gpZvif3zVrGjYE",
+      authDomain: "identidadeccb.firebaseapp.com",
+      projectId: "identidadeccb",
+      storageBucket: "identidadeccb.firebasestorage.app",
+      messagingSenderId: "385467794937",
+      appId: "1:385467794937:web:d2eb32429586f018e2a928"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ==========================================
+    // CONFIGURAÇÕES
+    // ==========================================
+    const COL_HINOS = "HinosTocados";
+
+    const CANDIDATOS_COL_CONG = [
+      "Congregacoes", "congregacoes", "Congregacao", "congregacao",
+      "Congregações", "Igrejas", "igrejas", "Congregations", "congregations"
+    ];
+
+    const CAMPOS_ID   = ["id", "idCongregacao", "codigo", "cod", "codigoCongregacao"];
+    const CAMPOS_NOME = ["nome", "nomeCongregacao", "descricao", "name", "titulo"];
+
+    const HINO_MIN     = 1;
+    const HINO_MAX_REL = 486;
+    const TOP_N        = 50;
+
+    // ==========================================
+    // ELEMENTOS — MANUTENÇÃO
+    // ==========================================
+    const form        = document.getElementById("form");
+    const inputData   = document.getElementById("data");
+    const selectCong  = document.getElementById("congregacao");
+    const btnGravar   = document.getElementById("btnGravar");
+    const btnExcluir  = document.getElementById("btnExcluir");
+    const btnLimpar   = document.getElementById("btnLimpar");
+    const btnFechar   = document.getElementById("btnFechar");
+    const statusBox   = document.getElementById("status");
+    const badge       = document.getElementById("badge");
+    const diagOut     = document.getElementById("diagOut");
+    const inputsHinos = [1,2,3,4,5,6].map(n => document.getElementById("hino" + n));
+
+    // ==========================================
+    // ELEMENTOS — RELATÓRIO MAIS TOCADOS
+    // ==========================================
+    const relCongregacaoMais = document.getElementById("relCongregacaoMais");
+    const relDataInicialMais = document.getElementById("relDataInicialMais");
+    const relDataFinalMais   = document.getElementById("relDataFinalMais");
+    const relResultadoMais   = document.getElementById("relResultadoMais");
+    const btnGerarMais       = document.getElementById("btnGerarMais");
+
+    // ==========================================
+    // ELEMENTOS — RELATÓRIO MENOS TOCADOS
+    // ==========================================
+    const relCongregacaoMenos = document.getElementById("relCongregacaoMenos");
+    const relDataInicialMenos = document.getElementById("relDataInicialMenos");
+    const relDataFinalMenos   = document.getElementById("relDataFinalMenos");
+    const relResultadoMenos   = document.getElementById("relResultadoMenos");
+    const btnGerarMenos       = document.getElementById("btnGerarMenos");
+
+    // ==========================================
+    // ESTADO
+    // ==========================================
+    let docIdAtual = null;
+    let colCongDetectada = null;
+    let campoIdDetectado = null;
+    let campoNomeDetectado = null;
+    let todasDatasDisponiveis = [];
+
+    // ==========================================
+    // DIAGNÓSTICO
+    // ==========================================
+    function diag(txt) {
+      diagOut.textContent += "\n" + txt;
+      console.log(txt);
+    }
+    function diagReset() { diagOut.textContent = ""; }
+
+    // ==========================================
+    // HELPERS
+    // ==========================================
+    function hojeISO() {
+      const d = new Date();
+      const off = d.getTimezoneOffset() * 60000;
+      return new Date(d.getTime() - off).toISOString().slice(0, 10);
+    }
+
+    function timestampParaISO(ts) {
+      if (!ts) return null;
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      const off = d.getTimezoneOffset() * 60000;
+      return new Date(d.getTime() - off).toISOString().slice(0, 10);
+    }
+
+    function isoParaBR(iso) {
+      if (!iso) return "";
+      const [a, m, d] = iso.split("-");
+      return `${d}/${m}/${a}`;
+    }
+
+    function setStatus(msg, tipo = "") {
+      statusBox.textContent = msg;
+      statusBox.className = tipo;
+      if (tipo) setTimeout(() => {
+        statusBox.className = "";
+        statusBox.style.display = "none";
+      }, 4000);
+    }
+
+    function setBadge(tipo) {
+      if (tipo === "novo") {
+        badge.textContent = "NOVO";
+        badge.className = "badge badge-novo";
+      } else if (tipo === "edicao") {
+        badge.textContent = "EDITANDO";
+        badge.className = "badge badge-edicao";
+      } else {
+        badge.textContent = "";
+        badge.className = "badge";
+      }
+    }
+
+    function dataParaTimestamp(dataStr) {
+      const [ano, mes, dia] = dataStr.split("-").map(Number);
+      return firebase.firestore.Timestamp.fromDate(new Date(Date.UTC(ano, mes - 1, dia)));
+    }
+
+    function limparHinos() {
+      inputsHinos.forEach(el => el.value = "");
+    }
+
+    // ==========================================
+    // NAVEGAÇÃO ENTRE PÁGINAS
+    // ==========================================
+    function abrirPagina(nome) {
+      // Oculta todas as páginas
+      document.querySelectorAll(".pagina").forEach(p => p.classList.remove("ativa"));
+
+      // Mostra a página selecionada
+      const alvo = document.getElementById("page-" + nome);
+      if (alvo) alvo.classList.add("ativa");
+
+      // Marca o menu ativo
+      document.querySelectorAll(".menu-item").forEach(mi => mi.classList.remove("ativo"));
+
+      if (nome === "inclusao") {
+        document.getElementById("menuInclusao").classList.add("ativo");
+      } else {
+        document.getElementById("menuRelatorios").classList.add("ativo");
+      }
+
+      // Rola para o topo
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Clique no item "Inclusão"
+    document.getElementById("menuInclusao").addEventListener("click", (e) => {
+      e.preventDefault();
+      abrirPagina("inclusao");
+    });
+
+    // Clique nos itens do submenu
+    document.querySelectorAll(".submenu a").forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const pagina = a.getAttribute("data-page");
+        abrirPagina(pagina);
+      });
+    });
+
+    // ==========================================
+    // DETECÇÃO DA COLEÇÃO DE CONGREGAÇÕES
+    // ==========================================
+    async function detectarColecaoCongregacoes() {
+      diagReset();
+      diag("🔍 Iniciando detecção da coleção de congregações...");
+      diag("Project ID: " + firebaseConfig.projectId);
+
+      for (const nome of CANDIDATOS_COL_CONG) {
+        try {
+          diag(`\n➡️ Tentando: "${nome}"`);
+          const snap = await db.collection(nome).limit(1).get();
+
+          if (snap.empty) {
+            diag(`   ⚠️ Coleção "${nome}" existe mas está VAZIA.`);
+            continue;
+          }
+
+          const primeiro = snap.docs[0];
+          const dados = primeiro.data();
+
+          diag(`   ✅ Coleção "${nome}" encontrada!`);
+          diag(`   📄 ID do documento: ${primeiro.id}`);
+          diag(`   📋 Campos disponíveis: ${Object.keys(dados).join(", ")}`);
+          diag(`   📦 Conteúdo: ${JSON.stringify(dados)}`);
+
+          campoIdDetectado   = CAMPOS_ID.find(c => dados[c] !== undefined) || null;
+          campoNomeDetectado = CAMPOS_NOME.find(c => dados[c] !== undefined) || null;
+
+          diag(`   🎯 Campo ID detectado: ${campoIdDetectado ?? "(usando nome do documento)"}`);
+          diag(`   🎯 Campo NOME detectado: ${campoNomeDetectado ?? "(usando ID do documento)"}`);
+
+          colCongDetectada = nome;
+          return nome;
+        } catch (e) {
+          diag(`   ❌ ERRO em "${nome}": [${e.code || "?"}] ${e.message}`);
+        }
+      }
+
+      diag("\n❗ Nenhuma coleção de congregações encontrada.");
+      return null;
+    }
+
+    // ==========================================
+    // CARREGA CONGREGAÇÕES NO SELECT (MANUTENÇÃO)
+    // ==========================================
+    async function carregarCongregacoes() {
+      selectCong.innerHTML = '<option value="">Detectando coleção...</option>';
+
+      const nomeCol = await detectarColecaoCongregacoes();
+
+      if (!nomeCol) {
+        selectCong.innerHTML = '<option value="">⚠️ Nenhuma congregação encontrada</option>';
+        setStatus("❌ Não encontrei a coleção de congregações. Abra o painel de diagnóstico abaixo.", "err");
+        return;
+      }
+
+      try {
+        const snap = await db.collection(nomeCol).get();
+        const options = ['<option value="">Selecione...</option>'];
+
+        snap.forEach(doc => {
+          const d = doc.data();
+          const id = (campoIdDetectado && d[campoIdDetectado] !== undefined)
+            ? d[campoIdDetectado] : doc.id;
+          const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
+            ? d[campoNomeDetectado] : doc.id;
+          options.push(`<option value="${id}">${nome}</option>`);
+        });
+
+        selectCong.innerHTML = options.join("");
+        setStatus(`✅ ${snap.size} congregação(ões) carregada(s) de "${nomeCol}".`, "ok");
+        diag(`\n✅ Carregadas ${snap.size} congregações de "${nomeCol}".`);
+      } catch (e) {
+        selectCong.innerHTML = '<option value="">Erro ao carregar</option>';
+        setStatus("❌ Erro ao carregar congregações: " + e.message, "err");
+        diag(`\n❌ Erro ao carregar lista de congregações: [${e.code}] ${e.message}`);
+      }
+    }
+
+    // ==========================================
+    // BUSCA REGISTRO (MANUTENÇÃO)
+    // ==========================================
+    async function buscarRegistro(dataStr, idCong) {
+      if (!dataStr || !idCong) return null;
+      try {
+        const ts = dataParaTimestamp(dataStr);
+        const snap = await db.collection(COL_HINOS)
+          .where("data", "==", ts)
+          .where("idCongregacao", "==", Number(idCong))
+          .limit(1)
+          .get();
+        return snap.empty ? null : snap.docs[0];
+      } catch (e) {
+        diag(`\n⚠️ Erro na busca (pode faltar índice composto): [${e.code}] ${e.message}`);
+        try {
+          const ts = dataParaTimestamp(dataStr);
+          const snap = await db.collection(COL_HINOS).where("data", "==", ts).get();
+          const encontrado = snap.docs.find(d => Number(d.data().idCongregacao) === Number(idCong));
+          return encontrado || null;
+        } catch (e2) {
+          throw e2;
+        }
+      }
+    }
+
+    // ==========================================
+    // CARREGA REGISTRO ATUAL (MANUTENÇÃO)
+    // ==========================================
+    async function carregarRegistroAtual() {
+      const dataStr = inputData.value;
+      const idCong = selectCong.value;
+
+      limparHinos();
+      docIdAtual = null;
+      setBadge("");
+
+      if (!dataStr || !idCong) {
+        setBadge("novo");
+        return;
+      }
+
+      inputData.disabled = true;
+      selectCong.disabled = true;
+      try {
+        const doc = await buscarRegistro(dataStr, idCong);
+
+        if (doc) {
+          const d = doc.data();
+          docIdAtual = doc.id;
+
+          let listaHinos = [];
+          if (Array.isArray(d.hinos)) {
+            listaHinos = d.hinos;
+          } else if (d.hino1 !== undefined || d.hino2 !== undefined) {
+            listaHinos = [d.hino1, d.hino2, d.hino3, d.hino4, d.hino5, d.hino6];
+          } else if (d.numeroHino !== undefined) {
+            listaHinos = [d.numeroHino];
+          }
+
+          inputsHinos.forEach((el, i) => el.value = listaHinos[i] ?? "");
+          setBadge("edicao");
+          setStatus("📖 Registro carregado.", "info");
+        } else {
+          setBadge("novo");
+          setStatus("🆕 Nenhum registro encontrado. Preencha e clique em Gravar.", "info");
+        }
+      } catch (e) {
+        setStatus("❌ Erro ao buscar: " + e.message, "err");
+        diag(`\n❌ Erro em carregarRegistroAtual: [${e.code}] ${e.message}`);
+      } finally {
+        inputData.disabled = false;
+        selectCong.disabled = false;
+      }
+    }
+
+    // ==========================================
+    // VALIDAÇÃO / COLETA (MANUTENÇÃO)
+    // ==========================================
+    function validarHinos() {
+      const valores = [];
+      for (let i = 0; i < inputsHinos.length; i++) {
+        const el = inputsHinos[i];
+        const v = el.value.trim();
+        if (v === "") { valores.push(null); continue; }
+        const n = Number(v);
+        if (!Number.isInteger(n) || n < 1 || n > 686) {
+          el.focus();
+          throw new Error(`Hino ${i + 1}: informe um número inteiro entre 1 e 686.`);
+        }
+        valores.push(n);
+      }
+      return valores;
+    }
+
+    function coletarDados() {
+      const dataStr = inputData.value;
+      if (!dataStr) throw new Error("Informe a data.");
+      const idCong = selectCong.value;
+      if (!idCong) throw new Error("Selecione a congregação.");
+      const hinos = validarHinos();
+      if (hinos.every(h => h === null)) throw new Error("Informe pelo menos um hino.");
+      return {
+        data: dataParaTimestamp(dataStr),
+        idCongregacao: Number(idCong),
+        hinos
+      };
+    }
+
+    // ==========================================
+    // EVENTOS — MANUTENÇÃO
+    // ==========================================
+    inputData.value = hojeISO();
+    inputData.addEventListener("change", carregarRegistroAtual);
+    selectCong.addEventListener("change", carregarRegistroAtual);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btnGravar.disabled = true;
+      btnGravar.textContent = "Gravando...";
+      try {
+        const dados = coletarDados();
+        if (docIdAtual) {
+          await db.collection(COL_HINOS).doc(docIdAtual).update(dados);
+          setStatus("✅ Registro atualizado!", "ok");
+        } else {
+          const existente = await buscarRegistro(inputData.value, selectCong.value);
+          if (existente) {
+            await existente.ref.update(dados);
+            docIdAtual = existente.id;
+            setStatus("✅ Registro atualizado!", "ok");
+          } else {
+            const ref = await db.collection(COL_HINOS).add(dados);
+            docIdAtual = ref.id;
+            setStatus("✅ Registro incluído!", "ok");
+          }
+        }
+        setBadge("edicao");
+        await carregarDatasRelatorios(); // atualiza todos os selects de data
+      } catch (err) {
+        console.error(err);
+        setStatus("❌ " + err.message, "err");
+      } finally {
+        btnGravar.disabled = false;
+        btnGravar.textContent = "💾 Gravar";
+      }
+    });
+
+    btnExcluir.addEventListener("click", async () => {
+      try {
+        if (!docIdAtual) throw new Error("Nenhum registro carregado para excluir.");
+        if (!confirm("Tem certeza que deseja excluir este registro?")) return;
+        await db.collection(COL_HINOS).doc(docIdAtual).delete();
+        docIdAtual = null;
+        limparHinos();
+        setBadge("novo");
+        setStatus("🗑️ Registro excluído!", "ok");
+        await carregarDatasRelatorios();
+      } catch (err) {
+        setStatus("❌ " + err.message, "err");
+      }
+    });
+
+    btnLimpar.addEventListener("click", async () => {
+      limparHinos();
+      docIdAtual = null;
+      setBadge("");
+      await carregarRegistroAtual();
+    });
+
+    btnFechar.addEventListener("click", () => {
+      if (confirm("Deseja fechar esta página?")) {
+        window.close();
+        setTimeout(() => {
+          document.body.innerHTML =
+            '<div style="text-align:center;padding:60px;font-family:sans-serif;color:#64748b;">Página encerrada.</div>';
+        }, 200);
+      }
+    });
+
+    // ==========================================
+    // CARREGA CONGREGAÇÕES NOS RELATÓRIOS
+    // ==========================================
+    async function carregarCongregacoesRelatorios() {
+      try {
+        if (!colCongDetectada) return;
+        const snap = await db.collection(colCongDetectada).get();
+        const opts = ['<option value="">Todas</option>'];
+
+        snap.forEach(doc => {
+          const d = doc.data();
+          const id = (campoIdDetectado && d[campoIdDetectado] !== undefined)
+            ? d[campoIdDetectado] : doc.id;
+          const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
+            ? d[campoNomeDetectado] : doc.id;
+          opts.push(`<option value="${id}">${nome}</option>`);
+        });
+
+        const html = opts.join("");
+        relCongregacaoMais.innerHTML  = html;
+        relCongregacaoMenos.innerHTML = html;
+      } catch (e) {
+        diag(`\n⚠️ Erro ao carregar congregações para relatórios: ${e.message}`);
+      }
+    }
+
+    // ==========================================
+    // CARREGA DATAS NOS RELATÓRIOS
+    // ==========================================
+    async function carregarDatasRelatorios() {
+      try {
+        const snap = await db.collection(COL_HINOS).get();
+        const setDatas = new Set();
+
+        snap.forEach(doc => {
+          const d = doc.data();
+          const iso = timestampParaISO(d.data);
+          if (iso) setDatas.add(iso);
+        });
+
+        todasDatasDisponiveis = Array.from(setDatas).sort();
+
+        const opts = ['<option value="">Todas</option>'];
+        todasDatasDisponiveis.forEach(iso => {
+          opts.push(`<option value="${iso}">${isoParaBR(iso)}</option>`);
+        });
+        const html = opts.join("");
+
+        // Preserva seleções atuais
+        const manterSelecao = (sel, valor) => {
+          if (valor && todasDatasDisponiveis.includes(valor)) sel.value = valor;
+        };
+
+        const iniMais = relDataInicialMais.value;
+        const fimMais = relDataFinalMais.value;
+        const iniMenos = relDataInicialMenos.value;
+        const fimMenos = relDataFinalMenos.value;
+
+        relDataInicialMais.innerHTML  = html;
+        relDataFinalMais.innerHTML    = html;
+        relDataInicialMenos.innerHTML = html;
+        relDataFinalMenos.innerHTML   = html;
+
+        manterSelecao(relDataInicialMais, iniMais);
+        manterSelecao(relDataFinalMais, fimMais);
+        manterSelecao(relDataInicialMenos, iniMenos);
+        manterSelecao(relDataFinalMenos, fimMenos);
+
+        diag(`\n✅ ${todasDatasDisponiveis.length} datas distintas carregadas para relatórios.`);
+      } catch (e) {
+        diag(`\n❌ Erro ao carregar datas: [${e.code}] ${e.message}`);
+        setStatus("❌ Erro ao carregar datas: " + e.message, "err");
+      }
+    }
+
+    // ==========================================
+    // BUSCA FILTRADA PARA RELATÓRIOS
+    // ==========================================
+    async function buscarParaRelatorio(idCong, dataIniISO, dataFimISO) {
+      let query = db.collection(COL_HINOS);
+
+      if (idCong) {
+        query = query.where("idCongregacao", "==", Number(idCong));
+      }
+      if (dataIniISO) {
+        query = query.where("data", ">=", dataParaTimestamp(dataIniISO));
+      }
+      if (dataFimISO) {
+        const [a, m, d] = dataFimISO.split("-").map(Number);
+        const fim = new Date(Date.UTC(a, m - 1, d + 1));
+        query = query.where("data", "<", firebase.firestore.Timestamp.fromDate(fim));
+      }
+
+      try {
+        const snap = await query.get();
+        return snap.docs;
+      } catch (e) {
+        diag(`\n⚠️ Filtro no servidor falhou (${e.code}). Fazendo fallback no cliente...`);
+        const snap = await db.collection(COL_HINOS).get();
+        return snap.docs.filter(doc => {
+          const d = doc.data();
+          if (idCong && Number(d.idCongregacao) !== Number(idCong)) return false;
+          const iso = timestampParaISO(d.data);
+          if (!iso) return false;
+          if (dataIniISO && iso < dataIniISO) return false;
+          if (dataFimISO && iso > dataFimISO) return false;
+          return true;
+        });
+      }
+    }
+
+    // ==========================================
+    // CONTAGEM DE HINOS
+    // ==========================================
+    function contarHinos(docs) {
+      const contagem = {};
+      for (let n = HINO_MIN; n <= HINO_MAX_REL; n++) contagem[n] = 0;
+
+      let totalRegistros = 0;
+      let totalHinosLancados = 0;
+
+      docs.forEach(doc => {
+        const d = doc.data();
+        let lista = [];
+        if (Array.isArray(d.hinos)) lista = d.hinos;
+        else if (d.hino1 !== undefined || d.hino2 !== undefined)
+          lista = [d.hino1, d.hino2, d.hino3, d.hino4, d.hino5, d.hino6];
+        else if (d.numeroHino !== undefined) lista = [d.numeroHino];
+
+        let achou = false;
+        lista.forEach(h => {
+          const n = Number(h);
+          if (Number.isInteger(n) && n >= HINO_MIN && n <= HINO_MAX_REL) {
+            contagem[n]++;
+            totalHinosLancados++;
+            achou = true;
+          }
+        });
+        if (achou) totalRegistros++;
+      });
+
+      return { contagem, totalRegistros, totalHinosLancados };
+    }
+
+    // ==========================================
+    // RENDERIZAÇÃO DO RELATÓRIO
+    // ==========================================
+    function renderizarRelatorio(container, titulo, lista, info) {
+      if (!lista.length) {
+        container.innerHTML = `<p class="rel-info">Nenhum dado encontrado para os filtros selecionados.</p>`;
+        return;
+      }
+
+      const linhas = lista.map((item, idx) => `
+        <tr>
+          <td style="width:70px;font-weight:700;color:#64748b;">${idx + 1}º</td>
+          <td style="font-weight:600;">Hino ${item.hino}</td>
+          <td><span class="qtd-badge ${item.qtd === 0 ? 'qtd-zero' : ''}">${item.qtd}x</span></td>
+        </tr>
+      `).join("");
+
+      container.innerHTML = `
+        <div class="rel-titulo">${titulo}</div>
+        <div class="rel-info">${info}</div>
+        <div class="tabela-wrap">
+          <table class="tabela-rel">
+            <thead>
+              <tr><th>#</th><th>Hino</th><th>Quantidade</th></tr>
+            </thead>
+            <tbody>${linhas}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function filtroTexto(selectCong, idCong, dataIni, dataFim) {
+      const partes = [];
+      if (idCong) {
+        const opt = selectCong.options[selectCong.selectedIndex];
+        partes.push(`Congregação: ${opt ? opt.textContent : idCong}`);
+      } else {
+        partes.push("Congregação: Todas");
+      }
+      if (dataIni) partes.push(`De: ${isoParaBR(dataIni)}`);
+      if (dataFim) partes.push(`Até: ${isoParaBR(dataFim)}`);
+      if (!dataIni && !dataFim) partes.push("Período: Todas as datas");
+      return partes.join(" • ");
+    }
+
+    // ==========================================
+    // GERAR RELATÓRIO — MAIS TOCADOS
+    // ==========================================
+    async function gerarMaisTocados() {
+      relResultadoMais.innerHTML = '<p class="rel-info">⏳ Calculando...</p>';
+      btnGerarMais.disabled = true;
+
+      try {
+        const idCong = relCongregacaoMais.value;
+        const dataIni = relDataInicialMais.value;
+        const dataFim = relDataFinalMais.value;
+
+        if (dataIni && dataFim && dataIni > dataFim) {
+          throw new Error("A Data Inicial não pode ser maior que a Data Final.");
+        }
+
+        const docs = await buscarParaRelatorio(idCong, dataIni, dataFim);
+        const { contagem, totalRegistros, totalHinosLancados } = contarHinos(docs);
+
+        const lista = Object.entries(contagem)
+          .map(([hino, qtd]) => ({ hino: Number(hino), qtd }))
+          .sort((a, b) => b.qtd - a.qtd || a.hino - b.hino)
+          .slice(0, TOP_N);
+
+        const info = `Base: ${totalRegistros} registro(s) • ${totalHinosLancados} hino(s) lançado(s) • hinos ${HINO_MIN} a ${HINO_MAX_REL} • ${filtroTexto(relCongregacaoMais, idCong, dataIni, dataFim)}`;
+        renderizarRelatorio(relResultadoMais, "🏆 50 Hinos Mais Tocados", lista, info);
+      } catch (e) {
+        relResultadoMais.innerHTML = "";
+        setStatus("❌ " + e.message, "err");
+      } finally {
+        btnGerarMais.disabled = false;
+      }
+    }
+
+    // ==========================================
+    // GERAR RELATÓRIO — MENOS TOCADOS
+    // ==========================================
+    async function gerarMenosTocados() {
+      relResultadoMenos.innerHTML = '<p class="rel-info">⏳ Calculando...</p>';
+      btnGerarMenos.disabled = true;
+
+      try {
+        const idCong = relCongregacaoMenos.value;
+        const dataIni = relDataInicialMenos.value;
+        const dataFim = relDataFinalMenos.value;
+
+        if (dataIni && dataFim && dataIni > dataFim) {
+          throw new Error("A Data Inicial não pode ser maior que a Data Final.");
+        }
+
+        const docs = await buscarParaRelatorio(idCong, dataIni, dataFim);
+        const { contagem, totalRegistros, totalHinosLancados } = contarHinos(docs);
+
+        const lista = Object.entries(contagem)
+          .map(([hino, qtd]) => ({ hino: Number(hino), qtd }))
+          .sort((a, b) => a.qtd - b.qtd || a.hino - b.hino)
+          .slice(0, TOP_N);
+
+        const info = `Base: ${totalRegistros} registro(s) • ${totalHinosLancados} hino(s) lançado(s) • hinos ${HINO_MIN} a ${HINO_MAX_REL} • ${filtroTexto(relCongregacaoMenos, idCong, dataIni, dataFim)}`;
+        renderizarRelatorio(relResultadoMenos, "📉 50 Hinos Menos Tocados", lista, info);
+      } catch (e) {
+        relResultadoMenos.innerHTML = "";
+        setStatus("❌ " + e.message, "err");
+      } finally {
+        btnGerarMenos.disabled = false;
+      }
+    }
+
+    // ==========================================
+    // EVENTOS DOS BOTÕES DE RELATÓRIO
+    // ==========================================
+    btnGerarMais.addEventListener("click", gerarMaisTocados);
+    btnGerarMenos.addEventListener("click", gerarMenosTocados);
+
+    // ==========================================
+    // INICIALIZAÇÃO
+    // ==========================================
+    (async () => {
+      await carregarCongregacoes();
+      if (selectCong.options.length === 2) selectCong.selectedIndex = 1;
+      await carregarRegistroAtual();
+
+      await carregarCongregacoesRelatorios();
+      await carregarDatasRelatorios();
+
+      // Abre a página inicial
+      abrirPagina("inclusao");
+    })();
+  </script>
+</body>
+</html>
