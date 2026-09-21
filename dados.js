@@ -7,7 +7,7 @@
             "Setor dos Bandeirantes;Aparecida;2º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
             "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N;",
             "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N;21/04/2026", //aqui
-            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;;;T;-16.8256386;-49.229775;DN 4N;",
+            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;Thiago Fernandes;Thiaguinho;T;-16.8256386;-49.229775;DN 4N;",
             "Bairro Independência;Aparecida;1º DOMINGO;T;d58NBSKruwc735pA9;6;Roberto Santana;Odário;T;-16.8080739;-49.3235699;DN 3N SN;01/05/2026",
             "Vila São José;Goiânia;1º DOMINGO;T;5kdjpLgQreAGofYKA;5;Marcos Jose Cordeiro;Rogerio Rosemberg;T;-16.6596485;-49.299886;DN 3N 5N;",//
             "Setor Leste Universitário;Goiânia;1º DOMINGO;T;f4jkwB9HdBhJMobN6;1;JOSÉ MOREL;HELTON RICARDO;T;-16.6867528;-49.2420306;DN 2N 6N;",
@@ -136,7 +136,7 @@
             "Residencial BarraVento;Goiânia;3º DOMINGO;T;mDHg64SGZM5z1Rd16;4;Santil Tomaz;Túlio Marcos;T;-16.6232582;-49.3063065;DN 3N 6N;08/11/2026",
             "Parque Maracanã;Goiânia;3º DOMINGO;T;CxBqm41inwY99xPz8;4;Marcelo Mello;Davi Borges;T;-16.6134904;-49.3570018;DN 3N;",
             "Privê das Oliveiras;Goiânia;3º DOMINGO;T1;DJD9PxZ3N6uWYSvy5;2;Bruno Rodrigues;André;T;-16.8184213;-49.3799289;2N 6N;",
-            "Água Branca;Goiânia;3º DOMINGO;T;2YothebbxUbFvadD6;1;BRUNO MEDEIROS;HELTON RICARDO;T;-16.6972214;-49.2187246;DN 6N;",
+            "Água Branca;Goiânia;4ª QUARTA-FEIRA;T;2YothebbxUbFvadD6;1;BRUNO MEDEIROS;HELTON RICARDO;T;-16.6972214;-49.2187246;DN 6N;",
             "Bairro Floresta;Goiânia;3º DOMINGO;T;5jMca7ZaDZzQ5ZMc8;4;Edjam Divino;Jackson;T;-16.5898354;-49.3368316;DN 3N 5N;11/01/2026",
             "Vila João Vaz;Goiânia;3ª SEGUNDA-FEIRA;N;Q3j61hDhWYLYythDA;3;Elias Rosa;Nereu;T;-16.6498468;-49.3114878;DN 4N 6N;",
             "Jardim das Paineiras;Goianira;3ª SEGUNDA-FEIRA;N;sGNQWhUMzD1vkNSx7;7;DIEGO DIAS;PETERSON BENONI;T;-16.5474406;-49.2706425;DN 4N;",
