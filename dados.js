@@ -136,7 +136,7 @@
             "Residencial BarraVento;Goiânia;3º DOMINGO;T;mDHg64SGZM5z1Rd16;4;Santil Tomaz;Túlio Marcos;T;-16.6232582;-49.3063065;DN 3N 6N;08/11/2026",
             "Parque Maracanã;Goiânia;3º DOMINGO;T;CxBqm41inwY99xPz8;4;Marcelo Mello;Davi Borges;T;-16.6134904;-49.3570018;DN 3N;",
             "Privê das Oliveiras;Goiânia;3º DOMINGO;T1;DJD9PxZ3N6uWYSvy5;2;Bruno Rodrigues;André;T;-16.8184213;-49.3799289;2N 6N;",
-            "Água Branca;Goiânia;4ª QUARTA-FEIRA;T;2YothebbxUbFvadD6;1;BRUNO MEDEIROS;HELTON RICARDO;T;-16.6972214;-49.2187246;DN 6N;",
+            "Água Branca;Goiânia;4ª QUARTA-FEIRA;N;2YothebbxUbFvadD6;1;BRUNO MEDEIROS;HELTON RICARDO;T;-16.6972214;-49.2187246;DN 6N;",
             "Bairro Floresta;Goiânia;3º DOMINGO;T;5jMca7ZaDZzQ5ZMc8;4;Edjam Divino;Jackson;T;-16.5898354;-49.3368316;DN 3N 5N;11/01/2026",
             "Vila João Vaz;Goiânia;3ª SEGUNDA-FEIRA;N;Q3j61hDhWYLYythDA;3;Elias Rosa;Nereu;T;-16.6498468;-49.3114878;DN 4N 6N;",
             "Jardim das Paineiras;Goianira;3ª SEGUNDA-FEIRA;N;sGNQWhUMzD1vkNSx7;7;DIEGO DIAS;PETERSON BENONI;T;-16.5474406;-49.2706425;DN 4N;",
