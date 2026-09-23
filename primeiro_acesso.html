@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primeiro Acesso - Trocar Senha</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        h2 { color: #667eea; font-size: 1rem; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        input:focus { outline: none; border-color: #667eea; }
+        button {
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background: #219a52; }
+        button:disabled { background: #95a5a6; cursor: not-allowed; }
+        .mensagem {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .erro { background: #fee; color: #c0392b; border-left: 4px solid #e74c3c; }
+        .sucesso { background: #efe; color: #27ae60; border-left: 4px solid #27ae60; }
+        .info { background: #e3f2fd; color: #2980b9; border-left: 4px solid #3498db; }
+        .senha-regras { font-size: 0.8rem; color: #7f8c8d; margin-top: 5px; }
+
+        /* 🔒 Overlay de carregamento enquanto valida o usuário */
+        #loadingOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 16px;
+            font-size: 1.1rem;
+        }
+        #loadingOverlay .spinner {
+            width: 44px; height: 44px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Esconde o formulário até validar */
+        #formBox { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 🔒 Overlay: cobre a tela até validar o usuário -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <span>🔒 Verificando acesso...</span>
+    </div>
+
+    <!-- 📝 Formulário (só aparece após validação) -->
+    <div class="container" id="formBox">
+        <h1>🎵 Identidade Ministerial CCB</h1>
+        <h2>🔄 Primeiro Acesso - Troca de Senha Obrigatória</h2>
+
+        <div class="info" style="margin-bottom: 20px; padding: 10px;">
+            ⚠️ Esta é a sua primeira vez acessando o sistema.<br>
+            Por segurança, você precisa trocar sua senha temporária.
+        </div>
+
+        <div class="form-group">
+            <label for="novaSenha">🔑 Nova Senha (mínimo 6 caracteres)</label>
+            <input type="password" id="novaSenha" placeholder="••••••••" autocomplete="new-password">
+            <div class="senha-regras">Use letras, números ou símbolos. Mínimo 6 caracteres.</div>
+        </div>
+        <div class="form-group">
+            <label for="confirmarSenha">🔑 Confirmar Nova Senha</label>
+            <input type="password" id="confirmarSenha" placeholder="••••••••" autocomplete="new-password">
+        </div>
+
+        <button id="btnTrocar" onclick="trocarSenha()">✅ Trocar Senha e Acessar</button>
+
+        <div id="mensagem"></div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1️⃣ INICIALIZAÇÃO DO FIREBASE (PRIMEIRO!)
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4COgeJSENsHrQHDx39gpZvif3zVrGjYE",
+            authDomain: "identidadeccb.firebaseapp.com",
+            projectId: "identidadeccb",
+            storageBucket: "identidadeccb.firebasestorage.app",
+            messagingSenderId: "385467794937",
+            appId: "1:385467794937:web:d2eb32429586f018e2a928"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
+
+        // ==========================================
+        // 2️⃣ URLs DE REDIRECIONAMENTO
+        // ==========================================
+        const LOGIN_URL      = 'login.html';
+        const HINOS_URL      = 'hinostocados.html';
+
+        // ==========================================
+        // 3️⃣ VARIÁVEIS DE ESTADO (declaradas cedo)
+        // ==========================================
+        let usuarioAtual = null;
+
+        // ==========================================
+        // 4️⃣ VERIFICAÇÃO DE ACESSO
+        // ==========================================
+        console.log('🟡 [primeiro_acesso.html] carregado');
+
+        auth.onAuthStateChanged(async (user) => {
+            console.log('👤 onAuthStateChanged:', user ? user.uid : 'NENHUM USUÁRIO');
+
+            const overlay = document.getElementById('loadingOverlay');
+            const formBox = document.getElementById('formBox');
+
+            // ❌ Não logado → volta pro login
+            if (!user) {
+                window.location.replace(LOGIN_URL);
+                return;
+            }
+
+            usuarioAtual = user;
+
+            try {
+                const adminDoc = await db.collection("administradores").doc(user.uid).get();
+
+                // ❌ Documento não existe → não é admin
+                if (!adminDoc.exists) {
+                    await auth.signOut();
+                    window.location.replace(LOGIN_URL);
+                    return;
+                }
+
+                // ❌ Conta desativada
+                if (adminDoc.data().ativo === false) {
+                    await auth.signOut();
+                    window.location.replace(LOGIN_URL);
+                    return;
+                }
+
+                // ✅ Já trocou a senha → vai direto pro sistema
+                if (adminDoc.data().senhaTemporaria !== true) {
+                    console.log('✅ Senha já foi trocada. Redirecionando para o sistema.');
+                    window.location.replace(HINOS_URL);
+                    return;
+                }
+
+                // 🟢 Precisa trocar a senha → mostra o formulário
+                console.log('🔄 Usuário precisa trocar a senha temporária.');
+                overlay.remove();
+                formBox.style.display = 'block';
+
+                // Foca no primeiro campo
+                setTimeout(() => document.getElementById('novaSenha').focus(), 100);
+
+            } catch (error) {
+                console.error("❌ Erro na verificação:", error);
+                alert('Erro ao verificar acesso: ' + error.message);
+                window.location.replace(LOGIN_URL);
+            }
+        });
+
+        // ==========================================
+        // 5️⃣ TROCA DE SENHA
+        // ==========================================
+        async function trocarSenha() {
+            const novaSenha       = document.getElementById('novaSenha').value;
+            const confirmarSenha  = document.getElementById('confirmarSenha').value;
+            const msgDiv          = document.getElementById('mensagem');
+            const btn             = document.getElementById('btnTrocar');
+
+            // Validações
+            if (!novaSenha || !confirmarSenha) {
+                msgDiv.innerHTML = '<div class="mensagem erro">❌ Preencha ambos os campos</div>';
+                return;
+            }
+            if (novaSenha.length < 6) {
+                msgDiv.innerHTML = '<div class="mensagem erro">❌ A senha deve ter pelo menos 6 caracteres</div>';
+                return;
+            }
+            if (novaSenha !== confirmarSenha) {
+                msgDiv.innerHTML = '<div class="mensagem erro">❌ As senhas não coincidem</div>';
+                return;
+            }
+
+            // Confere se a sessão ainda está ativa
+            if (!usuarioAtual) {
+                msgDiv.innerHTML = '<div class="mensagem erro">❌ Sessão expirada. Faça login novamente.</div>';
+                setTimeout(() => window.location.replace(LOGIN_URL), 1500);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Alterando senha...';
+            msgDiv.innerHTML = '<div class="mensagem info">🔄 Alterando senha...</div>';
+
+            try {
+                // 1. Atualiza a senha no Firebase Auth
+                await usuarioAtual.updatePassword(novaSenha);
+                console.log('✅ Senha atualizada no Auth');
+
+                // 2. Atualiza o Firestore: senhaTemporaria = false
+                await db.collection("administradores").doc(usuarioAtual.uid).update({
+                    senhaTemporaria: false,
+                    senhaAlteradaEm: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log('✅ Firestore atualizado (senhaTemporaria = false)');
+
+                msgDiv.innerHTML = '<div class="mensagem sucesso">✅ Senha alterada com sucesso! Redirecionando...</div>';
+
+                // 3. Redireciona para o sistema
+                setTimeout(() => {
+                    window.location.replace(HINOS_URL);
+                }, 1500);
+
+            } catch (error) {
+                console.error("❌ Erro ao trocar senha:", error);
+
+                let msg = '❌ Erro: ' + error.message;
+                if (error.code === 'auth/requires-recent-login') {
+                    msg = '❌ Por segurança, faça login novamente antes de trocar a senha.';
+                    setTimeout(() => {
+                        auth.signOut().then(() => window.location.replace(LOGIN_URL));
+                    }, 2500);
+                }
+
+                msgDiv.innerHTML = `<div class="mensagem erro">${msg}</div>`;
+                btn.disabled = false;
+                btn.textContent = '✅ Trocar Senha e Acessar';
+            }
+        }
+
+        // ==========================================
+        // 6️⃣ Permitir Enter nos campos
+        // ==========================================
+        document.getElementById('confirmarSenha').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') trocarSenha();
+        });
+    </script>
+</body>
+</html>

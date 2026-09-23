@@ -14,6 +14,33 @@
     }
 
     /* =====================================================
+       OVERLAY DE AUTENTICAÇÃO
+       ===================================================== */
+    #authGuard {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: linear-gradient(135deg, #1a3a6c 0%, #2c5282 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      font-family: system-ui, sans-serif;
+      font-size: 1.1rem;
+    }
+    #authGuard .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: #fbbf24;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* =====================================================
        MENU SUPERIOR
        ===================================================== */
     .topbar {
@@ -37,9 +64,7 @@
       letter-spacing: 0.3px;
     }
     .menu { display: flex; }
-    .menu-item {
-      position: relative;
-    }
+    .menu-item { position: relative; }
     .menu-item > a {
       display: block;
       color: #fff;
@@ -57,7 +82,6 @@
       border-bottom-color: #fbbf24;
     }
 
-    /* Submenu (abre no hover) */
     .submenu {
       position: absolute;
       top: 100%;
@@ -87,6 +111,7 @@
       font-weight: 500;
       transition: background 0.15s, color 0.15s;
       border-left: 3px solid transparent;
+      cursor: pointer;
     }
     .submenu a:hover {
       background: #eef2ff;
@@ -134,7 +159,7 @@
       background: #fff;
     }
     input:focus, select:focus { border-color: #1a3a6c; }
-    input:disabled, select:disabled { background: #f1f5f9; cursor: wait; }
+    input:disabled, select:disabled { background: #f1f5f9; cursor: not-allowed; color: #475569; }
 
     fieldset {
       border: 1px solid #e5e7eb;
@@ -148,13 +173,47 @@
       color: #1a3a6c;
       padding: 0 8px;
     }
+
+    /* ===== Grid de hinos: número + observação na mesma linha ===== */
     .hinos-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
-    .hinos-grid label { font-size: 0.78rem; color: #64748b; }
-
+    .hino-linha {
+      display: grid;
+      grid-template-columns: 60px 90px 40px 1fr 60px;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 10px;
+      border: 1px solid #eef2f7;
+      border-radius: 8px;
+      background: #fafbfc;
+    }
+    .hino-linha label {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .hino-linha .lbl-hino { font-weight: 700; color: #1a3a6c; }
+    .hino-linha input[type="number"] {
+      padding: 6px 8px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .hino-linha input[type="text"] {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+    .hino-linha .contador {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .hino-linha .contador.limite { color: #dc2626; font-weight: 700; }
+    
     .botoes {
       display: flex;
       gap: 12px;
@@ -178,6 +237,7 @@
     .btn-excluir { background: #dc2626; color: #fff; }
     .btn-limpar  { background: #e2e8f0; color: #334155; }
     .btn-fechar  { background: #64748b; color: #fff; margin-left: auto; }
+    .btn-sair    { background: #dc2626; color: #fff; }
 
     #status {
       margin-top: 16px;
@@ -229,7 +289,6 @@
       white-space: pre-wrap;
     }
 
-    /* ===== Tabelas de relatório ===== */
     .tabela-rel {
       width: 100%;
       border-collapse: collapse;
@@ -285,19 +344,41 @@
     }
     .qtd-zero { background: #fee2e2; color: #991b1b; }
 
+    .user-info {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+    .user-info .nome {
+      font-weight: 600;
+      color: #fbbf24;
+    }
+
     @media (max-width: 640px) {
       .grid { grid-template-columns: 1fr; }
-      .hinos-grid { grid-template-columns: 1fr 1fr; }
-      .topbar { padding: 0 12px; }
+      .hinos-grid { grid-template-columns: 1fr; }
+      .topbar { padding: 0 12px; flex-wrap: wrap; }
       .menu-item > a { padding: 14px 14px; font-size: 0.85rem; }
+      .user-info { width: 100%; justify-content: flex-end; padding-bottom: 8px; }
+      .hino-linha {
+        grid-template-columns: 60px 1fr 60px;
+      }
+      .hino-linha label:nth-of-type(2),
+      .hino-linha input[type="text"] {
+        grid-column: span 3;
+      }      
     }
   </style>
 </head>
 <body>
 
-  <!-- =====================================================
-       MENU SUPERIOR
-       ===================================================== -->
+  <div id="authGuard">
+    <div class="spinner"></div>
+    <span>🔒 Verificando acesso...</span>
+  </div>
+
   <nav class="topbar">
     <div class="logo">🎵 Hinos</div>
     <div class="menu">
@@ -311,15 +392,18 @@
         <div class="submenu">
           <a data-page="mais-tocados">🏆 Mais Tocados</a>
           <a data-page="menos-tocados">📉 Menos Tocados</a>
+          <a data-page="com-observacao">📝 Com Observação</a>
         </div>
       </div>
 
     </div>
+
+    <div class="user-info">
+      <span>👤 <span class="nome" id="userNome">...</span></span>
+      <button class="btn-sair" id="btnSair" style="padding:6px 14px;font-size:0.85rem;">Sair</button>
+    </div>
   </nav>
 
-  <!-- =====================================================
-       CONTEÚDO
-       ===================================================== -->
   <div class="container">
 
     <!-- ============ PÁGINA: INCLUSÃO ============ -->
@@ -342,14 +426,9 @@
         </div>
 
         <fieldset>
-          <legend>Números dos hinos (1 a 686)</legend>
-          <div class="hinos-grid">
-            <div class="form-group"><label for="hino1">Hino 1</label><input type="number" id="hino1" min="1" max="686" step="1" inputmode="numeric"></div>
-            <div class="form-group"><label for="hino2">Hino 2</label><input type="number" id="hino2" min="1" max="686" step="1" inputmode="numeric"></div>
-            <div class="form-group"><label for="hino3">Hino 3</label><input type="number" id="hino3" min="1" max="686" step="1" inputmode="numeric"></div>
-            <div class="form-group"><label for="hino4">Hino 4</label><input type="number" id="hino4" min="1" max="686" step="1" inputmode="numeric"></div>
-            <div class="form-group"><label for="hino5">Hino 5</label><input type="number" id="hino5" min="1" max="686" step="1" inputmode="numeric"></div>
-            <div class="form-group"><label for="hino6">Hino 6</label><input type="number" id="hino6" min="1" max="686" step="1" inputmode="numeric"></div>
+          <legend>Números dos hinos (1 a 686) e observação individual (opcional, máx. 30)</legend>
+          <div class="hinos-grid" id="hinosGrid">
+            <!-- Blocos gerados via JS -->
           </div>
         </fieldset>
 
@@ -378,7 +457,7 @@
               <option value="">Todas</option>
             </select>
           </div>
-          <div class="form-group"><!-- espaçador --></div>
+          <div class="form-group"></div>
 
           <div class="form-group">
             <label for="relDataInicialMais">Data Inicial</label>
@@ -416,7 +495,7 @@
               <option value="">Todas</option>
             </select>
           </div>
-          <div class="form-group"><!-- espaçador --></div>
+          <div class="form-group"></div>
 
           <div class="form-group">
             <label for="relDataInicialMenos">Data Inicial</label>
@@ -439,8 +518,44 @@
 
       <div id="relResultadoMenos"></div>
     </section>
+    <!-- ============ PÁGINA: COM OBSERVAÇÃO ============ -->
+    <section class="pagina" id="page-com-observacao">
+      <h1>📝 Hinos com Observação</h1>
+      <p class="subtitle">Lista todos os hinos que tiveram observação preenchida no período escolhido.</p>
 
-    <!-- ============ DIAGNÓSTICO ============ -->
+      <fieldset>
+        <legend>Filtros</legend>
+        <div class="grid">
+          <div class="form-group">
+            <label for="relCongregacaoObs">Congregação</label>
+            <select id="relCongregacaoObs">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group"></div>
+
+          <div class="form-group">
+            <label for="relDataInicialObs">Data Inicial</label>
+            <select id="relDataInicialObs">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="relDataFinalObs">Data Final</label>
+            <select id="relDataFinalObs">
+              <option value="">Todas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="botoes" style="margin-top:16px;">
+          <button type="button" class="btn-gravar" id="btnGerarObs" style="background:#7c3aed;">🔎 Gerar Relatório</button>
+        </div>
+      </fieldset>
+
+      <div id="relResultadoObs"></div>
+    </section>
+
     <details class="diag" id="painelDiag">
       <summary>🔍 Painel de diagnóstico (clique para abrir)</summary>
       <pre id="diagOut">Aguardando inicialização...</pre>
@@ -449,6 +564,7 @@
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <script>
@@ -464,8 +580,79 @@
       appId: "1:385467794937:web:d2eb32429586f018e2a928"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
+    // ==========================================
+    // 🔐 GUARDA DE ACESSO + URLs
+    // ==========================================
+    const LOGIN_URL           = 'login.html';
+    const PRIMEIRO_ACESSO_URL = 'primeiro_acesso.html';
+    const CAMPO_CONG_USUARIO  = "congregacoes_id";
+
+    // 🔑 Variável global (declarada ANTES do onAuthStateChanged)
+    let congUsuarioLogado = 0; // 0 = admin geral
+
+    auth.onAuthStateChanged(async (user) => {
+      const guard = document.getElementById('authGuard');
+
+      if (!user) {
+        window.location.replace(LOGIN_URL);
+        return;
+      }
+
+      try {
+        const adminDoc = await db.collection("administradores").doc(user.uid).get();
+
+        if (!adminDoc.exists || !adminDoc.data().ativo) {
+          await auth.signOut();
+          window.location.replace(LOGIN_URL);
+          return;
+        }
+
+        if (adminDoc.data().senhaTemporaria === true) {
+          window.location.replace(PRIMEIRO_ACESSO_URL);
+          return;
+        }
+
+        const dadosAdmin = adminDoc.data();
+        const congBruto  = dadosAdmin[CAMPO_CONG_USUARIO]
+                        ?? dadosAdmin["idCongregacao"]
+                        ?? null;
+
+        if (congBruto === null || congBruto === undefined || congBruto === "") {
+          console.error('❌ Usuário sem congregação definida no documento.');
+          alert('Sua conta não está vinculada a uma congregação. Contate o administrador.');
+          await auth.signOut();
+          window.location.replace(LOGIN_URL);
+          return;
+        }
+
+        congUsuarioLogado = Number(congBruto);
+        console.log('👤 Congregação do usuário logado:', congUsuarioLogado);
+
+        const nome = dadosAdmin.nome || user.email;
+        document.getElementById('userNome').textContent = nome;
+
+        sessionStorage.setItem('adminLogado', JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          nome: nome,
+          papel: dadosAdmin.papel || 'administrador',
+          idCongregacao: congUsuarioLogado
+        }));
+
+        guard.remove();
+        iniciarAplicacao();
+
+      } catch (e) {
+        console.error('Erro na verificação de acesso:', e);
+        window.location.replace(LOGIN_URL);
+      }
+    });
 
     // ==========================================
     // CONFIGURAÇÕES
@@ -482,41 +669,46 @@
 
     const HINO_MIN     = 1;
     const HINO_MAX_REL = 486;
+    const HINO_MAX_INP = 686;
     const TOP_N        = 50;
+    const OBS_MAX      = 30;
+    const QTD_HINOS    = 6;
 
     // ==========================================
-    // ELEMENTOS — MANUTENÇÃO
+    // ELEMENTOS
     // ==========================================
-    const form        = document.getElementById("form");
-    const inputData   = document.getElementById("data");
-    const selectCong  = document.getElementById("congregacao");
-    const btnGravar   = document.getElementById("btnGravar");
-    const btnExcluir  = document.getElementById("btnExcluir");
-    const btnLimpar   = document.getElementById("btnLimpar");
-    const btnFechar   = document.getElementById("btnFechar");
-    const statusBox   = document.getElementById("status");
-    const badge       = document.getElementById("badge");
-    const diagOut     = document.getElementById("diagOut");
-    const inputsHinos = [1,2,3,4,5,6].map(n => document.getElementById("hino" + n));
+    const form         = document.getElementById("form");
+    const inputData    = document.getElementById("data");
+    const selectCong   = document.getElementById("congregacao");
+    const hinosGrid    = document.getElementById("hinosGrid");
+    const btnGravar    = document.getElementById("btnGravar");
+    const btnExcluir   = document.getElementById("btnExcluir");
+    const btnLimpar    = document.getElementById("btnLimpar");
+    const btnFechar    = document.getElementById("btnFechar");
+    const btnSair      = document.getElementById("btnSair");
+    const statusBox    = document.getElementById("status");
+    const badge        = document.getElementById("badge");
+    const diagOut      = document.getElementById("diagOut");
 
-    // ==========================================
-    // ELEMENTOS — RELATÓRIO MAIS TOCADOS
-    // ==========================================
     const relCongregacaoMais = document.getElementById("relCongregacaoMais");
     const relDataInicialMais = document.getElementById("relDataInicialMais");
     const relDataFinalMais   = document.getElementById("relDataFinalMais");
     const relResultadoMais   = document.getElementById("relResultadoMais");
     const btnGerarMais       = document.getElementById("btnGerarMais");
 
-    // ==========================================
-    // ELEMENTOS — RELATÓRIO MENOS TOCADOS
-    // ==========================================
     const relCongregacaoMenos = document.getElementById("relCongregacaoMenos");
     const relDataInicialMenos = document.getElementById("relDataInicialMenos");
     const relDataFinalMenos   = document.getElementById("relDataFinalMenos");
     const relResultadoMenos   = document.getElementById("relResultadoMenos");
     const btnGerarMenos       = document.getElementById("btnGerarMenos");
-
+    // ==========================================
+    // ELEMENTOS — RELATÓRIO COM OBSERVAÇÃO
+    // ==========================================
+    const relCongregacaoObs = document.getElementById("relCongregacaoObs");
+    const relDataInicialObs = document.getElementById("relDataInicialObs");
+    const relDataFinalObs   = document.getElementById("relDataFinalObs");
+    const relResultadoObs   = document.getElementById("relResultadoObs");
+    const btnGerarObs       = document.getElementById("btnGerarObs");
     // ==========================================
     // ESTADO
     // ==========================================
@@ -525,6 +717,10 @@
     let campoIdDetectado = null;
     let campoNomeDetectado = null;
     let todasDatasDisponiveis = [];
+    let appIniciada = false;
+
+    // Arrays com os inputs de cada hino (numero + observacao)
+    const inputsHinos = [];   // [{ numero: <input>, obs: <input>, contador: <small> }, ...]
 
     // ==========================================
     // DIAGNÓSTICO
@@ -584,22 +780,95 @@
       return firebase.firestore.Timestamp.fromDate(new Date(Date.UTC(ano, mes - 1, dia)));
     }
 
+    // Retorna true se o usuário logado é admin geral (vê todas as congregações)
+    function ehAdminGeral() {
+      return !congUsuarioLogado || Number(congUsuarioLogado) === 0;
+    }
+
+    // ==========================================
+    // CONSTRUÇÃO DO GRID DE HINOS (número + observação)
+    // ==========================================
+    function construirGridHinos() {
+      hinosGrid.innerHTML = "";
+      inputsHinos.length = 0;
+
+      for (let i = 1; i <= QTD_HINOS; i++) {
+        const linha = document.createElement("div");
+        linha.className = "hino-linha";
+
+        // Rótulo "Hino N"
+        const lblHino = document.createElement("label");
+        lblHino.className = "lbl-hino";
+        lblHino.htmlFor = "hino" + i;
+        lblHino.textContent = "Hino " + i;
+
+        // Input do número
+        const inputHino = document.createElement("input");
+        inputHino.type = "number";
+        inputHino.id = "hino" + i;
+        inputHino.min = String(HINO_MIN);
+        inputHino.max = String(HINO_MAX_INP);
+        inputHino.step = "1";
+        inputHino.inputMode = "numeric";
+        inputHino.placeholder = "1–" + HINO_MAX_INP;
+
+        // Rótulo "Obs"
+        const lblObs = document.createElement("label");
+        lblObs.htmlFor = "obsHino" + i;
+        lblObs.textContent = "Obs";
+
+        // Input da observação
+        const inputObs = document.createElement("input");
+        inputObs.type = "text";
+        inputObs.id = "obsHino" + i;
+        inputObs.maxLength = OBS_MAX;
+        inputObs.placeholder = "Observação (opcional, máx. " + OBS_MAX + ")";
+        inputObs.autocomplete = "off";
+
+        // Contador
+        const contador = document.createElement("small");
+        contador.className = "contador";
+        contador.textContent = `0/${OBS_MAX}`;
+
+        inputObs.addEventListener("input", () => {
+          const len = inputObs.value.length;
+          contador.textContent = `${len}/${OBS_MAX}`;
+          contador.classList.toggle("limite", len >= OBS_MAX);
+        });
+
+        linha.appendChild(lblHino);
+        linha.appendChild(inputHino);
+        linha.appendChild(lblObs);
+        linha.appendChild(inputObs);
+        linha.appendChild(contador);
+
+        hinosGrid.appendChild(linha);
+
+        inputsHinos.push({ numero: inputHino, obs: inputObs, contador });
+      }
+    }
+
+    // ==========================================
+    // LIMPAR HINOS + OBSERVAÇÕES
+    // ==========================================
     function limparHinos() {
-      inputsHinos.forEach(el => el.value = "");
+      inputsHinos.forEach(({ numero, obs, contador }) => {
+        numero.value = "";
+        obs.value = "";
+        contador.textContent = `0/${OBS_MAX}`;
+        contador.classList.remove("limite");
+      });
     }
 
     // ==========================================
     // NAVEGAÇÃO ENTRE PÁGINAS
     // ==========================================
     function abrirPagina(nome) {
-      // Oculta todas as páginas
       document.querySelectorAll(".pagina").forEach(p => p.classList.remove("ativa"));
 
-      // Mostra a página selecionada
       const alvo = document.getElementById("page-" + nome);
       if (alvo) alvo.classList.add("ativa");
 
-      // Marca o menu ativo
       document.querySelectorAll(".menu-item").forEach(mi => mi.classList.remove("ativo"));
 
       if (nome === "inclusao") {
@@ -608,23 +877,33 @@
         document.getElementById("menuRelatorios").classList.add("ativo");
       }
 
-      // Rola para o topo
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    // Clique no item "Inclusão"
     document.getElementById("menuInclusao").addEventListener("click", (e) => {
       e.preventDefault();
       abrirPagina("inclusao");
     });
 
-    // Clique nos itens do submenu
     document.querySelectorAll(".submenu a").forEach(a => {
       a.addEventListener("click", (e) => {
         e.preventDefault();
-        const pagina = a.getAttribute("data-page");
-        abrirPagina(pagina);
+        abrirPagina(a.getAttribute("data-page"));
       });
+    });
+
+    // ==========================================
+    // BOTÃO SAIR
+    // ==========================================
+    btnSair.addEventListener("click", async () => {
+      if (!confirm("Deseja realmente sair?")) return;
+      try {
+        sessionStorage.removeItem('adminLogado');
+        await auth.signOut();
+        window.location.replace(LOGIN_URL);
+      } catch (e) {
+        alert("Erro ao sair: " + e.message);
+      }
     });
 
     // ==========================================
@@ -686,7 +965,12 @@
 
       try {
         const snap = await db.collection(nomeCol).get();
-        const options = ['<option value="">Selecione...</option>'];
+        const options = [];
+        const geral = ehAdminGeral();
+
+        if (geral) {
+          options.push('<option value="">Selecione...</option>');
+        }
 
         snap.forEach(doc => {
           const d = doc.data();
@@ -694,10 +978,20 @@
             ? d[campoIdDetectado] : doc.id;
           const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
             ? d[campoNomeDetectado] : doc.id;
+
+          if (!geral && Number(id) !== Number(congUsuarioLogado)) return;
+
           options.push(`<option value="${id}">${nome}</option>`);
         });
 
         selectCong.innerHTML = options.join("");
+
+        if (!geral) {
+          selectCong.value = String(congUsuarioLogado);
+          selectCong.disabled = true;
+          diag(`\n🔒 Select de inclusão travado na congregação ${congUsuarioLogado}`);
+        }
+
         setStatus(`✅ ${snap.size} congregação(ões) carregada(s) de "${nomeCol}".`, "ok");
         diag(`\n✅ Carregadas ${snap.size} congregações de "${nomeCol}".`);
       } catch (e) {
@@ -708,7 +1002,7 @@
     }
 
     // ==========================================
-    // BUSCA REGISTRO (MANUTENÇÃO)
+    // BUSCA REGISTRO
     // ==========================================
     async function buscarRegistro(dataStr, idCong) {
       if (!dataStr || !idCong) return null;
@@ -734,7 +1028,42 @@
     }
 
     // ==========================================
-    // CARREGA REGISTRO ATUAL (MANUTENÇÃO)
+    // NORMALIZAÇÃO: aceita array antigo (números) e novo (objetos)
+    // Retorna sempre [{ numero, observacao }, ...] com QTD_HINOS itens
+    // ==========================================
+    function normalizarHinos(d) {
+      const resultado = Array.from({ length: QTD_HINOS }, () => ({ numero: null, observacao: "" }));
+
+      let lista = [];
+      if (Array.isArray(d.hinos)) {
+        lista = d.hinos;
+      } else if (d.hino1 !== undefined || d.hino2 !== undefined) {
+        lista = [d.hino1, d.hino2, d.hino3, d.hino4, d.hino5, d.hino6];
+      } else if (d.numeroHino !== undefined) {
+        lista = [d.numeroHino];
+      }
+
+      lista.slice(0, QTD_HINOS).forEach((item, i) => {
+        if (item === null || item === undefined) return;
+
+        if (typeof item === "object") {
+          // Formato novo: { numero, observacao }
+          const n = Number(item.numero);
+          resultado[i].numero = Number.isFinite(n) ? n : null;
+          resultado[i].observacao = String(item.observacao || "").slice(0, OBS_MAX);
+        } else {
+          // Formato antigo: número puro
+          const n = Number(item);
+          resultado[i].numero = Number.isFinite(n) ? n : null;
+          resultado[i].observacao = "";
+        }
+      });
+
+      return resultado;
+    }
+
+    // ==========================================
+    // CARREGA REGISTRO ATUAL
     // ==========================================
     async function carregarRegistroAtual() {
       const dataStr = inputData.value;
@@ -749,8 +1078,10 @@
         return;
       }
 
+      const selectTravadoPorPermissao = selectCong.disabled;
       inputData.disabled = true;
-      selectCong.disabled = true;
+      if (!selectTravadoPorPermissao) selectCong.disabled = true;
+
       try {
         const doc = await buscarRegistro(dataStr, idCong);
 
@@ -758,16 +1089,15 @@
           const d = doc.data();
           docIdAtual = doc.id;
 
-          let listaHinos = [];
-          if (Array.isArray(d.hinos)) {
-            listaHinos = d.hinos;
-          } else if (d.hino1 !== undefined || d.hino2 !== undefined) {
-            listaHinos = [d.hino1, d.hino2, d.hino3, d.hino4, d.hino5, d.hino6];
-          } else if (d.numeroHino !== undefined) {
-            listaHinos = [d.numeroHino];
-          }
+          const lista = normalizarHinos(d);
 
-          inputsHinos.forEach((el, i) => el.value = listaHinos[i] ?? "");
+          inputsHinos.forEach(({ numero, obs, contador }, i) => {
+            numero.value = lista[i].numero ?? "";
+            obs.value = lista[i].observacao || "";
+            contador.textContent = `${obs.value.length}/${OBS_MAX}`;
+            contador.classList.toggle("limite", obs.value.length >= OBS_MAX);
+          });
+
           setBadge("edicao");
           setStatus("📖 Registro carregado.", "info");
         } else {
@@ -779,27 +1109,39 @@
         diag(`\n❌ Erro em carregarRegistroAtual: [${e.code}] ${e.message}`);
       } finally {
         inputData.disabled = false;
-        selectCong.disabled = false;
+        if (!selectTravadoPorPermissao) selectCong.disabled = false;
       }
     }
 
     // ==========================================
-    // VALIDAÇÃO / COLETA (MANUTENÇÃO)
+    // VALIDAÇÃO / COLETA
     // ==========================================
     function validarHinos() {
-      const valores = [];
+      const resultado = [];
+
       for (let i = 0; i < inputsHinos.length; i++) {
-        const el = inputsHinos[i];
-        const v = el.value.trim();
-        if (v === "") { valores.push(null); continue; }
-        const n = Number(v);
-        if (!Number.isInteger(n) || n < 1 || n > 686) {
-          el.focus();
-          throw new Error(`Hino ${i + 1}: informe um número inteiro entre 1 e 686.`);
+        const { numero, obs } = inputsHinos[i];
+        const vNum = numero.value.trim();
+        const vObs = String(obs.value || "").trim().slice(0, OBS_MAX);
+
+        let n = null;
+        if (vNum !== "") {
+          const parsed = Number(vNum);
+          if (!Number.isInteger(parsed) || parsed < HINO_MIN || parsed > HINO_MAX_INP) {
+            numero.focus();
+            throw new Error(`Hino ${i + 1}: informe um número inteiro entre ${HINO_MIN} e ${HINO_MAX_INP}.`);
+          }
+          n = parsed;
         }
-        valores.push(n);
+
+        // Se não tem número, ignora a observação órfã
+        resultado.push({
+          numero: n,
+          observacao: n === null ? "" : vObs
+        });
       }
-      return valores;
+
+      return resultado;
     }
 
     function coletarDados() {
@@ -807,8 +1149,10 @@
       if (!dataStr) throw new Error("Informe a data.");
       const idCong = selectCong.value;
       if (!idCong) throw new Error("Selecione a congregação.");
+
       const hinos = validarHinos();
-      if (hinos.every(h => h === null)) throw new Error("Informe pelo menos um hino.");
+      if (hinos.every(h => h.numero === null)) throw new Error("Informe pelo menos um hino.");
+
       return {
         data: dataParaTimestamp(dataStr),
         idCongregacao: Number(idCong),
@@ -819,7 +1163,6 @@
     // ==========================================
     // EVENTOS — MANUTENÇÃO
     // ==========================================
-    inputData.value = hojeISO();
     inputData.addEventListener("change", carregarRegistroAtual);
     selectCong.addEventListener("change", carregarRegistroAtual);
 
@@ -845,7 +1188,7 @@
           }
         }
         setBadge("edicao");
-        await carregarDatasRelatorios(); // atualiza todos os selects de data
+        await carregarDatasRelatorios();
       } catch (err) {
         console.error(err);
         setStatus("❌ " + err.message, "err");
@@ -894,7 +1237,12 @@
       try {
         if (!colCongDetectada) return;
         const snap = await db.collection(colCongDetectada).get();
-        const opts = ['<option value="">Todas</option>'];
+        const opts = [];
+        const geral = ehAdminGeral();
+
+        if (geral) {
+          opts.push('<option value="">Todas</option>');
+        }
 
         snap.forEach(doc => {
           const d = doc.data();
@@ -902,12 +1250,26 @@
             ? d[campoIdDetectado] : doc.id;
           const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
             ? d[campoNomeDetectado] : doc.id;
+
+          if (!geral && Number(id) !== Number(congUsuarioLogado)) return;
+
           opts.push(`<option value="${id}">${nome}</option>`);
         });
 
         const html = opts.join("");
         relCongregacaoMais.innerHTML  = html;
         relCongregacaoMenos.innerHTML = html;
+        relCongregacaoObs.innerHTML   = html;
+        if (!geral) {
+          relCongregacaoMais.value = String(congUsuarioLogado);
+          relCongregacaoMenos.value = String(congUsuarioLogado);
+          relCongregacaoObs.value = String(congUsuarioLogado);   // 👈 NOVO
+          relCongregacaoMais.disabled = true;
+          relCongregacaoMenos.disabled = true;
+          relCongregacaoObs.disabled = true;                     // 👈 NOVO
+          diag(`\n🔒 Selects de relatório travados na congregação ${congUsuarioLogado}`);
+        }
+
       } catch (e) {
         diag(`\n⚠️ Erro ao carregar congregações para relatórios: ${e.message}`);
       }
@@ -935,11 +1297,12 @@
         });
         const html = opts.join("");
 
-        // Preserva seleções atuais
         const manterSelecao = (sel, valor) => {
           if (valor && todasDatasDisponiveis.includes(valor)) sel.value = valor;
         };
 
+        const iniObs = relDataInicialObs.value;
+        const fimObs = relDataFinalObs.value;
         const iniMais = relDataInicialMais.value;
         const fimMais = relDataFinalMais.value;
         const iniMenos = relDataInicialMenos.value;
@@ -949,11 +1312,15 @@
         relDataFinalMais.innerHTML    = html;
         relDataInicialMenos.innerHTML = html;
         relDataFinalMenos.innerHTML   = html;
+        relDataInicialObs.innerHTML   = html;   // 👈 NOVO
+        relDataFinalObs.innerHTML     = html;   // 👈 NOVO
 
         manterSelecao(relDataInicialMais, iniMais);
         manterSelecao(relDataFinalMais, fimMais);
         manterSelecao(relDataInicialMenos, iniMenos);
         manterSelecao(relDataFinalMenos, fimMenos);
+        manterSelecao(relDataInicialObs, iniObs);   // 👈 NOVO
+        manterSelecao(relDataFinalObs, fimObs);     // 👈 NOVO
 
         diag(`\n✅ ${todasDatasDisponiveis.length} datas distintas carregadas para relatórios.`);
       } catch (e) {
@@ -966,6 +1333,10 @@
     // BUSCA FILTRADA PARA RELATÓRIOS
     // ==========================================
     async function buscarParaRelatorio(idCong, dataIniISO, dataFimISO) {
+      if (!ehAdminGeral()) {
+        idCong = congUsuarioLogado;
+      }
+
       let query = db.collection(COL_HINOS);
 
       if (idCong) {
@@ -999,7 +1370,7 @@
     }
 
     // ==========================================
-    // CONTAGEM DE HINOS
+    // CONTAGEM DE HINOS (aceita os dois formatos)
     // ==========================================
     function contarHinos(docs) {
       const contagem = {};
@@ -1010,15 +1381,11 @@
 
       docs.forEach(doc => {
         const d = doc.data();
-        let lista = [];
-        if (Array.isArray(d.hinos)) lista = d.hinos;
-        else if (d.hino1 !== undefined || d.hino2 !== undefined)
-          lista = [d.hino1, d.hino2, d.hino3, d.hino4, d.hino5, d.hino6];
-        else if (d.numeroHino !== undefined) lista = [d.numeroHino];
+        const lista = normalizarHinos(d);
 
         let achou = false;
-        lista.forEach(h => {
-          const n = Number(h);
+        lista.forEach(({ numero }) => {
+          const n = Number(numero);
           if (Number.isInteger(n) && n >= HINO_MIN && n <= HINO_MAX_REL) {
             contagem[n]++;
             totalHinosLancados++;
@@ -1144,26 +1511,127 @@
       }
     }
 
-    // ==========================================
-    // EVENTOS DOS BOTÕES DE RELATÓRIO
-    // ==========================================
     btnGerarMais.addEventListener("click", gerarMaisTocados);
     btnGerarMenos.addEventListener("click", gerarMenosTocados);
 
     // ==========================================
-    // INICIALIZAÇÃO
+    // 🚀 INICIALIZAÇÃO
     // ==========================================
-    (async () => {
+    async function iniciarAplicacao() {
+      if (appIniciada) return;
+      appIniciada = true;
+
+      construirGridHinos();
+      inputData.value = hojeISO();
+
       await carregarCongregacoes();
-      if (selectCong.options.length === 2) selectCong.selectedIndex = 1;
+      if (ehAdminGeral() && selectCong.options.length >= 2) {
+        selectCong.selectedIndex = 1;
+      }
       await carregarRegistroAtual();
 
       await carregarCongregacoesRelatorios();
       await carregarDatasRelatorios();
 
-      // Abre a página inicial
       abrirPagina("inclusao");
-    })();
+    }
+
+    // ==========================================
+    // GERAR RELATÓRIO — COM OBSERVAÇÃO
+    // ==========================================
+    async function gerarComObservacao() {
+      relResultadoObs.innerHTML = '<p class="rel-info">⏳ Calculando...</p>';
+      btnGerarObs.disabled = true;
+
+      try {
+        const idCong = relCongregacaoObs.value;
+        const dataIni = relDataInicialObs.value;
+        const dataFim = relDataFinalObs.value;
+
+        if (dataIni && dataFim && dataIni > dataFim) {
+          throw new Error("A Data Inicial não pode ser maior que a Data Final.");
+        }
+
+        const docs = await buscarParaRelatorio(idCong, dataIni, dataFim);
+
+        // Monta a lista: uma linha por (data, congregação, hino, observação)
+        const linhas = [];
+        docs.forEach(doc => {
+          const d = doc.data();
+          const iso = timestampParaISO(d.data);
+          const lista = normalizarHinos(d);
+
+          lista.forEach(({ numero, observacao }) => {
+            const obs = String(observacao || "").trim();
+            if (numero === null || obs === "") return; // só hinos com número E observação
+
+            linhas.push({
+              dataISO: iso,
+              dataBR: isoParaBR(iso),
+              idCongregacao: Number(d.idCongregacao),
+              hino: Number(numero),
+              observacao: obs
+            });
+          });
+        });
+
+        // Ordena por data desc, depois por hino asc
+        linhas.sort((a, b) => {
+          if (a.dataISO !== b.dataISO) return a.dataISO < b.dataISO ? 1 : -1;
+          return a.hino - b.hino;
+        });
+
+        // Nome da congregação (para exibir na tabela)
+        const nomeCong = (id) => {
+          if (!colCongDetectada) return String(id);
+          const opt = Array.from(relCongregacaoObs.options).find(o => Number(o.value) === Number(id));
+          return opt ? opt.textContent : String(id);
+        };
+
+        if (!linhas.length) {
+          relResultadoObs.innerHTML = `<p class="rel-info">Nenhum hino com observação encontrado para os filtros selecionados.</p>`;
+          return;
+        }
+
+        const linhasHtml = linhas.map((l, idx) => `
+          <tr>
+            <td style="width:50px;font-weight:700;color:#64748b;">${idx + 1}º</td>
+            <td style="white-space:nowrap;">${l.dataBR}</td>
+            <td>${nomeCong(l.idCongregacao)}</td>
+            <td style="font-weight:600;">Hino ${l.hino}</td>
+            <td>${l.observacao}</td>
+          </tr>
+        `).join("");
+
+        const info = `Base: ${linhas.length} hino(s) com observação • ${filtroTexto(relCongregacaoObs, idCong, dataIni, dataFim)}`;
+
+        relResultadoObs.innerHTML = `
+          <div class="rel-titulo">📝 Hinos com Observação</div>
+          <div class="rel-info">${info}</div>
+          <div class="tabela-wrap">
+            <table class="tabela-rel">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Data</th>
+                  <th>Congregação</th>
+                  <th>Hino</th>
+                  <th>Observação</th>
+                </tr>
+              </thead>
+              <tbody>${linhasHtml}</tbody>
+            </table>
+          </div>
+        `;
+      } catch (e) {
+        relResultadoObs.innerHTML = "";
+        setStatus("❌ " + e.message, "err");
+      } finally {
+        btnGerarObs.disabled = false;
+      }
+    }
+
+    btnGerarObs.addEventListener("click", gerarComObservacao);    
   </script>
 </body>
 </html>

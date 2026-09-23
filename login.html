@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/identidade/manifest.json">
+    <link rel="apple-touch-icon" href="/identidade/icons/icon-192.png">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <title>Login - Identidade Ministerial CCB</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .login-card h1 { color: #2c3e50; margin-bottom: 10px; }
+        .login-card h2 { color: #667eea; font-size: 1rem; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        .form-group input:focus { outline: none; border-color: #667eea; }
+        .form-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
+        button {
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button:hover:not(:disabled) { background: #219a52; }
+        button:disabled { background: #95a5a6; cursor: not-allowed; }
+        .mensagem {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .erro { background: #fee; color: #c0392b; border-left: 4px solid #e74c3c; }
+        .sucesso { background: #efe; color: #27ae60; border-left: 4px solid #27ae60; }
+        .info { background: #e3f2fd; color: #2980b9; border-left: 4px solid #3498db; }
+        .link { margin-top: 20px; font-size: 0.9rem; }
+        .link a { color: #667eea; text-decoration: none; cursor: pointer; }
+        .link a:hover { text-decoration: underline; }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 🔒 Overlay */
+        #loadingOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 16px;
+        }
+        #loadingOverlay .spinner {
+            width: 44px; height: 44px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🔒 Overlay: evita que o form apareça antes de saber se já está logado -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <span>🔒 Verificando sessão...</span>
+    </div>
+
+    <div class="login-card" id="loginCard" style="display:none;">
+        <h1>🎵 Identidade Ministerial</h1>
+        <h2>CCB - Acesso ao Sistema</h2>
+
+        <div class="form-group">
+            <label for="email">📧 E-mail</label>
+            <input type="email" id="email" placeholder="seuemail@ccb.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+            <label for="password">🔒 Senha</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <button id="btnLogin" onclick="login()">🔐 Entrar</button>
+
+        <div class="link">
+            <a onclick="recuperarSenha()">Esqueci minha senha</a> |
+            <a href="cadastrar_admin.html" style="color:#e74c3c;">➕ Cadastrar Admin</a>
+        </div>
+
+        <div id="mensagem"></div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1️⃣ CONFIGURAÇÃO E INICIALIZAÇÃO
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4COgeJSENsHrQHDx39gpZvif3zVrGjYE",
+            authDomain: "identidadeccb.firebaseapp.com",
+            projectId: "identidadeccb",
+            storageBucket: "identidadeccb.firebasestorage.app",
+            messagingSenderId: "385467794937",
+            appId: "1:385467794937:web:d2eb32429586f018e2a928"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
+
+        // ==========================================
+        // 2️⃣ URLs DE REDIRECIONAMENTO
+        // ==========================================
+        const HINOS_URL         = 'hinostocados.html';
+        const PRIMEIRO_ACESSO   = 'primeiro_acesso.html';
+
+        // ==========================================
+        // 3️⃣ ELEMENTOS
+        // ==========================================
+        const emailInput = document.getElementById('email');
+        const passInput  = document.getElementById('password');
+        const btnLogin   = document.getElementById('btnLogin');
+        const msgDiv     = document.getElementById('mensagem');
+        const overlay    = document.getElementById('loadingOverlay');
+        const card       = document.getElementById('loginCard');
+
+        // ==========================================
+        // 4️⃣ VERIFICA SESSÃO EXISTENTE
+        //    Se já estiver logado, pula direto
+        // ==========================================
+        let verificando = true;
+
+        auth.onAuthStateChanged(async (user) => {
+            // Ignora o disparo inicial "null" se não estivermos verificando
+            if (!verificando && !user) return;
+
+            if (verificando && !user) {
+                // Ninguém logado → mostra o formulário
+                verificando = false;
+                overlay.remove();
+                card.style.display = 'block';
+                setTimeout(() => emailInput.focus(), 100);
+                return;
+            }
+
+            if (user) {
+                console.log('🔎 Sessão ativa encontrada:', user.uid);
+                try {
+                    const adminDoc = await db.collection("administradores").doc(user.uid).get();
+
+                    if (!adminDoc.exists || adminDoc.data().ativo !== true) {
+                        // Sessão inválida → desloga
+                        await auth.signOut();
+                        return; // o onAuthStateChanged vai disparar de novo com null
+                    }
+
+                    if (adminDoc.data().senhaTemporaria === true) {
+                        window.location.replace(PRIMEIRO_ACESSO);
+                        return;
+                    }
+
+                    // Sessão válida → vai para o sistema
+                    sessionStorage.setItem('adminLogado', JSON.stringify({
+                        uid: user.uid,
+                        email: user.email,
+                        nome: adminDoc.data().nome || 'Administrador',
+                        papel: adminDoc.data().papel || 'administrador'
+                    }));
+                    window.location.replace(HINOS_URL);
+
+                } catch (err) {
+                    console.error('Erro ao verificar sessão:', err);
+                    await auth.signOut();
+                }
+            }
+        });
+
+        // ==========================================
+        // 5️⃣ LOGIN
+        // ==========================================
+        async function login() {
+            const email    = emailInput.value.trim();
+            const password = passInput.value;
+
+            msgDiv.innerHTML = '';
+
+            // Validações básicas
+            if (!email || !password) {
+                msgDiv.innerHTML = '<div class="mensagem erro">❌ Preencha e-mail e senha</div>';
+                return;
+            }
+
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<span class="loading"></span> Autenticando...';
+
+            try {
+                // 🔑 Desloga qualquer sessão antiga por segurança
+                if (auth.currentUser) {
+                    await auth.signOut();
+                }
+
+                // 1. Login
+                const cred = await auth.signInWithEmailAndPassword(email, password);
+                const user = cred.user;
+                console.log('✅ Auth OK:', user.uid, user.email);
+
+                // 2. Busca dados do admin
+                const adminDoc = await db.collection("administradores").doc(user.uid).get();
+
+                if (!adminDoc.exists) {
+                    await auth.signOut();
+                    mostrarErro('❌ Acesso negado. Você não é administrador.');
+                    return;
+                }
+
+                if (adminDoc.data().ativo !== true) {
+                    await auth.signOut();
+                    mostrarErro('❌ Conta desativada. Contate o suporte.');
+                    return;
+                }
+
+                // 3. Senha temporária? Vai para primeiro_acesso
+                if (adminDoc.data().senhaTemporaria === true) {
+                    msgDiv.innerHTML = '<div class="mensagem info">🔄 Primeiro acesso! Redirecionando para troca de senha...</div>';
+                    setTimeout(() => {
+                        window.location.replace(PRIMEIRO_ACESSO);
+                    }, 1200);
+                    return;
+                }
+
+                // 4. Login normal
+                sessionStorage.setItem('adminLogado', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    nome: adminDoc.data().nome || 'Administrador',
+                    papel: adminDoc.data().papel || 'administrador'
+                }));
+
+                msgDiv.innerHTML = '<div class="mensagem sucesso">✅ Login realizado! Redirecionando...</div>';
+                setTimeout(() => {
+                    window.location.replace(HINOS_URL);
+                }, 1000);
+
+            } catch (error) {
+                console.error('❌ Erro no login:', error);
+                mostrarErro(traduzErro(error));
+            }
+        }
+
+        // ==========================================
+        // 6️⃣ HELPERS
+        // ==========================================
+        function mostrarErro(texto) {
+            msgDiv.innerHTML = '<div class="mensagem erro">' + texto + '</div>';
+            btnLogin.disabled = false;
+            btnLogin.innerHTML = '🔐 Entrar';
+        }
+
+        function traduzErro(error) {
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                case 'auth/wrong-password':
+                case 'auth/user-not-found':
+                    return '❌ E-mail ou senha incorretos. Se você trocou a senha recentemente, use "Esqueci minha senha".';
+                case 'auth/invalid-email':
+                    return '❌ E-mail inválido.';
+                case 'auth/user-disabled':
+                    return '❌ Conta desativada. Contate o suporte.';
+                case 'auth/too-many-requests':
+                    return '❌ Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+                case 'auth/network-request-failed':
+                    return '❌ Falha de conexão. Verifique sua internet.';
+                case 'auth/operation-not-allowed':
+                    return '❌ Login por e-mail/senha não está habilitado no Firebase.';
+                default:
+                    return '❌ ' + (error.message || 'Erro desconhecido.');
+            }
+        }
+
+        // ==========================================
+        // 7️⃣ RECUPERAR SENHA
+        // ==========================================
+        async function recuperarSenha() {
+            const email = prompt('Digite seu e-mail para recuperar a senha:');
+            if (!email) return;
+
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('❌ Digite um e-mail válido');
+                return;
+            }
+
+            msgDiv.innerHTML = '<div class="mensagem info">🔄 Enviando e-mail de recuperação...</div>';
+
+            try {
+                await auth.sendPasswordResetEmail(email.trim());
+                msgDiv.innerHTML = '<div class="mensagem sucesso">✅ E-mail enviado! Verifique sua caixa de entrada (e o spam).</div>';
+            } catch (error) {
+                console.error('Erro ao enviar reset:', error);
+                let msg = '❌ Erro ao enviar e-mail';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        msg = '❌ Nenhum usuário encontrado com este e-mail.';
+                        break;
+                    case 'auth/invalid-email':
+                        msg = '❌ E-mail inválido.';
+                        break;
+                    case 'auth/too-many-requests':
+                        msg = '❌ Muitas tentativas. Aguarde alguns minutos.';
+                        break;
+                    default:
+                        msg = '❌ ' + error.message;
+                }
+                msgDiv.innerHTML = '<div class="mensagem erro">' + msg + '</div>';
+            }
+        }
+
+        // ==========================================
+        // 8️⃣ ATALHOS DE TECLADO
+        // ==========================================
+        passInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') passInput.focus();
+        });
+    </script>
+</body>
+</html>
