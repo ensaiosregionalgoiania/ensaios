@@ -41,6 +41,35 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* =====================================================
+       BANNER VISITANTE
+       ===================================================== */
+    .banner-visitante {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 10px 24px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      border-bottom: 1px solid #fcd34d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .banner-visitante .saida-visitante {
+      background: #92400e;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .banner-visitante .saida-visitante:hover { filter: brightness(1.1); }
+
+    /* =====================================================
        MENU SUPERIOR
        ===================================================== */
     .topbar {
@@ -174,7 +203,7 @@
       padding: 0 8px;
     }
 
-    /* ===== Grid de hinos: número + observação na mesma linha ===== */
+    /* ===== Grid de hinos ===== */
     .hinos-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -182,13 +211,17 @@
     }
     .hino-linha {
       display: grid;
-      grid-template-columns: 60px 90px 40px 1fr 60px;
+      grid-template-columns: 60px 90px 50px 1fr;
       gap: 8px;
       align-items: center;
       padding: 6px 10px;
       border: 1px solid #eef2f7;
       border-radius: 8px;
       background: #fafbfc;
+    }
+    .hino-linha.tem-obs-aberta {
+      border-color: #c7d2fe;
+      background: #f5f7ff;
     }
     .hino-linha label {
       font-size: 0.78rem;
@@ -202,18 +235,74 @@
       font-size: 0.9rem;
       text-align: center;
     }
-    .hino-linha input[type="text"] {
-      padding: 6px 10px;
-      font-size: 0.9rem;
-    }
-    .hino-linha .contador {
-      font-size: 0.7rem;
-      color: #94a3b8;
-      text-align: right;
+
+    /* Link "obs" */
+    .link-obs {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #1a3a6c;
+      text-decoration: underline;
+      cursor: pointer;
+      user-select: none;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
       white-space: nowrap;
     }
-    .hino-linha .contador.limite { color: #dc2626; font-weight: 700; }
-    
+    .link-obs:hover { background: #eef2ff; }
+    .link-obs.desativado {
+      color: #cbd5e1;
+      text-decoration: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .link-obs.ativo { color: #1a3a6c; }
+
+    /* Área da observação (linha de baixo) */
+    .obs-area {
+      display: none;
+      grid-column: 1 / -1;
+      margin-top: 2px;
+      padding: 8px 10px;
+      border-top: 1px dashed #c7d2fe;
+      background: #fff;
+      border-radius: 0 0 6px 6px;
+    }
+    .obs-area.visivel { display: flex; gap: 8px; align-items: center; }
+    .obs-area input[type="text"] {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      border-color: #c7d2fe;
+    }
+    .obs-area .contador {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .obs-area .contador.limite { color: #dc2626; font-weight: 700; }
+    .obs-area .btn-fechar-obs {
+      background: #e2e8f0;
+      color: #475569;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .obs-area .btn-fechar-obs:hover { filter: brightness(0.92); }
+
+    /* Destaque de duplicata */
+    .hino-linha.duplicado {
+      border-color: #dc2626;
+      background: #fef2f2;
+    }
+    .hino-linha.duplicado input[type="number"] {
+      border-color: #dc2626;
+      background: #fff5f5;
+    }
+
     .botoes {
       display: flex;
       gap: 12px;
@@ -232,7 +321,7 @@
       transition: filter 0.15s;
     }
     button:hover { filter: brightness(0.92); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
     .btn-gravar  { background: #1a3a6c; color: #fff; }
     .btn-excluir { background: #dc2626; color: #fff; }
     .btn-limpar  { background: #e2e8f0; color: #334155; }
@@ -262,6 +351,7 @@
     }
     .badge-novo   { background: #dbeafe; color: #1e40af; }
     .badge-edicao { background: #fef3c7; color: #92400e; }
+    .badge-visitante { background: #fef3c7; color: #92400e; }
 
     details.diag {
       margin-top: 24px;
@@ -363,12 +453,9 @@
       .menu-item > a { padding: 14px 14px; font-size: 0.85rem; }
       .user-info { width: 100%; justify-content: flex-end; padding-bottom: 8px; }
       .hino-linha {
-        grid-template-columns: 60px 1fr 60px;
+        grid-template-columns: 60px 1fr 50px;
       }
-      .hino-linha label:nth-of-type(2),
-      .hino-linha input[type="text"] {
-        grid-column: span 3;
-      }      
+      .hino-linha .link-obs { grid-column: span 3; text-align: right; }
     }
   </style>
 </head>
@@ -377,6 +464,12 @@
   <div id="authGuard">
     <div class="spinner"></div>
     <span>🔒 Verificando acesso...</span>
+  </div>
+
+  <!-- 🆕 VISITANTE: banner que só aparece no modo visitante -->
+  <div class="banner-visitante" id="bannerVisitante" style="display:none;">
+    <span>👁️ Você está no <strong>Modo Visitante</strong> — congregação <strong>Jardim Europa</strong>. Gravação, exclusão e limpeza estão desativadas.</span>
+    <button class="saida-visitante" id="btnSairVisitante">Sair do modo visitante</button>
   </div>
 
   <nav class="topbar">
@@ -426,7 +519,7 @@
         </div>
 
         <fieldset>
-          <legend>Números dos hinos (1 a 686) e observação individual (opcional, máx. 30)</legend>
+          <legend>Números dos hinos (1 a 686) — clique em "obs" para adicionar observação (máx. 30)</legend>
           <div class="hinos-grid" id="hinosGrid">
             <!-- Blocos gerados via JS -->
           </div>
@@ -593,66 +686,129 @@
     const PRIMEIRO_ACESSO_URL = 'primeiro_acesso.html';
     const CAMPO_CONG_USUARIO  = "congregacoes_id";
 
-    // 🔑 Variável global (declarada ANTES do onAuthStateChanged)
-    let congUsuarioLogado = 0; // 0 = admin geral
+    // 🆕 VISITANTE: constante da congregação demo
+    const CONG_VISITANTE      = 1; // Jardim Europa
+    const NOME_VISITANTE      = "Visitante (Jardim Europa)";
 
-    auth.onAuthStateChanged(async (user) => {
+    // 🔑 Variáveis globais
+    let congUsuarioLogado = 0;      // 0 = admin geral
+    let modoVisitante     = false;  // 🆕 VISITANTE
+
+    // 🆕 VISITANTE: aplica todas as travas visuais do modo visitante
+    function aplicarModoVisitante() {
+      modoVisitante = true;
+
+      // Banner no topo
+      document.getElementById('bannerVisitante').style.display = 'flex';
+
+      // Nome do usuário
+      document.getElementById('userNome').textContent = NOME_VISITANTE;
+
+      // Trava congregação do usuário
+      congUsuarioLogado = CONG_VISITANTE;
+
+      // Desabilita botões de escrita
+      const btnGravar  = document.getElementById('btnGravar');
+      const btnExcluir = document.getElementById('btnExcluir');
+      const btnLimpar  = document.getElementById('btnLimpar');
+
+      [btnGravar, btnExcluir, btnLimpar].forEach(btn => {
+        if (!btn) return;
+        btn.disabled = true;
+        btn.title = "Função desabilitada no modo visitante";
+      });
+
+      // Troca o badge do título
+      const badge = document.getElementById('badge');
+      if (badge) {
+        badge.textContent = "VISITANTE";
+        badge.className = "badge badge-visitante";
+      }
+
+      // Remove overlay de auth
       const guard = document.getElementById('authGuard');
+      if (guard) guard.remove();
 
-      if (!user) {
-        window.location.replace(LOGIN_URL);
-        return;
+      // Banner "somente leitura" na página de inclusão
+      const sub = document.querySelector('#page-inclusao .subtitle');
+      if (sub) {
+        sub.textContent = "Modo visitante — você pode navegar, filtrar e gerar relatórios, mas não pode gravar, excluir ou limpar.";
       }
+    }
 
-      try {
-        const adminDoc = await db.collection("administradores").doc(user.uid).get();
+    // 🆕 VISITANTE: verifica se está em modo visitante ANTES de checar auth
+    const visitanteAtivo = sessionStorage.getItem('modoVisitante') === 'true';
 
-        if (!adminDoc.exists || !adminDoc.data().ativo) {
-          await auth.signOut();
-          window.location.replace(LOGIN_URL);
-          return;
-        }
-
-        if (adminDoc.data().senhaTemporaria === true) {
-          window.location.replace(PRIMEIRO_ACESSO_URL);
-          return;
-        }
-
-        const dadosAdmin = adminDoc.data();
-        const congBruto  = dadosAdmin[CAMPO_CONG_USUARIO]
-                        ?? dadosAdmin["idCongregacao"]
-                        ?? null;
-
-        if (congBruto === null || congBruto === undefined || congBruto === "") {
-          console.error('❌ Usuário sem congregação definida no documento.');
-          alert('Sua conta não está vinculada a uma congregação. Contate o administrador.');
-          await auth.signOut();
-          window.location.replace(LOGIN_URL);
-          return;
-        }
-
-        congUsuarioLogado = Number(congBruto);
-        console.log('👤 Congregação do usuário logado:', congUsuarioLogado);
-
-        const nome = dadosAdmin.nome || user.email;
-        document.getElementById('userNome').textContent = nome;
-
-        sessionStorage.setItem('adminLogado', JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          nome: nome,
-          papel: dadosAdmin.papel || 'administrador',
-          idCongregacao: congUsuarioLogado
-        }));
-
-        guard.remove();
+    if (visitanteAtivo) {
+      // 🔓 Pula completamente o Firebase Auth
+      console.log('👁️ Modo visitante ativo — pulando autenticação.');
+      // Aguarda o DOM e o Firebase estarem prontos, mas sem auth
+      window.addEventListener('DOMContentLoaded', () => {
+        aplicarModoVisitante();
         iniciarAplicacao();
+      });
+      // Evita que o onAuthStateChanged redirecione para o login
+      // (não registramos o listener quando é visitante)
+    } else {
+      // 🔐 Fluxo normal de autenticação
+      auth.onAuthStateChanged(async (user) => {
+        const guard = document.getElementById('authGuard');
 
-      } catch (e) {
-        console.error('Erro na verificação de acesso:', e);
-        window.location.replace(LOGIN_URL);
-      }
-    });
+        if (!user) {
+          window.location.replace(LOGIN_URL);
+          return;
+        }
+
+        try {
+          const adminDoc = await db.collection("administradores").doc(user.uid).get();
+
+          if (!adminDoc.exists || !adminDoc.data().ativo) {
+            await auth.signOut();
+            window.location.replace(LOGIN_URL);
+            return;
+          }
+
+          if (adminDoc.data().senhaTemporaria === true) {
+            window.location.replace(PRIMEIRO_ACESSO_URL);
+            return;
+          }
+
+          const dadosAdmin = adminDoc.data();
+          const congBruto  = dadosAdmin[CAMPO_CONG_USUARIO]
+                          ?? dadosAdmin["idCongregacao"]
+                          ?? null;
+
+          if (congBruto === null || congBruto === undefined || congBruto === "") {
+            console.error('❌ Usuário sem congregação definida no documento.');
+            alert('Sua conta não está vinculada a uma congregação. Contate o administrador.');
+            await auth.signOut();
+            window.location.replace(LOGIN_URL);
+            return;
+          }
+
+          congUsuarioLogado = Number(congBruto);
+          console.log('👤 Congregação do usuário logado:', congUsuarioLogado);
+
+          const nome = dadosAdmin.nome || user.email;
+          document.getElementById('userNome').textContent = nome;
+
+          sessionStorage.setItem('adminLogado', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            nome: nome,
+            papel: dadosAdmin.papel || 'administrador',
+            idCongregacao: congUsuarioLogado
+          }));
+
+          guard.remove();
+          iniciarAplicacao();
+
+        } catch (e) {
+          console.error('Erro na verificação de acesso:', e);
+          window.location.replace(LOGIN_URL);
+        }
+      });
+    }
 
     // ==========================================
     // CONFIGURAÇÕES
@@ -686,6 +842,7 @@
     const btnLimpar    = document.getElementById("btnLimpar");
     const btnFechar    = document.getElementById("btnFechar");
     const btnSair      = document.getElementById("btnSair");
+    const btnSairVisit = document.getElementById("btnSairVisitante"); // 🆕 VISITANTE
     const statusBox    = document.getElementById("status");
     const badge        = document.getElementById("badge");
     const diagOut      = document.getElementById("diagOut");
@@ -701,14 +858,13 @@
     const relDataFinalMenos   = document.getElementById("relDataFinalMenos");
     const relResultadoMenos   = document.getElementById("relResultadoMenos");
     const btnGerarMenos       = document.getElementById("btnGerarMenos");
-    // ==========================================
-    // ELEMENTOS — RELATÓRIO COM OBSERVAÇÃO
-    // ==========================================
+
     const relCongregacaoObs = document.getElementById("relCongregacaoObs");
     const relDataInicialObs = document.getElementById("relDataInicialObs");
     const relDataFinalObs   = document.getElementById("relDataFinalObs");
     const relResultadoObs   = document.getElementById("relResultadoObs");
     const btnGerarObs       = document.getElementById("btnGerarObs");
+
     // ==========================================
     // ESTADO
     // ==========================================
@@ -719,8 +875,7 @@
     let todasDatasDisponiveis = [];
     let appIniciada = false;
 
-    // Arrays com os inputs de cada hino (numero + observacao)
-    const inputsHinos = [];   // [{ numero: <input>, obs: <input>, contador: <small> }, ...]
+    const inputsHinos = [];
 
     // ==========================================
     // DIAGNÓSTICO
@@ -763,6 +918,12 @@
     }
 
     function setBadge(tipo) {
+      // 🆕 VISITANTE: nunca sobrescreve o badge de visitante
+      if (modoVisitante) {
+        badge.textContent = "VISITANTE";
+        badge.className = "badge badge-visitante";
+        return;
+      }
       if (tipo === "novo") {
         badge.textContent = "NOVO";
         badge.className = "badge badge-novo";
@@ -780,13 +941,12 @@
       return firebase.firestore.Timestamp.fromDate(new Date(Date.UTC(ano, mes - 1, dia)));
     }
 
-    // Retorna true se o usuário logado é admin geral (vê todas as congregações)
     function ehAdminGeral() {
       return !congUsuarioLogado || Number(congUsuarioLogado) === 0;
     }
 
     // ==========================================
-    // CONSTRUÇÃO DO GRID DE HINOS (número + observação)
+    // CONSTRUÇÃO DO GRID DE HINOS
     // ==========================================
     function construirGridHinos() {
       hinosGrid.innerHTML = "";
@@ -796,13 +956,11 @@
         const linha = document.createElement("div");
         linha.className = "hino-linha";
 
-        // Rótulo "Hino N"
         const lblHino = document.createElement("label");
         lblHino.className = "lbl-hino";
         lblHino.htmlFor = "hino" + i;
         lblHino.textContent = "Hino " + i;
 
-        // Input do número
         const inputHino = document.createElement("input");
         inputHino.type = "number";
         inputHino.id = "hino" + i;
@@ -811,24 +969,42 @@
         inputHino.step = "1";
         inputHino.inputMode = "numeric";
         inputHino.placeholder = "1–" + HINO_MAX_INP;
+        // 🆕 VISITANTE: campos somente leitura
+        if (modoVisitante) inputHino.disabled = true;
 
-        // Rótulo "Obs"
-        const lblObs = document.createElement("label");
-        lblObs.htmlFor = "obsHino" + i;
-        lblObs.textContent = "Obs";
+        const linkObs = document.createElement("span");
+        linkObs.className = "link-obs desativado";
+        linkObs.textContent = "obs";
+        linkObs.title = "Digite o número do hino para habilitar a observação";
+        // 🆕 VISITANTE: link obs desabilitado
+        if (modoVisitante) {
+          linkObs.style.pointerEvents = "none";
+          linkObs.title = "Função desabilitada no modo visitante";
+        }
 
-        // Input da observação
+        const espaco = document.createElement("span");
+
+        const obsArea = document.createElement("div");
+        obsArea.className = "obs-area";
+
         const inputObs = document.createElement("input");
         inputObs.type = "text";
         inputObs.id = "obsHino" + i;
         inputObs.maxLength = OBS_MAX;
         inputObs.placeholder = "Observação (opcional, máx. " + OBS_MAX + ")";
         inputObs.autocomplete = "off";
+        if (modoVisitante) inputObs.disabled = true;
 
-        // Contador
         const contador = document.createElement("small");
         contador.className = "contador";
         contador.textContent = `0/${OBS_MAX}`;
+
+        const btnFecharObs = document.createElement("button");
+        btnFecharObs.type = "button";
+        btnFecharObs.className = "btn-fechar-obs";
+        btnFecharObs.textContent = "✖";
+        btnFecharObs.title = "Fechar observação";
+        if (modoVisitante) btnFecharObs.disabled = true;
 
         inputObs.addEventListener("input", () => {
           const len = inputObs.value.length;
@@ -836,27 +1012,120 @@
           contador.classList.toggle("limite", len >= OBS_MAX);
         });
 
+        obsArea.appendChild(inputObs);
+        obsArea.appendChild(contador);
+        obsArea.appendChild(btnFecharObs);
+
         linha.appendChild(lblHino);
         linha.appendChild(inputHino);
-        linha.appendChild(lblObs);
-        linha.appendChild(inputObs);
-        linha.appendChild(contador);
+        linha.appendChild(linkObs);
+        linha.appendChild(espaco);
+        linha.appendChild(obsArea);
 
         hinosGrid.appendChild(linha);
 
-        inputsHinos.push({ numero: inputHino, obs: inputObs, contador });
+        const ref = {
+          linha,
+          numero: inputHino,
+          obs: inputObs,
+          contador,
+          obsArea,
+          linkObs,
+          btnFecharObs
+        };
+        inputsHinos.push(ref);
+
+        // 🆕 VISITANTE: não registra eventos de escrita
+        if (!modoVisitante) {
+          linkObs.addEventListener("click", () => {
+            if (linkObs.classList.contains("desativado")) return;
+            const aberta = obsArea.classList.toggle("visivel");
+            linha.classList.toggle("tem-obs-aberta", aberta);
+            if (aberta) {
+              inputObs.focus();
+            } else {
+              inputObs.value = "";
+              contador.textContent = `0/${OBS_MAX}`;
+              contador.classList.remove("limite");
+            }
+          });
+
+          btnFecharObs.addEventListener("click", () => {
+            obsArea.classList.remove("visivel");
+            linha.classList.remove("tem-obs-aberta");
+            inputObs.value = "";
+            contador.textContent = `0/${OBS_MAX}`;
+            contador.classList.remove("limite");
+          });
+
+          inputHino.addEventListener("input", () => {
+            atualizarLinkObs(ref);
+            verificarDuplicatas();
+          });
+
+          inputHino.addEventListener("change", () => {
+            atualizarLinkObs(ref);
+            verificarDuplicatas();
+          });
+        }
       }
     }
 
-    // ==========================================
-    // LIMPAR HINOS + OBSERVAÇÕES
-    // ==========================================
+    function atualizarLinkObs(ref) {
+      if (modoVisitante) return; // 🆕 VISITANTE
+      const temNumero = ref.numero.value.trim() !== "";
+      if (temNumero) {
+        ref.linkObs.classList.remove("desativado");
+        ref.linkObs.classList.add("ativo");
+        ref.linkObs.title = "Clique para adicionar/editar observação";
+      } else {
+        ref.linkObs.classList.add("desativado");
+        ref.linkObs.classList.remove("ativo");
+        ref.linkObs.title = "Digite o número do hino para habilitar a observação";
+        ref.obsArea.classList.remove("visivel");
+        ref.linha.classList.remove("tem-obs-aberta");
+        ref.obs.value = "";
+        ref.contador.textContent = `0/${OBS_MAX}`;
+        ref.contador.classList.remove("limite");
+      }
+    }
+
+    function verificarDuplicatas() {
+      const mapa = new Map();
+      inputsHinos.forEach((ref, idx) => {
+        const v = ref.numero.value.trim();
+        if (v === "") return;
+        const n = Number(v);
+        if (!Number.isFinite(n)) return;
+        if (!mapa.has(n)) mapa.set(n, []);
+        mapa.get(n).push(idx);
+      });
+
+      inputsHinos.forEach(ref => ref.linha.classList.remove("duplicado"));
+
+      let temDuplicata = false;
+      mapa.forEach((indices) => {
+        if (indices.length > 1) {
+          temDuplicata = true;
+          indices.forEach(idx => {
+            inputsHinos[idx].linha.classList.add("duplicado");
+          });
+        }
+      });
+
+      return temDuplicata;
+    }
+
     function limparHinos() {
-      inputsHinos.forEach(({ numero, obs, contador }) => {
-        numero.value = "";
-        obs.value = "";
-        contador.textContent = `0/${OBS_MAX}`;
-        contador.classList.remove("limite");
+      inputsHinos.forEach(ref => {
+        ref.numero.value = "";
+        ref.obs.value = "";
+        ref.contador.textContent = `0/${OBS_MAX}`;
+        ref.contador.classList.remove("limite");
+        ref.obsArea.classList.remove("visivel");
+        ref.linha.classList.remove("tem-obs-aberta");
+        ref.linha.classList.remove("duplicado");
+        atualizarLinkObs(ref);
       });
     }
 
@@ -893,18 +1162,29 @@
     });
 
     // ==========================================
-    // BOTÃO SAIR
+    // BOTÃO SAIR (normal)
     // ==========================================
     btnSair.addEventListener("click", async () => {
       if (!confirm("Deseja realmente sair?")) return;
       try {
         sessionStorage.removeItem('adminLogado');
-        await auth.signOut();
+        sessionStorage.removeItem('modoVisitante'); // 🆕 VISITANTE
+        if (!modoVisitante) {
+          await auth.signOut();
+        }
         window.location.replace(LOGIN_URL);
       } catch (e) {
         alert("Erro ao sair: " + e.message);
       }
     });
+
+    // 🆕 VISITANTE: botão sair do modo visitante
+    if (btnSairVisit) {
+      btnSairVisit.addEventListener("click", () => {
+        sessionStorage.removeItem('modoVisitante');
+        window.location.replace(LOGIN_URL);
+      });
+    }
 
     // ==========================================
     // DETECÇÃO DA COLEÇÃO DE CONGREGAÇÕES
@@ -913,6 +1193,7 @@
       diagReset();
       diag("🔍 Iniciando detecção da coleção de congregações...");
       diag("Project ID: " + firebaseConfig.projectId);
+      if (modoVisitante) diag("👁️ MODO VISITANTE ATIVO");
 
       for (const nome of CANDIDATOS_COL_CONG) {
         try {
@@ -968,7 +1249,7 @@
         const options = [];
         const geral = ehAdminGeral();
 
-        if (geral) {
+        if (geral && !modoVisitante) {
           options.push('<option value="">Selecione...</option>');
         }
 
@@ -979,14 +1260,24 @@
           const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
             ? d[campoNomeDetectado] : doc.id;
 
-          if (!geral && Number(id) !== Number(congUsuarioLogado)) return;
+          // 🆕 VISITANTE: só mostra a congregação dele
+          if (modoVisitante) {
+            if (Number(id) !== CONG_VISITANTE) return;
+          } else if (!geral && Number(id) !== Number(congUsuarioLogado)) {
+            return;
+          }
 
           options.push(`<option value="${id}">${nome}</option>`);
         });
 
         selectCong.innerHTML = options.join("");
 
-        if (!geral) {
+        // 🆕 VISITANTE: trava o select
+        if (modoVisitante) {
+          selectCong.value = String(CONG_VISITANTE);
+          selectCong.disabled = true;
+          diag(`\n🔒 Select de inclusão travado (VISITANTE) na congregação ${CONG_VISITANTE}`);
+        } else if (!geral) {
           selectCong.value = String(congUsuarioLogado);
           selectCong.disabled = true;
           diag(`\n🔒 Select de inclusão travado na congregação ${congUsuarioLogado}`);
@@ -1028,8 +1319,7 @@
     }
 
     // ==========================================
-    // NORMALIZAÇÃO: aceita array antigo (números) e novo (objetos)
-    // Retorna sempre [{ numero, observacao }, ...] com QTD_HINOS itens
+    // NORMALIZAÇÃO
     // ==========================================
     function normalizarHinos(d) {
       const resultado = Array.from({ length: QTD_HINOS }, () => ({ numero: null, observacao: "" }));
@@ -1047,12 +1337,10 @@
         if (item === null || item === undefined) return;
 
         if (typeof item === "object") {
-          // Formato novo: { numero, observacao }
           const n = Number(item.numero);
           resultado[i].numero = Number.isFinite(n) ? n : null;
           resultado[i].observacao = String(item.observacao || "").slice(0, OBS_MAX);
         } else {
-          // Formato antigo: número puro
           const n = Number(item);
           resultado[i].numero = Number.isFinite(n) ? n : null;
           resultado[i].observacao = "";
@@ -1071,10 +1359,10 @@
 
       limparHinos();
       docIdAtual = null;
-      setBadge("");
+      if (!modoVisitante) setBadge("");
 
       if (!dataStr || !idCong) {
-        setBadge("novo");
+        if (!modoVisitante) setBadge("novo");
         return;
       }
 
@@ -1091,17 +1379,29 @@
 
           const lista = normalizarHinos(d);
 
-          inputsHinos.forEach(({ numero, obs, contador }, i) => {
-            numero.value = lista[i].numero ?? "";
-            obs.value = lista[i].observacao || "";
-            contador.textContent = `${obs.value.length}/${OBS_MAX}`;
-            contador.classList.toggle("limite", obs.value.length >= OBS_MAX);
+          inputsHinos.forEach((ref, i) => {
+            const item = lista[i];
+            ref.numero.value = item.numero ?? "";
+            ref.obs.value = item.observacao || "";
+            ref.contador.textContent = `${ref.obs.value.length}/${OBS_MAX}`;
+            ref.contador.classList.toggle("limite", ref.obs.value.length >= OBS_MAX);
+
+            if (item.observacao && item.observacao.trim() !== "") {
+              ref.obsArea.classList.add("visivel");
+              ref.linha.classList.add("tem-obs-aberta");
+            } else {
+              ref.obsArea.classList.remove("visivel");
+              ref.linha.classList.remove("tem-obs-aberta");
+            }
+
+            atualizarLinkObs(ref);
           });
 
-          setBadge("edicao");
+          verificarDuplicatas();
+          if (!modoVisitante) setBadge("edicao");
           setStatus("📖 Registro carregado.", "info");
         } else {
-          setBadge("novo");
+          if (!modoVisitante) setBadge("novo");
           setStatus("🆕 Nenhum registro encontrado. Preencha e clique em Gravar.", "info");
         }
       } catch (e) {
@@ -1118,6 +1418,7 @@
     // ==========================================
     function validarHinos() {
       const resultado = [];
+      const usados = new Set();
 
       for (let i = 0; i < inputsHinos.length; i++) {
         const { numero, obs } = inputsHinos[i];
@@ -1131,10 +1432,14 @@
             numero.focus();
             throw new Error(`Hino ${i + 1}: informe um número inteiro entre ${HINO_MIN} e ${HINO_MAX_INP}.`);
           }
+          if (usados.has(parsed)) {
+            numero.focus();
+            throw new Error(`O hino ${parsed} está repetido. Cada hino só pode ser informado uma vez.`);
+          }
+          usados.add(parsed);
           n = parsed;
         }
 
-        // Se não tem número, ignora a observação órfã
         resultado.push({
           numero: n,
           observacao: n === null ? "" : vObs
@@ -1168,6 +1473,18 @@
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      // 🆕 VISITANTE: bloqueio total de gravação
+      if (modoVisitante) {
+        setStatus("👁️ Modo visitante — gravação desabilitada.", "warn");
+        return;
+      }
+
+      if (verificarDuplicatas()) {
+        setStatus("❌ Existem hinos repetidos. Corrija antes de gravar.", "err");
+        return;
+      }
+
       btnGravar.disabled = true;
       btnGravar.textContent = "Gravando...";
       try {
@@ -1193,12 +1510,17 @@
         console.error(err);
         setStatus("❌ " + err.message, "err");
       } finally {
-        btnGravar.disabled = false;
+        btnGravar.disabled = modoVisitante; // 🆕 VISITANTE: mantém desabilitado
         btnGravar.textContent = "💾 Gravar";
       }
     });
 
     btnExcluir.addEventListener("click", async () => {
+      // 🆕 VISITANTE: bloqueio total
+      if (modoVisitante) {
+        setStatus("👁️ Modo visitante — exclusão desabilitada.", "warn");
+        return;
+      }
       try {
         if (!docIdAtual) throw new Error("Nenhum registro carregado para excluir.");
         if (!confirm("Tem certeza que deseja excluir este registro?")) return;
@@ -1214,6 +1536,11 @@
     });
 
     btnLimpar.addEventListener("click", async () => {
+      // 🆕 VISITANTE: bloqueio total
+      if (modoVisitante) {
+        setStatus("👁️ Modo visitante — limpeza desabilitada.", "warn");
+        return;
+      }
       limparHinos();
       docIdAtual = null;
       setBadge("");
@@ -1240,7 +1567,7 @@
         const opts = [];
         const geral = ehAdminGeral();
 
-        if (geral) {
+        if (geral && !modoVisitante) {
           opts.push('<option value="">Todas</option>');
         }
 
@@ -1251,7 +1578,12 @@
           const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
             ? d[campoNomeDetectado] : doc.id;
 
-          if (!geral && Number(id) !== Number(congUsuarioLogado)) return;
+          // 🆕 VISITANTE: só mostra a congregação dele
+          if (modoVisitante) {
+            if (Number(id) !== CONG_VISITANTE) return;
+          } else if (!geral && Number(id) !== Number(congUsuarioLogado)) {
+            return;
+          }
 
           opts.push(`<option value="${id}">${nome}</option>`);
         });
@@ -1260,13 +1592,23 @@
         relCongregacaoMais.innerHTML  = html;
         relCongregacaoMenos.innerHTML = html;
         relCongregacaoObs.innerHTML   = html;
-        if (!geral) {
-          relCongregacaoMais.value = String(congUsuarioLogado);
-          relCongregacaoMenos.value = String(congUsuarioLogado);
-          relCongregacaoObs.value = String(congUsuarioLogado);   // 👈 NOVO
+
+        // 🆕 VISITANTE: trava selects
+        if (modoVisitante) {
+          relCongregacaoMais.value = String(CONG_VISITANTE);
+          relCongregacaoMenos.value = String(CONG_VISITANTE);
+          relCongregacaoObs.value = String(CONG_VISITANTE);
           relCongregacaoMais.disabled = true;
           relCongregacaoMenos.disabled = true;
-          relCongregacaoObs.disabled = true;                     // 👈 NOVO
+          relCongregacaoObs.disabled = true;
+          diag(`\n🔒 Selects de relatório travados (VISITANTE) na congregação ${CONG_VISITANTE}`);
+        } else if (!geral) {
+          relCongregacaoMais.value = String(congUsuarioLogado);
+          relCongregacaoMenos.value = String(congUsuarioLogado);
+          relCongregacaoObs.value = String(congUsuarioLogado);
+          relCongregacaoMais.disabled = true;
+          relCongregacaoMenos.disabled = true;
+          relCongregacaoObs.disabled = true;
           diag(`\n🔒 Selects de relatório travados na congregação ${congUsuarioLogado}`);
         }
 
@@ -1285,6 +1627,8 @@
 
         snap.forEach(doc => {
           const d = doc.data();
+          // 🆕 VISITANTE: filtra apenas a congregação dele
+          if (modoVisitante && Number(d.idCongregacao) !== CONG_VISITANTE) return;
           const iso = timestampParaISO(d.data);
           if (iso) setDatas.add(iso);
         });
@@ -1312,15 +1656,15 @@
         relDataFinalMais.innerHTML    = html;
         relDataInicialMenos.innerHTML = html;
         relDataFinalMenos.innerHTML   = html;
-        relDataInicialObs.innerHTML   = html;   // 👈 NOVO
-        relDataFinalObs.innerHTML     = html;   // 👈 NOVO
+        relDataInicialObs.innerHTML   = html;
+        relDataFinalObs.innerHTML     = html;
 
         manterSelecao(relDataInicialMais, iniMais);
         manterSelecao(relDataFinalMais, fimMais);
         manterSelecao(relDataInicialMenos, iniMenos);
         manterSelecao(relDataFinalMenos, fimMenos);
-        manterSelecao(relDataInicialObs, iniObs);   // 👈 NOVO
-        manterSelecao(relDataFinalObs, fimObs);     // 👈 NOVO
+        manterSelecao(relDataInicialObs, iniObs);
+        manterSelecao(relDataFinalObs, fimObs);
 
         diag(`\n✅ ${todasDatasDisponiveis.length} datas distintas carregadas para relatórios.`);
       } catch (e) {
@@ -1333,7 +1677,10 @@
     // BUSCA FILTRADA PARA RELATÓRIOS
     // ==========================================
     async function buscarParaRelatorio(idCong, dataIniISO, dataFimISO) {
-      if (!ehAdminGeral()) {
+      // 🆕 VISITANTE: força a congregação dele
+      if (modoVisitante) {
+        idCong = CONG_VISITANTE;
+      } else if (!ehAdminGeral()) {
         idCong = congUsuarioLogado;
       }
 
@@ -1370,7 +1717,7 @@
     }
 
     // ==========================================
-    // CONTAGEM DE HINOS (aceita os dois formatos)
+    // CONTAGEM DE HINOS
     // ==========================================
     function contarHinos(docs) {
       const contagem = {};
@@ -1525,9 +1872,15 @@
       inputData.value = hojeISO();
 
       await carregarCongregacoes();
-      if (ehAdminGeral() && selectCong.options.length >= 2) {
+
+      // 🆕 VISITANTE: trava o select na congregação dele
+      if (modoVisitante) {
+        selectCong.value = String(CONG_VISITANTE);
+        selectCong.disabled = true;
+      } else if (ehAdminGeral() && selectCong.options.length >= 2) {
         selectCong.selectedIndex = 1;
       }
+
       await carregarRegistroAtual();
 
       await carregarCongregacoesRelatorios();
@@ -1554,7 +1907,6 @@
 
         const docs = await buscarParaRelatorio(idCong, dataIni, dataFim);
 
-        // Monta a lista: uma linha por (data, congregação, hino, observação)
         const linhas = [];
         docs.forEach(doc => {
           const d = doc.data();
@@ -1563,7 +1915,7 @@
 
           lista.forEach(({ numero, observacao }) => {
             const obs = String(observacao || "").trim();
-            if (numero === null || obs === "") return; // só hinos com número E observação
+            if (numero === null || obs === "") return;
 
             linhas.push({
               dataISO: iso,
@@ -1575,13 +1927,11 @@
           });
         });
 
-        // Ordena por data desc, depois por hino asc
         linhas.sort((a, b) => {
           if (a.dataISO !== b.dataISO) return a.dataISO < b.dataISO ? 1 : -1;
           return a.hino - b.hino;
         });
 
-        // Nome da congregação (para exibir na tabela)
         const nomeCong = (id) => {
           if (!colCongDetectada) return String(id);
           const opt = Array.from(relCongregacaoObs.options).find(o => Number(o.value) === Number(id));

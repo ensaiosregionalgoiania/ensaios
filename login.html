@@ -128,7 +128,11 @@
         </div>
 
         <button id="btnLogin" onclick="login()">🔐 Entrar</button>
-
+        <button type="button" onclick="entrarComoVisitante()" 
+                style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;
+                    padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;">
+        👁️ Entrar como Visitante (Demonstração)
+        </button>
         <div class="link">
             <a onclick="recuperarSenha()">Esqueci minha senha</a> |
             <a href="cadastrar_admin.html" style="color:#e74c3c;">➕ Cadastrar Admin</a>
@@ -372,6 +376,12 @@
         emailInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') passInput.focus();
         });
+
+        function entrarComoVisitante() {
+            sessionStorage.setItem('modoVisitante', 'true');
+            window.location.href = 'hinostocados.html'; // troque pelo nome do seu arquivo
+        }        
+
     </script>
 </body>
 </html>
