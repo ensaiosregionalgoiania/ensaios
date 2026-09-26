@@ -1,88 +1,88 @@
         // Dados completos dos ensaios
         // Nome da igreja;Cidade;Dia do Ensaio;Hora do Ensaio(T1=16:30);Endereco Google maps;Setor;Nome Encarregado Local;Nome Encarregado Regional;Meses T=Todos, I=ímpares, P=Pares, 3M1=JAN/ABR/JUL/OUT, 3M2=FEV/MAI/AGO/NOV, 3M3=MAR/JUN/SET/DEZ;Latitude;Longitude;Dias de culto;Ensaio Regional
         const dados = [
-            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;T;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N;15/03/2026",
-            "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N 5N;25/01/2026",
-            "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;T;cbaHom1Dz6uJrsG39;6;Ademir Francisco;Alex Flávio/Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN;14/06/2026",
-            "Setor dos Bandeirantes;Aparecida;2º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N;",
-            "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N;",
-            "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N;21/04/2026", //aqui
-            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;Thiago Fernandes;Thiaguinho;T;-16.8256386;-49.229775;DN 4N;",
-            "Bairro Independência;Aparecida;1º DOMINGO;T;d58NBSKruwc735pA9;6;Roberto Santana;Odário;T;-16.8080739;-49.3235699;DN 3N SN;01/05/2026",
-            "Vila São José;Goiânia;1º DOMINGO;T;5kdjpLgQreAGofYKA;5;Marcos Jose Cordeiro;Rogerio Rosemberg;T;-16.6596485;-49.299886;DN 3N 5N;",//
-            "Setor Leste Universitário;Goiânia;1º DOMINGO;T;f4jkwB9HdBhJMobN6;1;JOSÉ MOREL;HELTON RICARDO;T;-16.6867528;-49.2420306;DN 2N 6N;",
-            "Setor Urias Magalhães;Goiânia;1º DOMINGO;T;fYH4domMCTcszBZc7;5;Josafá Silveira;Doralino;T;-16.6349013;-49.2777757;DN 3N 6N;",
-            "Setor Norte Ferroviário II;Goiânia;1º DOMINGO;T;fyt967DQ1EgXkji18;5;Iris Euclenio;Doralino;T;-16.6556486;-49.261568;DN 3N 6N;",
-            "Setor Madre Germana 2;Goiânia;1º DOMINGO;T;JfvWA4JTasNrqzTo9;2;Welliton;André;T;-16.8167904;-49.3738204;DN 5N SN;19/04/2026",
-            "Setor Faiçalville;Goiânia;1º DOMINGO;T;BnQwHq2mhdCuNmsf7;2;Josimar;Huiwerson;T;-16.7332701;-49.3194884;DN 3N 6N;",
-            "Setor Bela Vista;Goiânia;1º DOMINGO;T;6FfuP1QrYMLrrHXm8;1;BENEDITO AFONSO;ANDRE ALCANTARA;T;-16.7310459;-49.4522408;DN 3T 4N SN;15/03/2026", //
-            "Setor Coimbra;Goiânia;1º DOMINGO;T;AHA4PNhtdDhWqMP76;4;Euzébio Marcelino;Davi Borges;T;-16.6804397;-49.290128;DN 3N 6N;14/06/2026",
-            "Setor Alphaville II;Goiânia;1º DOMINGO;T;VJfWLbqyQPxEaRhm6;3;Aureo Keverson;Nereu;T;-16.7334585;-49.3795188;DN 2N 5N;",
-            "Residencial Itaipu;Goiânia;2º DOMINGO;T;meFED6rqGuhwh9pE7;2;Fábio Augusto;Pedro Pimenta;T;-16.779655;-49.3649108;DN 4N;",
-            "Residencial Brisas da Mata;Goiânia;1º DOMINGO;T;MvRbJroWVEVyQyo3A;4;Lourenço de Sousa;Túlio Marcos;T;-16.5942494;-49.3056839;DN 2N 5N;",
-            "Parque Tremendão;Goiânia;1ª SEXTA-FEIRA;N;g8YtWxosoERd1aRJ6;4;Ferdinan Gomes;Túlio Marcos;T;-16.6124328;-49.3262289;DN 3N 5N;",
-            "Parque Industrial João Braz;Goiânia;1º DOMINGO;T;YuLEdrUSCdYVVmHH9;3;Gabriel;José Humberto;T;-16.693511;-49.3583396;DN 4N 6N;12/04/2026",
-            "Jardim Presidente;Goiânia;1º DOMINGO;T;rfvBKbu67ozUQNta9;2;José Eduardo;Hiwerson/Pedro Pimenta;T;-16.7493753;-49.3335757;DN 2N 5N;21/06/2026",
-            "Jardim Nova Esperança;Goiânia;1º DOMINGO;T;Y1sZAuF7Td5gjHtUA;3;Adalberto;José Humberto;T;-16.6423409;-49.3289845;DN 3N 6N;08/02/2026",
-            "Jardim Liberdade;Goiânia;1º DOMINGO;T;8jnsTy5LySrqKVzP7;4;Carlos de Souza;Davi Borges;T;-16.6147859;-49.3421297;DN 2N 6N;",
-            "Jardim Guanabara;Goiânia;1º DOMINGO;T;TAjbgKfYSEVyUPVr5;5;Celio Rodrigues;Rogerio Rosemberg;T;-16.6196841;-49.211197;DN 4N SN;13/12/2026",
-            "Jardim América;Goiânia;2º DOMINGO;T;aFi4SSMVq3qz5bsh8;2;Moacir;André;T;-16.7075614;-49.2857044;DN 3N 5N;", //
-            "<B>Guapó - Central</B>;<B>Guapó</B>;1º DOMINGO;T;UmoNQHrabx42qfyM7;7;Wanderson Evangelista;Luis Dias;T;-16.8325333;-49.53504;DN 4N;18/10/2026",
-            "<B>Abadia de GoiáS - Central</B>;<B>Abadia</B>;1º DOMINGO;T;TgHBjRy7r7cwX2up8;7;;Uaslei;T;-16.7663505;-49.4273011;DN 3N 5N;19/07/2026",
-            "Carolina Parque;Goiânia;1º DOMINGO;T;eJzMbXYnWATf43Vy5;3;Pedro;NEREU;T;-16.7310459;-49.4522408;DN 3N 5N;",
-            "<B>Vila Bom Sucesso-Central</B>;<B>Senador Canedo</B>;1º DOMINGO;T;qUWszvKWJqabt2aX8;8;Fábio;Gesmar;T;-16.7113148;-49.088662;DN 4N SN;26/04/2026",
-            "Vila São Sebastião;Senador Canedo;1º DOMINGO;T;MZuF2s6tX4RwZ7sX7;8;Allex;Gesmar;T;-16.724088;-49.0896061;DN 3N;",
-            "<B>Bela Vista - Central</B>;<B>Bela Vista</B>;1º DOMINGO;T;W3w9b6q1KSC1iPdN6;8;Wagner;Rogério;T;-16.9700875;-48.9594312;DN 4N SN;19/07/2026",
-            "Jardim das Oliveiras;Senador Canedo;1º DOMINGO;T;kZ3a1w8SaeHBRkcE9;8;Patricio;Ricardo Rosemberg;T;-16.6507913;-49.1533527;DN 3N 6N;",
-            "Parque Alvorada;Senador Canedo;1º DOMINGO;T;cB2KSg7McQrJAiwm6;8;Adão;Ricardo Rosemberg;T;-16.6590072;-49.165532;DN 5N;",
-            "Papillon Parque;Aparecida;2ª SEGUNDA-FEIRA;N;sCcHRBoU7KGSrsYn7;6;Daniel Pedrosa;Thiaguinho;T;-16.7808505;-49.2745449;DN 4N 6N;20/09/2026",
-            "Cidade Vera Cruz II;Aparecida;1ª TERÇA-FEIRA;N;fJiiuLUyTgePVdoRA;6;Cleiton;;T;-16.7612622;-49.2899177;DN 4N 6N;",
-            "Colina Azul II;Aparecida;1ª SEGUNDA-FEIRA;N;nE1oznfqzcFHZNNv8;6;Joel Soares;;T;-16.8282837;-49.293651;DN 5N;",
-            "Serra Azul;Goiânia;1ª SEGUNDA-FEIRA;N;b6RKsb7ZjbWLZsyeA;3;Daniel Siqueira;José Humberto;T;-16.6838555;-49.3462293;DN 4N;",
-            "Residencial Recanto do Bosque;Goiânia;1ª SEGUNDA-FEIRA;N;beu4rSFcierdzrTL7;4;Martim Pinto;Jackson;T;-16.6086014;-49.3117139;3N SN;",
-            "Residencial Junqueira;Goiânia;3º DOMINGO;T;jg68McQ7giL62ba28;3;Joel;José Humberto;T;-16.6586753;-49.3786572;DN 5N;02/08/2026",
-            "Jardim Mariliza;Goiânia;1ª SEGUNDA-FEIRA;N;k81iAAmHK7dhhftw8;1;MOISÉS RODRIGUES;HELTON RICARDO;T;-16.738498;-49.205512;DN 5N SN;",
-            "<B>Goianira - Central</B>;<B>Goianira</B>;4º DOMINGO;T;DaKwLA4yfFB9uvxC8;7;PEDRO HENRIQUE/EUDÊ DA SILVA;PETERSON BENONI;T;-16.5058449;-49.428981;DN 3N 5N;06/12/2026",
-            "Bairro São Carlos;Goiânia;1ª SEGUNDA-FEIRA;N;WrzELsFVxh1oyZJi6;4;Cláudio Antônio;Jackson;T;-16.5968595;-49.3481973;DN 4N SN;12/04/2026",
-            "Residencial Vitta;Hidrolândia;3ª SEGUNDA-FEIRA;N;gLXPAYV8PmwvJbiM8;6;Francisco Letício;Odário;T;-17.0724474;-49.5861484;DN 6N;",
-            "Central (Nazaré);Hidrolândia;1ª SEGUNDA-FEIRA;N;o41TdVY6kpwAdJoF8;6;Francisco Jocerlandio;Odário;T;-17.1147634;-49.7993114;DN 5N;",
-            "Chácara Savana;Hidrolândia;4ª SEGUNDA-FEIRA;N;naghoBxUC2qv6M5e8;6;Gustavo Gonçalves;Odário;T;-16.9792171;-49.8223545;DN 4N;",
-            "Cidade Jardim;Goiânia;1º DOMINGO;T;h7aTYPFAnBYe6W427;3;Matheus;NEREU;T;-16.7001206;-49.3265792;DN 4N 6N;11/01/2026",
-            "Parque Oeste Industrial;Goiânia;1º SáBADO;T;yFEJsMV1oq5Lo7BK8;3;Etevaldo Junior;Nereu;T;-16.7001206;-49.3265792;DN 5N SN;01/03/2026",
-            "Parque Atheneu;Goiânia;1ª QUARTA-FEIRA;N;6JJ8NsTNgakSJVTV7;1;Wanderlei Amorim;RICARDO ROSEMBERGUE;T;-16.7431441;-49.1913878;DN 3N 6N;",
-            "Vila Rizzo;Goiânia;1ª QUINTA-FEIRA;N;eNNv5dgHFbinBLL47;3;Aremi;Nereu;T;-16.7212813;-49.3760105;DN 3N 6N;13/09/2026",
-            "Residencial Center Ville/Eli Forte;Goiânia;1ª QUINTA-FEIRA;N;QfcbSL2by3fQi45TA;2;Carlos;Isaque;T;-16.7365801;-49.34932;DN 3N 6N;",
-            "Jardim Santo Antônio;Goiânia;1ª QUINTA-FEIRA;N;JBvHtFB7vJAK4aC8A;2;Cleibe;André;T;-16.7296536;-49.2513112;DN 4N 6N;",
-            "Jardim Balneário Meia Ponte;Goiânia;1ª SEXTA-FEIRA;N;C5erC5BGabA7aH8H7;4;Benedito Valério;Túlio Marcos;T;-16.6120263;-49.2970212;DN 2N 5N;08/03/2026",
-            "Parque Ibirapuera;Aparecida;1ª SEXTA-FEIRA;N;YBz12uTTvvupg1v16;6;Lucas de Jesus;;T;-16.8108189;-49.3389015;DN 5N;",
-            "Varjão - Faz Salobro de Baixo;Varjão;1ª SEXTA-FEIRA;N;WedDouD7xqsoosXD8;7;Gabriel Martins;Luis Dias;T;-17.1038432;-49.6132906;DN;",
-            "Independência Mansões I;Aparecida;1ª SEXTA-FEIRA;N;HB5VegSFgms4WMGj7;6;Ricardo campelo;;T;-16.8177671;-49.3152845;DN 6N;",
-            "Residencial Mar Del Plata;Goiânia;4ª SEXTA-FEIRA;N;KL3hP3EnU6FFn7Em6;1;André Lisboa;Ricardo Rosemberg;T;-16.6642469;-49.1795721;DN 5N;",
-            "Santo Hilário;Goiânia;1ª SEXTA-FEIRA;N;ofo9X9vxfmm6zjbo6;1;GUILHERME DE SOUZA;RICARDO ROSEMBERGUE;T;-16.6478506;-49.1919926;DN 4N;",
-            "Ana Rosa;Trindade;1ª SEXTA-FEIRA;N;MGQt18SFYHxPvpKj8;7;;Uaslei;T;-16.6686;-49.4844007;2N SN;",
-            "Vargem Bonita;Senador Canedo;2º SáBADO;N;x7evhRndRAqxmaWb9;8;Welber;Rogério;T;-16.753231;-49.1364692;DN 5N;",
-            "Setor Estrela Dalva;Goiânia;1ª SEXTA-FEIRA;N;DJJ1EU8izHd3iVkh6;4;Jardel Mendes;Jackson;T;-16.6023639;-49.3233046;DN 4N 6N;",
-            "Jardim Ipanema;Aparecida;1º SáBADO;T;8gmFtFfCeVx2NvVx7;6;João Evangelista;;T;-16.7926965;-49.2432523;3N SN;",
-            "Setor Perim;Goiânia;1º SáBADO;T;jBCcBz3r4Ko1LF3o7;5;Antonio Lima;Rogerio Rosemberg;T;-16.6467999;-49.2987273;5N SN;",
-            "Setor Palmito;Goiânia;1º SáBADO;T;E69xLgXvoczuWuhM8;1;Paulo Basil;RICARDO ROSEMBERGUE;T;-16.6751354;-49.2103369;DN 3N SN;",
-            "Setor Goiânia Viva;Goiânia;1º SáBADO;T;KdGCYm1SVy7Qxfqc6;3;Lamartines;José Humberto;T;-16.7310459;-49.4522408;5N SN;",
-            "Residencial Morada do Ipê;Goiânia;4ª SEXTA-FEIRA;N;GksGsiGsrxWWGYe99;5;Divino da Paixão;Rogerio Rosemberg;T;-16.5899707;-49.2623225;4N SN;",
-            "Residencial Íris Ville;Goiânia;1º SáBADO;T;VyEhWKcqUz2NdD5U7;1;MARCELLO OLIVEIRA;HELTON RICARDO;T;-16.6396134;-49.1572064;4N SN;",
-            "Real Conquista;Goiânia;1º SáBADO;N;T3PugKZyNpHAMAg56;2;Adriel;Pedro Pimenta;T;-16.7763303;-49.3872159;DN 5N;",
-            "Parque das Flores;Goiânia;1º SáBADO;T;MuWhXkmKDwNGgEXh8;4;Cícero Vicente;Davi Borges;T;-16.6271508;-49.2884178;4N SN;",
-            "Chácara Céu Azul;Goiânia;1º SáBADO;T;Z6jVPKW89bh8zWHc8;4;Ivon Ribeiro;Davi Borges;T;-16.5853565;-49.31812;3N SN;",
-            "Distrito de Nova Fátima;Hidrolândia;2º DOMINGO;T;Jitgq66ePpp4BaLK8;6;Márcio Souza;;T;-16.9023773;-49.3250926;DN 4N;",
-            "Setor Vale do Sol;Aparecida;2º DOMINGO;T;zJzwGSJbX4NTYQAe8;6;Samuel Jefferson;;T;-16.7887294;-49.2209691;DN 4N;",
-            "Setor Serra Dourada III;Aparecida;2º DOMINGO;T;WYJtMZjDUu5pUgLx7;6;Chales Anderso;;T;-16.8300943;-49.2592951;DN 3N SN;",
-            "Setor Marista Sul;Aparecida;2º DOMINGO;T;pJatAUUpBst8VipH8;6;Wenderson;;T;-16.8312452;-49.2780967;DN 4N 6N;",
-            "Residencial Caraíbas;Aparecida;2º DOMINGO;T;KuwxTZAzTQ57avH67;6;Marcos Bezerra;;T;-16.7811279;-49.3462543;DN 3N 6N;",
-            "Residencial Santa Luzia;Aparecida;2º DOMINGO;T;Hfbyg7kU1orKdBJ8A;6;Joel Aminadabe;;T;-16.7573485;-49.227953;DN 5N;",
-            "Rosa dos Ventos;Aparecida;2º DOMINGO;T;t5fpJLTsZcZa7too7;6;Jerson Alves;;T;-16.8471997;-49.2389018;DN 5N;",
-            "Jardim das Cascatas;Aparecida;2º DOMINGO;T;c88qH1kAHEnyCLV7A;6;Júnior César;;T;-16.8185595;-49.3313745;DN 3N 6N;",
-            "Cidade Vera Cruz I;Aparecida;2º DOMINGO;T;8z925WBJfg1RC2oE6;6;Helington Lima;;T;-16.7763021;-49.332864;DN 3N 5N;",
-            "Vila Santa Helena;Goiânia;2º DOMINGO;T;8bbzMas2TnnVDXNy8;5;Dinilson Bernardes;Doralino;T;-16.6581315;-49.2869145;DN 2N 5N;",
-            "Vila Pedroso;Goiânia;2º DOMINGO;T;H7qLWAEgHB1G2udx7;1;JOSE VITOR;RICARDO ROSEMBERGUE;T;-16.6583962;-49.1815321;DN 3N SN;13/09/2026",
-            "Setor Jaó;Goiânia;2º DOMINGO;T;TNb2ePXS5rQuxJx26;5;Gleydson;Rogerio Rosemberg;T;-16.6411345;-49.228488;DN 2N 5N;",
+            "<B>Central</B>;<B>Aragoiânia</B>;1º DOMINGO;T;FAkanFsUT93mmLiu8;6;Marcos Ferreira;;T;-16.9142885;-49.4480273;DN 4N (RJM DM);15/03/2026", //ok
+            "Vila Brasília;Aparecida;1º DOMINGO;T;xYJT4GTg7hSCEzDx6;6;Marcos Batista;;T;-16.7436653;-49.2603817;DN 3N (20:00) 5N (RJM DM);25/01/2026", //ok
+            "<B>Setor Garavelo</B>;<B>Aparecida</B>;1º DOMINGO;T;cbaHom1Dz6uJrsG39;6;Ademir Francisco;Alex Flávio/Claudio Pontes;T;-16.7684136;-49.3401338;DN 5N SN (RJM DM);14/06/2026", //ok
+            "Setor dos Bandeirantes;Aparecida;2º DOMINGO;T;8NjPZFBb4FvHgnj18;6;Edimundo Rodrigues;;T;-16.7310459;-49.4522408;DN 4N (RJM DM);", //ok
+            "Residencial Village Garavelo;Aparecida;1º DOMINGO;T;d5ArP8Dez9qpoGqt7;6;Ezechias;;T;-16.8180706;-49.2520034;DN 4N (RJM DM);", //ok
+            "Jardim Tiradentes I;Aparecida;1º DOMINGO;T;EqvstVAQsBkc6Ybh8;6;Edneide Jesus;;T;-16.8043623;-49.3203929;DN 3N 5N (RJM DM);21/04/2026", //ok
+            "Jardim Casa Grande;Aparecida;1º DOMINGO;T;N6TzmdWUVKmjq7qU9;6;Thiago Fernandes;Thiaguinho;T;-16.8256386;-49.229775;DN 4N (RJM DM);", //ok
+            "Bairro Independência;Aparecida;1º DOMINGO;T;d58NBSKruwc735pA9;6;Roberto Santana;Odário;T;-16.8080739;-49.3235699;DN 3N SN (RJM DM);01/05/2026", //ok
+            "Vila São José;Goiânia;1º DOMINGO;T;5kdjpLgQreAGofYKA;5;Marcos Jose Cordeiro;Rogerio Rosemberg;T;-16.6596485;-49.299886;DN 3N 5N (RJM DM);", //ok
+            "Setor Leste Universitário;Goiânia;1º DOMINGO;T;f4jkwB9HdBhJMobN6;1;JOSÉ MOREL;HELTON RICARDO;T;-16.6867528;-49.2420306;DN 2N 6N (RJM DM);", //ok
+            "Setor Urias Magalhães;Goiânia;1º DOMINGO;T;fYH4domMCTcszBZc7;5;Josafá Silveira;Doralino;T;-16.6349013;-49.2777757;DN 3N 6N (RJM DM);", //ok
+            "Setor Norte Ferroviário II;Goiânia;1º DOMINGO;T;fyt967DQ1EgXkji18;5;Iris Euclenio;Doralino;T;-16.6556486;-49.261568;DN 3N 6N (RJM DM);", //ok
+            "Setor Madre Germana 2;Goiânia;1º DOMINGO;T;JfvWA4JTasNrqzTo9;2;Welliton;André;T;-16.8167904;-49.3738204;DN 5N SN (RJM DM);19/04/2026", //ok
+            "Setor Faiçalville;Goiânia;1º DOMINGO;T;BnQwHq2mhdCuNmsf7;2;Josimar;Huiwerson;T;-16.7332701;-49.3194884;DN 3N (20:00) 6N (RJM DM);", //ok
+            "Setor Bela Vista;Goiânia;1º DOMINGO;T;6FfuP1QrYMLrrHXm8;1;BENEDITO AFONSO;ANDRE ALCANTARA;T;-16.7310459;-49.4522408;DN 3T (14:30) 4N SN (RJM DM);15/03/2026", //ok
+            "Setor Coimbra;Goiânia;1º DOMINGO;T;AHA4PNhtdDhWqMP76;4;Euzébio Marcelino;Davi Borges;T;-16.6804397;-49.290128;DN (3N 20:00) 6N (RJM DM);14/06/2026", //ok
+            "Setor Alphaville II;Goiânia;1º DOMINGO;T;VJfWLbqyQPxEaRhm6;3;Aureo Keverson;Nereu;T;-16.7334585;-49.3795188;DN 2N 5N;", //nao
+            "Residencial Itaipu;Goiânia;2º DOMINGO;T;meFED6rqGuhwh9pE7;2;Fábio Augusto;Pedro Pimenta;T;-16.779655;-49.3649108;DN 4N (RJM DM);", //ok
+            "Residencial Brisas da Mata;Goiânia;1º DOMINGO;T;MvRbJroWVEVyQyo3A;4;Lourenço de Sousa;Túlio Marcos;T;-16.5942494;-49.3056839;DN (2N 20:00) 5N (RJM DM);", //ok
+            "Parque Tremendão;Goiânia;1ª SEXTA-FEIRA;N;g8YtWxosoERd1aRJ6;4;Ferdinan Gomes;Túlio Marcos;T;-16.6124328;-49.3262289;DN 3N 5N (RJM DM);", //ok
+            "Parque Industrial João Braz;Goiânia;1º DOMINGO;T;YuLEdrUSCdYVVmHH9;3;Gabriel;José Humberto;T;-16.693511;-49.3583396;DN (4N 20:00) 6N (RJM DM);12/04/2026", //ok
+            "Jardim Presidente;Goiânia;1º DOMINGO;T;rfvBKbu67ozUQNta9;2;José Eduardo;Hiwerson/Pedro Pimenta;T;-16.7493753;-49.3335757;DN 2N 5N (RJM DM);21/06/2026", //ok
+            "Jardim Nova Esperança;Goiânia;1º DOMINGO;T;Y1sZAuF7Td5gjHtUA;3;Adalberto;José Humberto;T;-16.6423409;-49.3289845;DN (3N 20:00) 6N (RJM DM);08/02/2026", //ok
+            "Jardim Liberdade;Goiânia;1º DOMINGO;T;8jnsTy5LySrqKVzP7;4;Carlos de Souza;Davi Borges;T;-16.6147859;-49.3421297;DN (2N 20:00) 6N (RJM DM);", //ok
+            "Jardim Guanabara;Goiânia;1º DOMINGO;T;TAjbgKfYSEVyUPVr5;5;Celio Rodrigues;Rogerio Rosemberg;T;-16.6196841;-49.211197;DN 4N • SN (RJM DM);13/12/2026", //ok
+            "Jardim América;Goiânia;2º DOMINGO;T;aFi4SSMVq3qz5bsh8;2;Moacir;André;T;-16.7075614;-49.2857044;DN (3N 20:00) 5N (RJM DM);", //ok
+            "<B>Guapó - Central</B>;<B>Guapó</B>;1º DOMINGO;T;UmoNQHrabx42qfyM7;7;Wanderson Evangelista;Luis Dias;T;-16.8325333;-49.53504;DN 4N (RJM DM);18/10/2026", //ok
+            "<B>Abadia de GoiáS - Central</B>;<B>Abadia</B>;1º DOMINGO;T;TgHBjRy7r7cwX2up8;7;;Uaslei;T;-16.7663505;-49.4273011;DN 3N 5N;19/07/2026", //nao
+            "Carolina Parque;Goiânia;1º DOMINGO;T;eJzMbXYnWATf43Vy5;3;Pedro;NEREU;T;-16.7310459;-49.4522408;DN 3N 5N (RJM DM);", //ok
+            "<B>Vila Bom Sucesso-Central</B>;<B>Senador Canedo</B>;1º DOMINGO;T;qUWszvKWJqabt2aX8;8;Fábio;Gesmar;T;-16.7113148;-49.088662;DN 4N • SN (RJM DM);26/04/2026", //ok
+            "Vila São Sebastião;Senador Canedo;1º DOMINGO;T;MZuF2s6tX4RwZ7sX7;8;Allex;Gesmar;T;-16.724088;-49.0896061;DN 3N (RJM DM);", //ok
+            "<B>Bela Vista - Central</B>;<B>Bela Vista</B>;1º DOMINGO;T;W3w9b6q1KSC1iPdN6;8;Wagner;Rogério;T;-16.9700875;-48.9594312;DN 4N SN;19/07/2026", //ok
+            "Jardim das Oliveiras;Senador Canedo;1º DOMINGO;T;kZ3a1w8SaeHBRkcE9;8;Patricio;Ricardo Rosemberg;T;-16.6507913;-49.1533527;DN 3N 6N (RJM DM);", //ok
+            "Parque Alvorada;Senador Canedo;1º DOMINGO;T;cB2KSg7McQrJAiwm6;8;Adão;Ricardo Rosemberg;T;-16.6590072;-49.165532;DN 5N (RJM DM);", //ok
+            "Papillon Parque;Aparecida;2ª SEGUNDA-FEIRA;N;sCcHRBoU7KGSrsYn7;6;Daniel Pedrosa;Thiaguinho;T;-16.7808505;-49.2745449;DN 4N (6N 20:00) (RJM DM);20/09/2026", //ok
+            "Cidade Vera Cruz II;Aparecida;1ª TERÇA-FEIRA;N;fJiiuLUyTgePVdoRA;6;Cleiton;;T;-16.7612622;-49.2899177;DN 4N 6N (RJM DM);", //ok
+            "Colina Azul II;Aparecida;1ª SEGUNDA-FEIRA;N;nE1oznfqzcFHZNNv8;6;Joel Soares;;T;-16.8282837;-49.293651;DN 5N (RJM DM);", //ok
+            "Serra Azul;Goiânia;1ª SEGUNDA-FEIRA;N;b6RKsb7ZjbWLZsyeA;3;Daniel Siqueira;José Humberto;T;-16.6838555;-49.3462293;DN 4N (RJM DM);", //ok
+            "Residencial Recanto do Bosque;Goiânia;1ª SEGUNDA-FEIRA;N;beu4rSFcierdzrTL7;4;Martim Pinto;Jackson;T;-16.6086014;-49.3117139;3N SN (RJM DM);", //ok
+            "Residencial Junqueira;Goiânia;3º DOMINGO;T;jg68McQ7giL62ba28;3;Joel;José Humberto;T;-16.6586753;-49.3786572;DN 5N (RJM DM);02/08/2026", //ok
+            "Jardim Mariliza;Goiânia;1ª SEGUNDA-FEIRA;N;k81iAAmHK7dhhftw8;1;MOISÉS RODRIGUES;HELTON RICARDO;T;-16.738498;-49.205512;DN 5N SN (RJM DM);", //ok
+            "<B>Goianira - Central</B>;<B>Goianira</B>;4º DOMINGO;T;DaKwLA4yfFB9uvxC8;7;PEDRO HENRIQUE/EUDÊ DA SILVA;PETERSON BENONI;T;-16.5058449;-49.428981;DN 3N 5N;06/12/2026", //nao
+            "Bairro São Carlos;Goiânia;1ª SEGUNDA-FEIRA;N;WrzELsFVxh1oyZJi6;4;Cláudio Antônio;Jackson;T;-16.5968595;-49.3481973;DN 4N SN (RJM DM);12/04/2026", //ok
+            "Residencial Vitta;Hidrolândia;3ª SEGUNDA-FEIRA;N;gLXPAYV8PmwvJbiM8;6;Francisco Letício;Odário;T;-17.0724474;-49.5861484;DN 6N;", //ok
+            "Central (Nazaré);Hidrolândia;1ª SEGUNDA-FEIRA;N;o41TdVY6kpwAdJoF8;6;Francisco Jocerlandio;Odário;T;-17.1147634;-49.7993114;DN (5N 20:00) (RJM SN 18:00);", //ok
+            "Chácara Savana;Hidrolândia;4ª SEGUNDA-FEIRA;N;naghoBxUC2qv6M5e8;6;Gustavo Gonçalves;Odário;T;-16.9792171;-49.8223545;DN 4N (RJM DM);", //ok
+            "Cidade Jardim;Goiânia;1º DOMINGO;T;h7aTYPFAnBYe6W427;3;Matheus;NEREU;T;-16.7001206;-49.3265792;DN (4N 20:00) 6N (RJM DM);11/01/2026", //ok
+            "Parque Oeste Industrial;Goiânia;1º SáBADO;T;yFEJsMV1oq5Lo7BK8;3;Etevaldo Junior;Nereu;T;-16.7001206;-49.3265792;DN (5N 20:00) SN (RJM DM);01/03/2026", //ok
+            "Parque Atheneu;Goiânia;1ª QUARTA-FEIRA;N;6JJ8NsTNgakSJVTV7;1;Wanderlei Amorim;RICARDO ROSEMBERGUE;T;-16.7431441;-49.1913878;DN 3N (6N 20:00) (RJM DM);", //ok
+            "Vila Rizzo;Goiânia;1ª QUINTA-FEIRA;N;eNNv5dgHFbinBLL47;3;Aremi;Nereu;T;-16.7212813;-49.3760105;DN (3N 20:00) 6N (RJM DM);13/09/2026", //ok
+            "Residencial Center Ville/Eli Forte;Goiânia;1ª QUINTA-FEIRA;N;QfcbSL2by3fQi45TA;2;Carlos;Isaque;T;-16.7365801;-49.34932;DN 3N (6N 20:00) (RJM DM);", //ok
+            "Jardim Santo Antônio;Goiânia;1ª QUINTA-FEIRA;N;JBvHtFB7vJAK4aC8A;2;Cleibe;André;T;-16.7296536;-49.2513112;DN 4N 6N (RJM DM);", //ok
+            "Jardim Balneário Meia Ponte;Goiânia;1ª SEXTA-FEIRA;N;C5erC5BGabA7aH8H7;4;Benedito Valério;Túlio Marcos;T;-16.6120263;-49.2970212;DN 2N 5N (RJM DM);08/03/2026", //ok
+            "Parque Ibirapuera;Aparecida;1ª SEXTA-FEIRA;N;YBz12uTTvvupg1v16;6;Lucas de Jesus;;T;-16.8108189;-49.3389015;DN 5N (RJM DM);", //nao
+            "Varjão - Faz Salobro de Baixo;Varjão;1ª SEXTA-FEIRA;N;WedDouD7xqsoosXD8;7;Gabriel Martins;Luis Dias;T;-17.1038432;-49.6132906;DN;", //okk
+            "Independência Mansões I;Aparecida;1ª SEXTA-FEIRA;N;HB5VegSFgms4WMGj7;6;Ricardo campelo;;T;-16.8177671;-49.3152845;DN 6N (RJM DM);", //ok
+            "Residencial Mar Del Plata;Goiânia;4ª SEXTA-FEIRA;N;KL3hP3EnU6FFn7Em6;1;André Lisboa;Ricardo Rosemberg;T;-16.6642469;-49.1795721;DN 5N (RJM DM);", //ok
+            "Santo Hilário;Goiânia;1ª SEXTA-FEIRA;N;ofo9X9vxfmm6zjbo6;1;GUILHERME DE SOUZA;RICARDO ROSEMBERGUE;T;-16.6478506;-49.1919926; DN 4N (RJM DM);", //ok
+            "Ana Rosa;Trindade;1ª SEXTA-FEIRA;N;MGQt18SFYHxPvpKj8;7;;Uaslei;T;-16.6686;-49.4844007;2N SN (RJM DM);", //ok
+            "Vargem Bonita;Senador Canedo;2º SáBADO;N;x7evhRndRAqxmaWb9;8;Welber;Rogério;T;-16.753231;-49.1364692;DN 5N (RJM DM);", //ok
+            "Setor Estrela Dalva;Goiânia;1ª SEXTA-FEIRA;N;DJJ1EU8izHd3iVkh6;4;Jardel Mendes;Jackson;T;-16.6023639;-49.3233046;DN 4N 6N (RJM DM);", //ok
+            "Jardim Ipanema;Aparecida;1º SáBADO;T;8gmFtFfCeVx2NvVx7;6;João Evangelista;;T;-16.7926965;-49.2432523;3N SN (RJM DM);", // ok
+            "Setor Perim;Goiânia;1º SáBADO;T;jBCcBz3r4Ko1LF3o7;5;Antonio Lima;Rogerio Rosemberg;T;-16.6467999;-49.2987273;5N SN (RJM DM);", //ok
+            "Setor Palmito;Goiânia;1º SáBADO;T;E69xLgXvoczuWuhM8;1;Paulo Basil;RICARDO ROSEMBERGUE;T;-16.6751354;-49.2103369;DN 3N SN (RJM DM);", //ok
+            "Setor Goiânia Viva;Goiânia;1º SáBADO;T;KdGCYm1SVy7Qxfqc6;3;Lamartines;José Humberto;T;-16.7310459;-49.4522408;5N SN;", //ok
+            "Residencial Morada do Ipê;Goiânia;4ª SEXTA-FEIRA;N;GksGsiGsrxWWGYe99;5;Divino da Paixão;Rogerio Rosemberg;T;-16.5899707;-49.2623225;(4N 20:00) SN (RJM DM);", //ok
+            "Residencial Íris Ville;Goiânia;1º SáBADO;T;VyEhWKcqUz2NdD5U7;1;MARCELLO OLIVEIRA;HELTON RICARDO;T;-16.6396134;-49.1572064;(4N 20:00) SN (RJM DM);", //ok
+            "Real Conquista;Goiânia;1º SáBADO;N;T3PugKZyNpHAMAg56;2;Adriel;Pedro Pimenta;T;-16.7763303;-49.3872159;DN 5N (RJM DM);", //ok
+            "Parque das Flores;Goiânia;1º SáBADO;T;MuWhXkmKDwNGgEXh8;4;Cícero Vicente;Davi Borges;T;-16.6271508;-49.2884178;4N SN (RJM DM);", //ok
+            "Chácara Céu Azul;Goiânia;1º SáBADO;T;Z6jVPKW89bh8zWHc8;4;Ivon Ribeiro;Davi Borges;T;-16.5853565;-49.31812;3N SN (RJM DM);", //ok
+            "Distrito de Nova Fátima;Hidrolândia;2º DOMINGO;T;Jitgq66ePpp4BaLK8;6;Márcio Souza;;T;-16.9023773;-49.3250926;DN 4N (RJM DM);", //ok
+            "Setor Vale do Sol;Aparecida;2º DOMINGO;T;zJzwGSJbX4NTYQAe8;6;Samuel Jefferson;;T;-16.7887294;-49.2209691;DN 4N (RJM DM);", //ok
+            "Setor Serra Dourada III;Aparecida;2º DOMINGO;T;WYJtMZjDUu5pUgLx7;6;Chales Anderso;;T;-16.8300943;-49.2592951;DN 3N SN (RJM DM);", //ok
+            "Setor Marista Sul;Aparecida;2º DOMINGO;T;pJatAUUpBst8VipH8;6;Wenderson;;T;-16.8312452;-49.2780967;DN 4N 6N (RJM DM);", //ok
+            "Residencial Caraíbas;Aparecida;2º DOMINGO;T;KuwxTZAzTQ57avH67;6;Marcos Bezerra;;T;-16.7811279;-49.3462543;DN 3N 6N (RJM DM);", //ok
+            "Residencial Santa Luzia;Aparecida;2º DOMINGO;T;Hfbyg7kU1orKdBJ8A;6;Joel Aminadabe;;T;-16.7573485;-49.227953;DN 5N (RJM DM);", //ok
+            "Rosa dos Ventos;Aparecida;2º DOMINGO;T;t5fpJLTsZcZa7too7;6;Jerson Alves;;T;-16.8471997;-49.2389018;DN 5N (RJM DM);", //ok
+            "Jardim das Cascatas;Aparecida;2º DOMINGO;T;c88qH1kAHEnyCLV7A;6;Júnior César;;T;-16.8185595;-49.3313745;DN 3N 6N (RJM DM);", //ok
+            "Cidade Vera Cruz I;Aparecida;2º DOMINGO;T;8z925WBJfg1RC2oE6;6;Helington Lima;;T;-16.7763021;-49.332864;DN 3N 5N (RJM DM);", //ok
+            "Vila Santa Helena;Goiânia;2º DOMINGO;T;8bbzMas2TnnVDXNy8;5;Dinilson Bernardes;Doralino;T;-16.6581315;-49.2869145;DN 2N 5N (RJM DM);", //ok
+            "Vila Pedroso;Goiânia;2º DOMINGO;T;H7qLWAEgHB1G2udx7;1;JOSE VITOR;RICARDO ROSEMBERGUE;T;-16.6583962;-49.1815321;DN 3N SN (RJM DM);13/09/2026", //ok
+            "Setor Jaó;Goiânia;2º DOMINGO;T;TNb2ePXS5rQuxJx26;5;Gleydson;Rogerio Rosemberg;T;-16.6411345;-49.228488;DN (2N 20:00) 5N (RJM DM);",
             "Setor Noroeste-Marabá;Goiânia;2º DOMINGO;T;JdMpUusT9jvbXuAY9;3;Átila Vasques;Nereu;T;-16.6412358;-49.3148354;DN 5N;",
             "Setor Finsocial;Goiânia;2º DOMINGO;T;LhYD3ZknK7MNH1tXA;4;;Túlio Marcos;T;-16.6197631;-49.3187812;DN 4N 6T SN;",
             "Setor Alto do Vale;Goiânia;3º DOMINGO;T;qPrJpePnWe5WCLh6A;4;Tiago;Túlio Marcos;T;-16.6141671;-49.3099245;DN 5N;",
@@ -241,7 +241,7 @@
             "ITAGUARI;Itaguari;5º SÁBADO;T;hmkta1jeoTnfJj7RA;10;;;T;-15.9187192;-49.6020129;DN 3N 5N;20/09/2026",
             "ORDALIA;Itauçu;5º SÁBADO;T;AnRSiHpmmBGFzVqo9;10;;;T;-16.2093576;-49.7357894;DN 5N;",
             "Vila Socorro;Abadia;3ª SEGUNDA-FEIRA;N;z9kAqqEo7CMudms47;7;Diogo;Nereu;T;-16.7192162;-49.4341354;4N SN;",
-            "Santo Antônio de Goiás;Santo Antônio de Goiás;2ª SEXTA-FEIRA;N;JDVBRBe7gJxw3sQP6;10;Daniel Vieira;Gilton Pereira;T;-16.4874364;-49.3106424;DN 4N;",
+            "Santo Antônio de Goiás;Santo Antônio de Goiás;2º SÁBADO;N;JDVBRBe7gJxw3sQP6;10;Daniel Vieira;Gilton Pereira;T;-16.4874364;-49.3106424;DN 4N;",
             "<B>Central - Anicuns</B>;<B>Anicuns</B>;1º SÁBADO;<B>N</B>;xigt3JEX3779AxsF7;7;Itamar;Jackson;T;-16.457100306491736;-49.96682791886014;;12/07/2026",
             "<B>Central - Avelinópolis</B>;<B>Avelinópolis</B>;;<B>N</B>;r2fcUrhT1xb4wfjw9;7;Luiz Cláudio;Jackson;T;-16.467250288620487;-49.76033178969629;;",
             "<B>Central - Nazário</B>;<B>Nazário</B>;3º DOMINGO;<B>T</B>;xYu57f4yPQZDjYRN7;7;;Jackson;T;-16.586661532981644;-49.88542322792637;;",
@@ -254,9 +254,9 @@
             "Solar Sao Francisco;Trindade;;N;AwcSY8Ks9BASumbi9;7;;;T;-16.5730941;-49.4172667;2N SN;",
             "Povoado Santa Maria;Trindade;;N;aNXXjWUV4CYtm4sK9;7;;;T;-16.7455723;-49.6073325;2N SN;",
             "Povoado Capelinha;Anicuns;;N;xigt3JEX3779AxsF7;7;Itamar;Jackson;T;-16.457100306491736;-49.96682791886014;;12/07/2026",
-            "Cezarina-Central;Cezarina;2ª SEXTA-FEIRA;N;a1wQvArnHkKFhp1B7;11;Luiz Dario;Samuel;T;-16.974271;-49.7740941;DN 5N;",
-            "Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;Gilton Pereira;T;-16.3977085;-49.2673413;3N 6N;",
-            "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;",
-            "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;3N 6N;",
-            "Fazenda Estrela Guia-Poço Dagua 2;Leopoldo Bulhões;2º SáBADO;T;xPPTX85qLutP7EKE8;5;Josué Silva;;T;-16.6419017;-48.8785743;DN 3N;",
+            "Cezarina-Central;Cezarina;2ª SEXTA-FEIRA;N;a1wQvArnHkKFhp1B7;11;Luiz Dario;Samuel;T;-16.974271;-49.7740941;DN 5N (RJM-DM);",
+            "Parque Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;Gilton Pereira;T;-16.3977085;-49.2673413;4N 6N (RJM-DM);",
+            "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;Gilton Pereira;T;-16.410909;-49.2428934;DN 4N(RJM-DM);",
+            "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;DN 5N SN (RJM-DM);",
+            "Fazenda Estrela Guia-Poço Dagua 2;Leopoldo Bulhões;2º SáBADO;T;xPPTX85qLutP7EKE8;5;Josué Silva;;T;-16.6419017;-48.8785743;SN;",
         ];
