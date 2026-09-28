@@ -257,7 +257,5 @@
             "Parque Dom Bosco;Nerópolis;1ª TERÇA-FEIRA;N;m7nYuqH6e7qY4fcg6;10;Eliel Claudiano;Gilton Pereira;T;-16.3977085;-49.2673413;4N+6N+RJM DM;", //ok
             "Setor Sul;Nerópolis;2ª TERÇA-FEIRA;N;sQ5g8FeWvuyHHRFi7;10;Gilmar Deraldino;Gilton Pereira;T;-16.410909;-49.2428934;DN+4N+RJM DM;", //ok
             "<B>Parque das Américas(Central)</B>;<B>Nerópolis</B>;3ª TERÇA-FEIRA;N;fbR3tu2mbx6aHQT1A;10;Daneil Tomaz;Gilton Pereira;T;-16.410909;-49.2428934;DN+5N+SN+RJM-DM;", //ok
-            "Fazenda Estrela Guia-Poço Dagua 2;Leopoldo Bulhões;2º SáBADO;T;xPPTX85qLutP7EKE8;5;Josué Silva;;T;-16.6419017;-48.8785743;SN;" //ok
+            "Fazenda Estrela Guia-Poço Dagua 2;Leopoldo Bulhões;2º SáBADO;T;xPPTX85qLutP7EKE8;5;Josué Silva;Rogerio Rosemberg;T;-16.6419017;-48.8785743;SN;" //ok
         ];
-
-
