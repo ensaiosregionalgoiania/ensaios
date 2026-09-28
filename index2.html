@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ensaios Locais e Regionais Goiânia</title>
-    
+
     <link rel="icon" type="image/png" href="logo-192.png">
     <link rel="apple-touch-icon" href="logo-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Ensaios">
     <link rel="manifest" href="manifest.json">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -363,11 +364,9 @@
             display: flex;
         }
 
-        /* Wrapper apenas para posicionar as setas sobre o container */
         #convite-wrapper {
             position: relative;
             display: inline-block;
-            /* O tamanho é totalmente determinado pelo #convite-container */
         }
 
         #convite-container {
@@ -385,7 +384,6 @@
             touch-action: pan-y;
         }
 
-        /* Setas SOBREPOSTAS (absolute) */
         .seta-convite {
             position: absolute;
             top: 50%;
@@ -417,7 +415,6 @@
         #seta-esquerda { left: 8px; }
         #seta-direita  { right: 8px; }
 
-        /* Indicador do modelo (sobreposto no topo) */
         #indicador-modelo {
             position: absolute;
             top: 10px;
@@ -444,9 +441,6 @@
             pointer-events: auto;
         }
 
-        /* ============================================================
-           DIV TOPO: ENSAIO + IGREJA + HOJE
-           ============================================================ */
         #DivTopo {
             display: flex;
             flex-direction: column;
@@ -488,9 +482,6 @@
             display: inline-block;
         }
 
-        /* ============================================================
-           DIV DATA / HORA / LOCALIZADOR
-           ============================================================ */
         #DivDataHoraLocalizador {
             display: flex;
             flex-direction: column;
@@ -608,7 +599,6 @@
         .btn-compartilhar { background: #25D366; }
         .btn-fechar { background: #e74c3c; }
 
-        /* ===== TELA DE AGUARDE ===== */
         #aguarde-overlay {
             display: none;
             position: fixed;
@@ -686,9 +676,30 @@
             .detalhes-content td { border: 1px solid #ccc; }
             h1 { color: #000 !important; font-size: 12pt; }
         }
+
+        /* ===== OVERLAY DE CARREGAMENTO DOS DADOS ===== */
+        #carregando-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            z-index: 2500;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #carregando-overlay.hidden { display: none; }
+        #carregando-overlay p { color: #2c3e50; font-size: 16px; margin-top: 15px; }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY DE CARREGAMENTO -->
+    <div id="carregando-overlay">
+        <div class="spinner" style="border-top-color:#3498db;"></div>
+        <p>📥 Carregando dados do banco...</p>
+    </div>
 
     <button class="menu1" id="menu-btn">Menu</button>
     <div class="overlay" id="overlay"></div>
@@ -748,21 +759,15 @@
         </table>
     </div>
 
-    <!-- ===== OVERLAY DO CONVITE (SETAS SOBREPOSTAS) ===== -->
+    <!-- ===== OVERLAY DO CONVITE ===== -->
     <div id="convite-overlay">
         <div id="convite-wrapper">
             <div id="convite-container">
-                <!-- Setas SOBREPOSTAS -->
                 <button class="seta-convite" id="seta-esquerda" title="Convite anterior">‹</button>
                 <button class="seta-convite" id="seta-direita" title="Próximo convite">›</button>
-
-                <!-- Indicador do modelo -->
                 <div id="indicador-modelo">Convite 21 • 1 / 18</div>
-
-                <!-- Botão fechar -->
                 <button class="btn-fechar-convite" id="btn-fechar-convite">✕</button>
 
-                <!-- Campos do convite -->
                 <div id="DivTopo" class="convite-campo">
                     <div id="DivEnsaio">Ensaio Local</div>
                     <div id="DivIgreja">Nome da Igreja</div>
@@ -807,156 +812,168 @@
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- 📥 MÓDULO FIREBASE — carrega dados e expõe via window          -->
+    <!-- ============================================================ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // ⚙️ COLE AQUI O SEU firebaseConfig COMPLETO
+        const firebaseConfig = {
+            apiKey: "AIzaSy...",
+            authDomain: "ensaiosccb.firebaseapp.com",
+            projectId: "ensaiosccb",
+            storageBucket: "ensaiosccb.appspot.com",
+            messagingSenderId: "991202757411",
+            appId: "1:991202757411:web:..."
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db  = getFirestore(app);
+
+        const DIAS = [
+            'DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA',
+            'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'
+        ];
+
+        function recomporDiaEnsaio(semana, diaSemana) {
+            if (!semana || diaSemana === null || diaSemana === undefined) return '';
+            const nome = DIAS[diaSemana] || '';
+            const ordinal = (diaSemana === 0 || diaSemana === 6) ? 'º' : 'ª';
+            return `${semana}${ordinal} ${nome}`;
+        }
+
+        function safe(v, fallback = '') {
+            return (v === undefined || v === null) ? fallback : v;
+        }
+
+        function timestampParaStrBR(ts) {
+            if (!ts) return '';
+            try {
+                const d = ts.toDate ? ts.toDate() : new Date(ts.seconds * 1000);
+                return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+            } catch (e) {
+                return String(ts);
+            }
+        }
+
+        async function carregarTudo() {
+            console.log("🔥 Carregando dados do Firestore...");
+
+            const mapCidades   = {};
+            const mapRegionais = {};
+
+            const [snapCidades, snapSetores, snapRegionais, snapEnsaios] = await Promise.all([
+                getDocs(collection(db, "cidades")),
+                getDocs(collection(db, "setores")),
+                getDocs(collection(db, "encarregadosRegionais")),
+                getDocs(collection(db, "ensaios"))
+            ]);
+
+            snapCidades.forEach(d => { mapCidades[d.id] = d.data().nome || ''; });
+            snapRegionais.forEach(d => { mapRegionais[d.id] = d.data().nome || ''; });
+
+            console.log(`📚 cidades=${snapCidades.size}, setores=${snapSetores.size}, regionais=${snapRegionais.size}, ensaios=${snapEnsaios.size}`);
+
+            // --- SETORES: monta array "id;nome" no formato antigo do setor.js ---
+            const setorArray = [];
+            snapSetores.forEach(d => {
+                const data = d.data();
+                // se o ID é numérico, ordena antes de exportar
+                setorArray.push({ id: parseInt(d.id) || d.id, texto: `${d.id};${data.nome || ''}` });
+            });
+            setorArray.sort((a, b) => {
+                const na = typeof a.id === 'number' ? a.id : 999;
+                const nb = typeof b.id === 'number' ? b.id : 999;
+                return na - nb;
+            });
+            const setoresFormatados = setorArray.map(x => x.texto);
+
+            // --- ENSAIOS: reconstrói strings no formato antigo ---
+            const linhas = [];
+            snapEnsaios.forEach(d => {
+                const e = d.data();
+
+                const diaEnsaio   = recomporDiaEnsaio(e.semana, e.diaSemana);
+                const cidadeNome  = e.cidadeId ? (mapCidades[e.cidadeId] || e.cidadeId) : '';
+                const setorNum    = safe(e.setorId, '');
+                const encRegional = e.encarregadoRegionalId
+                    ? (mapRegionais[e.encarregadoRegionalId] || e.encarregadoRegionalId)
+                    : '';
+
+                const diasCultoStr = Array.isArray(e.diasCulto) ? e.diasCulto.join('+') : safe(e.diasCulto, '');
+                const ensaioReg    = (e.ensaioRegional && typeof e.ensaioRegional === 'object')
+                    ? timestampParaStrBR(e.ensaioRegional)
+                    : safe(e.ensaioRegional, '');
+
+                const linha = [
+                    safe(e.nome, ''),
+                    cidadeNome,
+                    diaEnsaio,
+                    safe(e.horaEnsaio, 'T'),
+                    safe(e.enderecoMaps, ''),
+                    setorNum,
+                    safe(e.encarregadoLocal, ''),
+                    encRegional,
+                    safe(e.meses, 'T'),
+                    (e.latitude  ?? ''),
+                    (e.longitude ?? ''),
+                    diasCultoStr,
+                    ensaioReg
+                ].join(';');
+
+                linhas.push(linha);
+            });
+
+            // expõe globalmente
+            window.dadosCarregados = linhas;
+            window.setorCarregado  = setoresFormatados;
+
+            console.log(`✅ ${linhas.length} ensaios e ${setoresFormatados.length} setores carregados.`);
+
+            window.dispatchEvent(new Event('dadosProntos'));
+        }
+
+        carregarTudo().catch(err => {
+            console.error("❌ Erro ao carregar Firestore:", err);
+            window.dadosCarregados = null;
+            window.setorCarregado  = null;
+            window.dispatchEvent(new Event('dadosProntos'));
+        });
+    </script>
+
+    <!-- Fallbacks opcionais (só usados se Firestore falhar) -->
     <script src="dados.js"></script>
     <script src="setor.js"></script>
-    
+
+    <!-- ============================================================ -->
+    <!-- 📜 SCRIPT PRINCIPAL                                            -->
+    <!-- ============================================================ -->
     <script>
     // ============================================================
     // VETOR DE CONFIGURAÇÕES DOS CONVITES
     // ============================================================
     const CONVITES = {
-        'convite01': {
-            imagem: 'convite01.png',
-            campos: {
-                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '45%', left: '25%' }
-            }
-        },
-        'convite06': {
-            imagem: 'convite06.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '48%', left: '5%' }
-            }
-        },
-        'convite07': {
-            imagem: 'convite07.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '10%' }
-            },
-            estilos: {
-                DivDataDHL: { color: '#ffffff' },
-                DivHoraDHL: { color: '#ffffff' },
-                DivtextoDataDHL: { color: '#ffffff' },
-                DivtextoHoraDHL: { color: '#ffffff' }
-            }
-        },
-        'convite09': {
-            imagem: 'convite09.png',
-            campos: {
-                topo: { top: '15%', left: '60%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '25%' }
-            }
-        },
-        'convite10': {
-            imagem: 'convite10.png',
-            campos: {
-                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '10%' }
-            }
-        },
-        'convite11': {
-            imagem: 'convite11.png',
-            campos: {
-                topo: { top: '15%', left: '45%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '55%', left: '28%' }
-            }
-        },
-        'convite12': {
-            imagem: 'convite12.png',
-            campos: {
-                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '15%' }
-            }
-        },
-        'convite13': {
-            imagem: 'convite13.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '20%' }
-            }
-        },
-        'convite14': {
-            imagem: 'convite14.png',
-            campos: {
-                topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '10%' }
-            }
-        },
-        'convite15': {
-            imagem: 'convite15.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '50%', left: '10%' }
-            }
-        },
-        'convite16': {
-            imagem: 'convite16.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '55%', left: '10%' }
-            }
-        },
-        'convite17': {
-            imagem: 'convite17.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '50%', left: '35%' }
-            },
-            estilos: {
-                DivIgreja: { color: 'yellow' },
-                DivDataDHL: { color: '#ffffff' },
-                DivHoraDHL: { color: '#ffffff' },
-                DivtextoDataDHL: { color: '#ffffff' },
-                DivtextoHoraDHL: { color: '#ffffff' }
-            }
-        },
-        'convite18': {
-            imagem: 'convite18.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '25%' }
-            }
-        },
-        'convite19': {
-            imagem: 'convite19.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '25%' }
-            }
-        },
-        'convite20': {
-            imagem: 'convite20.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '23%' }
-            },
-            estilos: {
-                DivIgreja: { color: 'yellow' },
-                DivDataDHL: { color: '#ffffff' },
-                DivHoraDHL: { color: '#ffffff' },
-                DivtextoDataDHL: { color: '#ffffff' },
-                DivtextoHoraDHL: { color: '#ffffff' }
-            }
-        },
-        'convite21': {
-            imagem: 'convite21.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '5%' }
-            }
-        },
-        'convite22': {
-            imagem: 'convite22.png',
-            campos: {
-                topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' },
-                dataHoraLocalizador: { top: '60%', left: '5%' }
-            }
-        }
+        'convite01': { imagem: 'convite01.png', campos: { topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '45%', left: '25%' } } },
+        'convite06': { imagem: 'convite06.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '48%', left: '5%' } } },
+        'convite07': { imagem: 'convite07.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '10%' } }, estilos: { DivDataDHL: { color: '#ffffff' }, DivHoraDHL: { color: '#ffffff' }, DivtextoDataDHL: { color: '#ffffff' }, DivtextoHoraDHL: { color: '#ffffff' } } },
+        'convite09': { imagem: 'convite09.png', campos: { topo: { top: '15%', left: '60%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '25%' } } },
+        'convite10': { imagem: 'convite10.png', campos: { topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '10%' } } },
+        'convite11': { imagem: 'convite11.png', campos: { topo: { top: '15%', left: '45%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '55%', left: '28%' } } },
+        'convite12': { imagem: 'convite12.png', campos: { topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '15%' } } },
+        'convite13': { imagem: 'convite13.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '20%' } } },
+        'convite14': { imagem: 'convite14.png', campos: { topo: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '10%' } } },
+        'convite15': { imagem: 'convite15.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '50%', left: '10%' } } },
+        'convite16': { imagem: 'convite16.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '55%', left: '10%' } } },
+        'convite17': { imagem: 'convite17.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '50%', left: '35%' } }, estilos: { DivIgreja: { color: 'yellow' }, DivDataDHL: { color: '#ffffff' }, DivHoraDHL: { color: '#ffffff' }, DivtextoDataDHL: { color: '#ffffff' }, DivtextoHoraDHL: { color: '#ffffff' } } },
+        'convite18': { imagem: 'convite18.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '25%' } } },
+        'convite19': { imagem: 'convite19.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '25%' } } },
+        'convite20': { imagem: 'convite20.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '23%' } }, estilos: { DivIgreja: { color: 'yellow' }, DivDataDHL: { color: '#ffffff' }, DivHoraDHL: { color: '#ffffff' }, DivtextoDataDHL: { color: '#ffffff' }, DivtextoHoraDHL: { color: '#ffffff' } } },
+        'convite21': { imagem: 'convite21.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '5%' } } },
+        'convite22': { imagem: 'convite22.png', campos: { topo: { top: '8%', left: '50%', transform: 'translateX(-50%)', width: '90%' }, dataHoraLocalizador: { top: '60%', left: '5%' } } }
     };
 
-    // Lista ordenada de chaves de modelos
     const MODELOS_ORDENADOS = Object.keys(CONVITES).sort((a, b) => {
         const na = parseInt(a.replace(/\D/g, '')) || 0;
         const nb = parseInt(b.replace(/\D/g, '')) || 0;
@@ -964,9 +981,8 @@
     });
 
     // ============================================================
-    // CONFIGURAÇÕES GLOBAIS
+    // GLOBAIS
     // ============================================================
-
     window.linhasDados = [];
     let minhaLat = 0, minhaLon = 0;
     let ordemDistancia = true;
@@ -976,13 +992,16 @@
     if (!CONVITES[modeloConviteAtual]) {
         modeloConviteAtual = MODELOS_ORDENADOS[0];
     }
-
     let indexConviteAberto = null;
+
+    // Array de dados que o app consome (populado pelo Firestore OU dados.js)
+    var dadosFS = [];
+    // Array de setores (populado pelo Firestore OU setor.js)
+    var setoresFS = [];
 
     // ============================================================
     // FUNÇÕES AUXILIARES
     // ============================================================
-
     function isTodos(termo) {
         const t = termo.trim().toLowerCase();
         return t === 'todas' || t === 'todos';
@@ -1142,6 +1161,11 @@
 
     function getLocation() {
         return new Promise((resolve) => {
+            // Se já temos localização válida, resolve direto
+            if (minhaLat !== 0 && minhaLon !== 0) {
+                resolve({ minhaLat, minhaLon });
+                return;
+            }
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -1150,10 +1174,11 @@
                         resolve({ minhaLat, minhaLon });
                     },
                     (error) => {
-                        console.error(error);
+                        // silencioso — só usa padrão
                         usarLocalizacaoPadrao();
                         resolve({ minhaLat, minhaLon });
-                    }
+                    },
+                    { timeout: 5000 }
                 );
             } else {
                 usarLocalizacaoPadrao();
@@ -1168,9 +1193,8 @@
     }
 
     // ============================================================
-    // NAVEGAÇÃO ENTRE CONVITES (SETAS + SWIPE)
+    // NAVEGAÇÃO ENTRE CONVITES
     // ============================================================
-
     function atualizarIndicadorModelo() {
         const total = MODELOS_ORDENADOS.length;
         const pos = MODELOS_ORDENADOS.indexOf(modeloConviteAtual) + 1;
@@ -1183,16 +1207,12 @@
 
     function trocarModeloConvite(direcao) {
         if (indexConviteAberto === null) return;
-
         const total = MODELOS_ORDENADOS.length;
         let pos = MODELOS_ORDENADOS.indexOf(modeloConviteAtual);
         if (pos < 0) pos = 0;
-
         pos = (pos + direcao + total) % total;
-
         modeloConviteAtual = MODELOS_ORDENADOS[pos];
         localStorage.setItem('modeloConviteEscolhido', modeloConviteAtual);
-
         const dadosLinha = window.linhasDados[indexConviteAberto];
         if (dadosLinha) {
             preencherConvite(dadosLinha, modeloConviteAtual, true);
@@ -1202,99 +1222,69 @@
     function conviteAnterior() { trocarModeloConvite(-1); }
     function conviteProximo()  { trocarModeloConvite(1); }
 
-    // ============================================================
-    // SWIPE (arrastar com o dedo)
-    // ============================================================
-
     function configurarSwipe() {
         const alvo = document.getElementById('convite-container');
         if (!alvo) return;
-
-        let startX = 0;
-        let startY = 0;
-        let startTime = 0;
-        const LIMIAR = 40;        // pixels mínimos para considerar swipe
-        const TEMPO_MAX = 800;    // ms máximos
-
+        let startX = 0, startY = 0, startTime = 0;
+        const LIMIAR = 40;
+        const TEMPO_MAX = 800;
         alvo.addEventListener('touchstart', (e) => {
             if (e.touches.length !== 1) return;
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
             startTime = Date.now();
         }, { passive: true });
-
         alvo.addEventListener('touchend', (e) => {
             if (e.changedTouches.length !== 1) return;
             const dx = e.changedTouches[0].clientX - startX;
             const dy = e.changedTouches[0].clientY - startY;
             const dt = Date.now() - startTime;
-
-            // Ignora se demorou demais ou se foi mais vertical que horizontal
             if (dt > TEMPO_MAX) return;
             if (Math.abs(dx) < LIMIAR) return;
             if (Math.abs(dy) > Math.abs(dx)) return;
-
-            if (dx < 0) {
-                // arrastou para a esquerda → próximo
-                conviteProximo();
-            } else {
-                // arrastou para a direita → anterior
-                conviteAnterior();
-            }
+            if (dx < 0) conviteProximo();
+            else conviteAnterior();
         }, { passive: true });
     }
 
     // ============================================================
-    // FUNÇÕES DE ORDENAÇÃO E TABELA
+    // ORDENAÇÃO E TABELA
     // ============================================================
-
     function ordenarTabelaAtual(inverter = true) {
         const tabela = document.getElementById('tabela-eventos');
         const tbody = tabela.querySelector('tbody');
         const eventosComDetalhes = [];
-
         tbody.querySelectorAll('tr[id^="evento-"]').forEach(linha => {
             const idNum = linha.id.replace('evento-', '');
             const detalhes = document.getElementById(`detalhes-${idNum}`);
             eventosComDetalhes.push({ evento: linha, detalhes });
         });
-
         const regional = document.getElementById('consulta-encarregado-regional').checked;
-
         eventosComDetalhes.sort((a, b) => {
-            let valorA = 0;
-            let valorB = 0;
-
+            let valorA = 0, valorB = 0;
             if (!regional) {
                 valorA = parseFloat(a.evento.cells[2].textContent.replace(',', '.')) || 0;
                 valorB = parseFloat(b.evento.cells[2].textContent.replace(',', '.')) || 0;
             } else {
                 const partesA = a.evento.cells[3].textContent.trim().split('/');
                 const partesB = b.evento.cells[3].textContent.trim().split('/');
-
                 if (partesA.length === 3 && partesB.length === 3) {
                     valorA = new Date(+partesA[2], +partesA[1] - 1, +partesA[0]).getTime();
                     valorB = new Date(+partesB[2], +partesB[1] - 1, +partesB[0]).getTime();
                 }
             }
-
             return ordemDistancia ? valorA - valorB : valorB - valorA;
         });
-
         eventosComDetalhes.forEach(item => {
             tbody.appendChild(item.evento);
             if (item.detalhes) tbody.appendChild(item.detalhes);
         });
-
         const seta = document.getElementById('Seta');
         if (seta) seta.textContent = ordemDistancia ? '▲' : '▼';
-
         if (inverter) ordemDistancia = !ordemDistancia;
     }
 
-    function trocaSeta() {
-        ordenarTabelaAtual(true);
-    }
+    function trocaSeta() { ordenarTabelaAtual(true); }
 
     function toggleDetalhes(index) {
         const detalhes = document.getElementById(`detalhes-${index}`);
@@ -1324,40 +1314,29 @@
     }
 
     // ============================================================
-    // FUNÇÕES DO CONVITE
+    // CONVITE
     // ============================================================
-
     function aplicarConfiguracaoConvite(modelo) {
         const config = CONVITES[modelo] || CONVITES[MODELOS_ORDENADOS[0]];
-
         const container = document.getElementById('convite-container');
         container.style.backgroundImage = `url('${config.imagem}')`;
         container.style.backgroundSize = '100% 100%';
         container.style.backgroundPosition = 'center';
         container.style.backgroundRepeat = 'no-repeat';
-
         const campos = config.campos;
         const elementos = {
             topo: document.getElementById('DivTopo'),
             dataHoraLocalizador: document.getElementById('DivDataHoraLocalizador')
         };
-
         for (let elemento of Object.values(elementos)) {
             if (!elemento) continue;
             elemento.removeAttribute('style');
         }
-
-        const idsInternos = [
-            'DivEnsaio', 'DivIgreja', 'DivHoje',
-            'DivDataDHL', 'DivHoraDHL',
-            'DivtextoDataDHL', 'DivtextoHoraDHL',
-            'DivLocalDHL'
-        ];
+        const idsInternos = ['DivEnsaio', 'DivIgreja', 'DivHoje', 'DivDataDHL', 'DivHoraDHL', 'DivtextoDataDHL', 'DivtextoHoraDHL', 'DivLocalDHL'];
         idsInternos.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.removeAttribute('style');
         });
-
         for (let [nome, elemento] of Object.entries(elementos)) {
             if (elemento && campos[nome]) {
                 const style = campos[nome];
@@ -1368,7 +1347,6 @@
                 elemento.style.pointerEvents = 'none';
             }
         }
-
         if (config.estilos) {
             for (let [id, props] of Object.entries(config.estilos)) {
                 const el = document.getElementById(id);
@@ -1378,69 +1356,44 @@
                 }
             }
         }
-
         return config;
     }
 
     function preencherConvite(dados, modelo, atualizarIndicador) {
         aplicarConfiguracaoConvite(modelo || modeloConviteAtual);
-
         const divEnsaio = document.getElementById('DivEnsaio');
         const divIgreja = document.getElementById('DivIgreja');
         const divHoje   = document.getElementById('DivHoje');
-
         const nomeIgreja = dados.local || 'Igreja';
         divIgreja.innerHTML = nomeIgreja;
-
         const textoPuro = nomeIgreja.replace(/<[^>]*>/g, '');
         const baseSize = 46;
-
-        if (textoPuro.length > 30) {
-            divIgreja.style.fontSize = (baseSize * 0.6) + 'px';
-        } else if (textoPuro.length > 25) {
-            divIgreja.style.fontSize = (baseSize * 0.7) + 'px';
-        } else if (textoPuro.length > 17) {
-            divIgreja.style.fontSize = (baseSize * 0.8) + 'px';
-        } else {
-            divIgreja.style.fontSize = '';
-        }
-
+        if (textoPuro.length > 30) divIgreja.style.fontSize = (baseSize * 0.6) + 'px';
+        else if (textoPuro.length > 25) divIgreja.style.fontSize = (baseSize * 0.7) + 'px';
+        else if (textoPuro.length > 17) divIgreja.style.fontSize = (baseSize * 0.8) + 'px';
+        else divIgreja.style.fontSize = '';
         divHoje.textContent = getDiaTexto(dados.dataFormatada);
         divEnsaio.textContent = 'Ensaio Local';
-
         let horaTexto = dados.horario;
         if (horaTexto === 'T') horaTexto = '17:00';
         else if (horaTexto === 'T1') horaTexto = '16:30';
         else if (horaTexto === 'N') horaTexto = '19:30';
         else horaTexto = horaTexto || '19:30';
-
         if (dados.localizacao) {
-            linkAtual = dados.localizacao.startsWith('http')
-                ? dados.localizacao
-                : `https://maps.app.goo.gl/${dados.localizacao}`;
+            linkAtual = dados.localizacao.startsWith('http') ? dados.localizacao : `https://maps.app.goo.gl/${dados.localizacao}`;
         } else {
             linkAtual = '';
         }
-
         const dataDHL = document.getElementById('DivDataDHL');
         if (dataDHL) dataDHL.textContent = dados.dataFormatada || '--/--/----';
-
         const horaDHL = document.getElementById('DivHoraDHL');
         if (horaDHL) horaDHL.textContent = horaTexto;
-
         const localDHL = document.getElementById('DivLocalDHL');
         if (localDHL) {
-            if (dados.localizacao) {
-                localDHL.innerHTML = `🔴👇`;
-            } else {
-                localDHL.textContent = '';
-            }
+            if (dados.localizacao) localDHL.innerHTML = `🔴👇`;
+            else localDHL.textContent = '';
         }
-
-        if (atualizarIndicador !== false) {
-            atualizarIndicadorModelo();
-        }
-
+        if (atualizarIndicador !== false) atualizarIndicadorModelo();
         const overlay = document.getElementById('convite-overlay');
         overlay.classList.add('ativo');
         overlay.style.display = 'flex';
@@ -1448,45 +1401,33 @@
 
     function isProximosDias(dataFormatada) {
         if (!dataFormatada || dataFormatada === 'Data não disponível') return false;
-
         const partes = dataFormatada.split('/');
         if (partes.length !== 3) return false;
-
         const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
         dataEvento.setHours(0, 0, 0, 0);
-
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
-
         const diffTime = dataEvento.getTime() - hoje.getTime();
         const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
         return diffDias >= 0 && diffDias <= 6;
     }
 
     function getDiaTexto(dataFormatada) {
         if (!dataFormatada || dataFormatada === 'Data não disponível') return '';
-
         const partes = dataFormatada.split('/');
         if (partes.length !== 3) return '';
-
         const dataEvento = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
         dataEvento.setHours(0, 0, 0, 0);
-
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
-
         const diffTime = dataEvento.getTime() - hoje.getTime();
         const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
         if (diffDias === 0) return 'HOJE';
         if (diffDias === 1) return 'AMANHÃ';
-
         const diasSemana = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
         const nomeDia = diasSemana[dataEvento.getDay()];
         const diasFemininos = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
         const artigo = diasFemininos.includes(nomeDia) ? 'PRÓXIMA' : 'PRÓXIMO';
-
         return `${artigo} ${nomeDia}`;
     }
 
@@ -1496,9 +1437,7 @@
             alert('Dados não disponíveis para este ensaio.');
             return;
         }
-
         indexConviteAberto = index;
-        console.log(`📌 Abrindo convite (index ${index}) com modelo: ${modeloConviteAtual}`);
         preencherConvite(dadosLinha, modeloConviteAtual, true);
     }
 
@@ -1509,49 +1448,33 @@
         indexConviteAberto = null;
     }
 
-    // ============================================================
-    // COMPARTILHAR COM WHATSAPP
-    // ============================================================
-
     function mostrarAguarde() {
         document.getElementById('aguarde-overlay').classList.add('ativo');
     }
-
     function esconderAguarde() {
         document.getElementById('aguarde-overlay').classList.remove('ativo');
     }
 
     function compartilharWhatsApp() {
         mostrarAguarde();
-
         let linkParaEnviar = linkAtual || '';
-
         if (!linkParaEnviar) {
             for (let i in window.linhasDados) {
                 const dados = window.linhasDados[i];
                 if (dados && dados.localizacao) {
-                    linkParaEnviar = dados.localizacao.startsWith('http')
-                        ? dados.localizacao
-                        : `https://maps.app.goo.gl/${dados.localizacao}`;
+                    linkParaEnviar = dados.localizacao.startsWith('http') ? dados.localizacao : `https://maps.app.goo.gl/${dados.localizacao}`;
                     break;
                 }
             }
         }
-
         let mensagem = linkParaEnviar ? `${linkParaEnviar}` : 'Localização não disponível';
-
         const container = document.getElementById('convite-container');
-
-        // Esconde os controles que NÃO devem aparecer na imagem final
-        const controles = container.querySelectorAll(
-            '.btn-fechar-convite, .botoes-convite, .seta-convite, #indicador-modelo'
-        );
+        const controles = container.querySelectorAll('.btn-fechar-convite, .botoes-convite, .seta-convite, #indicador-modelo');
         const originais = [];
         controles.forEach(el => {
             originais.push(el.style.display);
             el.style.display = 'none';
         });
-
         html2canvas(container, {
             scale: 4,
             useCORS: true,
@@ -1563,9 +1486,7 @@
                 controles.forEach((el, i) => {
                     el.style.display = originais[i] || '';
                 });
-
                 esconderAguarde();
-
                 if (navigator.share) {
                     const file = new File([blob], 'convite_ensaio.png', { type: 'image/png' });
                     navigator.share({
@@ -1604,10 +1525,9 @@
     }
 
     // ============================================================
-    // FUNÇÕES DA TABELA PRINCIPAL
+    // TABELA PRINCIPAL
     // ============================================================
-
-    function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario) {
+    function CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional, localizacao, descricaoDia, meses, horario, diasCulto) {
         const detalhesRow = tabela.insertRow();
         detalhesRow.className = 'detalhes-content';
         detalhesRow.id = `detalhes-${index}`;
@@ -1619,10 +1539,8 @@
         else if (meses == "3M1") complemento = " - Meses JAN, ABR, JUL e OUT";
         else if (meses == "3M2") complemento = " - Meses FEV, MAI, AGO e NOV";
         else if (meses == "3M3") complemento = " - Meses MAR, JUN, SET e DEZ";
-
         let horaTexto = horario == "T" ? "17:00" : horario == "T1" ? '16:30' : "19:30";
         const diaTexto = descricaoDia.replace(/5º/g, 'ÚLTIMO').replace(/5ª/g, 'ÚLTIMA');
-
         detalhesCell.innerHTML = `
             <table style="width:100%;border-collapse:collapse;font-size:12px;">
                 <tr style="border:1px solid #e67e22;">
@@ -1630,10 +1548,15 @@
                     <td style="padding:4px;"><strong>Hora:</strong> ${horaTexto}</td>
                     <td style="padding:4px;"><strong>Enc Local:</strong> ${encarregadoLocal || 'Não informado'}</td>
                     <td style="padding:4px;"><strong>Enc Regional:</strong> ${encarregadoRegional || 'Não informado'}</td>
-                    <td style="padding:4px;text-align:center;">
+                    <td style="padding:4px;text-align:center;" rowspan="2">
                         <button class="btn-maps" onclick="abrirMaps('${localizacao}')" style="height:60px;width:40px;font-size:10px;">
                             <div class="vertical-text">MAPS</div>
                         </button>
+                    </td>
+                </tr>
+                <tr style="border:1px solid #e67e22;">
+                    <td style="padding:4px;" colspan="4">
+                        ${formatarDiasCulto(diasCulto)}
                     </td>
                 </tr>
             </table>`;
@@ -1644,27 +1567,22 @@
         row.id = `evento-${index}`;
         row.insertCell(0).innerHTML = local || '---';
         row.insertCell(1).innerHTML = cidade || '---';
-
         const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
         let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
         row.insertCell(2).textContent = distanciaAtual;
-
         if (document.getElementById('consulta-encarregado-regional').checked == false) {
             row.insertCell(3).textContent = dataString(dataFormatada);
         } else {
             row.insertCell(3).textContent = dataFormatada;
         }
-
         const acoesCell = row.insertCell(4);
         acoesCell.style.textAlign = "center";
         acoesCell.style.whiteSpace = "nowrap";
-
         const expandirBtn = document.createElement('button');
         expandirBtn.className = 'btn-expandir';
         expandirBtn.textContent = '+';
         expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
         acoesCell.appendChild(expandirBtn);
-
         const temConvite = isProximosDias(dataFormatada);
         if (temConvite) {
             const conviteBtn = document.createElement('button');
@@ -1674,7 +1592,6 @@
             conviteBtn.onclick = (e) => { e.stopPropagation(); abrirConvite(index); };
             acoesCell.appendChild(conviteBtn);
         }
-
         window.linhasDados[index] = {
             local, cidade, dataFormatada, horario, localizacao, setor,
             encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
@@ -1682,9 +1599,8 @@
     }
 
     // ============================================================
-    // FUNÇÕES DE CONSULTA
+    // CONSULTAS
     // ============================================================
-
     function preencherSelectDatas() {
         const select = document.getElementById('data-select');
         const hoje = new Date();
@@ -1705,41 +1621,32 @@
     async function gerarTabelaPorData(dataInformada) {
         await getLocation();
         document.getElementById('btn-imprimir-data').disabled = false;
-
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
         if (checkboxes.length === 0) {
             alert("Nenhuma cidade foi selecionada.");
             return;
         }
-
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
-
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-
         const [diaStr, mesStr, anoStr] = dataInformada.split('/');
         const dia = parseInt(diaStr);
         const mes = parseInt(mesStr);
         const ano = parseInt(anoStr);
         const ultimoDia = new Date(ano, mes, 0).getDate();
-
         let encontrouEventos = false;
         let index = 0;
-
-        if (typeof dados === 'undefined') {
-            alert('Arquivo dados.js não carregado ou vazio.');
+        if (!dadosFS || dadosFS.length === 0) {
+            alert('Dados não carregados.');
             return;
         }
-
-        dados.forEach(item => {
+        dadosFS.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
-                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
-
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto] = partes;
                 if (!deveExibirMes(mes, meses)) return;
-
                 let dataEvento = null;
                 if (dia >= 22 && dia <= 28) {
                     if (dia + 7 > ultimoDia) {
@@ -1750,7 +1657,6 @@
                 } else {
                     dataEvento = calcularDataEvento(descricaoDia, mes, ano);
                 }
-
                 if (dataEvento && dataEvento.getDate() === dia &&
                     dataEvento.getMonth() === mes - 1 &&
                     dataEvento.getFullYear() === ano) {
@@ -1759,14 +1665,13 @@
                             parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                             encarregadoLocal, encarregadoRegional, meses, descricaoDia);
                         CriaDetalhe(tabela, index, dataInformada, encarregadoLocal, encarregadoRegional,
-                            localizacao, descricaoDia, meses, horario);
+                            localizacao, descricaoDia, meses, horario, diasCulto);
                         index++;
                         encontrouEventos = true;
                     }
                 }
             } catch (e) { console.error('Erro ao processar item:', e); }
         });
-
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
@@ -1783,41 +1688,25 @@
         await getLocation();
         const termoOriginal = document.getElementById('casa-oracao-input').value.trim();
         const termo = TiraAcento(termoOriginal);
-        if (!termo) {
-            alert("Por favor, digite o nome da Casa de Oração CCB.");
-            return;
-        }
+        if (!termo) { alert("Por favor, digite o nome da Casa de Oração CCB."); return; }
         document.getElementById('btn-imprimir-casa-oracao').disabled = false;
-
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
-        if (checkboxes.length === 0) {
-            alert("Nenhuma cidade foi selecionada.");
-            return;
-        }
-
+        if (checkboxes.length === 0) { alert("Nenhuma cidade foi selecionada."); return; }
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
         const termoEhTodos = isTodos(termoOriginal);
         let encontrouEventos = false;
         let index = 0;
-
-        if (typeof dados === 'undefined') {
-            alert('Arquivo dados.js não carregado ou vazio.');
-            return;
-        }
-
-        dados.forEach(item => {
+        if (!dadosFS || dadosFS.length === 0) { alert('Dados não carregados.'); return; }
+        dadosFS.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
-                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
-
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto] = partes;
                 let localSemAcento = TiraAcento(local);
                 const localMatch = termoEhTodos || localSemAcento.includes(termo);
-
                 if (localMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
@@ -1825,67 +1714,47 @@
                         parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                         encarregadoLocal, encarregadoRegional, meses, descricaoDia);
                     CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional,
-                        localizacao, descricaoDia, meses, horario);
+                        localizacao, descricaoDia, meses, horario, diasCulto);
                     index++;
                     encontrouEventos = true;
                 }
             } catch (e) { console.error(e); }
         });
-
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
             cell.colSpan = 5;
             cell.textContent = "Nenhum ensaio encontrado para esta Casa de Oração.";
             cell.className = "no-events";
-        } else {
-            ordemDistancia = true;
-            ordenarTabelaAtual(false);
-        }
+        } else { ordemDistancia = true; ordenarTabelaAtual(false); }
     }
 
     async function consultarPorEncarregadoLocal() {
         await getLocation();
         const termoOriginal = document.getElementById('encarregado-local-input').value.trim();
         const termo = TiraAcento(termoOriginal);
-        if (!termo) {
-            alert("Por favor, digite o nome do Encarregado Local.");
-            return;
-        }
+        if (!termo) { alert("Por favor, digite o nome do Encarregado Local."); return; }
         document.getElementById('btn-imprimir-encarregado-local').disabled = false;
-
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
-        if (checkboxes.length === 0) {
-            alert("Nenhuma cidade foi selecionada.");
-            return;
-        }
-
+        if (checkboxes.length === 0) { alert("Nenhuma cidade foi selecionada."); return; }
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
         const termoEhTodos = isTodos(termoOriginal);
         let encontrouEventos = false;
         let index = 0;
-
-        if (typeof dados === 'undefined') {
-            alert('Arquivo dados.js não carregado ou vazio.');
-            return;
-        }
-
-        dados.forEach(item => {
+        if (!dadosFS || dadosFS.length === 0) { alert('Dados não carregados.'); return; }
+        dadosFS.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
-                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon] = partes;
-
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto] = partes;
                 let encLocalSemAcento = TiraAcento(encarregadoLocal);
                 let encRegionalSemAcento = TiraAcento(encarregadoRegional);
                 const encMatch = termoEhTodos ||
                     (encLocalSemAcento && encLocalSemAcento.includes(termo)) ||
                     (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
-
                 if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
                     const proximaData = calcularProximaData(descricaoDia, meses);
                     const dataFormatada = proximaData ? formatarData(proximaData) : "Data não disponível";
@@ -1893,23 +1762,19 @@
                         parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                         encarregadoLocal, encarregadoRegional, meses, descricaoDia);
                     CriaDetalhe(tabela, index, dataFormatada, encarregadoLocal, encarregadoRegional,
-                        localizacao, descricaoDia, meses, horario);
+                        localizacao, descricaoDia, meses, horario, diasCulto);
                     index++;
                     encontrouEventos = true;
                 }
             } catch (e) { console.error(e); }
         });
-
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
             cell.colSpan = 5;
             cell.textContent = "Nenhum ensaio encontrado para este Encarregado.";
             cell.className = "no-events";
-        } else {
-            ordemDistancia = true;
-            ordenarTabelaAtual(false);
-        }
+        } else { ordemDistancia = true; ordenarTabelaAtual(false); }
     }
 
     async function gerarTabelaPorEnsaioRegional() {
@@ -1917,34 +1782,22 @@
         const termoOriginal = document.getElementById('encarregado-regional-input').value.trim();
         const termo = TiraAcento(termoOriginal);
         document.getElementById('btn-imprimir-ensaio-regional').disabled = false;
-
         const tabela = document.querySelector('#tabela-eventos tbody');
         tabela.innerHTML = '';
-
         const checkboxes = document.querySelectorAll('input[name="cidade"]:checked');
-        if (checkboxes.length === 0) {
-            alert("Nenhuma cidade foi selecionada.");
-            return;
-        }
-
+        if (checkboxes.length === 0) { alert("Nenhuma cidade foi selecionada."); return; }
         let cidades = "|";
         checkboxes.forEach((checkbox) => { cidades += `|${checkbox.value}|`; });
         const termoEhTodos = isTodos(termoOriginal);
         let encontrouEventos = false;
         let index = 0;
         const hoje = new Date(new Date().setHours(0,0,0,0));
-
-        if (typeof dados === 'undefined') {
-            alert('Arquivo dados.js não carregado ou vazio.');
-            return;
-        }
-
-        dados.forEach(item => {
+        if (!dadosFS || dadosFS.length === 0) { alert('Dados não carregados.'); return; }
+        dadosFS.forEach(item => {
             try {
                 const partes = item.split(';');
                 if (partes.length < 13) return;
                 const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = partes;
-
                 if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
                     const partesData = dataEnsaioRegional.split('/');
                     if (partesData.length === 3) {
@@ -1953,18 +1806,15 @@
                         const ano = parseInt(partesData[2]);
                         const dataEvento = new Date(ano, mes, dia);
                         dataEvento.setHours(0,0,0,0);
-
                         if (dataEvento >= hoje) {
                             let encRegionalSemAcento = TiraAcento(encarregadoRegional);
-                            const encMatch = termoEhTodos ||
-                                (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
-
+                            const encMatch = termoEhTodos || (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
                             if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
                                 LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario,
                                     parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
                                     encarregadoLocal, encarregadoRegional, meses, descricaoDia);
                                 CriaDetalhe(tabela, index, dataEnsaioRegional, encarregadoLocal, encarregadoRegional,
-                                    localizacao, descricaoDia, meses, horario);
+                                    localizacao, descricaoDia, meses, horario, diasCulto);
                                 index++;
                                 encontrouEventos = true;
                             }
@@ -1973,33 +1823,26 @@
                 }
             } catch (e) { console.error(e); }
         });
-
         if (!encontrouEventos) {
             const row = tabela.insertRow();
             const cell = row.insertCell(0);
             cell.colSpan = 5;
             cell.textContent = "Nenhum ensaio regional futuro encontrado.";
             cell.className = "no-events";
-        } else {
-            ordemDistancia = true;
-            ordenarTabelaAtual(false);
-        }
+        } else { ordemDistancia = true; ordenarTabelaAtual(false); }
     }
 
     // ============================================================
-    // FUNÇÕES DE INTERFACE
+    // INTERFACE
     // ============================================================
-
     function alternarTipoConsulta() {
         const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
         const titulo = document.getElementById('Titulo');
         titulo.innerText = tipoConsulta === 'encarregado-regional' ? 'Ensaio Regional' : 'Ensaio Local';
-
         document.getElementById('consulta-data-group').classList.add('hidden');
         document.getElementById('consulta-casa-oracao-group').classList.add('hidden');
         document.getElementById('consulta-encarregado-local-group').classList.add('hidden');
         document.getElementById('consulta-encarregado-regional-group').classList.add('hidden');
-
         if (tipoConsulta === 'data') {
             document.getElementById('consulta-data-group').classList.remove('hidden');
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
@@ -2019,14 +1862,12 @@
     async function AlteraCidade() {
         await getLocation();
         const tipoConsulta = document.querySelector('input[name="tipo-consulta"]:checked').value;
-
         const todosCheckbox = document.getElementById('marcar-desmarcar-todos');
         const checkboxes = document.querySelectorAll('input[name="cidade"]');
         if (todosCheckbox && checkboxes.length > 0) {
             const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
             todosCheckbox.checked = todosMarcados;
         }
-
         if (tipoConsulta === 'data') {
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
             if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
@@ -2056,9 +1897,7 @@
                 case 'encarregado-local': titulo = 'Ensaio Local por Encarregado Local'; break;
                 case 'encarregado-regional': titulo = 'Ensaio Regional'; break;
             }
-
-            let html = `<!DOCTYPE html>
-            <html><head><meta charset="UTF-8"><title>${titulo}</title>
+            let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${titulo}</title>
             <style>
                 body{font-family:Arial;margin:15px;font-size:12px;}
                 h1{color:#2c3e50;text-align:center;margin-bottom:10px;}
@@ -2072,11 +1911,9 @@
                 <div class="header-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
                 <table class="main-table">
                     <tr><th>Local</th><th>Cidade</th><th>Data</th><th>Dia Ensaio</th><th>Hora</th><th>Enc Local</th><th>Enc Regional</th></tr>`;
-
             const tbody = document.querySelector('#tabela-eventos tbody');
             const linhas = tbody.querySelectorAll('tr');
             let Quantidade = 0;
-
             for (let i = 0; i < linhas.length; i++) {
                 const linha = linhas[i];
                 const celulas = linha.querySelectorAll('td');
@@ -2087,14 +1924,11 @@
                     const horaEnsaio = detalhesCelulas.length > 1 && detalhesCelulas[1] ? detalhesCelulas[1].textContent : '';
                     const encLocal = detalhesCelulas.length > 2 && detalhesCelulas[2] ? detalhesCelulas[2].textContent : '';
                     const encRegional = detalhesCelulas.length > 3 && detalhesCelulas[3] ? detalhesCelulas[3].textContent : '';
-
                     html += `<tr><td>${celulas[0].innerHTML}</td><td>${celulas[1].innerHTML}</td><td>${celulas[3].innerHTML}</td><td>${diaEnsaio}</td><td>${horaEnsaio}</td><td>${encLocal}</td><td>${encRegional}</td></tr>`;
                     Quantidade++;
                 }
             }
-
             html += `</table><div class="footer">Total de registros: ${Quantidade} | Sistema Ensaio Local</div></body></html>`;
-
             const janela = window.open('', '_blank');
             if (janela) {
                 janela.document.write(html);
@@ -2110,11 +1944,11 @@
     }
 
     function CriaMenu() {
-        if (typeof setor === 'undefined' || !setor || setor.length === 0) {
+        const setorArr = setoresFS && setoresFS.length > 0 ? setoresFS : [];
+        if (setorArr.length === 0) {
             document.getElementById('setor').innerHTML = '<p style="color:#888;">Nenhum setor disponível</p>';
             return;
         }
-
         let HTML = `
             <div class="filtro-opcao" style="border-bottom:1px solid #495057;margin-bottom:10px;padding-bottom:8px;">
                 <label style="font-weight:bold;color:#fff;">
@@ -2122,9 +1956,8 @@
                 </label>
             </div>
         `;
-
-        for (let i = 0; i < setor.length; i++) {
-            let setorSplit = setor[i].split(';');
+        for (let i = 0; i < setorArr.length; i++) {
+            let setorSplit = setorArr[i].split(';');
             if (setorSplit.length >= 2) {
                 HTML += `<div class="filtro-opcao">
                     <label>
@@ -2137,28 +1970,72 @@
     }
 
     // ============================================================
-    // EVENTOS E INICIALIZAÇÃO
+    // DIAS DE CULTO
     // ============================================================
+    const MAPA_DIA_SEMANA = {
+        'D': 'Domingo', '2': 'Segunda', '3': 'Terça',
+        '4': 'Quarta', '5': 'Quinta', '6': 'Sexta', 'S': 'Sábado'
+    };
+    const HORARIO_PADRAO = { 'N': '19:30', 'M': '09:30', 'T': '14:30' };
+    const CASOS_ESPECIAIS = {
+        'RJM DM': 'RJM Domingo - 10:00',
+        'RJM DN 19:30': 'Domingo - 19:30',
+        'RJM DT 16:00': 'Domingo - 16:00',
+        'RJM SN 18:00': 'Sábado - 18:00',
+        'RJM ST 17:00': 'Sábado - 17:00'
+    };
 
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof carregarPopup === 'function') {
-            setTimeout(carregarPopup, 500);
+    function traduzirToken(token) {
+        const t = token.trim().toUpperCase();
+        if (CASOS_ESPECIAIS[t]) {
+            return { texto: CASOS_ESPECIAIS[t], isRJM: t.startsWith('RJM') };
         }
+        const match = t.match(/^([D23456S])([NMT])\s+(\d{1,2}:\d{2})$/);
+        if (match) {
+            const dia = MAPA_DIA_SEMANA[match[1]];
+            return { texto: `${dia} - ${match[3]}`, isRJM: false };
+        }
+        const match2 = t.match(/^([D23456S])([NMT])$/);
+        if (match2) {
+            const dia = MAPA_DIA_SEMANA[match2[1]];
+            const hora = HORARIO_PADRAO[match2[2]];
+            return { texto: `${dia} - ${hora}`, isRJM: false };
+        }
+        return { texto: token, isRJM: t.startsWith('RJM') };
+    }
 
-        preencherSelectDatas();
+    function formatarDiasCulto(diasCulto) {
+        if (!diasCulto || diasCulto.trim() === '') return 'Não informado';
+        const partes = diasCulto.split('+').map(p => p.trim().replace(/^•\s*/, '')).filter(p => p !== '');
+        const cultos = [];
+        const rjm = [];
+        partes.forEach(parte => {
+            const { texto, isRJM } = traduzirToken(parte);
+            if (isRJM) rjm.push(texto);
+            else cultos.push(texto);
+        });
+        let html = '<div><strong>Dias de Cultos</strong></div>';
+        if (cultos.length > 0) html += '<div>' + cultos.join('<br>') + '</div>';
+        if (rjm.length > 0) {
+            html += '<div style="margin-top:4px;"><strong>RJM</strong></div>';
+            html += '<div>' + rjm.join('<br>') + '</div>';
+        }
+        return html;
+    }
 
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    function registrarListenersBasicos() {
         document.getElementById('btn-fechar-convite').addEventListener('click', fecharConvite);
         document.getElementById('btn-fechar').addEventListener('click', fecharConvite);
         document.getElementById('convite-overlay').addEventListener('click', function(e) {
             if (e.target === this) fecharConvite();
         });
-
         document.getElementById('btn-compartilhar').addEventListener('click', function(e) {
             e.stopPropagation();
             compartilharWhatsApp();
         });
-
-        // Setas
         document.getElementById('seta-esquerda').addEventListener('click', function(e) {
             e.stopPropagation();
             conviteAnterior();
@@ -2167,26 +2044,15 @@
             e.stopPropagation();
             conviteProximo();
         });
-
-        // Teclado
         document.addEventListener('keydown', function(e) {
             if (!document.getElementById('convite-overlay').classList.contains('ativo')) return;
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                conviteAnterior();
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                conviteProximo();
-            }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); conviteAnterior(); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); conviteProximo(); }
         });
-
-        // Swipe
         configurarSwipe();
-
         document.querySelectorAll('input[name="tipo-consulta"]').forEach(radio => {
             radio.addEventListener('change', alternarTipoConsulta);
         });
-
         document.getElementById('btn-listar').addEventListener('click', function() {
             const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
             if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
@@ -2194,7 +2060,6 @@
         document.getElementById('btn-consultar-casa-oracao').addEventListener('click', consultarPorCasaOracao);
         document.getElementById('btn-consultar-encarregado-local').addEventListener('click', consultarPorEncarregadoLocal);
         document.getElementById('btn-consultar-encarregado-regional').addEventListener('click', gerarTabelaPorEnsaioRegional);
-
         document.getElementById('casa-oracao-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') consultarPorCasaOracao();
         });
@@ -2204,51 +2069,41 @@
         document.getElementById('encarregado-regional-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') gerarTabelaPorEnsaioRegional();
         });
-
         document.getElementById('btn-imprimir-data').addEventListener('click', imprimirTabelaAtual);
         document.getElementById('btn-imprimir-casa-oracao').addEventListener('click', imprimirTabelaAtual);
         document.getElementById('btn-imprimir-encarregado-local').addEventListener('click', imprimirTabelaAtual);
         document.getElementById('btn-imprimir-ensaio-regional').addEventListener('click', imprimirTabelaAtual);
-
         document.getElementById('data-select').addEventListener('change', function(e) {
             if (document.getElementById('consulta-data').checked) {
                 const dataSelecionada = e.target.value.split('|')[0];
                 if (dataSelecionada) gerarTabelaPorData(dataSelecionada);
             }
         });
-
         document.getElementById('Seta').addEventListener('click', trocaSeta);
-
         const menuBtn = document.getElementById('menu-btn');
         const overlayMenu = document.getElementById('overlay');
-        function toggleMenu() {
-            document.body.classList.toggle('menu-aberto');
-        }
+        function toggleMenu() { document.body.classList.toggle('menu-aberto'); }
         menuBtn.addEventListener('click', toggleMenu);
         overlayMenu.addEventListener('click', toggleMenu);
+    }
 
+    async function inicializarPagina() {
+        document.getElementById('carregando-overlay').classList.add('hidden');
+        preencherSelectDatas();
         CriaMenu();
-
-        (async function inicializarTabela() {
-            await initApp();
-            const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
-            if (dataSelecionada) await gerarTabelaPorData(dataSelecionada);
-        })();
-    });
+        await initApp();
+        const dataSelecionada = document.getElementById('data-select').value.split('|')[0];
+        if (dataSelecionada) await gerarTabelaPorData(dataSelecionada);
+    }
 
     async function initApp() {
-        try {
-            await getLocation();
-        } catch (error) {
-            console.error('Erro ao obter localização:', error);
-            usarLocalizacaoPadrao();
-        }
+        try { await getLocation(); }
+        catch (error) { usarLocalizacaoPadrao(); }
     }
 
     // ============================================================
-    // EXPORTAÇÃO PARA O GLOBAL
+    // EXPORTAÇÃO PARA GLOBAL
     // ============================================================
-
     window.trocaSeta = trocaSeta;
     window.toggleDetalhes = toggleDetalhes;
     window.abrirMaps = abrirMaps;
@@ -2268,6 +2123,60 @@
     window.conviteAnterior = conviteAnterior;
     window.conviteProximo = conviteProximo;
     window.trocarModeloConvite = trocarModeloConvite;
+
+    // ============================================================
+    // BOOT
+    // ============================================================
+    var paginaInicializada = false;
+
+    function aplicarDadosCarregados() {
+        // Firestore
+        if (window.dadosCarregados && window.dadosCarregados.length > 0) {
+            dadosFS = window.dadosCarregados;
+            console.log("📦 dadosFS do Firestore:", dadosFS.length);
+        } else if (typeof window.dados !== 'undefined' && Array.isArray(window.dados)) {
+            // fallback dados.js (se existir e exportar window.dados)
+            dadosFS = window.dados;
+            console.log("📦 dadosFS do dados.js:", dadosFS.length);
+        }
+
+        // Setores
+        if (window.setorCarregado && window.setorCarregado.length > 0) {
+            setoresFS = window.setorCarregado;
+            console.log("📦 setoresFS do Firestore:", setoresFS.length);
+        } else if (typeof window.setor !== 'undefined' && Array.isArray(window.setor)) {
+            setoresFS = window.setor;
+            console.log("📦 setoresFS do setor.js:", setoresFS.length);
+        }
+
+        return dadosFS.length > 0;
+    }
+
+    function inicializarUmaVez() {
+        if (paginaInicializada) return;
+        paginaInicializada = true;
+        console.log("🚀 Inicializando página...");
+        inicializarPagina();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof carregarPopup === 'function') {
+            setTimeout(carregarPopup, 500);
+        }
+        registrarListenersBasicos();
+
+        // Caso 1: Firestore já terminou antes do DOM
+        if (aplicarDadosCarregados()) {
+            inicializarUmaVez();
+            return;
+        }
+
+        // Caso 2: Ainda está carregando — escuta o evento
+        window.addEventListener('dadosProntos', function() {
+            aplicarDadosCarregados();
+            inicializarUmaVez();
+        }, { once: true });
+    });
     </script>
 </body>
 </html>
