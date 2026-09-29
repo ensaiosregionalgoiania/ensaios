@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manutenção — Ensaios CCB</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: #f0f2f5;
+            color: #333;
+        }
+        h1 { color: #1a73e8; margin-bottom: 8px; font-size: 1.5rem; }
+        h2 { color: #444; margin-top: 24px; font-size: 1.15rem; }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        input[type="text"], input[type="number"], select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        input[type="text"] { flex: 1; min-width: 200px; }
+
+        button {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary   { background: #1a73e8; color: #fff; }
+        .btn-primary:hover:not(:disabled) { background: #1557b0; }
+        .btn-success   { background: #27ae60; color: #fff; }
+        .btn-success:hover:not(:disabled) { background: #1e8449; }
+        .btn-warning   { background: #f39c12; color: #fff; }
+        .btn-warning:hover:not(:disabled) { background: #d68910; }
+        .btn-danger    { background: #e74c3c; color: #fff; }
+        .btn-danger:hover:not(:disabled) { background: #c0392b; }
+        .btn-secondary { background: #95a5a6; color: #fff; }
+        .btn-secondary:hover:not(:disabled) { background: #7f8c8d; }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .modal-overlay.ativo { display: flex; }
+
+        .modal {
+            background: #fff;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 720px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0;
+            background: #fff;
+            z-index: 1;
+        }
+        .modal-header h3 { margin: 0; color: #1a73e8; }
+        .modal-body { padding: 20px; }
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            position: sticky; bottom: 0;
+            background: #fff;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input, .form-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .form-group .hint {
+            font-size: 11px;
+            color: #999;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Tabela */
+        .tabela-container {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            background: #1a73e8;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 9px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:hover td { background: #f8f9ff; }
+        tr.central td { background: #fff8dc; font-weight: 600; }
+        tr.central:hover td { background: #fff3c4; }
+
+        .acoes { white-space: nowrap; text-align: right; }
+        .acoes button { margin-left: 4px; }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333; color: #fff;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            z-index: 2000;
+            opacity: 0;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        #toast.erro { background: #e74c3c; }
+        #toast.ok { background: #27ae60; }
+
+        /* Loader */
+        #loader {
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column; gap: 16px;
+            z-index: 1500;
+        }
+        #loader.hidden { display: none; }
+        .spinner {
+            width: 44px; height: 44px;
+            border: 4px solid #e9ecef;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .badge-central {
+            background: #f39c12;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="spinner"></div>
+    <p>Carregando dados...</p>
+</div>
+
+<h1>🛠️ Manutenção de Ensaios</h1>
+<p style="color:#666; font-size:13px; margin-top:0;">Gerenciamento de igrejas, cidades e ensaios regionais</p>
+
+<!-- FILTROS E BUSCA -->
+<div class="toolbar">
+    <input type="text" id="busca" placeholder="🔍 Buscar por nome, cidade ou encarregado...">
+    <select id="filtro-setor">
+        <option value="">Todos os setores</option>
+    </select>
+    <select id="filtro-central">
+        <option value="">Todas</option>
+        <option value="S">Só centrais</option>
+        <option value="N">Só não centrais</option>
+    </select>
+    <button class="btn-primary" id="btn-novo">➕ Novo Ensaio</button>
+    <button class="btn-secondary" id="btn-rec">🔄 Recarregar</button>
+</div>
+
+<div class="toolbar" style="font-size:13px; color:#666;">
+    <span id="contador"></span>
+</div>
+
+<!-- TABELA -->
+<div class="tabela-container">
+    <table id="tabela">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cidade</th>
+                <th>Setor</th>
+                <th>Dia</th>
+                <th>Central</th>
+                <th style="text-align:right;">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+</div>
+
+<!-- MODAL DE EDIÇÃO -->
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modal-titulo">Novo Ensaio</h3>
+            <button class="btn-secondary btn-sm" onclick="fecharModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="f-id">
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Nome da Igreja *</label>
+                    <input type="text" id="f-nome" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cidade *</label>
+                    <input type="text" id="f-cidade" list="lista-cidades" required>
+                    <datalist id="lista-cidades"></datalist>
+                    <span class="hint">Se não existir, será criada automaticamente</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Setor *</label>
+                    <select id="f-setor" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Semana (1-5)</label>
+                    <input type="number" id="f-semana" min="1" max="5">
+                </div>
+
+                <div class="form-group">
+                    <label>Dia da semana</label>
+                    <select id="f-diaSemana">
+                        <option value="">-- Não definido --</option>
+                        <option value="0">Domingo</option>
+                        <option value="1">Segunda-feira</option>
+                        <option value="2">Terça-feira</option>
+                        <option value="3">Quarta-feira</option>
+                        <option value="4">Quinta-feira</option>
+                        <option value="5">Sexta-feira</option>
+                        <option value="6">Sábado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Hora do Ensaio</label>
+                    <select id="f-horaEnsaio">
+                        <option value="">-- Não definido --</option>
+                        <option value="T">T (17:00)</option>
+                        <option value="T1">T1 (16:30)</option>
+                        <option value="N">N (19:30)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Meses</label>
+                    <select id="f-meses">
+                        <option value="T">T — Todos</option>
+                        <option value="I">I — Ímpares</option>
+                        <option value="P">P — Pares</option>
+                        <option value="3M1">3M1 — JAN/ABR/JUL/OUT</option>
+                        <option value="3M2">3M2 — FEV/MAI/AGO/NOV</option>
+                        <option value="3M3">3M3 — MAR/JUN/SET/DEZ</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Endereço Google Maps</label>
+                    <input type="text" id="f-enderecoMaps" placeholder="Ex: 5kdjpLgQreAGofYKA">
+                </div>
+
+                <div class="form-group">
+                    <label>Latitude</label>
+                    <input type="number" step="0.0000001" id="f-latitude">
+                </div>
+
+                <div class="form-group">
+                    <label>Longitude</label>
+                    <input type="number" step="0.0000001" id="f-longitude">
+                </div>
+
+                <div class="form-group">
+                    <label>Encarregado Local</label>
+                    <input type="text" id="f-encarregadoLocal">
+                </div>
+
+                <div class="form-group">
+                    <label>Encarregado Regional</label>
+                    <input type="text" id="f-encarregadoRegionalNome" list="lista-regionais">
+                    <datalist id="lista-regionais"></datalist>
+                    <span class="hint">Se não existir, será criado automaticamente</span>
+                </div>
+
+                <div class="form-group full">
+                    <label>Dias de Culto (separados por +)</label>
+                    <input type="text" id="f-diasCulto" placeholder="Ex: DN+4N+RJM DM">
+                </div>
+
+                <div class="form-group">
+                    <label>Ensaio Regional (data)</label>
+                    <input type="date" id="f-ensaioRegional">
+                </div>
+
+                <div class="form-group">
+                    <label>Igreja Central?</label>
+                    <select id="f-central">
+                        <option value="N">Não</option>
+                        <option value="S">Sim</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+            <button class="btn-success" id="btn-salvar">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ============================================================ -->
+<!-- 📥 MÓDULO FIREBASE                                            -->
+<!-- ============================================================ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+    getFirestore, collection, getDocs, doc, setDoc, addDoc,
+    deleteDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ⚙️ COLE AQUI O SEU firebaseConfig
+const firebaseConfig = {
+    apiKey: "AIzaSy...",
+    authDomain: "ensaiosccb.firebaseapp.com",
+    projectId: "ensaiosccb",
+    storageBucket: "ensaiosccb.appspot.com",
+    messagingSenderId: "991202757411",
+    appId: "1:991202757411:web:..."
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Cache global
+window.FB = {
+    db,
+    collection, doc, getDocs, setDoc, addDoc, deleteDoc, updateDoc,
+    cache: {
+        cidades:   {},   // { id: nome }
+        setores:   {},   // { id: nome }
+        regionais: {}    // { id: nome }
+    },
+    pronto: false
+};
+
+// Carrega cidades, setores e regionais
+async function carregarAuxiliares() {
+    const [snapCid, snapSet, snapReg] = await Promise.all([
+        getDocs(collection(db, "cidades")),
+        getDocs(collection(db, "setores")),
+        getDocs(collection(db, "encarregadosRegionais"))
+    ]);
+
+    snapCid.forEach(d => window.FB.cache.cidades[d.id] = d.data().nome || '');
+    snapSet.forEach(d => window.FB.cache.setores[d.id] = d.data().nome || '');
+    snapReg.forEach(d => window.FB.cache.regionais[d.id] = d.data().nome || '');
+
+    console.log("📚 Cache carregado:",
+        "cidades=", Object.keys(window.FB.cache.cidades).length,
+        "setores=", Object.keys(window.FB.cache.setores).length,
+        "regionais=", Object.keys(window.FB.cache.regionais).length);
+}
+
+// Carrega todos os ensaios
+async function carregarEnsaios() {
+    const snap = await getDocs(collection(db, "ensaios"));
+    const lista = [];
+    snap.forEach(d => {
+        lista.push({ id: d.id, ...d.data() });
+    });
+    return lista;
+}
+
+// Expõe funções para o script principal
+window.FB.carregarAuxiliares = carregarAuxiliares;
+window.FB.carregarEnsaios     = carregarEnsaios;
+
+// --- AÇÕES ---
+window.FB.salvarEnsaio = async function(id, dados) {
+    if (id) {
+        // edição
+        await updateDoc(doc(db, "ensaios", id), dados);
+        return id;
+    } else {
+        // novo — gera ID determinístico
+        const slug = (txt) => String(txt || '').toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+        const novoId = slug(`${dados.nome}-${dados.cidadeId || ''}-${dados.setorId || ''}`);
+        await setDoc(doc(db, "ensaios", novoId), dados);
+        return novoId;
+    }
+};
+
+window.FB.excluirEnsaio = async function(id) {
+    await deleteDoc(doc(db, "ensaios", id));
+};
+
+// --- CRIA automaticamente cidade/regional se não existir ---
+window.FB.garantirCidade = async function(nomeCidade) {
+    const slug = (txt) => String(txt || '').toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    const id = slug(nomeCidade);
+    if (!window.FB.cache.cidades[id]) {
+        await setDoc(doc(db, "cidades", id), { nome: nomeCidade });
+        window.FB.cache.cidades[id] = nomeCidade;
+    }
+    return id;
+};
+
+window.FB.garantirRegional = async function(nomeRegional) {
+    if (!nomeRegional || !nomeRegional.trim()) return null;
+    const slug = (txt) => String(txt || '').toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    const id = slug(nomeRegional);
+    if (!window.FB.cache.regionais[id]) {
+        await setDoc(doc(db, "encarregadosRegionais", id), { nome: nomeRegional });
+        window.FB.cache.regionais[id] = nomeRegional;
+    }
+    return id;
+};
+
+// Avisa o script principal que está tudo pronto
+carregarAuxiliares()
+    .then(() => { window.FB.pronto = true; window.dispatchEvent(new Event('fb-pronto')); })
+    .catch(err => { console.error("❌ Erro ao carregar Firebase:", err); window.dispatchEvent(new Event('fb-pronto')); });
+</script>
+
+<!-- ============================================================ -->
+<!-- 📜 SCRIPT PRINCIPAL — CRUD                                     -->
+<!-- ============================================================ -->
+<script>
+let todosEnsaios = [];
+let ensaiosFiltrados = [];
+
+// ================= UTILITÁRIOS =================
+function slug(txt) {
+    return String(txt || '').toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+}
+
+function toast(msg, tipo) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + (tipo || '');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.className = ''; }, 3000);
+}
+
+function mostrarLoader(v) {
+    document.getElementById('loader').classList.toggle('hidden', !v);
+}
+
+function formatarDataISO(dataStr) {
+    // "2026-03-15" → "15/03/2026"
+    if (!dataStr) return '';
+    const [a, m, d] = dataStr.split('-');
+    return `${d}/${m}/${a}`;
+}
+
+function formatarDataBRparaISO(dataBR) {
+    // "15/03/2026" → "2026-03-15"
+    if (!dataBR) return '';
+    const partes = String(dataBR).split('/');
+    if (partes.length !== 3) return '';
+    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+}
+
+function nomeDiaSemana(idx) {
+    const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    return dias[idx] || '';
+}
+
+// ================= RENDER =================
+function renderizarTabela() {
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+
+    if (ensaiosFiltrados.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="6" class="empty">Nenhum ensaio encontrado</td>`;
+        tbody.appendChild(tr);
+    } else {
+        ensaiosFiltrados.forEach(e => {
+            const tr = document.createElement('tr');
+            if (e.central === 'S') tr.classList.add('central');
+
+            const cidadeNome = window.FB.cache.cidades[e.cidadeId] || e.cidadeId || '—';
+            const setorNome  = window.FB.cache.setores[e.setorId] || e.setorId || '—';
+            const diaStr = (e.semana && e.diaSemana !== null && e.diaSemana !== undefined)
+                ? `${e.semana}º ${nomeDiaSemana(e.diaSemana)}`
+                : '—';
+
+            tr.innerHTML = `
+                <td>${e.nome || '—'}${e.central === 'S' ? '<span class="badge-central">CENTRAL</span>' : ''}</td>
+                <td>${cidadeNome}</td>
+                <td>${setorNome}</td>
+                <td>${diaStr}</td>
+                <td>${e.central === 'S' ? '✅' : '—'}</td>
+                <td class="acoes">
+                    <button class="btn-warning btn-sm" onclick="abrirEdicao('${e.id}')">✏️ Editar</button>
+                    <button class="btn-danger btn-sm" onclick="confirmarExclusao('${e.id}')">🗑️</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById('contador').textContent =
+        `Mostrando ${ensaiosFiltrados.length} de ${todosEnsaios.length} ensaios`;
+}
+
+// ================= FILTROS =================
+function aplicarFiltros() {
+    const busca  = document.getElementById('busca').value.trim().toLowerCase();
+    const setor  = document.getElementById('filtro-setor').value;
+    const central = document.getElementById('filtro-central').value;
+
+    ensaiosFiltrados = todosEnsaios.filter(e => {
+        // busca
+        if (busca) {
+            const blob = [
+                e.nome, e.encarregadoLocal, e.encarregadoRegionalId,
+                window.FB.cache.cidades[e.cidadeId],
+                window.FB.cache.regionais[e.encarregadoRegionalId]
+            ].filter(Boolean).join(' ').toLowerCase();
+            if (!blob.includes(busca)) return false;
+        }
+        // setor
+        if (setor && String(e.setorId) !== String(setor)) return false;
+        // central
+        if (central && (e.central || 'N') !== central) return false;
+        return true;
+    });
+
+    renderizarTabela();
+}
+
+// ================= SELECTS =================
+function preencherSelects() {
+    // Setores (para filtro e formulário)
+    const setores = Object.entries(window.FB.cache.setores)
+        .map(([id, nome]) => ({ id, nome }))
+        .sort((a, b) => (parseInt(a.id) || 999) - (parseInt(b.id) || 999));
+
+    // Filtro
+    const fSetor = document.getElementById('filtro-setor');
+    fSetor.innerHTML = '<option value="">Todos os setores</option>';
+    setores.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.id} — ${s.nome}`;
+        fSetor.appendChild(opt);
+    });
+
+    // Formulário
+    const fForm = document.getElementById('f-setor');
+    fForm.innerHTML = '<option value="">-- Selecione --</option>';
+    setores.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.id} — ${s.nome}`;
+        fForm.appendChild(opt);
+    });
+
+    // Datalist de cidades
+    const dlCid = document.getElementById('lista-cidades');
+    dlCid.innerHTML = '';
+    Object.values(window.FB.cache.cidades).forEach(nome => {
+        const opt = document.createElement('option');
+        opt.value = nome;
+        dlCid.appendChild(opt);
+    });
+
+    // Datalist de regionais
+    const dlReg = document.getElementById('lista-regionais');
+    dlReg.innerHTML = '';
+    Object.values(window.FB.cache.regionais).forEach(nome => {
+        const opt = document.createElement('option');
+        opt.value = nome;
+        dlReg.appendChild(opt);
+    });
+}
+
+// ================= MODAL =================
+function abrirModal() {
+    document.getElementById('modal').classList.add('ativo');
+}
+function fecharModal() {
+    document.getElementById('modal').classList.remove('ativo');
+}
+
+function limparFormulario() {
+    document.getElementById('f-id').value = '';
+    document.getElementById('f-nome').value = '';
+    document.getElementById('f-cidade').value = '';
+    document.getElementById('f-setor').value = '';
+    document.getElementById('f-semana').value = '';
+    document.getElementById('f-diaSemana').value = '';
+    document.getElementById('f-horaEnsaio').value = '';
+    document.getElementById('f-meses').value = 'T';
+    document.getElementById('f-enderecoMaps').value = '';
+    document.getElementById('f-latitude').value = '';
+    document.getElementById('f-longitude').value = '';
+    document.getElementById('f-encarregadoLocal').value = '';
+    document.getElementById('f-encarregadoRegionalNome').value = '';
+    document.getElementById('f-diasCulto').value = '';
+    document.getElementById('f-ensaioRegional').value = '';
+    document.getElementById('f-central').value = 'N';
+}
+
+function abrirNovo() {
+    limparFormulario();
+    document.getElementById('modal-titulo').textContent = '➕ Novo Ensaio';
+    abrirModal();
+}
+
+function abrirEdicao(id) {
+    const e = todosEnsaios.find(x => x.id === id);
+    if (!e) { toast('Ensaio não encontrado', 'erro'); return; }
+
+    document.getElementById('f-id').value = e.id;
+    document.getElementById('f-nome').value = e.nome || '';
+    document.getElementById('f-cidade').value = window.FB.cache.cidades[e.cidadeId] || e.cidadeId || '';
+    document.getElementById('f-setor').value = e.setorId || '';
+    document.getElementById('f-semana').value = e.semana || '';
+    document.getElementById('f-diaSemana').value = (e.diaSemana !== null && e.diaSemana !== undefined) ? String(e.diaSemana) : '';
+    document.getElementById('f-horaEnsaio').value = e.horaEnsaio || '';
+    document.getElementById('f-meses').value = e.meses || 'T';
+    document.getElementById('f-enderecoMaps').value = e.enderecoMaps || '';
+    document.getElementById('f-latitude').value = e.latitude ?? '';
+    document.getElementById('f-longitude').value = e.longitude ?? '';
+    document.getElementById('f-encarregadoLocal').value = e.encarregadoLocal || '';
+    document.getElementById('f-encarregadoRegionalNome').value = window.FB.cache.regionais[e.encarregadoRegionalId] || '';
+    document.getElementById('f-diasCulto').value = Array.isArray(e.diasCulto) ? e.diasCulto.join('+') : (e.diasCulto || '');
+    document.getElementById('f-ensaioRegional').value = formatarDataBRparaISO(e.ensaioRegional || '');
+    document.getElementById('f-central').value = e.central || 'N';
+
+    document.getElementById('modal-titulo').textContent = '✏️ Editar Ensaio';
+    abrirModal();
+}
+
+// ================= SALVAR =================
+async function salvar() {
+    const id = document.getElementById('f-id').value;
+    const nome = document.getElementById('f-nome').value.trim();
+    const cidadeNome = document.getElementById('f-cidade').value.trim();
+    const setorId = document.getElementById('f-setor').value;
+
+    if (!nome) { toast('Preencha o nome da igreja', 'erro'); return; }
+    if (!cidadeNome) { toast('Preencha a cidade', 'erro'); return; }
+    if (!setorId) { toast('Selecione o setor', 'erro'); return; }
+
+    try {
+        document.getElementById('btn-salvar').disabled = true;
+
+        // Garante cidade
+        const cidadeId = await window.FB.garantirCidade(cidadeNome);
+
+        // Garante regional (se preenchido)
+        const regNome = document.getElementById('f-encarregadoRegionalNome').value.trim();
+        const regId = regNome ? await window.FB.garantirRegional(regNome) : null;
+
+        // Monta objeto
+        const dados = {
+            nome,
+            central: document.getElementById('f-central').value || 'N',
+            cidadeId,
+            setorId,
+            encarregadoLocal: document.getElementById('f-encarregadoLocal').value.trim() || null,
+            encarregadoRegionalId: regId,
+            semana: parseInt(document.getElementById('f-semana').value) || null,
+            diaSemana: document.getElementById('f-diaSemana').value === '' ? null : parseInt(document.getElementById('f-diaSemana').value),
+            horaEnsaio: document.getElementById('f-horaEnsaio').value || null,
+            enderecoMaps: document.getElementById('f-enderecoMaps').value.trim() || null,
+            meses: document.getElementById('f-meses').value || 'T',
+            latitude: parseFloat(document.getElementById('f-latitude').value) || null,
+            longitude: parseFloat(document.getElementById('f-longitude').value) || null,
+            diasCulto: document.getElementById('f-diasCulto').value.split('+').map(x => x.trim()).filter(Boolean),
+            ensaioRegional: formatarDataISO(document.getElementById('f-ensaioRegional').value) || null
+        };
+
+        await window.FB.salvarEnsaio(id || null, dados);
+
+        toast(id ? '✅ Ensaio atualizado!' : '✅ Ensaio criado!', 'ok');
+        fecharModal();
+        await recarregar();
+    } catch (err) {
+        console.error(err);
+        toast('❌ Erro: ' + err.message, 'erro');
+    } finally {
+        document.getElementById('btn-salvar').disabled = false;
+    }
+}
+
+// ================= EXCLUIR =================
+async function confirmarExclusao(id) {
+    const e = todosEnsaios.find(x => x.id === id);
+    if (!e) return;
+    if (!confirm(`Excluir "${e.nome}"?\n\nEssa ação não pode ser desfeita.`)) return;
+
+    try {
+        await window.FB.excluirEnsaio(id);
+        toast('🗑️ Ensaio excluído', 'ok');
+        await recarregar();
+    } catch (err) {
+        console.error(err);
+        toast('❌ Erro ao excluir: ' + err.message, 'erro');
+    }
+}
+
+// ================= RECARREGAR =================
+async function recarregar() {
+    mostrarLoader(true);
+    try {
+        todosEnsaios = await window.FB.carregarEnsaios();
+        preencherSelects();
+        aplicarFiltros();
+    } catch (err) {
+        console.error(err);
+        toast('❌ Erro ao carregar: ' + err.message, 'erro');
+    } finally {
+        mostrarLoader(false);
+    }
+}
+
+// ================= BOOT =================
+function iniciar() {
+    document.getElementById('btn-novo').addEventListener('click', abrirNovo);
+    document.getElementById('btn-rec').addEventListener('click', recarregar);
+    document.getElementById('btn-salvar').addEventListener('click', salvar);
+
+    document.getElementById('busca').addEventListener('input', aplicarFiltros);
+    document.getElementById('filtro-setor').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-central').addEventListener('change', aplicarFiltros);
+
+    // Fecha modal ao clicar fora
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) fecharModal();
+    });
+    // ESC fecha
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') fecharModal();
+    });
+}
+
+window.addEventListener('fb-pronto', async () => {
+    iniciar();
+    await recarregar();
+});
+
+// Se o FB já estiver pronto (script rodou antes), inicia diretoif (window.FB && window.FB.pronto) {
+    iniciar();
+    recarregar();
+
+
+// Expõe funções para o HTML
+window.abrirEdicao = abrirEdicao;
+window.abrirNovo = abrirNovo;
+window.fecharModal = fecharModal;
+window.confirmarExclusao = confirmarExclusao;
+</script>
+
+</body>
+</html>
