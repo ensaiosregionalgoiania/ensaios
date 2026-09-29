@@ -907,8 +907,13 @@
                     ? timestampParaStrBR(e.ensaioRegional)
                     : safe(e.ensaioRegional, '');
 
+                // ⭐ Adiciona <B> no nome quando for central
+                const nomeFormatado = (String(e.central || '').toUpperCase() === 'S')
+                    ? `<B>${safe(e.nome, '')}</B>`
+                    : safe(e.nome, '');
+
                 const linha = [
-                    safe(e.nome, ''),
+                    nomeFormatado,          // 👈 MUDOU AQUI
                     cidadeNome,
                     diaEnsaio,
                     safe(e.horaEnsaio, 'T'),
@@ -920,10 +925,10 @@
                     (e.latitude  ?? ''),
                     (e.longitude ?? ''),
                     diasCultoStr,
-                    ensaioReg
+                    ensaioReg,
+                    safe(e.central, 'N')    // campo 13
                 ].join(';');
-
-                linhas.push(linha);
+            linhas.push(linha);
             });
 
             // expõe globalmente
@@ -1565,24 +1570,47 @@
     function LinhaPrincipal(tabela, index, local, cidade, dataFormatada, horario, lat, lon, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, descricaoDia) {
         const row = tabela.insertRow();
         row.id = `evento-${index}`;
+
+        // ⭐ Detecta se é igreja central (nome veio com <B>...</B>)
+        const ehCentral = /<b>/i.test(local || '');
+
+        // Aplica destaque visual na linha inteira
+            alert("aa")
+        if (ehCentral) {
+            row.style.backgroundColor = '#fff3cd';   // fundo amarelo claro
+            row.style.fontWeight = 'bold';
+            row.style.borderLeft = '4px solid #f39c12';  // faixa laranja na esquerda
+        }
+
+        // Coluna 0: Local (nome da igreja) — o <B> já vem no HTML
         row.insertCell(0).innerHTML = local || '---';
+
+        // Coluna 1: Cidade
         row.insertCell(1).innerHTML = cidade || '---';
+
+        // Coluna 2: Distância
         const distanciaKm = calcularDistancia(minhaLat, minhaLon, lat, lon);
         let distanciaAtual = (minhaLat != 0 && !isNaN(distanciaKm)) ? `${distanciaKm.toFixed(1)} km` : "";
         row.insertCell(2).textContent = distanciaAtual;
+
+        // Coluna 3: Data (formato curto ou completo dependendo do modo)
         if (document.getElementById('consulta-encarregado-regional').checked == false) {
             row.insertCell(3).textContent = dataString(dataFormatada);
         } else {
             row.insertCell(3).textContent = dataFormatada;
         }
+
+        // Coluna 4: Ações
         const acoesCell = row.insertCell(4);
         acoesCell.style.textAlign = "center";
         acoesCell.style.whiteSpace = "nowrap";
+
         const expandirBtn = document.createElement('button');
         expandirBtn.className = 'btn-expandir';
         expandirBtn.textContent = '+';
         expandirBtn.onclick = (e) => { e.stopPropagation(); toggleDetalhes(index); };
         acoesCell.appendChild(expandirBtn);
+
         const temConvite = isProximosDias(dataFormatada);
         if (temConvite) {
             const conviteBtn = document.createElement('button');
@@ -1592,12 +1620,13 @@
             conviteBtn.onclick = (e) => { e.stopPropagation(); abrirConvite(index); };
             acoesCell.appendChild(conviteBtn);
         }
+
+        // Guarda os dados da linha para o convite
         window.linhasDados[index] = {
             local, cidade, dataFormatada, horario, localizacao, setor,
             encarregadoLocal, encarregadoRegional, meses, lat, lon, descricaoDia
         };
     }
-
     // ============================================================
     // CONSULTAS
     // ============================================================
@@ -1645,7 +1674,7 @@
             try {
                 const partes = item.split(';');
                 if (partes.length < 11) return;
-                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto] = partes;
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, , central] = partes;
                 if (!deveExibirMes(mes, meses)) return;
                 let dataEvento = null;
                 if (dia >= 22 && dia <= 28) {
@@ -1797,7 +1826,7 @@
             try {
                 const partes = item.split(';');
                 if (partes.length < 13) return;
-                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional] = partes;
+                const [local, cidade, descricaoDia, horario, localizacao, setor, encarregadoLocal, encarregadoRegional, meses, lat, lon, diasCulto, dataEnsaioRegional, central] = partes;
                 if (dataEnsaioRegional && dataEnsaioRegional.trim() !== "") {
                     const partesData = dataEnsaioRegional.split('/');
                     if (partesData.length === 3) {
@@ -1810,9 +1839,9 @@
                             let encRegionalSemAcento = TiraAcento(encarregadoRegional);
                             const encMatch = termoEhTodos || (encRegionalSemAcento && encRegionalSemAcento.includes(termo));
                             if (encMatch && (cidades.indexOf("|"+setor+"|") > 0 || cidades.indexOf("|") > 0)) {
-                                LinhaPrincipal(tabela, index, local, cidade, dataEnsaioRegional, horario,
+                                LinhaPrincipal(tabela, index, local, cidade, dataInformada, horario,
                                     parseFloat(lat) || 0, parseFloat(lon) || 0, localizacao, setor,
-                                    encarregadoLocal, encarregadoRegional, meses, descricaoDia);
+                                    encarregadoLocal, encarregadoRegional, meses, descricaoDia, central);
                                 CriaDetalhe(tabela, index, dataEnsaioRegional, encarregadoLocal, encarregadoRegional,
                                     localizacao, descricaoDia, meses, horario, diasCulto);
                                 index++;
