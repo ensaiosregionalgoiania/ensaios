@@ -60,12 +60,47 @@ button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 
-.head{position:relative;margin-inline:-16px;padding:20px 16px 0;background-color:#14264F;background-image:linear-gradient(90deg,rgba(13,26,56,.9) 0%,rgba(13,26,56,.6) 48%,rgba(13,26,56,.05) 100%),linear-gradient(0deg,rgba(13,26,56,.92) 0%,rgba(13,26,56,.5) 28%,rgba(13,26,56,0) 55%),linear-gradient(180deg,rgba(13,26,56,.55) 0%,rgba(13,26,56,0) 22%);color:#F7F1E1;overflow:hidden}
+.head{
+  position:relative;
+  margin-inline:-16px;
+  padding:20px 16px 0;
+  background-color:#14264F;
+  background-image:
+    linear-gradient(90deg,rgba(13,26,56,.9) 0%,rgba(13,26,56,.6) 48%,rgba(13,26,56,.05) 100%),
+    linear-gradient(0deg,rgba(13,26,56,.92) 0%,rgba(13,26,56,.5) 28%,rgba(13,26,56,0) 55%),
+    linear-gradient(180deg,rgba(13,26,56,.55) 0%,rgba(13,26,56,0) 22%),
+    var(--central);
+  background-size:cover,cover,cover,cover;
+  background-position:center,center,center,72% 30%;
+  color:#F7F1E1;
+  overflow:hidden;
+}
+@media (min-width:640px){
+  .head{
+    background-image:
+      linear-gradient(90deg,rgba(13,26,56,1) 0%,rgba(13,26,56,1) 40%,rgba(13,26,56,.35) 62%,rgba(13,26,56,.05) 100%),
+      linear-gradient(0deg,rgba(13,26,56,.92) 0%,rgba(13,26,56,.5) 28%,rgba(13,26,56,0) 55%),
+      linear-gradient(180deg,rgba(13,26,56,.55) 0%,rgba(13,26,56,0) 22%),
+      var(--central);
+    background-position:center,center,center,right 30%;
+    background-size:cover,cover,cover,60% auto;
+    background-repeat:no-repeat;
+  }
+}
 .head::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 60% at 90% 10%,rgba(217,180,106,.22),transparent 60%);pointer-events:none}
 .credit{position:absolute;right:12px;top:118px;font-size:9.5px;letter-spacing:.08em;opacity:.55;writing-mode:vertical-rl}
 .brand{position:relative;display:flex;align-items:center;gap:10px}
-.mark{width:40px;height:40px;border-radius:999px;border:1px solid #D9B46A;display:grid;place-items:center;flex:none}
-.mark i{width:26px;height:26px;background:#D9B46A;-webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat}
+.mark{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:1px solid #D9B46A;
+  background:url("logonovo.png") center/contain no-repeat;
+  filter:brightness(0) invert(1) brightness(0.85) sepia(1) saturate(3) hue-rotate(-10deg);
+  flex:none;
+  overflow:hidden;
+}
+.mark i{display:none}
 .ccb{font-family:var(--font-caps);font-weight:600;font-size:12px;letter-spacing:.12em;line-height:1.35;color:#D9B46A;min-width:0}
 .ccb small{display:block;font-size:10px;letter-spacing:.2em;color:#F7F1E1;opacity:.7;font-weight:500}
 .hbtns{margin-left:auto;display:flex;gap:6px;align-items:center}
@@ -266,7 +301,9 @@ h1 em{font-style:italic;color:#D9B46A}
 .foot a{color:var(--brass)}
 
 /* Logo embutida (base64 pequeno) */
-:root{--logo:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%23D9B46A'/><text x='32' y='42' text-anchor='middle' font-family='serif' font-size='32' fill='%2314264F'>†</text></svg>")}
+:root{--central:url("frontend.jpeg")}
+:root{--logo:url("logonovo.png")}
+
 </style>
 </head>
 <body>
