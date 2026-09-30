@@ -335,6 +335,55 @@ h1 em{font-style:italic;color:#D9B46A}
 :root{--c21:url("convite21.png")}
 :root{--c22:url("convite22.png")}
 
+/* Botão flutuante "Modelo Antigo" */
+.modelo-antigo{
+  position:fixed;
+  left:50%;
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  transform:translateX(-50%);
+  z-index:50;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 14px 12px 18px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#B8883A,#8F6420);
+  color:#fff;
+  font-family:var(--font-caps);
+  font-weight:600;
+  font-size:13.5px;
+  letter-spacing:.06em;
+  text-decoration:none;
+  box-shadow:0 8px 24px rgba(20,38,79,.35), 0 2px 6px rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.25);
+  animation:maPulse 2.4s ease-in-out infinite;
+}
+.modelo-antigo:hover{ filter:brightness(1.08); }
+.modelo-antigo:focus-visible{ outline:2px solid var(--gold-hi); outline-offset:3px; }
+
+.ma-x{
+  display:inline-grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  border-radius:999px;
+  background:rgba(255,255,255,.2);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  line-height:1;
+}
+.ma-x:hover{ background:rgba(255,255,255,.35); }
+
+@keyframes maPulse{
+  0%,100%{ box-shadow:0 8px 24px rgba(20,38,79,.35), 0 2px 6px rgba(0,0,0,.2), 0 0 0 0 rgba(184,136,58,.55); }
+  50%{ box-shadow:0 8px 24px rgba(20,38,79,.35), 0 2px 6px rgba(0,0,0,.2), 0 0 0 12px rgba(184,136,58,0); }
+}
+
+/* Versão mais discreta em telas muito pequenas */
+@media (max-width:400px){
+  .modelo-antigo{ font-size:12.5px; padding:10px 12px 10px 14px; }
+}
 
 </style>
 </head>
@@ -384,6 +433,12 @@ h1 em{font-style:italic;color:#D9B46A}
       <button class="tab" role="tab" data-act="tab" data-v="fav" aria-selected="false">Salvas<span class="n" id="favn"></span></button>
     </div>
   </div>
+
+<!-- Botão flutuante "Modelo Antigo" -->
+<a class="modelo-antigo" href="https://ensaiosregionalgoiania.github.io/ensaios/index3.html" aria-label="Abrir o modelo antigo">
+  <span class="ma-txt">Modelo Antigo</span>
+  <span class="ma-x" role="button" tabindex="0" aria-label="Fechar este aviso" title="Fechar">✕</span>
+</a>
 
   <div class="chips" id="chips"></div>
   <div id="buscarTop" hidden=""></div>
@@ -1384,6 +1439,28 @@ if (window.RAW_FIRESTORE && window.RAW_FIRESTORE.length > 0) {
 } else {
   window.addEventListener('dadosProntos', iniciarComDados, { once: true });
 }
+
+// Botão flutuante "Modelo Antigo"
+(function(){
+  const btn = document.querySelector(".modelo-antigo");
+  if (!btn) return;
+  const x = btn.querySelector(".ma-x");
+  // guarda se já foi fechado nesta sessão do navegador
+  if (sessionStorage.getItem("ma-fechado") === "1") { btn.remove(); return; }
+  const fechar = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    sessionStorage.setItem("ma-fechado","1");
+    btn.style.transition = "opacity .2s, transform .2s";
+    btn.style.opacity = "0";
+    btn.style.transform = "translateX(-50%) translateY(12px)";
+    setTimeout(() => btn.remove(), 220);
+  };
+  x.addEventListener("click", fechar);
+  x.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" || ev.key === " ") fechar(ev);
+  });
+})();
 </script>
 
 </body>
