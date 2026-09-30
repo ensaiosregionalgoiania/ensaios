@@ -282,9 +282,23 @@ h1 em{font-style:italic;color:#D9B46A}
 .invite .dhl div{font-family:var(--font-caps);font-size:3cqw;letter-spacing:.14em}
 .invite .dhl b{display:block;font-family:var(--font-display);font-weight:600;font-size:7.4cqw;letter-spacing:0;line-height:1}
 .invite .call{font-family:var(--font-display);font-style:italic;font-size:4.6cqw;max-width:50cqw;line-height:1.15}
+.invite.c01 .top{top:7%} .invite.c01 .dhl{top:45%;left:30%}
 .invite.c06 .top{top:7%} .invite.c06 .dhl{top:40%;left:7%}
 .invite.c07 .top{top:4%} .invite.c07 .dhl{top:61%;left:8%;color:#F7F1E1} .invite.c07 .call{display:none}
+.invite.c09 .top{top:12%} .invite.c09 .dhl{top:48%;left:30%}
 .invite.c10 .top{top:12%} .invite.c10 .dhl{top:48%;left:13%}
+.invite.c11 .top{top:12%} .invite.c11 .dhl{top:43%;left:25%}
+.invite.c12 .top{top:12%} .invite.c12 .dhl{top:48%;left:13%}
+.invite.c13 .top{top:12%;left:27%} .invite.c13 .dhl{top:48%;left:35%}
+.invite.c14 .top{top:12%} .invite.c14 .dhl{top:48%;left:13%}
+.invite.c15 .top{top:12%} .invite.c15 .dhl{top:48%;left:13%}
+.invite.c16 .top{top:12%} .invite.c16 .dhl{top:48%;left:13%}
+.invite.c17 .top{top:12%;left:30%;color:#F7F1E1} .invite.c17 .call{display:none} .invite.c17 .dhl{top:48%;left:35%;color:#F7F1E1} .invite.c17 .call{display:none}
+.invite.c18 .top{top:8%;left:-10%} .invite.c18 .dhl{top:40%;left:20%}
+.invite.c19 .top{top:12%} .invite.c19 .dhl{top:48%;left:40%}
+.invite.c20 .top{top:12%;color:#F7F1E1} .invite.c20 .call{display:none} .invite.c20 .dhl{top:48%;left:35%;color:#F7F1E1} .invite.c20 .call{display:none}
+.invite.c21 .top{top:12%;left:30%} .invite.c21 .dhl{top:48%;left:50%}
+.invite.c22 .top{top:12%} .invite.c22 .dhl{top:48%;left:13%}
 .swatches{display:flex;gap:8px;margin:12px 0}
 .sw{width:44px;height:58px;border-radius:22px 22px 4px 4px;border:2px solid var(--line);background:var(--bgimg) center/cover}
 .sw[aria-pressed="true"]{border-color:var(--gold)}
@@ -303,6 +317,24 @@ h1 em{font-style:italic;color:#D9B46A}
 /* Logo embutida (base64 pequeno) */
 :root{--central:url("frontend.jpeg")}
 :root{--logo:url("logonovo.png")}
+:root{--c01:url("convite01.png")}
+:root{--c06:url("convite06.png")}
+:root{--c07:url("convite07.png")}
+:root{--c09:url("convite09.png")}
+:root{--c10:url("convite10.png")}
+:root{--c11:url("convite11.png")}
+:root{--c12:url("convite12.png")}
+:root{--c13:url("convite13.png")}
+:root{--c14:url("convite14.png")}
+:root{--c15:url("convite15.png")}
+:root{--c16:url("convite16.png")}
+:root{--c17:url("convite17.png")}
+:root{--c18:url("convite18.png")}
+:root{--c19:url("convite19.png")}
+:root{--c20:url("convite20.png")}
+:root{--c21:url("convite21.png")}
+:root{--c22:url("convite22.png")}
+
 
 </style>
 </head>
@@ -372,9 +404,23 @@ h1 em{font-style:italic;color:#D9B46A}
     <div class="sheet-top"><b>Convite</b><button class="x" data-act="iclose" aria-label="Fechar">✕</button></div>
     <div class="invite" id="invite"></div>
     <div class="swatches" id="swatches">
-      <button class="sw" style="--bgimg:linear-gradient(135deg,#14264F,#B8883A)" data-act="sw" data-s="c06" aria-pressed="true"></button>
-      <button class="sw" style="--bgimg:linear-gradient(135deg,#0D1A38,#8F6420)" data-act="sw" data-s="c07" aria-pressed="false"></button>
-      <button class="sw" style="--bgimg:linear-gradient(135deg,#F2EAD6,#B8883A)" data-act="sw" data-s="c10" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c01)" data-act="sw" data-s="c01" title="c01" aria-pressed="true"></button>
+      <button class="sw" style="--bgimg:var(--c06)" data-act="sw" data-s="c06" title="c06'" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c07)" data-act="sw" data-s="c07" title="c07" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c09)" data-act="sw" data-s="c09" title="c09" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c10)" data-act="sw" data-s="c10" title="c10" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c11)" data-act="sw" data-s="c11"title="c11" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c12)" data-act="sw" data-s="c12" title="c12" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c13)" data-act="sw" data-s="c13" title="c13" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c14)" data-act="sw" data-s="c14" title="c14" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c15)" data-act="sw" data-s="c15" title="c15" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c16)" data-act="sw" data-s="c16" title="c16" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c17)" data-act="sw" data-s="c17" title="c17" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c18)" data-act="sw" data-s="c18" title="c18" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c19)" data-act="sw" data-s="c19" title="c19" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c20)" data-act="sw" data-s="c20" title="c20" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c21)" data-act="sw" data-s="c21" title="c21" aria-pressed="false"></button>
+      <button class="sw" style="--bgimg:var(--c22)" data-act="sw" data-s="c22" title="c22" aria-pressed="false"></button>
     </div>
     <div class="actions">
       <a class="btn wa big" data-act="wa" id="waBtn" href="https://wa.me/" target="_blank" rel="noopener" aria-busy="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z"></path><path d="M9 9.5c.3 2 2.5 4.2 4.5 4.5l1-1 2 1c-.3 1-1.3 1.6-2.3 1.4-3-.5-5.4-2.9-5.9-5.9-.2-1 .4-2 1.4-2.3l1 2z" fill="currentColor" stroke="none"></path></svg><span>Preparando convite…</span></a>
