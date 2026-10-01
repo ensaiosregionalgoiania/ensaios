@@ -991,25 +991,99 @@ function renderChips(){
 function renderAgenda(){
   const A=$("agWrap"); A.hidden=false;
   const tip=new Set(["local","regional"]); const set=S.F.setores;
-  const filt=evs=>evs.filter(e=>!set.size||set.has(e.ig.setor));
-  let top=`<div class="agtop"><span class="hint">Toque em um dia para ver os ensaios</span><div class="seg"><button data-act="agmode" data-v="dias" aria-pressed="${S.agMode==="dias"}">Dias</button><button data-act="agmode" data-v="mes" aria-pressed="${S.agMode==="mes"}">Mês</button></div></div>`;
+
+  // ============================================================
+  // DIAGNÓSTICO — Setor selecionado
+  // ============================================================
+  const idsSelecionados  = [...set];
+  const nomesSelecionados = idsSelecionados.map(id => SETORES[id] || ("Setor " + id));
+  const setoresDasIgrejas = [...new Set(IGREJAS.map(i => i.setor))];
+  const tipoSet   = idsSelecionados.length ? typeof idsSelecionados[0] : "(vazio)";
+  const tipoIgreja = IGREJAS.length ? typeof IGREJAS[0].setor : "(sem igrejas)";
+
+  //console.group("=== renderAgenda ===");
+  //console.log("1. IDs selecionados no Set:", idsSelecionados);
+  //console.log("2. Nomes dos setores selecionados:", nomesSelecionados);
+  //console.log("3. Set está vazio? (todos os setores):", set.size === 0);
+  //console.log("4. Valores de setor existentes nas igrejas:", setoresDasIgrejas);
+  //console.log("5. Tipo do valor no Set:", tipoSet, "| Tipo de ig.setor:", tipoIgreja);
+  //console.log("6. Exemplo de ig.setor:", IGREJAS[0]?.setor, "| Exemplo no Set:", idsSelecionados[0]);
+  //console.log("7. Comparação direta (set.has):", IGREJAS[0] ? set.has(IGREJAS[0].setor) : "—");
+  //console.log("8. Comparação normalizada (Number):", IGREJAS[0] ? set.has(Number(IGREJAS[0].setor)) : "—");
+  //console.groupEnd();
+
+  // ============================================================
+  // FILTRO — normaliza o tipo antes de comparar
+  // ============================================================
+  const filt = evs => evs.filter(e => !set.size || set.has(Number(e.ig.setor)));
+
+  // ============================================================
+  // TOPO — alternância Dias / Mês
+  // ============================================================
+  let top = `<div class="agtop"><span class="hint">Toque em um dia para ver os ensaios</span><div class="seg"><button data-act="agmode" data-v="dias" aria-pressed="${S.agMode==="dias"}">Dias</button><button data-act="agmode" data-v="mes" aria-pressed="${S.agMode==="mes"}">Mês</button></div></div>`;
+
+  // ============================================================
+  // FAIXA DE DIAS ou CALENDÁRIO DO MÊS
+  // ============================================================
   if(S.agMode==="dias"){
-    const cnt=countsOf(filt(eventsBetween(today,addD(today,41),tip)));
+    const eventos = eventsBetween(today, addD(today,41), tip);
+    const eventosFiltrados = filt(eventos);
+    const cnt = countsOf(eventosFiltrados);
+
+    console.log("[Dias] Eventos brutos no período:", eventos.length,
+                "| Após filtro de setor:", eventosFiltrados.length);
+
     let h="", lastM=-1;
-    for(let i=0;i<42;i++){ const d=addD(today,i); if(d.getMonth()!==lastM){ if(i>0) h+=`<span class="monthmark">${MES[d.getMonth()]}</span>`; lastM=d.getMonth(); }
-      const k=dayKey(d), n=cnt.get(k)||0;
-      h+=`<button class="day ${n?"":"empty"} ${d.getDay()===0?"sun":""}" data-act="day" data-k="${k}" aria-pressed="${S.dia===k}"><span class="wd">${i===0?"hoje":WD[d.getDay()]}</span><span class="dn">${d.getDate()}</span><span class="ct">${n||""}</span></button>`; }
-    A.innerHTML=top+`<div class="days" id="days">${h}</div>`;
+    for(let i=0;i<42;i++){
+      const d = addD(today, i);
+      if(d.getMonth() !== lastM){
+        if(i>0) h += `<span class="monthmark">${MES[d.getMonth()]}</span>`;
+        lastM = d.getMonth();
+      }
+      const k = dayKey(d), n = cnt.get(k)||0;
+      h += `<button class="day ${n?"":"empty"} ${d.getDay()===0?"sun":""}" data-act="day" data-k="${k}" aria-pressed="${S.dia===k}"><span class="wd">${i===0?"hoje":WD[d.getDay()]}</span><span class="dn">${d.getDate()}</span><span class="ct">${n||""}</span></button>`;
+    }
+    A.innerHTML = top + `<div class="days" id="days">${h}</div>`;
   } else {
-    const sd=fromKey(S.dia); if(!S.agCal) S.agCal={y:sd.getFullYear(),m:sd.getMonth()};
-    const {y,m}=S.agCal; const cnt=countsOf(filt(eventsBetween(new Date(y,m,1),new Date(y,m+1,0),tip)));
-    A.innerHTML=top+monthGrid("ag",y,m,cnt,S.dia);
+    const sd = fromKey(S.dia);
+    if(!S.agCal) S.agCal = { y: sd.getFullYear(), m: sd.getMonth() };
+    const { y, m } = S.agCal;
+    const eventos = eventsBetween(new Date(y, m, 1), new Date(y, m+1, 0), tip);
+    const eventosFiltrados = filt(eventos);
+    const cnt = countsOf(eventosFiltrados);
+
+    console.log("[Mês] Eventos brutos no período:", eventos.length,
+                "| Após filtro de setor:", eventosFiltrados.length);
+
+    A.innerHTML = top + monthGrid("ag", y, m, cnt, S.dia);
   }
-  const d=fromKey(S.dia);
-  const arr=filt(eventsBetween(d,d,tip)).sort((a,b)=>a.hora.localeCompare(b.hora)||norm(a.ig.nome).localeCompare(norm(b.ig.nome)));
-  const [rt]=rel(d); const near=rt==="Hoje"||rt==="Amanhã";
-  setHead(near?rt:fmtLong(d), plural(arr.length,"ensaio","ensaios")+(near?" · "+fmtLong(d).toLowerCase():""));
-  $("list").innerHTML=arr.length?arr.map(e=>card(e,"hora","ag")).join(""):emptyBox("Nenhum ensaio neste dia","Escolha outro dia"+(set.size?" ou troque o setor.":"."));
+
+  // ============================================================
+  // LISTA DO DIA SELECIONADO
+  // ============================================================
+  const d = fromKey(S.dia);
+  const eventosDoDia = eventsBetween(d, d, tip);
+  const arr = filt(eventosDoDia).sort(
+    (a,b) => a.hora.localeCompare(b.hora) || norm(a.ig.nome).localeCompare(norm(b.ig.nome))
+  );
+
+  console.log("[Dia] Data selecionada:", fmtLong(d));
+  console.log("[Dia] Eventos brutos do dia:", eventosDoDia.length,
+              "| Após filtro de setor:", arr.length);
+
+  const [rt] = rel(d);
+  const near = rt === "Hoje" || rt === "Amanhã";
+  setHead(
+    near ? rt : fmtLong(d),
+    plural(arr.length,"ensaio","ensaios") + (near ? " · " + fmtLong(d).toLowerCase() : "")
+  );
+
+  $("list").innerHTML = arr.length
+    ? arr.map(e => card(e,"hora","ag")).join("")
+    : emptyBox(
+        "Nenhum ensaio neste dia",
+        "Escolha outro dia" + (set.size ? " ou troque o setor." : ".")
+      );
 }
 
 const PRESETS = [
