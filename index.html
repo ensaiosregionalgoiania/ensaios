@@ -707,7 +707,7 @@ function reconstruirDados(){
     IGREJAS.push({
       id: i, nome: r[0], cidade, diaTxt: r[2],
       hora: HORA[r[3]] || r[3] || "19:30",
-      maps: r[4], setor: r[5], encL: r[6], encR: r[7],
+      maps: r[4], setor: String(r[5] ?? "").trim(), encL: r[6], encR: r[7],
       meses: r[8], lat: r[9], lon: r[10],
       cultosTxt: r[11], cultos: parseCultos(r[11]),
       regional, central: !!r[13], regra,
@@ -842,7 +842,7 @@ function aplicar(E){
     if(E.sem.size&&!E.sem.has(Math.ceil(e.d.getDate()/7))) return false;
     if(E.turno.size&&!E.turno.has(turnoDe(e.hora))) return false;
     if(E.horas.size&&!E.horas.has(e.hora)) return false;
-    if(E.setores.size&&!E.setores.has(ig.setor)) return false;
+    if(E.setores.size&&!new Set([...E.setores].map(String)).has(String(ig.setor).trim())) return false;
     if(E.cidade&&ig.cidade!==E.cidade) return false;
     if(E.encR&&!norm(ig.encR).includes(norm(E.encR))) return false;
     if(E.encL&&!norm(ig.encL).includes(norm(E.encL))) return false;
@@ -982,10 +982,19 @@ const $ = id => document.getElementById(id);
 function setHead(t,s){ $("title").textContent=t; $("subtitle").textContent=s; }
 
 function renderChips(){
-  const on=S.view!=="fav";
-  $("chips").hidden=!on; if(!on) return;
-  const sel=S.F.setores;
-  $("chips").innerHTML=`<button class="chip" data-act="setor" data-s="0" aria-pressed="${!sel.size}">Todos os setores</button>`+Object.entries(SETORES).map(([k,v])=>`<button class="chip" data-act="setor" data-s="${k}" aria-pressed="${sel.has(+k)}">${v}</button>`).join("");
+  const on = S.view !== "fav";
+  $("chips").hidden = !on;
+  if (!on) return;
+
+  const sel = S.F.setores;
+  const selStr = new Set([...sel].map(String)); // normaliza para string uma vez
+
+  $("chips").innerHTML =
+    `<button class="chip" data-act="setor" data-s="0" aria-pressed="${!sel.size}">Todos os setores</button>` +
+    Object.entries(SETORES).map(([k, v]) => {
+      const ativo = selStr.has(String(k));
+      return `<button class="chip" data-act="setor" data-s="${k}" aria-pressed="${ativo}">${v}</button>`;
+    }).join("");
 }
 
 function renderAgenda(){
@@ -1015,7 +1024,8 @@ function renderAgenda(){
   // ============================================================
   // FILTRO — normaliza o tipo antes de comparar
   // ============================================================
-  const filt = evs => evs.filter(e => !set.size || set.has(Number(e.ig.setor)));
+const setStr = new Set([...set].map(String));
+const filt = evs => evs.filter(e => !setStr.size || setStr.has(String(e.ig.setor).trim()));
 
   // ============================================================
   // TOPO — alternância Dias / Mês
@@ -1276,7 +1286,7 @@ function panelOpt(f,v){
     case "periodo": F.periodo=v; break;
     case "wd": case "sem": toggleSet(F[f],+v); break;
     case "turno": case "horas": case "freq": toggleSet(F[f],v); break;
-    case "setores": toggleSet(F.setores,+v); store.set("setores",[...F.setores]); break;
+case "setores": toggleSet(F.setores, String(v)); store.set("setores",[...F.setores]); break;
     case "raio": F.raio=+v; break;
     case "central": case "favOnly": F[f]=!F[f]; break;
     case "ordem": F.ordem=v; break;
@@ -1311,7 +1321,7 @@ document.addEventListener("click",e=>{
   const a=el.dataset.act, D=el.dataset;
   switch(a){
     case "tab": S.view=D.v; S.aberto=null; if(D.v!=="buscar"&&S.q){ setQuery(""); } render(); scrollToBar(); break;
-    case "setor": { const v=+D.s; if(!v) S.F.setores.clear(); else toggleSet(S.F.setores,v); store.set("setores",[...S.F.setores]); S.aberto=null; render(); break; }
+    case "setor": { const v=String(D.s); if(v==="0") S.F.setores.clear(); else toggleSet(S.F.setores,v); store.set("setores",[...S.F.setores]); S.aberto=null; render(); break; }    
     case "day": S.dia=+D.k; S.aberto=null; render(); break;
     case "agmode": S.agMode=D.v; S.agCal=null; render(); break;
     case "calnav": { const o=D.t==="ag"?S.agCal:S.bCal; let m=o.m+ +D.d, y=o.y; if(m<0){m=11;y--;} if(m>11){m=0;y++;} o.y=y; o.m=m; render(); break; }
