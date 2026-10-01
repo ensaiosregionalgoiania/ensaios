@@ -1247,6 +1247,8 @@ function opt(f,v,l,on,dis){ return `<button class="opt" data-act="opt" data-f="$
 function renderPanel(){
   const F=S.F, P=$("fpanel"); const st=P.scrollTop;
   const n=aplicar(efetivo()).evs.length;
+  const selSetStr = new Set([...F.setores].map(String));   // <- normaliza para comparar com as chaves de SETORES
+
   P.innerHTML=`<div class="sheet-top"><b>Filtros</b><button class="x" data-act="fclose" aria-label="Fechar filtros">✕</button></div>
   <div class="fsec"><h4>O que procura</h4><div class="opts">${Object.entries(TIPOS).map(([k,l])=>opt("tipos",k,l,F.tipos.has(k))).join("")}</div></div>
   <div class="fsec"><h4>Quando</h4><div class="opts">${PERIODOS_L.map(([k,l])=>opt("periodo",k,l,F.periodo===k)).join("")}</div>
@@ -1262,7 +1264,7 @@ function renderPanel(){
   <div class="fsec"><h4>Semana do mês<small>ex.: 1º domingo, 4ª segunda</small></h4><div class="opts">${[1,2,3,4,5].map(i=>opt("sem",i,i+"ª semana",F.sem.has(i))).join("")}</div></div>
   <div class="fsec"><h4>Horário</h4><div class="opts">${Object.entries(TURNOS).map(([k,l])=>opt("turno",k,l,F.turno.has(k))).join("")}</div>
     <div class="opts" style="margin-top:8px">${HORAS.map(h=>opt("horas",h,h,F.horas.has(h))).join("")}</div></div>
-  <div class="fsec"><h4>Onde</h4><div class="opts">${Object.entries(SETORES).map(([k,l])=>opt("setores",k,l,F.setores.has(+k))).join("")}</div>
+  <div class="fsec"><h4>Onde</h4><div class="opts">${Object.entries(SETORES).map(([k,l])=>opt("setores",k,l,selSetStr.has(String(k)))).join("")}</div>
     <div class="ffields">
       <label class="field">Cidade<select id="fCidade"><option value="">Todas</option>${CIDADES.map(c=>`<option ${F.cidade===c?"selected":""}>${esc(c)}</option>`).join("")}</select></label>
       <label class="field">Perto de<select id="fNear"><option value="">—</option><option value="me" ${F.near==="me"?"selected":""}>Minha localização</option>${IGREJAS.filter(i=>i.lat!=null).slice().sort((a,b)=>norm(a.nome).localeCompare(norm(b.nome))).map(i=>`<option value="${i.id}" ${F.near===i.id?"selected":""}>${esc(i.nome.replace(/<\/?b>/gi,""))} · ${esc(i.cidade)}</option>`).join("")}</select></label>
@@ -1276,8 +1278,10 @@ function renderPanel(){
     <div class="opts" style="margin-top:8px">${Object.entries(FREQ).map(([k,l])=>opt("freq",k,l,F.freq.has(k))).join("")}</div></div>
   <div class="fsec"><h4>Ordenar por</h4><div class="opts">${[["data","Data"],["distancia","Distância"],["nome","Nome"],["cidade","Cidade"]].map(([k,l])=>opt("ordem",k,l,F.ordem===k,k==="distancia"&&F.near==null)).join("")}</div></div>
   <div class="pfoot"><button class="btn" data-act="fclearall">Limpar tudo</button><button class="btn primary" data-act="fclose">Ver ${plural(n,"resultado","resultados")}</button></div>`;
+
   P.scrollTop=st;
 }
+
 function toggleSet(s,v){ s.has(v)?s.delete(v):s.add(v); }
 function panelOpt(f,v){
   const F=S.F; S.preset=null;
