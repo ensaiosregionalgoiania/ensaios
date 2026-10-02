@@ -707,6 +707,7 @@ function reconstruirDados(){
     IGREJAS.push({
       id: i, nome: r[0], cidade, diaTxt: r[2],
       hora: HORA[r[3]] || r[3] || "19:30",
+      horaRegional: "09:00",              // ← NOVO: horário fixo do ensaio regional
       maps: r[4], setor: String(r[5] ?? "").trim(), encL: r[6], encR: r[7],
       meses: r[8], lat: r[9], lon: r[10],
       cultosTxt: r[11], cultos: parseCultos(r[11]),
@@ -717,7 +718,7 @@ function reconstruirDados(){
 
   CIDADES.push(...[...new Set(IGREJAS.map(i=>i.cidade))].sort((a,b)=>norm(a).localeCompare(norm(b))));
   ENCR.push(...[...new Set(IGREJAS.flatMap(i=>(i.encR||"").split(/[\/,]/).map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>norm(a).localeCompare(norm(b))));
-  HORAS.push(...[...new Set(IGREJAS.flatMap(i=>[i.hora,...i.cultos.map(c=>c.hora)]))].sort());
+  HORAS.push(...[...new Set(IGREJAS.flatMap(i=>[i.hora, i.horaRegional, ...i.cultos.map(c=>c.hora)]))].sort());
 
   IGREJAS.forEach(ig => { ig.prox = proximasIgreja(ig, 4); });
 }
@@ -735,7 +736,10 @@ function eventsBetween(from,to,tipos){
       if(++m>11){m=0;y++;}
     }
   });
-  if(tipos.has("regional")) IGREJAS.forEach(ig=>{ if(ig.regional&&ig.regional>=from&&ig.regional<=to) out.push(ev(ig,ig.regional,ig.hora,"regional")); });
+  if(tipos.has("regional")) IGREJAS.forEach(ig=>{
+    if(ig.regional&&ig.regional>=from&&ig.regional<=to)
+      out.push(ev(ig, ig.regional, ig.horaRegional || "09:00", "regional"));
+  });
   if(tipos.has("culto")||tipos.has("rjm")){
     const end=to<addD(from,CULTO_DIAS)?to:addD(from,CULTO_DIAS);
     for(let d=new Date(from); d<=end; d=addD(d,1)){
@@ -896,9 +900,11 @@ function card(e,modo,ctx){
   const key=`${ig.id}|${e.k||0}|${e.tipo}|${ctx}`;
   const [rt,rc]=d?rel(d):["sem data",""];
   const isCul=e.tipo==="culto"||e.tipo==="rjm";
-  const when = modo==="hora" ? `<div class="t">${esc(e.hora)}</div><div class="m">${WD[d.getDay()]}</div>`
+  const isReg=e.tipo==="regional";
+  const horaExibir = isReg ? (ig.horaRegional || "09:00") : e.hora;
+  const when = modo==="hora" ? `<div class="t">${esc(horaExibir)}</div><div class="m">${WD[d.getDay()]}</div>`
     : d ? `<div class="d">${d.getDate()}</div><div class="m">${MES[d.getMonth()]}</div>` : `<div class="m">—</div>`;
-  const tipoPill = `<span class="pill ${e.tipo==="regional"?"reg":isCul?"cul":"loc"}">${TIPOS[e.tipo]}${modo!=="hora"&&d?" · "+esc(e.hora):""}</span>`;
+  const tipoPill = `<span class="pill ${isReg?"reg":isCul?"cul":"loc"}">${TIPOS[e.tipo]}${modo!=="hora"&&d?" · "+esc(horaExibir):""}</span>`;
   const open=S.aberto===key;
   let det="";
   if(open){
@@ -909,13 +915,13 @@ function card(e,modo,ctx){
         <div><div class="k">Encarregado local</div><div class="v">${esc(ig.encL||"Não informado")}</div></div>
         <div><div class="k">Encarregado regional</div><div class="v">${esc(ig.encR||"Não informado")}</div></div>
         <div><div class="k">Ensaio local</div><div class="v">${ig.diaTxt?esc(ig.diaTxt.toLowerCase())+" · "+esc(ig.hora):"Não cadastrado"}${ig.meses&&ig.meses!=="T"?"<br><small>"+freqTxt(ig.meses)+"</small>":""}</div></div>
-        <div><div class="k">Ensaio regional</div><div class="v">${ig.regional?ig.regional.toLocaleDateString("pt-BR"):"—"}</div></div>
+        <div><div class="k">Ensaio regional</div><div class="v">${ig.regional?ig.regional.toLocaleDateString("pt-BR")+" · "+(ig.horaRegional||"09:00"):"—"}</div></div>
       </div>
       ${ig.prox.length?`<div><div class="k">Próximos ensaios locais</div><div class="nexts">${ig.prox.map(x=>`<span class="pill">${WD[x.getDay()]} ${x.getDate()} ${MES[x.getMonth()]}</span>`).join("")}</div></div>`:""}
       ${ig.cultos.length?`<div><div class="k">Cultos e RJM</div><div class="cultos">${cul.map(c=>`<span class="culto"><b>${WDN[c.wd]}</b> ${c.hora}</span>`).join("")}${rjm.map(c=>`<span class="culto rjm"><b>RJM</b> ${WDN[c.wd]} ${c.hora}</span>`).join("")}</div></div>`:""}
       <div class="actions">
         ${url?`<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${I.pin}Como chegar</a>`:""}
-        ${d?`<a class="btn" href="${esc(gcal(e))}" target="_blank" rel="noopener">${I.cal}Pôr na agenda</a>`:""}
+        ${d?`<a class="btn" href="${esc(gcal({...e,hora:horaExibir}))}" target="_blank" rel="noopener">${I.cal}Pôr na agenda</a>`:""}
       </div>
       <div class="actions">
         <button class="btn" data-act="igall" data-id="${ig.id}">${I.list}Todos os eventos</button>
@@ -1074,7 +1080,11 @@ const filt = evs => evs.filter(e => !setStr.size || setStr.has(String(e.ig.setor
   const d = fromKey(S.dia);
   const eventosDoDia = eventsBetween(d, d, tip);
   const arr = filt(eventosDoDia).sort(
-    (a,b) => a.hora.localeCompare(b.hora) || norm(a.ig.nome).localeCompare(norm(b.ig.nome))
+    (a,b) => {
+      const ha = a.tipo==="regional" ? (a.ig.horaRegional || "09:00") : a.hora;
+      const hb = b.tipo==="regional" ? (b.ig.horaRegional || "09:00") : b.hora;
+      return ha.localeCompare(hb) || norm(a.ig.nome).localeCompare(norm(b.ig.nome));
+    }
   );
 
   console.log("[Dia] Data selecionada:", fmtLong(d));
@@ -1196,7 +1206,11 @@ function renderBuscar(){
     const cnt=countsOf(evs);
     const {y,m}=S.bCal;
     let html=monthGrid("bs",y,m,cnt,S.bSel);
-    const day=S.bSel?evs.filter(e=>e.k===S.bSel).sort((x,z)=>x.hora.localeCompare(z.hora)):[];
+    const day=S.bSel?evs.filter(e=>e.k===S.bSel).sort((x,z)=>{
+      const hx = x.tipo==="regional" ? (x.ig.horaRegional||"09:00") : x.hora;
+      const hz = z.tipo==="regional" ? (z.ig.horaRegional||"09:00") : z.hora;
+      return hx.localeCompare(hz);
+    }):[];
     html+= S.bSel?`<div class="monthhead">${fmtLong(fromKey(S.bSel))} <small>${day.length}</small></div>`+(day.length?day.map(e=>card(e,"hora","bc")).join(""):emptyBox("Nada neste dia","Escolha um dia marcado em dourado.")):`<p class="hint">Os dias em dourado têm eventos. Toque em um dia para ver a lista.</p>`;
     L.innerHTML=html;
   } else {
@@ -1214,8 +1228,12 @@ function renderRegional(){
   const fut=r.filter(ig=>ig.regional>=today), pas=r.filter(ig=>ig.regional<today);
   setHead("Ensaios regionais",`${fut.length} próximos · ${pas.length} já realizados`);
   let html="", lm="";
-  fut.forEach(ig=>{ const m=MESL[ig.regional.getMonth()]+" "+ig.regional.getFullYear(); if(m!==lm){ html+=`<div class="monthhead">${m}</div>`; lm=m; } html+=card(ev(ig,ig.regional,ig.hora,"regional"),"data","rg"); });
-  if(pas.length) html+=`<div class="monthhead">Já realizados</div>`+pas.slice().reverse().map(ig=>card(ev(ig,ig.regional,ig.hora,"regional"),"data","rg")).join("");
+  fut.forEach(ig=>{
+    const m=MESL[ig.regional.getMonth()]+" "+ig.regional.getFullYear();
+    if(m!==lm){ html+=`<div class="monthhead">${m}</div>`; lm=m; }
+    html+=card(ev(ig, ig.regional, ig.horaRegional || "09:00", "regional"),"data","rg");
+  });
+  if(pas.length) html+=`<div class="monthhead">Já realizados</div>`+pas.slice().reverse().map(ig=>card(ev(ig, ig.regional, ig.horaRegional || "09:00", "regional"),"data","rg")).join("");
   $("list").innerHTML=html||emptyBox("Sem ensaios regionais","Nenhuma data cadastrada para este setor.");
 }
 
@@ -1223,7 +1241,12 @@ function renderFav(){
   const tip=new Set(["local","regional"]);
   const evs=eventsBetween(today,addD(today,400),tip).filter(e=>S.fav.has(e.ig.id)).sort((a,b)=>a.k-b.k);
   const first=new Map(); evs.forEach(e=>{ if(!first.has(e.ig.id)) first.set(e.ig.id,e); });
-  const r=[...S.fav].map(id=>first.get(id)||ev(IGREJAS[id],null,IGREJAS[id].hora,"local")).sort((a,b)=>(a.k||9e9)-(b.k||9e9));
+  const r=[...S.fav].map(id=>{
+    const found=first.get(id);
+    if(found) return found;
+    const ig=IGREJAS[id];
+    return ev(ig, null, ig.horaRegional || ig.hora, "local");
+  }).sort((a,b)=>(a.k||9e9)-(b.k||9e9));
   setHead("Igrejas salvas", r.length?`${r.length} salvas · pelo próximo ensaio`:"");
   let html=r.length?r.map(e=>card(e,"data","fv")).join(""):emptyBox("Nenhuma igreja salva","Toque na estrela de uma igreja para acompanhar os próximos ensaios dela aqui.");
   if(r.length){ const next=evs.slice(0,12); html+=`<div class="monthhead">Próximas datas das salvas</div>`+next.map(e=>card(e,"data","fn")).join(""); }
@@ -1403,16 +1426,20 @@ let convTxt="", modeloAtual="c06", convAtual=null, convBlob=null, convGen=0;
 const LAYOUT={ c06:{top:.07,dt:.40,dl:.07,dc:"#15223F",call:true}, c07:{top:.04,dt:.61,dl:.08,dc:"#F7F1E1",call:false}, c10:{top:.12,dt:.48,dl:.13,dc:"#15223F",call:true} };
 function abrirConvite(id,k,t){ convAtual={id,k,tipo:t==="regional"?"Ensaio Regional":"Ensaio Local"}; $("convOut").hidden=true; pintarConvite(); $("sheet").hidden=false; }
 function pintarConvite(){
-  if(!convAtual) return; const ig=IGREJAS[convAtual.id], d=fromKey(convAtual.k), tipo=convAtual.tipo, [rt]=rel(d), url=mapsUrl(ig);
+  if(!convAtual) return;
+  const ig=IGREJAS[convAtual.id], d=fromKey(convAtual.k), tipo=convAtual.tipo, [rt]=rel(d), url=mapsUrl(ig);
+  const isReg = tipo === "Ensaio Regional";
+  const horaExibir = isReg ? (ig.horaRegional || "09:00") : ig.hora;
   const inv=$("invite"); inv.className="invite "+modeloAtual; inv.style.setProperty("--bgimg",`var(--${modeloAtual},linear-gradient(135deg,#14264F,#B8883A))`);
   inv.innerHTML=`<div class="top"><div class="ie">Convite</div><div class="it">${tipo}</div><div class="ic">${esc(ig.nome.replace(/<\/?b>/gi,""))}</div><div class="icity">${esc(ig.cidade)}</div></div>
-    <div class="dhl"><div>Data<b>${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")} · ${WD[d.getDay()]}</b></div><div>Horário<b>${esc(ig.hora)}</b></div><div class="call">${rt==="Hoje"?"É hoje! ":""}Contamos com a sua presença.</div></div>`;
-  convTxt=`A paz de Deus!\n\n*${tipo}*\n${ig.nome.replace(/<\/?b>/gi,"")} – ${ig.cidade}\n${fmtLong(d)}, às ${ig.hora}${url?"\nLocalização: "+url:""}\n\nConvidamos a irmandade, músicos, organistas e estudantes.\nDeus abençoe!`;
+    <div class="dhl"><div>Data<b>${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")} · ${WD[d.getDay()]}</b></div><div>Horário<b>${esc(horaExibir)}</b></div><div class="call">${rt==="Hoje"?"É hoje! ":""}Contamos com a sua presença.</div></div>`;
+  convTxt=`A paz de Deus!\n\n*${tipo}*\n${ig.nome.replace(/<\/?b>/gi,"")} – ${ig.cidade}\n${fmtLong(d)}, às ${horaExibir}${url?"\nLocalização: "+url:""}\n\nConvidamos a irmandade, músicos, organistas e estudantes.\nDeus abençoe!`;
   const wa="https://wa.me/?text="+encodeURIComponent(convTxt);
   $("waBtn").href=wa;
   convBlob=null; const gen=++convGen; prontoWA(false);
   gerarImagem().then(b=>{ if(gen===convGen){ convBlob=b; prontoWA(true); } }).catch(()=>{ if(gen===convGen) prontoWA(true); });
 }
+
 function prontoWA(ok){ const b=$("waBtn"); b.querySelector("span").textContent=ok?"Enviar no WhatsApp":"Preparando convite…"; if(ok) b.removeAttribute("aria-busy"); else b.setAttribute("aria-busy","true"); }
 function arquivoConvite(){ return convBlob?new File([convBlob],nomeArquivo(),{type:"image/jpeg"}):null; }
 const ehCelular = () => matchMedia("(pointer:coarse)").matches;
@@ -1435,8 +1462,11 @@ function planoManual(){
   mostrarPronta(convBlob);
 }
 function carregarImg(src){ return new Promise((ok,err)=>{ const im=new Image(); im.crossOrigin="anonymous"; im.onload=()=>ok(im); im.onerror=err; im.src=src; }); }
+
 async function gerarImagem(){
   const ig=IGREJAS[convAtual.id], d=fromKey(convAtual.k), tipo=convAtual.tipo, [rt]=rel(d), L=LAYOUT[modeloAtual];
+  const isReg = tipo === "Ensaio Regional";
+  const horaExibir = isReg ? (ig.horaRegional || "09:00") : ig.hora;
   const raw=getComputedStyle(document.documentElement).getPropertyValue("--"+modeloAtual).trim();
   let bg=null;
   try{
@@ -1463,13 +1493,15 @@ async function gerarImagem(){
   y+=1.5*cq+3.4*cq; line(ig.cidade.toUpperCase(),'500 SZ '+CAPS,3.4*cq,y,"#15223F",.14*3.4*cq);
   const lx=W*L.dl; let yy=H*L.dt; const dc=L.dc;
   const dataTxt=`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")} · ${WD[d.getDay()]}`;
-  [["DATA",dataTxt],["HORÁRIO",ig.hora]].forEach(([k,v],i)=>{ if(i) yy+=2.6*cq; yy+=3*cq; line(k,'500 SZ '+CAPS,3*cq,yy,dc,.14*3*cq,"left",lx); yy+=7.4*cq*.95; line(v,'600 SZ '+DISP,7.4*cq,yy,dc,0,"left",lx); });
+  [["DATA",dataTxt],["HORÁRIO",horaExibir]].forEach(([k,v],i)=>{ if(i) yy+=2.6*cq; yy+=3*cq; line(k,'500 SZ '+CAPS,3*cq,yy,dc,.14*3*cq,"left",lx); yy+=7.4*cq*.95; line(v,'600 SZ '+DISP,7.4*cq,yy,dc,0,"left",lx); });
   if(L.call){ yy+=2.6*cq; x.font=`italic 500 ${4.6*cq}px ${DISP}`; const txt=(rt==="Hoje"?"É hoje! ":"")+"Contamos com a sua presença."; let cur=""; const ws=txt.split(" ");
     ws.forEach((w,i)=>{ const t=cur?cur+" "+w:w; if(x.measureText(t).width>50*cq&&cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); cur=w; } else cur=t; });
     if(cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); } }
   return await new Promise((ok,err)=>c.toBlob(b=>b?ok(b):err(new Error("blob")),"image/jpeg",.9));
 }
+
 function nomeArquivo(){ const ig=IGREJAS[convAtual.id]; return ("convite-"+norm(ig.nome.replace(/<\/?b>/gi,"")).replace(/[^a-z0-9]+/g,"-")+".jpg").replace(/-+/g,"-"); }
+
 function copiarTexto(msg){ try{ return navigator.clipboard.writeText(convTxt).then(()=>{ if(msg) toast(msg); },()=>{}); }catch(e){ return Promise.resolve(); } }
 async function compartilhar(btn){
   copiarTexto();
