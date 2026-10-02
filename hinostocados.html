@@ -402,6 +402,15 @@
     .tabela-rel tr:nth-child(even) td { background: #f8fafc; }
     .tabela-rel tr:hover td { background: #eef2ff; }
 
+    /* 🆕 linha clicável do relatório */
+    .tabela-rel tbody tr.linha-clicavel { cursor: pointer; }
+    .tabela-rel tbody tr.linha-clicavel:hover td { background: #dbeafe; }
+    .tabela-rel tbody tr.linha-clicavel td:last-child::after {
+      content: " 🔍";
+      font-size: 0.8rem;
+      opacity: 0.55;
+    }
+
     .tabela-wrap {
       max-height: 560px;
       overflow-y: auto;
@@ -444,6 +453,131 @@
     .user-info .nome {
       font-weight: 600;
       color: #fbbf24;
+    }
+
+    /* =====================================================
+       🆕 MODAL DE DETALHES DO HINO
+       ===================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(2px);
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.visivel { display: flex; }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      animation: modalIn 0.18s ease-out;
+      overflow: hidden;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      background: #1a3a6c;
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .modal-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    .modal-header .modal-sub {
+      font-size: 0.78rem;
+      opacity: 0.85;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .modal-fechar {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .modal-fechar:hover { background: rgba(255,255,255,0.3); }
+
+    .modal-body {
+      padding: 16px 20px 20px;
+      overflow-y: auto;
+    }
+
+    .modal-info {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .modal-lista {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modal-lista li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .modal-lista li .data-br {
+      font-weight: 700;
+      color: #1a3a6c;
+      min-width: 96px;
+    }
+    .modal-lista li .cong-nome {
+      color: #475569;
+      font-size: 0.85rem;
+      flex: 1;
+    }
+    .modal-lista li .obs-tag {
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .modal-vazio {
+      text-align: center;
+      color: #94a3b8;
+      padding: 24px 12px;
+      font-size: 0.9rem;
     }
 
     @media (max-width: 640px) {
@@ -539,7 +673,7 @@
     <!-- ============ PÁGINA: MAIS TOCADOS ============ -->
     <section class="pagina" id="page-mais-tocados">
       <h1>🏆 50 Hinos Mais Tocados</h1>
-      <p class="subtitle">Filtre por congregação e período e clique em "Gerar Relatório".</p>
+      <p class="subtitle">Filtre por congregação e período e clique em "Gerar Relatório". Clique em uma linha para ver as datas em que o hino foi tocado.</p>
 
       <fieldset>
         <legend>Filtros</legend>
@@ -654,6 +788,24 @@
       <pre id="diagOut">Aguardando inicialização...</pre>
     </details>
 
+  </div>
+
+  <!-- =====================================================
+       🆕 MODAL DE DETALHES DO HINO
+       ===================================================== -->
+  <div class="modal-overlay" id="modalHino">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitulo">Hino</h3>
+          <div class="modal-sub" id="modalSubtitulo"></div>
+        </div>
+        <button class="modal-fechar" id="modalFechar" title="Fechar">✖</button>
+      </div>
+      <div class="modal-body" id="modalCorpo">
+        <!-- preenchido via JS -->
+      </div>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -865,6 +1017,13 @@
     const relResultadoObs   = document.getElementById("relResultadoObs");
     const btnGerarObs       = document.getElementById("btnGerarObs");
 
+    // 🆕 MODAL
+    const modalHino      = document.getElementById("modalHino");
+    const modalTitulo    = document.getElementById("modalTitulo");
+    const modalSubtitulo = document.getElementById("modalSubtitulo");
+    const modalCorpo     = document.getElementById("modalCorpo");
+    const modalFechar    = document.getElementById("modalFechar");
+
     // ==========================================
     // ESTADO
     // ==========================================
@@ -874,6 +1033,9 @@
     let campoNomeDetectado = null;
     let todasDatasDisponiveis = [];
     let appIniciada = false;
+
+    // 🆕 cache para o modal (hino -> detalhes)
+    const cacheDetalhesHino = new Map();
 
     const inputsHinos = [];
 
@@ -1748,14 +1910,16 @@
     // ==========================================
     // RENDERIZAÇÃO DO RELATÓRIO
     // ==========================================
-    function renderizarRelatorio(container, titulo, lista, info) {
+    function renderizarRelatorio(container, titulo, lista, info, opcoes = {}) {
       if (!lista.length) {
         container.innerHTML = `<p class="rel-info">Nenhum dado encontrado para os filtros selecionados.</p>`;
         return;
       }
 
+      const clicavel = opcoes.clicavel === true;
+
       const linhas = lista.map((item, idx) => `
-        <tr>
+        <tr ${clicavel ? `class="linha-clicavel" data-hino="${item.hino}" title="Clique para ver as datas"` : ""}>
           <td style="width:70px;font-weight:700;color:#64748b;">${idx + 1}º</td>
           <td style="font-weight:600;">Hino ${item.hino}</td>
           <td><span class="qtd-badge ${item.qtd === 0 ? 'qtd-zero' : ''}">${item.qtd}x</span></td>
@@ -1765,6 +1929,7 @@
       container.innerHTML = `
         <div class="rel-titulo">${titulo}</div>
         <div class="rel-info">${info}</div>
+        ${clicavel ? '<div class="rel-info" style="color:#1a3a6c;font-weight:600;">💡 Clique em uma linha para ver as datas em que o hino foi tocado.</div>' : ""}
         <div class="tabela-wrap">
           <table class="tabela-rel">
             <thead>
@@ -1774,6 +1939,16 @@
           </table>
         </div>
       `;
+
+      // 🆕 registrar evento de clique nas linhas
+      if (clicavel) {
+        container.querySelectorAll("tr.linha-clicavel").forEach(tr => {
+          tr.addEventListener("click", () => {
+            const hino = Number(tr.getAttribute("data-hino"));
+            abrirModalDetalhesHino(hino, opcoes);
+          });
+        });
+      }
     }
 
     function filtroTexto(selectCong, idCong, dataIni, dataFim) {
@@ -1789,6 +1964,109 @@
       if (!dataIni && !dataFim) partes.push("Período: Todas as datas");
       return partes.join(" • ");
     }
+
+    // ==========================================
+    // 🆕 MODAL: DETALHES DO HINO
+    // ==========================================
+    function nomeCongregacao(id) {
+      const idNum = Number(id);
+      // procura em qualquer select de congregação já carregado
+      const selects = [relCongregacaoMais, relCongregacaoMenos, relCongregacaoObs, selectCong];
+      for (const sel of selects) {
+        if (!sel) continue;
+        const opt = Array.from(sel.options).find(o => Number(o.value) === idNum);
+        if (opt && opt.value !== "") return opt.textContent;
+      }
+      return String(id);
+    }
+
+    async function abrirModalDetalhesHino(hino, opcoes = {}) {
+      modalTitulo.textContent = `Hino ${hino}`;
+      modalSubtitulo.textContent = "";
+      modalCorpo.innerHTML = '<p class="rel-info">⏳ Carregando datas...</p>';
+      modalHino.classList.add("visivel");
+
+      // chave de cache considera os filtros usados no relatório
+      const cacheKey = `${hino}::${opcoes.idCong ?? ""}::${opcoes.dataIni ?? ""}::${opcoes.dataFim ?? ""}`;
+
+      try {
+        let registros;
+
+        if (cacheDetalhesHino.has(cacheKey)) {
+          registros = cacheDetalhesHino.get(cacheKey);
+        } else {
+          // busca registros que contenham esse hino
+          const docs = await buscarParaRelatorio(opcoes.idCong, opcoes.dataIni, opcoes.dataFim);
+
+          registros = [];
+          docs.forEach(doc => {
+            const d = doc.data();
+            const iso = timestampParaISO(d.data);
+            const lista = normalizarHinos(d);
+            lista.forEach(({ numero, observacao }) => {
+              if (Number(numero) === Number(hino)) {
+                registros.push({
+                  dataISO: iso,
+                  dataBR: isoParaBR(iso),
+                  idCongregacao: Number(d.idCongregacao),
+                  observacao: String(observacao || "").trim()
+                });
+              }
+            });
+          });
+
+          // ordena por data decrescente (mais recente primeiro)
+          registros.sort((a, b) => {
+            if (a.dataISO !== b.dataISO) return a.dataISO < b.dataISO ? 1 : -1;
+            return a.idCongregacao - b.idCongregacao;
+          });
+
+          cacheDetalhesHino.set(cacheKey, registros);
+        }
+
+        if (!registros.length) {
+          modalCorpo.innerHTML = '<div class="modal-vazio">Nenhuma data encontrada para este hino com os filtros atuais.</div>';
+          return;
+        }
+
+        const mostrarCong = !modoVisitante && ehAdminGeral() && !opcoes.idCong;
+
+        const itens = registros.map(r => `
+          <li>
+            <span class="data-br">${r.dataBR}</span>
+            ${mostrarCong ? `<span class="cong-nome">${nomeCongregacao(r.idCongregacao)}</span>` : ""}
+            ${r.observacao ? `<span class="obs-tag" title="${r.observacao.replace(/"/g, '&quot;')}">📝 obs</span>` : ""}
+          </li>
+        `).join("");
+
+        modalSubtitulo.textContent = `${registros.length} data(s) encontrada(s)`;
+
+        modalCorpo.innerHTML = `
+          <div class="modal-info">
+            Datas em que o <strong>Hino ${hino}</strong> foi tocado, conforme os filtros do relatório.
+          </div>
+          <ul class="modal-lista">${itens}</ul>
+        `;
+
+      } catch (e) {
+        console.error(e);
+        modalCorpo.innerHTML = `<div class="modal-vazio" style="color:#991b1b;">Erro ao carregar detalhes: ${e.message}</div>`;
+      }
+    }
+
+    function fecharModalHino() {
+      modalHino.classList.remove("visivel");
+    }
+
+    modalFechar.addEventListener("click", fecharModalHino);
+    modalHino.addEventListener("click", (e) => {
+      if (e.target === modalHino) fecharModalHino();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modalHino.classList.contains("visivel")) {
+        fecharModalHino();
+      }
+    });
 
     // ==========================================
     // GERAR RELATÓRIO — MAIS TOCADOS
@@ -1815,7 +2093,16 @@
           .slice(0, TOP_N);
 
         const info = `Base: ${totalRegistros} registro(s) • ${totalHinosLancados} hino(s) lançado(s) • hinos ${HINO_MIN} a ${HINO_MAX_REL} • ${filtroTexto(relCongregacaoMais, idCong, dataIni, dataFim)}`;
-        renderizarRelatorio(relResultadoMais, "🏆 50 Hinos Mais Tocados", lista, info);
+
+        // 🆕 limpa cache do modal a cada novo relatório
+        cacheDetalhesHino.clear();
+
+        renderizarRelatorio(relResultadoMais, "🏆 50 Hinos Mais Tocados", lista, info, {
+          clicavel: true,
+          idCong: idCong || null,
+          dataIni: dataIni || null,
+          dataFim: dataFim || null
+        });
       } catch (e) {
         relResultadoMais.innerHTML = "";
         setStatus("❌ " + e.message, "err");
