@@ -11,10 +11,7 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  html, body {
-    width: 100%;
-    overflow-x: hidden;
-  }
+  html, body { width: 100%; overflow-x: hidden; }
 
   body {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -51,9 +48,7 @@
     box-shadow: 0 6px 28px rgba(0,0,0,0.08);
   }
 
-  /* ============================================================
-     AVISO PARA GIRAR O CELULAR
-     ============================================================ */
+  /* Aviso de girar celular */
   #aviso-girar {
     display: none;
     position: fixed;
@@ -68,37 +63,20 @@
     flex-direction: column;
     gap: 20px;
   }
-
   #aviso-girar .icone {
     font-size: 4rem;
     animation: gira 2.2s ease-in-out infinite;
   }
-
-  #aviso-girar h2 {
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-  }
-
-  #aviso-girar p {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 320px;
-    opacity: 0.85;
-  }
-
+  #aviso-girar h2 { font-size: 1.4rem; font-weight: 800; }
+  #aviso-girar p { font-size: 0.95rem; line-height: 1.6; max-width: 320px; opacity: 0.85; }
   @keyframes gira {
     0%, 40%   { transform: rotate(0deg); }
     50%, 90%  { transform: rotate(90deg); }
     100%      { transform: rotate(0deg); }
   }
-
-  /* Mostra o aviso quando: celular + retrato + tocando */
   body.girar-aviso #aviso-girar { display: flex; }
 
-  /* ============================================================
-     BARRA DE CONFIGURAÇÃO (hino + bpm)
-     ============================================================ */
+  /* Config */
   #config-bar {
     display: flex;
     flex-wrap: wrap;
@@ -111,7 +89,6 @@
     border: 1px solid #e5e7eb;
     border-radius: 10px;
   }
-
   #config-bar label {
     font-size: clamp(0.82rem, 3.4vw, 0.92rem);
     font-weight: 700;
@@ -120,7 +97,6 @@
     align-items: center;
     gap: 6px;
   }
-
   #config-bar select,
   #config-bar input[type="range"] {
     font-family: inherit;
@@ -132,15 +108,12 @@
     color: #1e293b;
     min-height: 36px;
   }
-
   #config-bar select { min-width: 200px; }
-
   #config-bar input[type="range"] {
     padding: 0;
     width: 160px;
     vertical-align: middle;
   }
-
   #bpm-valor {
     font-weight: 800;
     color: #059669;
@@ -148,22 +121,44 @@
     text-align: right;
   }
 
-  /* ============================================================
-     PARTITURA
-     ============================================================ */
+  /* Indicador de página */
+  #indicador-pagina {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 700;
+  }
+  .bolinha-pagina {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: background .25s, transform .25s;
+  }
+  .bolinha-pagina.ativa {
+    background: #1a3a6c;
+    transform: scale(1.35);
+  }
+
+  /* Partitura */
   #partitura {
     background: #fafbfc;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
-    padding: 16px 4px;
-    min-height: 160px;
+    padding: 20px 12px;
+    min-height: 140px;
     margin-bottom: 16px;
     overflow-x: auto;
-    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     transition: background-color .4s ease, box-shadow .2s ease;
     cursor: pointer;
-    scroll-behavior: smooth;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #partitura.alvo-1 { background: #e0f2fe; }
@@ -177,9 +172,7 @@
     box-shadow: 0 0 0 3px #059669, 0 0 16px rgba(5,150,105,0.5);
   }
 
-  /* ============================================================
-     CONTROLES DE ÁUDIO
-     ============================================================ */
+  /* Controles */
   #audio-controls {
     display: flex;
     justify-content: center;
@@ -189,7 +182,6 @@
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
-
   #audio-controls button {
     padding: 14px 22px;
     font-size: clamp(0.9rem, 3.6vw, 1rem);
@@ -207,13 +199,11 @@
     user-select: none;
     -webkit-user-select: none;
   }
-
   #audio-controls button:active { transform: scale(0.97); }
   #audio-controls button:hover  { filter: brightness(1.08); }
 
   #btn-play { background: #1a3a6c; color: #fff; }
   #btn-play:disabled { background: #94a3b8; cursor: not-allowed; }
-
   #btn-stop { background: #e5e7eb; color: #334155; }
   #btn-stop:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -250,9 +240,6 @@
   }
   .info strong { color: #1a3a6c; }
 
-  /* ============================================================
-     NOTA-ALVO
-     ============================================================ */
   #partitura .abcjs-note.nota-alvo {
     transform-box: fill-box;
     transform-origin: center;
@@ -278,13 +265,9 @@
     #partitura .abcjs-note.nota-alvo { animation: none; }
   }
 
-  /* ============================================================
-     AJUSTES PARA CELULAR
-     ============================================================ */
   @media (max-width: 640px) {
     body { padding: 8px; }
     .card { border-radius: 10px; padding: 12px; }
-
     h1 { font-size: 1rem; }
     .subtitle { font-size: 0.78rem; }
 
@@ -294,17 +277,9 @@
       flex-direction: column;
       align-items: stretch;
     }
-
-    #config-bar label {
-      justify-content: space-between;
-      font-size: 0.85rem;
-    }
-
+    #config-bar label { justify-content: space-between; font-size: 0.85rem; }
     #config-bar select { min-width: 100%; }
-    #config-bar input[type="range"] {
-      width: 100%;
-      min-height: 44px;
-    }
+    #config-bar input[type="range"] { width: 100%; min-height: 44px; }
 
     #audio-controls button {
       padding: 12px 16px;
@@ -312,29 +287,20 @@
       flex: 1 1 40%;
     }
 
-    #painel-resultado {
-      font-size: 0.88rem;
-      padding: 12px;
-      min-height: 48px;
-    }
-
+    #painel-resultado { font-size: 0.88rem; padding: 12px; min-height: 48px; }
     .info { font-size: 0.75rem; padding: 10px 12px; }
 
-    /* Partitura maior para facilitar o toque */
-    #partitura {
-      padding: 12px 2px;
-      min-height: 120px;
-    }
+    #partitura { padding: 14px 6px; min-height: 120px; }
   }
 
-  /* Em paisagem no celular, otimiza o espaço vertical */
   @media (orientation: landscape) and (max-height: 500px) {
     body { padding: 6px; }
     .card { padding: 10px; }
     h1 { font-size: 0.95rem; margin-bottom: 2px; }
     .subtitle { display: none; }
     #config-bar { padding: 8px; margin-bottom: 10px; }
-    #partitura { margin-bottom: 10px; min-height: 100px; }
+    #indicador-pagina { margin-bottom: 6px; }
+    #partitura { margin-bottom: 10px; min-height: 100px; padding: 10px; }
     #audio-controls { margin-bottom: 10px; min-height: 44px; }
     #audio-controls button { min-height: 42px; padding: 10px 18px; }
     .info { display: none; }
@@ -343,7 +309,6 @@
 </head>
 <body>
 
-<!-- Aviso para girar o celular -->
 <div id="aviso-girar">
   <div class="icone">📱↻</div>
   <h2>Vire o celular</h2>
@@ -367,6 +332,8 @@
       </label>
     </div>
 
+    <div id="indicador-pagina"></div>
+
     <div id="partitura"></div>
 
     <div id="audio-controls">
@@ -378,8 +345,8 @@
 
     <div class="info">
       <strong>Como funciona:</strong> O som toca <strong>todas as notas</strong> do início ao fim.
-      Quando a bolinha pousar na <strong>nota azul</strong>, <strong>toque na partitura</strong> — a borda verde indica que o alvo está aberto.
-      Se perder um alvo, o sistema registra automaticamente como <strong>sem clique</strong>.
+      Uma pauta é mostrada por vez, trocando automaticamente conforme a música avança.
+      Quando a bolinha pousar na <strong>nota azul</strong>, <strong>toque na partitura</strong>.
     </div>
   </div>
 </div>
@@ -388,6 +355,13 @@
 // ============================================================
 // 1. BANCO DE HINOS
 // ============================================================
+// Cada hino tem:
+//   abc           → partitura COMPLETA (só para conferência/duração)
+//   duracoes      → duração de cada nota em batidas (música inteira)
+//   comportamento → vetor (música inteira)
+//   paginas       → array de páginas (uma pauta cada)
+//                   cada página tem: abc, batidaInicial, batidaFinal (exclusivo)
+//
 const HINOS = [
   {
     id: "hino2",
@@ -424,27 +398,45 @@ const HINOS = [
       3
     ],
     comportamento: [
-      // Alvo 1 (batida 13)
       "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
       "sem", "sem", "sem", "sem", "sem", "sem", "sem", "sem",
       "alvo",
-      // Alvo 2 (batida 29)
       "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
       "sem", "sem", "sem", "sem", "sem",
       "sem", "sem", "sem", "sem", "sem",
       "alvo",
-      // Alvo 3 (batida 45)
       "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
       "sem", "sem", "sem", "sem", "sem",
       "sem", "sem", "sem", "sem", "sem",
       "alvo",
-      // Alvo 4 (batida 61)
       "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
       "sem", "sem", "sem", "sem", "sem",
       "sem", "sem", "sem", "sem", "sem",
       "alvo",
-      // Final
       "sem", "sem"
+    ],
+    // 4 páginas — cada uma = 1 frase = 16 batidas
+    paginas: [
+      {
+        abc: "X:1\nM:4/4\nL:1/4\nQ:1/4=80\nK:Eb\n G | G G A G | G2 F E | E c B A | G3 |",
+        batidaInicial: 0,
+        batidaFinal: 16
+      },
+      {
+        abc: "X:1\nM:4/4\nL:1/4\nQ:1/4=80\nK:Eb\n A | B e e d | d2 c B | A B G E | F3 |",
+        batidaInicial: 16,
+        batidaFinal: 32
+      },
+      {
+        abc: "X:1\nM:4/4\nL:1/4\nQ:1/4=80\nK:Eb\n F | G A B c | c2 B e | e3/2 d/2 c G | A3 |",
+        batidaInicial: 32,
+        batidaFinal: 48
+      },
+      {
+        abc: "X:1\nM:4/4\nL:1/4\nQ:1/4=80\nK:Eb\n F | G G A G | G2 F E | E F E D | G3 |",
+        batidaInicial: 48,
+        batidaFinal: 64
+      }
     ]
   }
 ];
@@ -456,6 +448,7 @@ let HINO_ATUAL = null;
 let TOTAL_BATIDAS = 0;
 let BATIDA_PARA_NOTA = [];
 let COMPORTAMENTO = [];
+let PAGINA_ATUAL = 0;
 
 // ============================================================
 // 3. CONFIG
@@ -478,22 +471,14 @@ function construirMapaBatidaParaNota(duracoes) {
     const dur = duracoes[n];
     const fim = acumulado + dur;
     let b = Math.floor(acumulado + 1e-9);
-    while (b < fim - 1e-9) {
-      mapa.push(n);
-      b++;
-    }
+    while (b < fim - 1e-9) { mapa.push(n); b++; }
     acumulado = fim;
   }
   return mapa;
 }
 
-function tipoDaBatida(beat) {
-  return COMPORTAMENTO[beat] ?? "sem";
-}
-
-function ehAlvo(beat) {
-  return COMPORTAMENTO[beat] === "alvo";
-}
+function tipoDaBatida(beat) { return COMPORTAMENTO[beat] ?? "sem"; }
+function ehAlvo(beat) { return COMPORTAMENTO[beat] === "alvo"; }
 
 function proximoAlvoAPartirDe(beat) {
   for (let i = beat; i < COMPORTAMENTO.length; i++) {
@@ -510,31 +495,39 @@ function numeroDoAlvo(beatAlvo) {
   return count;
 }
 
+// Qual página contém uma batida absoluta?
+function paginaDaBatida(beat) {
+  if (!HINO_ATUAL) return 0;
+  for (let i = 0; i < HINO_ATUAL.paginas.length; i++) {
+    const p = HINO_ATUAL.paginas[i];
+    if (beat >= p.batidaInicial && beat < p.batidaFinal) return i;
+  }
+  return HINO_ATUAL.paginas.length - 1;
+}
+
 // ============================================================
 // 5. AVISO DE GIRAR CELULAR
 // ============================================================
 function atualizarAvisoGirar() {
   const ehCelular = window.matchMedia("(max-width: 900px) and (pointer: coarse)").matches;
   const ehRetrato = window.matchMedia("(orientation: portrait)").matches;
-  // Só mostra o aviso se estiver tocando em celular + retrato
   if (ehCelular && ehRetrato && estaTocando) {
     document.body.classList.add("girar-aviso");
   } else {
     document.body.classList.remove("girar-aviso");
   }
 }
-
 window.addEventListener("orientationchange", atualizarAvisoGirar);
 window.addEventListener("resize", atualizarAvisoGirar);
-window.matchMedia("(orientation: portrait)").addEventListener?.("change", atualizarAvisoGirar);
 
 // ============================================================
-// 6. CARREGAR HINO
+// 6. CARREGAR HINO + PÁGINAS
 // ============================================================
 const selHino  = document.getElementById("sel-hino");
 const inpBpm   = document.getElementById("inp-bpm");
 const bpmValor = document.getElementById("bpm-valor");
 const elPart   = document.getElementById("partitura");
+const elIndic  = document.getElementById("indicador-pagina");
 
 let elementosNota = [];
 let circleEl = null;
@@ -545,6 +538,47 @@ HINOS.forEach(h => {
   opt.textContent = h.nome;
   selHino.appendChild(opt);
 });
+
+function montarIndicadorPaginas(total) {
+  elIndic.innerHTML = "";
+  for (let i = 0; i < total; i++) {
+    const b = document.createElement("div");
+    b.className = "bolinha-pagina";
+    elIndic.appendChild(b);
+  }
+}
+
+function atualizarIndicadorPaginas(paginaAtual) {
+  const bolinhas = elIndic.querySelectorAll(".bolinha-pagina");
+  bolinhas.forEach((b, i) => {
+    b.classList.toggle("ativa", i === paginaAtual);
+  });
+}
+
+// Renderiza uma página específica
+function renderizarPagina(indice) {
+  if (!HINO_ATUAL) return;
+  const pagina = HINO_ATUAL.paginas[indice];
+  if (!pagina) return;
+
+  elPart.innerHTML = "";
+  ABCJS.renderAbc("partitura", pagina.abc, {
+    responsive: true,
+    staffwidth: 720,
+    add_classes: true
+  });
+
+  document.querySelectorAll("#partitura .abcjs-note").forEach(el => {
+    el.setAttribute("fill", "black");
+  });
+
+  coletarElementosNota();
+  atualizarIndicadorPaginas(indice);
+  PAGINA_ATUAL = indice;
+
+  // Reconstrói as posições (só das batidas desta página)
+  posicoes = calcularPosicoes();
+}
 
 function carregarHino(id) {
   scheduler.stop();
@@ -566,27 +600,16 @@ function carregarHino(id) {
     );
   }
 
-  elPart.innerHTML = "";
   limparFundo();
-  esconderBolinha();
   mostrarResultado("Escolha um hino e clique em ▶ Tocar.", "neutro");
 
-  ABCJS.renderAbc("partitura", hino.abc, {
-    responsive: true,
-    staffwidth: 720,
-    add_classes: true
-  });
-
-  document.querySelectorAll("#partitura .abcjs-note").forEach(el => {
-    el.setAttribute("fill", "black");
-  });
-
-  coletarElementosNota();
+  montarIndicadorPaginas(hino.paginas.length);
+  renderizarPagina(0);
 }
 
 function coletarElementosNota() {
   const svg = document.querySelector("#partitura svg");
-  if (!svg) return;
+  if (!svg) { elementosNota = []; return; }
   elementosNota = Array.from(svg.querySelectorAll(".abcjs-note"))
     .filter(g => g.querySelector("path, ellipse, rect"));
 }
@@ -612,7 +635,6 @@ function pintarFundoPorAlvo(numeroAlvo) {
     elPart.classList.add(`alvo-${cor}`);
   }
 }
-
 function limparFundo() {
   for (let i = 1; i <= 6; i++) elPart.classList.remove(`alvo-${i}`);
 }
@@ -621,18 +643,14 @@ function limparFundo() {
 // 8. ÁUDIO + PIANO
 // ============================================================
 let audioCtx = null;
-
 function getCtx() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === "suspended") audioCtx.resume();
   return audioCtx;
 }
 
 function tocarPiano(time, freq, duracao, volume) {
   const ctx = getCtx();
-
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, time);
   gain.gain.linearRampToValueAtTime(volume, time + 0.005);
@@ -643,20 +661,16 @@ function tocarPiano(time, freq, duracao, volume) {
     { mult: 2, peso: 0.35 },
     { mult: 3, peso: 0.15 },
   ];
-
   parciais.forEach(p => {
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.value = freq * p.mult;
-
     const g = ctx.createGain();
     g.gain.value = p.peso;
-
     osc.connect(g).connect(gain);
     osc.start(time);
     osc.stop(time + duracao + 0.05);
   });
-
   gain.connect(ctx.destination);
 }
 
@@ -697,10 +711,7 @@ const scheduler = {
 
   tick() {
     if (!this.running) return;
-    if (this.currentBeat >= TOTAL_BATIDAS) {
-      this.stop();
-      return;
-    }
+    if (this.currentBeat >= TOTAL_BATIDAS) { this.stop(); return; }
 
     const ctx = getCtx();
     const seg = 60 / CONFIG.bpm;
@@ -715,9 +726,7 @@ const scheduler = {
 
       tocarPiano(this.nextTime, CONFIG.notaFixa, dur, vol);
 
-      if (ehAlvo(beat)) {
-        temposAlvo[beat] = this.nextTime;
-      }
+      if (ehAlvo(beat)) temposAlvo[beat] = this.nextTime;
 
       const delayMs = Math.max(0, (this.nextTime - ctx.currentTime) * 1000);
       const beatNumber = beat;
@@ -738,7 +747,7 @@ const scheduler = {
 };
 
 // ============================================================
-// 10. BOLINHA + ROLAGEM AUTOMÁTICA
+// 10. BOLINHA
 // ============================================================
 function criarBolinha() {
   const svg = document.querySelector("#partitura svg");
@@ -761,44 +770,42 @@ function esconderBolinha() {
   if (circleEl) circleEl.setAttribute("opacity", "0");
 }
 
+// Posições calculadas SEMPRE com base na página ATUAL (o SVG só contém esta página)
+let posicoes = [];
+
 function calcularPosicoes() {
   const svg = document.querySelector("#partitura svg");
-  if (!svg) return [];
+  if (!svg || !HINO_ATUAL) return [];
   const svgRect = svg.getBoundingClientRect();
 
-  const posicoes = [];
+  const pagina = HINO_ATUAL.paginas[PAGINA_ATUAL];
+  if (!pagina) return [];
+
+  const out = [];
+  // Para cada batida DESTA página, acha a nota correspondente NA PÁGINA
+  // Como as páginas têm suas próprias notas, usamos índice local:
+  // notaIndex (global) - primeiraNotaDaPagina = índice local
+  // Simplificação: iteramos por batida e pegamos o índice da nota via BATIDA_PARA_NOTA,
+  // depois mapeamos para o índice dentro da página.
+  const primeiraBatida = pagina.batidaInicial;
+  const primeiraNota = BATIDA_PARA_NOTA[primeiraBatida] ?? 0;
+
   for (let i = 0; i < TOTAL_BATIDAS; i++) {
-    const idxNota = BATIDA_PARA_NOTA[i];
-    const nota = elementosNota[idxNota];
-    if (!nota) continue;
+    if (i < pagina.batidaInicial || i >= pagina.batidaFinal) {
+      out.push(null);
+      continue;
+    }
+    const idxNotaGlobal = BATIDA_PARA_NOTA[i];
+    const idxNotaLocal = idxNotaGlobal - primeiraNota;
+    const nota = elementosNota[idxNotaLocal];
+    if (!nota) { out.push(null); continue; }
     const r = nota.getBoundingClientRect();
-    posicoes.push({
+    out.push({
       left: r.left - svgRect.left + r.width / 2,
-      top:  r.top  - svgRect.top  + r.height / 2,
-      // Rola com base na posição absoluta da nota em relação à partitura
-      absoluta: r.left - elPart.getBoundingClientRect().left + elPart.scrollLeft
+      top:  r.top  - svgRect.top  + r.height / 2
     });
   }
-  return posicoes;
-}
-
-// Rolagem suave: garante que a bolinha esteja visível
-let ultimaRolagem = -1;
-function rolarParaBolinha(pos) {
-  if (!pos) return;
-
-  const margem = 60;               // margem em px para não deixar a bolinha na borda
-  const larguraVisible = elPart.clientWidth;
-  const scrollAtual = elPart.scrollLeft;
-  const x = pos.absoluta;
-
-  if (x < scrollAtual + margem) {
-    // Rolou para trás (raro, mas possível)
-    elPart.scrollLeft = Math.max(0, x - margem);
-  } else if (x > scrollAtual + larguraVisible - margem) {
-    // Precisa rolar para frente
-    elPart.scrollLeft = x - larguraVisivel / 2 + margem;
-  }
+  return out;
 }
 
 // ============================================================
@@ -806,12 +813,10 @@ function rolarParaBolinha(pos) {
 // ============================================================
 function avaliarClique() {
   const alvoParaAvaliar = alvoAtualSendoAvaliado;
-
   if (alvoParaAvaliar === null || temposAlvo[alvoParaAvaliar] === undefined) {
     mostrarResultado("⌛ Nenhum alvo aberto. Espere a nota azul.", "neutro");
     return;
   }
-
   if (alvosJaAvaliados.has(alvoParaAvaliar)) return;
 
   const agora = getCtx().currentTime;
@@ -846,14 +851,12 @@ const btnPlay = document.getElementById("btn-play");
 const btnStop = document.getElementById("btn-stop");
 const painel  = document.getElementById("painel-resultado");
 
-let posicoes = [];
 let estaTocando = false;
 
 function mostrarResultado(msg, classe) {
   painel.textContent = msg;
   painel.className = classe || "neutro";
 }
-
 function atualizarBotoes() {
   btnPlay.disabled = estaTocando;
   btnStop.disabled = !estaTocando;
@@ -866,6 +869,9 @@ function iniciarMusica() {
   }
 
   getCtx();
+
+  // Volta para a página 1
+  renderizarPagina(0);
   circleEl = criarBolinha();
   posicoes = calcularPosicoes();
 
@@ -873,12 +879,19 @@ function iniciarMusica() {
   limparDestaquesNota();
   limparFundo();
   elPart.classList.remove("clicavel");
-  elPart.scrollLeft = 0;
   atualizarBotoes();
   atualizarAvisoGirar();
   mostrarResultado("🔊 Tocando… quando a nota ficar azul, toque na partitura.", "info");
 
   scheduler.start((beatNumber) => {
+    // Se a batida entrou em uma nova página, troca
+    const pag = paginaDaBatida(beatNumber);
+    if (pag !== PAGINA_ATUAL) {
+      renderizarPagina(pag);
+      // Recria a bolinha (o SVG foi substituído)
+      circleEl = criarBolinha();
+    }
+
     if (!circleEl) return;
 
     const tipo = tipoDaBatida(beatNumber);
@@ -891,20 +904,26 @@ function iniciarMusica() {
     if (p) {
       circleEl.setAttribute("cx", p.left);
       circleEl.setAttribute("cy", p.top);
-      // Rola automaticamente para a bolinha
-      rolarParaBolinha(p);
     }
 
-    // Nota azul (próximo alvo)
+    // Nota azul (próximo alvo — pode estar em outra página)
     const batidaProxAlvo = proximoAlvoAPartirDe(beatNumber);
     if (batidaProxAlvo !== null) {
-      const idxNotaAlvo = BATIDA_PARA_NOTA[batidaProxAlvo];
-      destacarNotaAlvo(idxNotaAlvo);
+      // Só destaca se a nota está na página atual
+      const pagDoAlvo = paginaDaBatida(batidaProxAlvo);
+      if (pagDoAlvo === PAGINA_ATUAL) {
+        const paginaObj = HINO_ATUAL.paginas[PAGINA_ATUAL];
+        const primeiraBatida = paginaObj.batidaInicial;
+        const primeiraNota = BATIDA_PARA_NOTA[primeiraBatida] ?? 0;
+        const idxNotaGlobal = BATIDA_PARA_NOTA[batidaProxAlvo];
+        const idxNotaLocal = idxNotaGlobal - primeiraNota;
+        destacarNotaAlvo(idxNotaLocal);
+      }
       const numeroAlvo = numeroDoAlvo(batidaProxAlvo);
       pintarFundoPorAlvo(numeroAlvo);
     }
 
-    // Estado do "alvo aberto"
+    // Estado do alvo
     if (tipo === "alvo") {
       ultimoAlvoAtivo = beatNumber;
       alvoAtualSendoAvaliado = beatNumber;
@@ -915,7 +934,7 @@ function iniciarMusica() {
       }
     }
 
-    // Fechar janela do alvo anterior (sem clique)
+    // Fechar janela do alvo anterior
     if (alvoAtualSendoAvaliado !== null &&
         beatNumber > alvoAtualSendoAvaliado &&
         !alvosJaAvaliados.has(alvoAtualSendoAvaliado)) {
@@ -973,7 +992,6 @@ btnStop.addEventListener("click", () => {
   mostrarResultado("⏸ Interrompido.", "neutro");
 });
 
-// Clique na partitura avalia o tempo
 elPart.addEventListener("pointerdown", () => {
   if (!estaTocando) return;
   if (alvoAtualSendoAvaliado === null) return;
@@ -981,12 +999,10 @@ elPart.addEventListener("pointerdown", () => {
   avaliarClique();
 });
 
-// Troca de hino
 selHino.addEventListener("change", () => {
   carregarHino(selHino.value);
 });
 
-// BPM
 inpBpm.addEventListener("input", () => {
   CONFIG.bpm = parseInt(inpBpm.value, 10);
   bpmValor.textContent = CONFIG.bpm;
@@ -1000,10 +1016,8 @@ inpBpm.addEventListener("input", () => {
     selHino.value = HINOS[0].id;
     carregarHino(HINOS[0].id);
   }
-
   CONFIG.bpm = parseInt(inpBpm.value, 10);
   bpmValor.textContent = CONFIG.bpm;
-
   atualizarBotoes();
   atualizarAvisoGirar();
 })();
