@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Exercício Guiado — Brilha Brilha Estrelinha</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Exercício Guiado — Hinos</title>
 <link rel="icon" href="data:,">
 
 <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.0/dist/abcjs-basic-min.js"></script>
@@ -11,7 +11,10 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  html, body { width: 100%; overflow-x: hidden; }
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
 
   body {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -48,6 +51,106 @@
     box-shadow: 0 6px 28px rgba(0,0,0,0.08);
   }
 
+  /* ============================================================
+     AVISO PARA GIRAR O CELULAR
+     ============================================================ */
+  #aviso-girar {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(15, 23, 42, 0.94);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  #aviso-girar .icone {
+    font-size: 4rem;
+    animation: gira 2.2s ease-in-out infinite;
+  }
+
+  #aviso-girar h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  #aviso-girar p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 320px;
+    opacity: 0.85;
+  }
+
+  @keyframes gira {
+    0%, 40%   { transform: rotate(0deg); }
+    50%, 90%  { transform: rotate(90deg); }
+    100%      { transform: rotate(0deg); }
+  }
+
+  /* Mostra o aviso quando: celular + retrato + tocando */
+  body.girar-aviso #aviso-girar { display: flex; }
+
+  /* ============================================================
+     BARRA DE CONFIGURAÇÃO (hino + bpm)
+     ============================================================ */
+  #config-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+  }
+
+  #config-bar label {
+    font-size: clamp(0.82rem, 3.4vw, 0.92rem);
+    font-weight: 700;
+    color: #1a3a6c;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #config-bar select,
+  #config-bar input[type="range"] {
+    font-family: inherit;
+    font-size: 0.92rem;
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #fff;
+    color: #1e293b;
+    min-height: 36px;
+  }
+
+  #config-bar select { min-width: 200px; }
+
+  #config-bar input[type="range"] {
+    padding: 0;
+    width: 160px;
+    vertical-align: middle;
+  }
+
+  #bpm-valor {
+    font-weight: 800;
+    color: #059669;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* ============================================================
+     PARTITURA
+     ============================================================ */
   #partitura {
     background: #fafbfc;
     border: 1px solid #e5e7eb;
@@ -56,9 +159,27 @@
     min-height: 160px;
     margin-bottom: 16px;
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    transition: background-color .4s ease, box-shadow .2s ease;
+    cursor: pointer;
+    scroll-behavior: smooth;
   }
 
+  #partitura.alvo-1 { background: #e0f2fe; }
+  #partitura.alvo-2 { background: #dcfce7; }
+  #partitura.alvo-3 { background: #fef9c3; }
+  #partitura.alvo-4 { background: #ede9fe; }
+  #partitura.alvo-5 { background: #fce7f3; }
+  #partitura.alvo-6 { background: #cffafe; }
+
+  #partitura.clicavel {
+    box-shadow: 0 0 0 3px #059669, 0 0 16px rgba(5,150,105,0.5);
+  }
+
+  /* ============================================================
+     CONTROLES DE ÁUDIO
+     ============================================================ */
   #audio-controls {
     display: flex;
     justify-content: center;
@@ -96,21 +217,6 @@
   #btn-stop { background: #e5e7eb; color: #334155; }
   #btn-stop:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  #btn-retomar {
-    background: #059669;
-    color: #fff;
-    box-shadow: 0 4px 14px rgba(5,150,105,0.4);
-    animation: pulso 1.4s ease-in-out infinite;
-    display: none;
-  }
-  #btn-retomar.visivel { display: inline-flex; }
-
-  @keyframes pulso {
-    0%, 100% { box-shadow: 0 4px 14px rgba(5,150,105,0.4); }
-    50%      { box-shadow: 0 4px 22px rgba(5,150,105,0.85); }
-  }
-
-  /* Painel de resultado do clique — FICA na tela */
   #painel-resultado {
     margin-top: 8px;
     padding: 14px 16px;
@@ -144,7 +250,9 @@
   }
   .info strong { color: #1a3a6c; }
 
-  /* DESTAQUE CHAMATIVO DA NOTA-ALVO */
+  /* ============================================================
+     NOTA-ALVO
+     ============================================================ */
   #partitura .abcjs-note.nota-alvo {
     transform-box: fill-box;
     transform-origin: center;
@@ -170,135 +278,347 @@
     #partitura .abcjs-note.nota-alvo { animation: none; }
   }
 
-  @media (max-width: 480px) {
+  /* ============================================================
+     AJUSTES PARA CELULAR
+     ============================================================ */
+  @media (max-width: 640px) {
     body { padding: 8px; }
-    .card { border-radius: 10px; }
-    #audio-controls button { padding: 12px 16px; min-height: 46px; }
-    #partitura { padding: 10px 2px; }
+    .card { border-radius: 10px; padding: 12px; }
+
+    h1 { font-size: 1rem; }
+    .subtitle { font-size: 0.78rem; }
+
+    #config-bar {
+      padding: 10px;
+      gap: 8px;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    #config-bar label {
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    #config-bar select { min-width: 100%; }
+    #config-bar input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+    }
+
+    #audio-controls button {
+      padding: 12px 16px;
+      min-height: 48px;
+      flex: 1 1 40%;
+    }
+
+    #painel-resultado {
+      font-size: 0.88rem;
+      padding: 12px;
+      min-height: 48px;
+    }
+
+    .info { font-size: 0.75rem; padding: 10px 12px; }
+
+    /* Partitura maior para facilitar o toque */
+    #partitura {
+      padding: 12px 2px;
+      min-height: 120px;
+    }
   }
-#btn-retomar.inativo {
-  background: #cbd5e1;
-  color: #64748b;
-  box-shadow: none;
-  animation: none;
-  cursor: not-allowed;
-}
+
+  /* Em paisagem no celular, otimiza o espaço vertical */
+  @media (orientation: landscape) and (max-height: 500px) {
+    body { padding: 6px; }
+    .card { padding: 10px; }
+    h1 { font-size: 0.95rem; margin-bottom: 2px; }
+    .subtitle { display: none; }
+    #config-bar { padding: 8px; margin-bottom: 10px; }
+    #partitura { margin-bottom: 10px; min-height: 100px; }
+    #audio-controls { margin-bottom: 10px; min-height: 44px; }
+    #audio-controls button { min-height: 42px; padding: 10px 18px; }
+    .info { display: none; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Aviso para girar o celular -->
+<div id="aviso-girar">
+  <div class="icone">📱↻</div>
+  <h2>Vire o celular</h2>
+  <p>Para acompanhar a partitura confortavelmente, coloque o celular na <strong>horizontal</strong>.</p>
+</div>
+
 <div class="app">
-  <h1>🎵 Exercício Guiado — Brilha Brilha Estrelinha</h1>
-  <p class="subtitle">Clique em ▶. Na 12ª nota, clique no botão verde no momento exato em que ela soar.</p>
+  <h1>🎵 Exercício Guiado — Hinos</h1>
+  <p class="subtitle">Escolha o hino e o BPM. Clique em ▶ e, quando o alvo chegar, toque na partitura no tempo exato.</p>
 
   <div class="card">
+    <div id="config-bar">
+      <label for="sel-hino">
+        🎼 Hino:
+        <select id="sel-hino"></select>
+      </label>
+
+      <label for="inp-bpm">
+        ⏱ BPM: <span id="bpm-valor">80</span>
+        <input type="range" id="inp-bpm" min="60" max="180" step="1" value="80">
+      </label>
+    </div>
+
     <div id="partitura"></div>
 
     <div id="audio-controls">
       <button id="btn-play">▶ Tocar</button>
       <button id="btn-stop" disabled>■ Parar</button>
-      <button id="btn-retomar">▶ Retomar som</button>
     </div>
 
-    <div id="painel-resultado">Clique em ▶ Tocar para iniciar.</div>
+    <div id="painel-resultado">Escolha um hino e clique em ▶ Tocar.</div>
 
     <div class="info">
       <strong>Como funciona:</strong> O som toca <strong>todas as notas</strong> do início ao fim.
-      A bolinha amarela aparece nas notas <strong>1–4</strong> e <strong>13–14</strong>.
-      A partir da nota <strong>5</strong>, aparece o botão verde <strong>▶ Retomar som</strong>.
-      Clique nele <strong>exatamente quando a 12ª nota (azul) soar</strong> — o resultado fica na tela.
+      Quando a bolinha pousar na <strong>nota azul</strong>, <strong>toque na partitura</strong> — a borda verde indica que o alvo está aberto.
+      Se perder um alvo, o sistema registra automaticamente como <strong>sem clique</strong>.
     </div>
   </div>
 </div>
 
 <script>
 // ============================================================
-// 1. PARTITURA E CONSTANTES
+// 1. BANCO DE HINOS
 // ============================================================
-const abcMusica = [
-  "X:1",
-  "T:Brilha Brilha Estrelinha",
-  "M:4/4",
-  "L:1/4",
-  "Q:1/4=80",
-  "K:C",
-  "C C G G | A A G2 | F F E E | D D C2 |"
-].join("\n");
-
-// Duração de cada nota, em batidas (14 notas no total)
-const DURACOES_NOTAS = [
-  1, 1, 1, 1,   // 1  2  3  4   C C G G
-  1, 1, 2,      // 5  6  7      A A G2
-  1, 1, 1, 1,   // 8  9 10 11    F F E E
-  1, 1, 2       // 12 13 14      D D C2
+const HINOS = [
+  {
+    id: "hino2",
+    nome: "Hino 2 - De Deus tu és eleita",
+    abc: [
+      "X:1",
+      "T:Hino 2 - De Deus tu és eleita",
+      "M:4/4",
+      "L:1/4",
+      "Q:1/4=80",
+      "K:Eb",
+      " G | G G A G | G2 F E | E c B A | G3",
+      " A | B e e d | d2 c B | A B G E | F3",
+      " F | G A B c | c2 B e | e3/2 d/2 c G | A3",
+      " F |G G A G | G2 F E | E F E D | G3 |"
+    ].join("\n"),
+    duracoes: [
+      1,
+      1, 1, 1, 1,
+      2, 1, 1,
+      1, 1, 1, 1,
+      3, 1,
+      1, 1, 1, 1,
+      2, 1, 1,
+      1, 1, 1, 1,
+      3, 1,
+      1, 1, 1, 1,
+      2, 1, 1,
+      1, 1, 1, 1,
+      3, 1,
+      1, 1, 1, 1,
+      2, 1, 1,
+      1, 1, 1, 1,
+      3
+    ],
+    comportamento: [
+      // Alvo 1 (batida 13)
+      "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
+      "sem", "sem", "sem", "sem", "sem", "sem", "sem", "sem",
+      "alvo",
+      // Alvo 2 (batida 29)
+      "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
+      "sem", "sem", "sem", "sem", "sem",
+      "sem", "sem", "sem", "sem", "sem",
+      "alvo",
+      // Alvo 3 (batida 45)
+      "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
+      "sem", "sem", "sem", "sem", "sem",
+      "sem", "sem", "sem", "sem", "sem",
+      "alvo",
+      // Alvo 4 (batida 61)
+      "bolinha", "bolinha", "bolinha", "bolinha", "bolinha",
+      "sem", "sem", "sem", "sem", "sem",
+      "sem", "sem", "sem", "sem", "sem",
+      "alvo",
+      // Final
+      "sem", "sem"
+    ]
+  }
 ];
 
-// Total de notas da música
-const TOTAL_NOTAS_MUSICA = DURACOES_NOTAS.length; // 14
+// ============================================================
+// 2. ESTADO GLOBAL
+// ============================================================
+let HINO_ATUAL = null;
+let TOTAL_BATIDAS = 0;
+let BATIDA_PARA_NOTA = [];
+let COMPORTAMENTO = [];
 
-// Nota-alvo = 12ª nota (índice 11)
-const INDICE_NOTA_ALVO = 11;
-
-// Config
+// ============================================================
+// 3. CONFIG
+// ============================================================
 const CONFIG = {
   bpm: 80,
   beatsPerMeasure: 4,
-  notaFixa: 261.63,          // C4 — sempre a mesma
-  // Regras por número de NOTA (1..14)
-  notasComBolinha: new Set([1, 2, 3, 4, 12, 13, 14]),
-  primeiraNotaComBotao: 5,   // botão aparece a partir da 5
-  ultimaNotaComBotao: 14,    // e desaparece depois da 12 (o alvo)
+  notaFixa: 261.63,
   toleranciaMs: 150,
+  janelaMaximaMs: 2000,
 };
 
-// Total de batidas = soma das durações
-CONFIG.totalBatidas = DURACOES_NOTAS.reduce((a, b) => a + b, 0);
-
-// Mapeia batida (0-based, dentro da música) → número da nota (1-based)
-function construirMapaBatidaParaNota() {
+// ============================================================
+// 4. FUNÇÕES AUXILIARES
+// ============================================================
+function construirMapaBatidaParaNota(duracoes) {
   const mapa = [];
-  for (let n = 0; n < DURACOES_NOTAS.length; n++) {
-    for (let d = 0; d < DURACOES_NOTAS[n]; d++) {
-      mapa.push(n + 1); // 1-based
+  let acumulado = 0;
+  for (let n = 0; n < duracoes.length; n++) {
+    const dur = duracoes[n];
+    const fim = acumulado + dur;
+    let b = Math.floor(acumulado + 1e-9);
+    while (b < fim - 1e-9) {
+      mapa.push(n);
+      b++;
     }
+    acumulado = fim;
   }
   return mapa;
 }
-const BATIDA_PARA_NOTA = construirMapaBatidaParaNota();
 
-// Descobre em qual batida a nota-alvo COMEÇA
-function batidaInicialDaNota(numeroNota) {
-  let soma = 0;
-  for (let i = 0; i < numeroNota - 1; i++) soma += DURACOES_NOTAS[i];
-  return soma;
+function tipoDaBatida(beat) {
+  return COMPORTAMENTO[beat] ?? "sem";
 }
-const BATIDA_ALVO = batidaInicialDaNota(INDICE_NOTA_ALVO + 1); // 12ª nota → índice 11
+
+function ehAlvo(beat) {
+  return COMPORTAMENTO[beat] === "alvo";
+}
+
+function proximoAlvoAPartirDe(beat) {
+  for (let i = beat; i < COMPORTAMENTO.length; i++) {
+    if (COMPORTAMENTO[i] === "alvo") return i;
+  }
+  return null;
+}
+
+function numeroDoAlvo(beatAlvo) {
+  let count = 0;
+  for (let i = 0; i <= beatAlvo && i < COMPORTAMENTO.length; i++) {
+    if (COMPORTAMENTO[i] === "alvo") count++;
+  }
+  return count;
+}
 
 // ============================================================
-// 2. RENDERIZAR A PARTITURA
+// 5. AVISO DE GIRAR CELULAR
 // ============================================================
-ABCJS.renderAbc("partitura", abcMusica, {
-  responsive: true,
-  staffwidth: 720,
-  add_classes: true
+function atualizarAvisoGirar() {
+  const ehCelular = window.matchMedia("(max-width: 900px) and (pointer: coarse)").matches;
+  const ehRetrato = window.matchMedia("(orientation: portrait)").matches;
+  // Só mostra o aviso se estiver tocando em celular + retrato
+  if (ehCelular && ehRetrato && estaTocando) {
+    document.body.classList.add("girar-aviso");
+  } else {
+    document.body.classList.remove("girar-aviso");
+  }
+}
+
+window.addEventListener("orientationchange", atualizarAvisoGirar);
+window.addEventListener("resize", atualizarAvisoGirar);
+window.matchMedia("(orientation: portrait)").addEventListener?.("change", atualizarAvisoGirar);
+
+// ============================================================
+// 6. CARREGAR HINO
+// ============================================================
+const selHino  = document.getElementById("sel-hino");
+const inpBpm   = document.getElementById("inp-bpm");
+const bpmValor = document.getElementById("bpm-valor");
+const elPart   = document.getElementById("partitura");
+
+let elementosNota = [];
+let circleEl = null;
+
+HINOS.forEach(h => {
+  const opt = document.createElement("option");
+  opt.value = h.id;
+  opt.textContent = h.nome;
+  selHino.appendChild(opt);
 });
 
-document.querySelectorAll("#partitura .abcjs-note").forEach(el => {
-  el.setAttribute("fill", "black");
-});
+function carregarHino(id) {
+  scheduler.stop();
+  estaTocando = false;
+  document.body.classList.remove("girar-aviso");
+  atualizarBotoes();
 
-// Destaca a nota-alvo (12ª)
-(function destacarNotaAlvo() {
+  const hino = HINOS.find(h => h.id === id);
+  if (!hino) return;
+
+  HINO_ATUAL = hino;
+  TOTAL_BATIDAS = hino.duracoes.reduce((a, b) => a + b, 0);
+  BATIDA_PARA_NOTA = construirMapaBatidaParaNota(hino.duracoes);
+  COMPORTAMENTO = hino.comportamento;
+
+  if (COMPORTAMENTO.length !== TOTAL_BATIDAS) {
+    console.warn(
+      `[${hino.nome}] COMPORTAMENTO (${COMPORTAMENTO.length}) != TOTAL_BATIDAS (${TOTAL_BATIDAS}).`
+    );
+  }
+
+  elPart.innerHTML = "";
+  limparFundo();
+  esconderBolinha();
+  mostrarResultado("Escolha um hino e clique em ▶ Tocar.", "neutro");
+
+  ABCJS.renderAbc("partitura", hino.abc, {
+    responsive: true,
+    staffwidth: 720,
+    add_classes: true
+  });
+
+  document.querySelectorAll("#partitura .abcjs-note").forEach(el => {
+    el.setAttribute("fill", "black");
+  });
+
+  coletarElementosNota();
+}
+
+function coletarElementosNota() {
   const svg = document.querySelector("#partitura svg");
   if (!svg) return;
-  const notas = Array.from(svg.querySelectorAll(".abcjs-note"))
+  elementosNota = Array.from(svg.querySelectorAll(".abcjs-note"))
     .filter(g => g.querySelector("path, ellipse, rect"));
-  if (notas.length > INDICE_NOTA_ALVO) {
-    notas[INDICE_NOTA_ALVO].classList.add("nota-alvo");
+}
+
+function limparDestaquesNota() {
+  elementosNota.forEach(el => el.classList.remove("nota-alvo"));
+}
+
+function destacarNotaAlvo(indiceNota) {
+  limparDestaquesNota();
+  if (elementosNota[indiceNota]) {
+    elementosNota[indiceNota].classList.add("nota-alvo");
   }
-})();
+}
 
 // ============================================================
-// 3. ÁUDIO + PIANO
+// 7. FUNDO POR ALVO
+// ============================================================
+function pintarFundoPorAlvo(numeroAlvo) {
+  for (let i = 1; i <= 6; i++) elPart.classList.remove(`alvo-${i}`);
+  if (numeroAlvo >= 1) {
+    const cor = ((numeroAlvo - 1) % 6) + 1;
+    elPart.classList.add(`alvo-${cor}`);
+  }
+}
+
+function limparFundo() {
+  for (let i = 1; i <= 6; i++) elPart.classList.remove(`alvo-${i}`);
+}
+
+// ============================================================
+// 8. ÁUDIO + PIANO
 // ============================================================
 let audioCtx = null;
 
@@ -341,8 +661,14 @@ function tocarPiano(time, freq, duracao, volume) {
 }
 
 // ============================================================
-// 4. AGENDADOR
+// 9. AGENDADOR
 // ============================================================
+const temposAlvo = {};
+let ultimoAlvoAtivo = null;
+let alvosJaAvaliados = new Set();
+let resultadosPorAlvo = [];
+let alvoAtualSendoAvaliado = null;
+
 const scheduler = {
   running: false,
   nextTime: 0,
@@ -351,9 +677,6 @@ const scheduler = {
   lookahead: 25,
   scheduleAhead: 0.12,
 
-  // tempoAudio exato da batida-alvo (nota 12)
-  tempoAudioAlvo: null,
-
   start(onBeat, onFinish) {
     const ctx = getCtx();
     this.running = true;
@@ -361,7 +684,12 @@ const scheduler = {
     this.nextTime = ctx.currentTime + 0.08;
     this.onBeat = onBeat;
     this.onFinish = onFinish;
-    this.tempoAudioAlvo = null;
+
+    Object.keys(temposAlvo).forEach(k => delete temposAlvo[k]);
+    ultimoAlvoAtivo = null;
+    alvosJaAvaliados = new Set();
+    resultadosPorAlvo = [];
+    alvoAtualSendoAvaliado = null;
 
     this.tick();
     this.timerId = setInterval(() => this.tick(), this.lookahead);
@@ -369,7 +697,7 @@ const scheduler = {
 
   tick() {
     if (!this.running) return;
-    if (this.currentBeat >= CONFIG.totalBatidas) {
+    if (this.currentBeat >= TOTAL_BATIDAS) {
       this.stop();
       return;
     }
@@ -378,19 +706,17 @@ const scheduler = {
     const seg = 60 / CONFIG.bpm;
 
     while (this.nextTime < ctx.currentTime + this.scheduleAhead) {
-      if (this.currentBeat >= CONFIG.totalBatidas) break;
+      if (this.currentBeat >= TOTAL_BATIDAS) break;
 
       const beat = this.currentBeat;
       const ehTempoForte = (beat % CONFIG.beatsPerMeasure) === 0;
       const vol = ehTempoForte ? 0.22 : 0.14;
       const dur = ehTempoForte ? 0.35 : 0.25;
 
-      // Toca TODAS as notas, sem silenciar nada
       tocarPiano(this.nextTime, CONFIG.notaFixa, dur, vol);
 
-      // Guarda o instante exato em que a nota-alvo soa
-      if (beat === BATIDA_ALVO) {
-        this.tempoAudioAlvo = this.nextTime;
+      if (ehAlvo(beat)) {
+        temposAlvo[beat] = this.nextTime;
       }
 
       const delayMs = Math.max(0, (this.nextTime - ctx.currentTime) * 1000);
@@ -412,10 +738,8 @@ const scheduler = {
 };
 
 // ============================================================
-// 5. BOLINHA + POSIÇÕES
+// 10. BOLINHA + ROLAGEM AUTOMÁTICA
 // ============================================================
-let circleEl = null;
-
 function criarBolinha() {
   const svg = document.querySelector("#partitura svg");
   if (!svg) return null;
@@ -433,64 +757,94 @@ function criarBolinha() {
   return c;
 }
 
-// Posição da bolinha em cada batida — aponta para a nota correspondente
+function esconderBolinha() {
+  if (circleEl) circleEl.setAttribute("opacity", "0");
+}
+
 function calcularPosicoes() {
   const svg = document.querySelector("#partitura svg");
   if (!svg) return [];
   const svgRect = svg.getBoundingClientRect();
 
-  const notas = Array.from(svg.querySelectorAll(".abcjs-note"))
-    .filter(g => g.querySelector("path, ellipse, rect"));
-  if (!notas.length) return [];
-
   const posicoes = [];
-  for (let i = 0; i < CONFIG.totalBatidas; i++) {
-    const numeroNota = BATIDA_PARA_NOTA[i];       // 1-based
-    const idx = numeroNota - 1;                    // 0-based
-    const nota = notas[idx];
+  for (let i = 0; i < TOTAL_BATIDAS; i++) {
+    const idxNota = BATIDA_PARA_NOTA[i];
+    const nota = elementosNota[idxNota];
     if (!nota) continue;
     const r = nota.getBoundingClientRect();
     posicoes.push({
       left: r.left - svgRect.left + r.width / 2,
-      top:  r.top  - svgRect.top  + r.height / 2
+      top:  r.top  - svgRect.top  + r.height / 2,
+      // Rola com base na posição absoluta da nota em relação à partitura
+      absoluta: r.left - elPart.getBoundingClientRect().left + elPart.scrollLeft
     });
   }
   return posicoes;
 }
 
-// ============================================================
-// 6. AVALIAÇÃO DO CLIQUE
-// ============================================================
-let interrupcaoJaAvaliada = false;
+// Rolagem suave: garante que a bolinha esteja visível
+let ultimaRolagem = -1;
+function rolarParaBolinha(pos) {
+  if (!pos) return;
 
-function avaliarCliqueNoBotao() {
-  if (scheduler.tempoAudioAlvo === null) {
-    mostrarResultado("⌛ A 12ª nota ainda não soou. Espere o som chegar nela.", "neutro");
-    return;
+  const margem = 60;               // margem em px para não deixar a bolinha na borda
+  const larguraVisible = elPart.clientWidth;
+  const scrollAtual = elPart.scrollLeft;
+  const x = pos.absoluta;
+
+  if (x < scrollAtual + margem) {
+    // Rolou para trás (raro, mas possível)
+    elPart.scrollLeft = Math.max(0, x - margem);
+  } else if (x > scrollAtual + larguraVisible - margem) {
+    // Precisa rolar para frente
+    elPart.scrollLeft = x - larguraVisivel / 2 + margem;
   }
-
-  const agora = getCtx().currentTime;
-  const diffMs = (agora - scheduler.tempoAudioAlvo) * 1000;
-  const tol = CONFIG.toleranciaMs;
-
-  if (Math.abs(diffMs) <= tol) {
-    mostrarResultado(`OK ✅  ${diffMs >= 0 ? "+" : ""}${diffMs.toFixed(0)} ms`, "ok");
-  } else if (diffMs > 0) {
-    mostrarResultado(`${diffMs.toFixed(0)} ms ATRASADO ❌`, "erro");
-  } else {
-    mostrarResultado(`${Math.abs(diffMs).toFixed(0)} ms ADIANTADO ❌`, "erro");
-  }
-
-  interrupcaoJaAvaliada = true;
 }
 
 // ============================================================
-// 7. UI + ESTADO
+// 11. AVALIAÇÃO DO CLIQUE
 // ============================================================
-const btnPlay     = document.getElementById("btn-play");
-const btnStop     = document.getElementById("btn-stop");
-const btnRetomar  = document.getElementById("btn-retomar");
-const painel      = document.getElementById("painel-resultado");
+function avaliarClique() {
+  const alvoParaAvaliar = alvoAtualSendoAvaliado;
+
+  if (alvoParaAvaliar === null || temposAlvo[alvoParaAvaliar] === undefined) {
+    mostrarResultado("⌛ Nenhum alvo aberto. Espere a nota azul.", "neutro");
+    return;
+  }
+
+  if (alvosJaAvaliados.has(alvoParaAvaliar)) return;
+
+  const agora = getCtx().currentTime;
+  const tempoAlvo = temposAlvo[alvoParaAvaliar];
+  const diffMs = (agora - tempoAlvo) * 1000;
+  const tol = CONFIG.toleranciaMs;
+  const numeroAlvo = numeroDoAlvo(alvoParaAvaliar);
+
+  if (Math.abs(diffMs) > CONFIG.janelaMaximaMs) {
+    mostrarResultado(`⏭ Alvo ${numeroAlvo} já passou. Espere o próximo.`, "neutro");
+    return;
+  }
+
+  if (Math.abs(diffMs) <= tol) {
+    mostrarResultado(`Alvo ${numeroAlvo} — OK ✅  ${diffMs >= 0 ? "+" : ""}${diffMs.toFixed(0)} ms`, "ok");
+    resultadosPorAlvo.push({ alvo: numeroAlvo, diff: diffMs, tipo: "ok" });
+  } else if (diffMs > 0) {
+    mostrarResultado(`Alvo ${numeroAlvo} — ${diffMs.toFixed(0)} ms ATRASADO ❌`, "erro");
+    resultadosPorAlvo.push({ alvo: numeroAlvo, diff: diffMs, tipo: "erro" });
+  } else {
+    mostrarResultado(`Alvo ${numeroAlvo} — ${Math.abs(diffMs).toFixed(0)} ms ADIANTADO ❌`, "erro");
+    resultadosPorAlvo.push({ alvo: numeroAlvo, diff: diffMs, tipo: "erro" });
+  }
+
+  alvosJaAvaliados.add(alvoParaAvaliar);
+}
+
+// ============================================================
+// 12. UI + ESTADO
+// ============================================================
+const btnPlay = document.getElementById("btn-play");
+const btnStop = document.getElementById("btn-stop");
+const painel  = document.getElementById("painel-resultado");
 
 let posicoes = [];
 let estaTocando = false;
@@ -505,63 +859,102 @@ function atualizarBotoes() {
   btnStop.disabled = !estaTocando;
 }
 
-function mostrarBotaoRetomar(ativo) {
-  if (ativo) {
-    btnRetomar.classList.add("visivel");
-    btnRetomar.classList.remove("inativo");
-    btnRetomar.disabled = false;
-  } else {
-    btnRetomar.classList.add("visivel");   // continua visível
-    btnRetomar.classList.add("inativo");   // mas cinza
-    btnRetomar.disabled = true;            // e sem clique
-  }
-}
-
 function iniciarMusica() {
+  if (!HINO_ATUAL) {
+    mostrarResultado("Escolha um hino antes de tocar.", "neutro");
+    return;
+  }
+
   getCtx();
   circleEl = criarBolinha();
   posicoes = calcularPosicoes();
 
   estaTocando = true;
-  interrupcaoJaAvaliada = false;
-  mostrarBotaoRetomar(false);
+  limparDestaquesNota();
+  limparFundo();
+  elPart.classList.remove("clicavel");
+  elPart.scrollLeft = 0;
   atualizarBotoes();
-  mostrarResultado("🔊 Tocando… clique no botão verde quando a 12ª nota soar.", "info");
+  atualizarAvisoGirar();
+  mostrarResultado("🔊 Tocando… quando a nota ficar azul, toque na partitura.", "info");
 
   scheduler.start((beatNumber) => {
     if (!circleEl) return;
 
-const numeroNota = BATIDA_PARA_NOTA[beatNumber];
+    const tipo = tipoDaBatida(beatNumber);
 
-// Bolinha visível nas notas configuradas (1–4, 12, 13, 14)
-const bolinhaVisivel = CONFIG.notasComBolinha.has(numeroNota);
-circleEl.setAttribute("opacity", bolinhaVisivel ? "1" : "0");
+    // Bolinha
+    const bolinhaVisivel = (tipo === "bolinha") || (tipo === "alvo");
+    circleEl.setAttribute("opacity", bolinhaVisivel ? "1" : "0");
 
-const pos = posicoes[beatNumber];
-if (pos) {
-  circleEl.setAttribute("cx", pos.left);
-  circleEl.setAttribute("cy", pos.top);
-}
+    const p = posicoes[beatNumber];
+    if (p) {
+      circleEl.setAttribute("cx", p.left);
+      circleEl.setAttribute("cy", p.top);
+      // Rola automaticamente para a bolinha
+      rolarParaBolinha(p);
+    }
 
-// Botão só aparece quando a bolinha NÃO está visível
-// e dentro da faixa configurada (5–11)
-// Botão visível a partir da nota 5, independente da bolinha
-const botaoVisivel =
-  numeroNota >= CONFIG.primeiraNotaComBotao &&
-  numeroNota <= CONFIG.ultimaNotaComBotao;
+    // Nota azul (próximo alvo)
+    const batidaProxAlvo = proximoAlvoAPartirDe(beatNumber);
+    if (batidaProxAlvo !== null) {
+      const idxNotaAlvo = BATIDA_PARA_NOTA[batidaProxAlvo];
+      destacarNotaAlvo(idxNotaAlvo);
+      const numeroAlvo = numeroDoAlvo(batidaProxAlvo);
+      pintarFundoPorAlvo(numeroAlvo);
+    }
 
-mostrarBotaoRetomar(botaoVisivel);    
+    // Estado do "alvo aberto"
+    if (tipo === "alvo") {
+      ultimoAlvoAtivo = beatNumber;
+      alvoAtualSendoAvaliado = beatNumber;
+      elPart.classList.add("clicavel");
+    } else if (tipo === "bolinha" || tipo === "sem") {
+      if (alvoAtualSendoAvaliado === null) {
+        elPart.classList.remove("clicavel");
+      }
+    }
 
+    // Fechar janela do alvo anterior (sem clique)
+    if (alvoAtualSendoAvaliado !== null &&
+        beatNumber > alvoAtualSendoAvaliado &&
+        !alvosJaAvaliados.has(alvoAtualSendoAvaliado)) {
 
+      const proximo = proximoAlvoAPartirDe(alvoAtualSendoAvaliado + 1);
+      const fimJanela = (proximo === null) ? TOTAL_BATIDAS : proximo;
+
+      if (beatNumber >= fimJanela) {
+        const numeroAlvo = numeroDoAlvo(alvoAtualSendoAvaliado);
+        resultadosPorAlvo.push({ alvo: numeroAlvo, diff: null, tipo: "sem-clique" });
+        alvosJaAvaliados.add(alvoAtualSendoAvaliado);
+        alvoAtualSendoAvaliado = null;
+        elPart.classList.remove("clicavel");
+      }
+    }
   }, () => {
     estaTocando = false;
-    if (circleEl) circleEl.setAttribute("opacity", "0");
-    mostrarBotaoRetomar(false);
+    esconderBolinha();
+    limparDestaquesNota();
+    limparFundo();
+    elPart.classList.remove("clicavel");
     atualizarBotoes();
+    atualizarAvisoGirar();
 
-    // Só sobrescreve o painel se o usuário ainda não viu o resultado
-    if (!interrupcaoJaAvaliada) {
-      mostrarResultado("✅ Fim. Você não clicou no botão verde. Clique em ▶ Tocar para tentar de novo.", "info");
+    if (alvoAtualSendoAvaliado !== null &&
+        !alvosJaAvaliados.has(alvoAtualSendoAvaliado)) {
+      const numeroAlvo = numeroDoAlvo(alvoAtualSendoAvaliado);
+      resultadosPorAlvo.push({ alvo: numeroAlvo, diff: null, tipo: "sem-clique" });
+      alvosJaAvaliados.add(alvoAtualSendoAvaliado);
+      alvoAtualSendoAvaliado = null;
+    }
+
+    if (resultadosPorAlvo.length === 0) {
+      mostrarResultado("✅ Fim. Você não clicou em nenhum alvo.", "info");
+    } else {
+      const oks = resultadosPorAlvo.filter(r => r.tipo === "ok").length;
+      const erros = resultadosPorAlvo.filter(r => r.tipo === "erro").length;
+      const perdidos = resultadosPorAlvo.filter(r => r.tipo === "sem-clique").length;
+      mostrarResultado(`✅ Fim — ${oks} OK · ${erros} errados · ${perdidos} sem clique`, "info");
     }
   });
 }
@@ -571,18 +964,49 @@ btnPlay.addEventListener("click", iniciarMusica);
 btnStop.addEventListener("click", () => {
   scheduler.stop();
   estaTocando = false;
-  if (circleEl) circleEl.setAttribute("opacity", "0");
-  mostrarBotaoRetomar(false);
+  esconderBolinha();
+  limparDestaquesNota();
+  limparFundo();
+  elPart.classList.remove("clicavel");
   atualizarBotoes();
-  if (!interrupcaoJaAvaliada) {
-    mostrarResultado("⏸ Interrompido.", "neutro");
-  }
+  atualizarAvisoGirar();
+  mostrarResultado("⏸ Interrompido.", "neutro");
 });
 
-btnRetomar.addEventListener("click", avaliarCliqueNoBotao);
+// Clique na partitura avalia o tempo
+elPart.addEventListener("pointerdown", () => {
+  if (!estaTocando) return;
+  if (alvoAtualSendoAvaliado === null) return;
+  if (alvosJaAvaliados.has(alvoAtualSendoAvaliado)) return;
+  avaliarClique();
+});
 
-atualizarBotoes();
-mostrarResultado("Clique em ▶ Tocar para começar.", "neutro");
+// Troca de hino
+selHino.addEventListener("change", () => {
+  carregarHino(selHino.value);
+});
+
+// BPM
+inpBpm.addEventListener("input", () => {
+  CONFIG.bpm = parseInt(inpBpm.value, 10);
+  bpmValor.textContent = CONFIG.bpm;
+});
+
+// ============================================================
+// 13. INICIALIZAÇÃO
+// ============================================================
+(function init() {
+  if (HINOS.length > 0) {
+    selHino.value = HINOS[0].id;
+    carregarHino(HINOS[0].id);
+  }
+
+  CONFIG.bpm = parseInt(inpBpm.value, 10);
+  bpmValor.textContent = CONFIG.bpm;
+
+  atualizarBotoes();
+  atualizarAvisoGirar();
+})();
 </script>
 </body>
 </html>
