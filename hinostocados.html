@@ -115,7 +115,7 @@
       position: absolute;
       top: 100%;
       left: 0;
-      min-width: 220px;
+      min-width: 240px;
       background: #fff;
       border-radius: 0 0 10px 10px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.18);
@@ -456,7 +456,7 @@
     }
 
     /* =====================================================
-       🆕 MODAL DE DETALHES DO HINO
+       MODAL DE DETALHES DO HINO
        ===================================================== */
     .modal-overlay {
       position: fixed;
@@ -600,7 +600,7 @@
     <span>🔒 Verificando acesso...</span>
   </div>
 
-  <!-- 🆕 VISITANTE: banner que só aparece no modo visitante -->
+  <!-- VISITANTE: banner que só aparece no modo visitante -->
   <div class="banner-visitante" id="bannerVisitante" style="display:none;">
     <span>👁️ Você está no <strong>Modo Visitante</strong> — congregação <strong>Jardim Europa</strong>. Gravação, exclusão e limpeza estão desativadas.</span>
     <button class="saida-visitante" id="btnSairVisitante">Sair do modo visitante</button>
@@ -620,6 +620,8 @@
           <a data-page="mais-tocados">🏆 Mais Tocados</a>
           <a data-page="menos-tocados">📉 Menos Tocados</a>
           <a data-page="com-observacao">📝 Com Observação</a>
+          <!-- 🆕 Relatório exclusivo Jardim Europa -->
+          <a data-page="nunca-tocados" id="menuNuncaTocados" style="display:none;">🚫 Nunca Tocados (Jardim Europa)</a>
         </div>
       </div>
 
@@ -648,6 +650,16 @@
             <label for="congregacao">Congregação</label>
             <select id="congregacao" required>
               <option value="">Carregando...</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Select de datas já cadastradas -->
+        <div class="grid" style="grid-template-columns:1fr;">
+          <div class="form-group">
+            <label for="dataExistente">Ou escolha uma data já cadastrada</label>
+            <select id="dataExistente">
+              <option value="">— Selecione uma data —</option>
             </select>
           </div>
         </div>
@@ -745,6 +757,7 @@
 
       <div id="relResultadoMenos"></div>
     </section>
+
     <!-- ============ PÁGINA: COM OBSERVAÇÃO ============ -->
     <section class="pagina" id="page-com-observacao">
       <h1>📝 Hinos com Observação</h1>
@@ -783,6 +796,52 @@
       <div id="relResultadoObs"></div>
     </section>
 
+    <!-- ============ 🆕 PÁGINA: NUNCA TOCADOS (JARDIM EUROPA) ============ -->
+    <section class="pagina" id="page-nunca-tocados">
+      <h1>🚫 Hinos Nunca Tocados — Jardim Europa</h1>
+      <p class="subtitle">
+        Lista fixa do repertório do Jardim Europa. Os hinos nunca lançados aparecem com
+        <strong>0x</strong>; os já lançados mostram a quantidade e podem ser clicados para ver as datas.
+      </p>
+
+      <fieldset>
+        <legend>Filtros</legend>
+        <div class="grid">
+          <div class="form-group">
+            <label for="relCongregacaoNunca">Congregação</label>
+            <select id="relCongregacaoNunca">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group"></div>
+
+          <div class="form-group">
+            <label for="relDataInicialNunca">Data Inicial</label>
+            <select id="relDataInicialNunca">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="relDataFinalNunca">Data Final</label>
+            <select id="relDataFinalNunca">
+              <option value="">Todas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="botoes" style="margin-top:16px;">
+          <button type="button" class="btn-gravar" id="btnGerarNunca" style="background:#0d9488;">
+            🔎 Gerar Relatório
+          </button>
+          <button type="button" class="btn-limpar" id="btnNuncaSomenteZeros" title="Mostrar apenas os que nunca foram tocados">
+            🚫 Somente 0x
+          </button>
+        </div>
+      </fieldset>
+
+      <div id="relResultadoNunca"></div>
+    </section>
+
     <details class="diag" id="painelDiag">
       <summary>🔍 Painel de diagnóstico (clique para abrir)</summary>
       <pre id="diagOut">Aguardando inicialização...</pre>
@@ -791,7 +850,7 @@
   </div>
 
   <!-- =====================================================
-       🆕 MODAL DE DETALHES DO HINO
+       MODAL DE DETALHES DO HINO
        ===================================================== -->
   <div class="modal-overlay" id="modalHino">
     <div class="modal-box">
@@ -844,22 +903,19 @@
 
     // 🔑 Variáveis globais
     let congUsuarioLogado = 0;      // 0 = admin geral
-    let modoVisitante     = false;  // 🆕 VISITANTE
+    let modoVisitante     = false;  // VISITANTE
 
     // 🆕 VISITANTE: aplica todas as travas visuais do modo visitante
     function aplicarModoVisitante() {
       modoVisitante = true;
 
-      // Banner no topo
+      const selData = document.getElementById('dataExistente');
+      if (selData) selData.disabled = false;
+
       document.getElementById('bannerVisitante').style.display = 'flex';
-
-      // Nome do usuário
       document.getElementById('userNome').textContent = NOME_VISITANTE;
-
-      // Trava congregação do usuário
       congUsuarioLogado = CONG_VISITANTE;
 
-      // Desabilita botões de escrita
       const btnGravar  = document.getElementById('btnGravar');
       const btnExcluir = document.getElementById('btnExcluir');
       const btnLimpar  = document.getElementById('btnLimpar');
@@ -870,37 +926,30 @@
         btn.title = "Função desabilitada no modo visitante";
       });
 
-      // Troca o badge do título
       const badge = document.getElementById('badge');
       if (badge) {
         badge.textContent = "VISITANTE";
         badge.className = "badge badge-visitante";
       }
 
-      // Remove overlay de auth
       const guard = document.getElementById('authGuard');
       if (guard) guard.remove();
 
-      // Banner "somente leitura" na página de inclusão
       const sub = document.querySelector('#page-inclusao .subtitle');
       if (sub) {
         sub.textContent = "Modo visitante — você pode navegar, filtrar e gerar relatórios, mas não pode gravar, excluir ou limpar.";
       }
     }
 
-    // 🆕 VISITANTE: verifica se está em modo visitante ANTES de checar auth
+    // 🆕 VISITANTE: verifica modo visitante ANTES de checar auth
     const visitanteAtivo = sessionStorage.getItem('modoVisitante') === 'true';
 
     if (visitanteAtivo) {
-      // 🔓 Pula completamente o Firebase Auth
       console.log('👁️ Modo visitante ativo — pulando autenticação.');
-      // Aguarda o DOM e o Firebase estarem prontos, mas sem auth
       window.addEventListener('DOMContentLoaded', () => {
         aplicarModoVisitante();
         iniciarAplicacao();
       });
-      // Evita que o onAuthStateChanged redirecione para o login
-      // (não registramos o listener quando é visitante)
     } else {
       // 🔐 Fluxo normal de autenticação
       auth.onAuthStateChanged(async (user) => {
@@ -978,9 +1027,26 @@
     const HINO_MIN     = 1;
     const HINO_MAX_REL = 486;
     const HINO_MAX_INP = 686;
-    const TOP_N        = 50;
+    const TOP_N        = 100;
     const OBS_MAX      = 30;
     const QTD_HINOS    = 6;
+
+    // ==========================================
+    // 🆕 JARDIM EUROPA — lista fixa do repertório
+    // ==========================================
+    const CONG_JARDIM_EUROPA = 1;
+    const HINOS_JARDIM_EUROPA = [
+      8, 10, 26, 28, 30, 34, 38, 45, 48, 52, 53, 57, 60, 66, 71, 72, 75, 81, 82,
+      87, 89, 90, 92, 93, 98, 103, 108, 111, 112, 114, 120, 123, 124, 125, 127,
+      134, 135, 141, 148, 149, 153, 155, 156, 157, 158, 159, 161, 162, 163, 165,
+      167, 171, 174, 175, 179, 180, 181, 182, 187, 188, 189, 192, 195, 198, 215,
+      216, 218, 222, 224, 225, 226, 227, 229, 231, 236, 241, 245, 246, 249, 250,
+      253, 254, 257, 258, 261, 263, 264, 265, 266, 269, 271, 273, 276, 285, 287,
+      288, 289, 291, 292, 295, 296, 297, 302, 305, 309, 310, 312, 314, 316, 317,
+      318, 319, 329, 330, 335, 336, 337, 338, 339, 345, 349, 352, 353, 354, 355,
+      356, 358, 359, 360, 370, 372, 383, 384, 385, 386, 389, 392, 393, 397, 399,
+      404, 406, 407, 413, 414, 415, 418, 420, 422, 423, 425
+    ];
 
     // ==========================================
     // ELEMENTOS
@@ -988,13 +1054,14 @@
     const form         = document.getElementById("form");
     const inputData    = document.getElementById("data");
     const selectCong   = document.getElementById("congregacao");
+    const selectDataExistente = document.getElementById("dataExistente");
     const hinosGrid    = document.getElementById("hinosGrid");
     const btnGravar    = document.getElementById("btnGravar");
     const btnExcluir   = document.getElementById("btnExcluir");
     const btnLimpar    = document.getElementById("btnLimpar");
     const btnFechar    = document.getElementById("btnFechar");
     const btnSair      = document.getElementById("btnSair");
-    const btnSairVisit = document.getElementById("btnSairVisitante"); // 🆕 VISITANTE
+    const btnSairVisit = document.getElementById("btnSairVisitante");
     const statusBox    = document.getElementById("status");
     const badge        = document.getElementById("badge");
     const diagOut      = document.getElementById("diagOut");
@@ -1017,7 +1084,16 @@
     const relResultadoObs   = document.getElementById("relResultadoObs");
     const btnGerarObs       = document.getElementById("btnGerarObs");
 
-    // 🆕 MODAL
+    // 🆕 NUNCA TOCADOS
+    const relCongregacaoNunca  = document.getElementById("relCongregacaoNunca");
+    const relDataInicialNunca  = document.getElementById("relDataInicialNunca");
+    const relDataFinalNunca    = document.getElementById("relDataFinalNunca");
+    const relResultadoNunca    = document.getElementById("relResultadoNunca");
+    const btnGerarNunca        = document.getElementById("btnGerarNunca");
+    const btnNuncaSomenteZeros = document.getElementById("btnNuncaSomenteZeros");
+    const menuNuncaTocados     = document.getElementById("menuNuncaTocados");
+
+    // MODAL
     const modalHino      = document.getElementById("modalHino");
     const modalTitulo    = document.getElementById("modalTitulo");
     const modalSubtitulo = document.getElementById("modalSubtitulo");
@@ -1034,10 +1110,12 @@
     let todasDatasDisponiveis = [];
     let appIniciada = false;
 
-    // 🆕 cache para o modal (hino -> detalhes)
     const cacheDetalhesHino = new Map();
-
     const inputsHinos = [];
+
+    // 🆕 cache do relatório Nunca Tocados
+    let ultimoResultadoNunca = null;
+    let mostrandoSomenteZeros = false;
 
     // ==========================================
     // DIAGNÓSTICO
@@ -1060,8 +1138,10 @@
     function timestampParaISO(ts) {
       if (!ts) return null;
       const d = ts.toDate ? ts.toDate() : new Date(ts);
-      const off = d.getTimezoneOffset() * 60000;
-      return new Date(d.getTime() - off).toISOString().slice(0, 10);
+      const ano = d.getUTCFullYear();
+      const mes = String(d.getUTCMonth() + 1).padStart(2, "0");
+      const dia = String(d.getUTCDate()).padStart(2, "0");
+      return `${ano}-${mes}-${dia}`;
     }
 
     function isoParaBR(iso) {
@@ -1080,7 +1160,6 @@
     }
 
     function setBadge(tipo) {
-      // 🆕 VISITANTE: nunca sobrescreve o badge de visitante
       if (modoVisitante) {
         badge.textContent = "VISITANTE";
         badge.className = "badge badge-visitante";
@@ -1131,14 +1210,12 @@
         inputHino.step = "1";
         inputHino.inputMode = "numeric";
         inputHino.placeholder = "1–" + HINO_MAX_INP;
-        // 🆕 VISITANTE: campos somente leitura
         if (modoVisitante) inputHino.disabled = true;
 
         const linkObs = document.createElement("span");
         linkObs.className = "link-obs desativado";
         linkObs.textContent = "obs";
         linkObs.title = "Digite o número do hino para habilitar a observação";
-        // 🆕 VISITANTE: link obs desabilitado
         if (modoVisitante) {
           linkObs.style.pointerEvents = "none";
           linkObs.title = "Função desabilitada no modo visitante";
@@ -1197,7 +1274,6 @@
         };
         inputsHinos.push(ref);
 
-        // 🆕 VISITANTE: não registra eventos de escrita
         if (!modoVisitante) {
           linkObs.addEventListener("click", () => {
             if (linkObs.classList.contains("desativado")) return;
@@ -1234,7 +1310,7 @@
     }
 
     function atualizarLinkObs(ref) {
-      if (modoVisitante) return; // 🆕 VISITANTE
+      if (modoVisitante) return;
       const temNumero = ref.numero.value.trim() !== "";
       if (temNumero) {
         ref.linkObs.classList.remove("desativado");
@@ -1295,6 +1371,20 @@
     // NAVEGAÇÃO ENTRE PÁGINAS
     // ==========================================
     function abrirPagina(nome) {
+      // 🆕 Proteção: nunca-tocados só abre se Jardim Europa estiver selecionado
+      if (nome === "nunca-tocados") {
+        const idCongForm = Number(selectCong.value || 0);
+        const idCongRel  = Number(relCongregacaoMais ? relCongregacaoMais.value : 0);
+        const podeAbrir = modoVisitante
+          || idCongForm === CONG_JARDIM_EUROPA
+          || idCongRel  === CONG_JARDIM_EUROPA;
+
+        if (!podeAbrir) {
+          alert("Este relatório é exclusivo da congregação Jardim Europa.");
+          return;
+        }
+      }
+
       document.querySelectorAll(".pagina").forEach(p => p.classList.remove("ativa"));
 
       const alvo = document.getElementById("page-" + nome);
@@ -1330,7 +1420,7 @@
       if (!confirm("Deseja realmente sair?")) return;
       try {
         sessionStorage.removeItem('adminLogado');
-        sessionStorage.removeItem('modoVisitante'); // 🆕 VISITANTE
+        sessionStorage.removeItem('modoVisitante');
         if (!modoVisitante) {
           await auth.signOut();
         }
@@ -1340,7 +1430,7 @@
       }
     });
 
-    // 🆕 VISITANTE: botão sair do modo visitante
+    // VISITANTE: botão sair do modo visitante
     if (btnSairVisit) {
       btnSairVisit.addEventListener("click", () => {
         sessionStorage.removeItem('modoVisitante');
@@ -1422,7 +1512,6 @@
           const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
             ? d[campoNomeDetectado] : doc.id;
 
-          // 🆕 VISITANTE: só mostra a congregação dele
           if (modoVisitante) {
             if (Number(id) !== CONG_VISITANTE) return;
           } else if (!geral && Number(id) !== Number(congUsuarioLogado)) {
@@ -1434,7 +1523,6 @@
 
         selectCong.innerHTML = options.join("");
 
-        // 🆕 VISITANTE: trava o select
         if (modoVisitante) {
           selectCong.value = String(CONG_VISITANTE);
           selectCong.disabled = true;
@@ -1630,13 +1718,15 @@
     // ==========================================
     // EVENTOS — MANUTENÇÃO
     // ==========================================
-    inputData.addEventListener("change", carregarRegistroAtual);
-    selectCong.addEventListener("change", carregarRegistroAtual);
+    selectCong.addEventListener("change", async () => {
+      await carregarRegistroAtual();
+      await carregarDatasExistentesNoSelect();
+      atualizarVisibilidadeMenuNunca(); // 🆕
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // 🆕 VISITANTE: bloqueio total de gravação
       if (modoVisitante) {
         setStatus("👁️ Modo visitante — gravação desabilitada.", "warn");
         return;
@@ -1668,17 +1758,18 @@
         }
         setBadge("edicao");
         await carregarDatasRelatorios();
+        await carregarDatasExistentesNoSelect();
+
       } catch (err) {
         console.error(err);
         setStatus("❌ " + err.message, "err");
       } finally {
-        btnGravar.disabled = modoVisitante; // 🆕 VISITANTE: mantém desabilitado
+        btnGravar.disabled = modoVisitante;
         btnGravar.textContent = "💾 Gravar";
       }
     });
 
     btnExcluir.addEventListener("click", async () => {
-      // 🆕 VISITANTE: bloqueio total
       if (modoVisitante) {
         setStatus("👁️ Modo visitante — exclusão desabilitada.", "warn");
         return;
@@ -1692,13 +1783,14 @@
         setBadge("novo");
         setStatus("🗑️ Registro excluído!", "ok");
         await carregarDatasRelatorios();
+        await carregarDatasExistentesNoSelect();
+
       } catch (err) {
         setStatus("❌ " + err.message, "err");
       }
     });
 
     btnLimpar.addEventListener("click", async () => {
-      // 🆕 VISITANTE: bloqueio total
       if (modoVisitante) {
         setStatus("👁️ Modo visitante — limpeza desabilitada.", "warn");
         return;
@@ -1740,7 +1832,6 @@
           const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
             ? d[campoNomeDetectado] : doc.id;
 
-          // 🆕 VISITANTE: só mostra a congregação dele
           if (modoVisitante) {
             if (Number(id) !== CONG_VISITANTE) return;
           } else if (!geral && Number(id) !== Number(congUsuarioLogado)) {
@@ -1755,7 +1846,6 @@
         relCongregacaoMenos.innerHTML = html;
         relCongregacaoObs.innerHTML   = html;
 
-        // 🆕 VISITANTE: trava selects
         if (modoVisitante) {
           relCongregacaoMais.value = String(CONG_VISITANTE);
           relCongregacaoMenos.value = String(CONG_VISITANTE);
@@ -1789,7 +1879,6 @@
 
         snap.forEach(doc => {
           const d = doc.data();
-          // 🆕 VISITANTE: filtra apenas a congregação dele
           if (modoVisitante && Number(d.idCongregacao) !== CONG_VISITANTE) return;
           const iso = timestampParaISO(d.data);
           if (iso) setDatas.add(iso);
@@ -1829,6 +1918,9 @@
         manterSelecao(relDataFinalObs, fimObs);
 
         diag(`\n✅ ${todasDatasDisponiveis.length} datas distintas carregadas para relatórios.`);
+
+        // 🆕 Atualiza as datas do relatório Nunca Tocados
+        await carregarDatasNuncaTocados();
       } catch (e) {
         diag(`\n❌ Erro ao carregar datas: [${e.code}] ${e.message}`);
         setStatus("❌ Erro ao carregar datas: " + e.message, "err");
@@ -1836,10 +1928,76 @@
     }
 
     // ==========================================
+    // POPULA SELECT DE DATAS JÁ CADASTRADAS
+    // ==========================================
+    async function carregarDatasExistentesNoSelect() {
+      try {
+        const hojeISOStr = hojeISO();
+        const setDatas = new Set();
+
+        const idCongAlvo = modoVisitante
+          ? CONG_VISITANTE
+          : Number(selectCong.value || congUsuarioLogado || 0);
+
+        if (!idCongAlvo) {
+          selectDataExistente.innerHTML = '<option value="">— Selecione uma congregação primeiro —</option>';
+          return;
+        }
+
+        const snap = await db.collection(COL_HINOS)
+          .where("idCongregacao", "==", idCongAlvo)
+          .get();
+
+        snap.forEach(doc => {
+          const d = doc.data();
+          const iso = timestampParaISO(d.data);
+          if (!iso) return;
+          if (iso > hojeISOStr) return;
+          setDatas.add(iso);
+        });
+
+        const datas = Array.from(setDatas).sort().reverse();
+
+        if (!datas.length) {
+          selectDataExistente.innerHTML = '<option value="">Nenhuma data cadastrada</option>';
+          return;
+        }
+
+        const grupos = new Map();
+        datas.forEach(iso => {
+          const [a, m] = iso.split("-");
+          const chave = `${a}-${m}`;
+          if (!grupos.has(chave)) grupos.set(chave, []);
+          grupos.get(chave).push(iso);
+        });
+
+        const MESES = ["janeiro","fevereiro","março","abril","maio","junho",
+                       "julho","agosto","setembro","outubro","novembro","dezembro"];
+
+        let html = '<option value="">— Selecione uma data —</option>';
+        grupos.forEach((lista, chave) => {
+          const [a, m] = chave.split("-");
+          const nomeMes = MESES[Number(m) - 1];
+          html += `<optgroup label="${nomeMes} ${a}">`;
+          lista.forEach(iso => {
+            const marcador = iso === hojeISOStr ? " (hoje)" : "";
+            html += `<option value="${iso}">${isoParaBR(iso)}${marcador}</option>`;
+          });
+          html += "</optgroup>";
+        });
+
+        selectDataExistente.innerHTML = html;
+        diag(`\n✅ ${datas.length} data(s) carregada(s) para congregação ${idCongAlvo}.`);
+      } catch (e) {
+        selectDataExistente.innerHTML = '<option value="">Erro ao carregar</option>';
+        diag(`\n⚠️ Erro ao popular select de datas: ${e.message}`);
+      }
+    }
+
+    // ==========================================
     // BUSCA FILTRADA PARA RELATÓRIOS
     // ==========================================
     async function buscarParaRelatorio(idCong, dataIniISO, dataFimISO) {
-      // 🆕 VISITANTE: força a congregação dele
       if (modoVisitante) {
         idCong = CONG_VISITANTE;
       } else if (!ehAdminGeral()) {
@@ -1940,7 +2098,6 @@
         </div>
       `;
 
-      // 🆕 registrar evento de clique nas linhas
       if (clicavel) {
         container.querySelectorAll("tr.linha-clicavel").forEach(tr => {
           tr.addEventListener("click", () => {
@@ -1966,11 +2123,10 @@
     }
 
     // ==========================================
-    // 🆕 MODAL: DETALHES DO HINO
+    // MODAL: DETALHES DO HINO
     // ==========================================
     function nomeCongregacao(id) {
       const idNum = Number(id);
-      // procura em qualquer select de congregação já carregado
       const selects = [relCongregacaoMais, relCongregacaoMenos, relCongregacaoObs, selectCong];
       for (const sel of selects) {
         if (!sel) continue;
@@ -1986,7 +2142,6 @@
       modalCorpo.innerHTML = '<p class="rel-info">⏳ Carregando datas...</p>';
       modalHino.classList.add("visivel");
 
-      // chave de cache considera os filtros usados no relatório
       const cacheKey = `${hino}::${opcoes.idCong ?? ""}::${opcoes.dataIni ?? ""}::${opcoes.dataFim ?? ""}`;
 
       try {
@@ -1995,7 +2150,6 @@
         if (cacheDetalhesHino.has(cacheKey)) {
           registros = cacheDetalhesHino.get(cacheKey);
         } else {
-          // busca registros que contenham esse hino
           const docs = await buscarParaRelatorio(opcoes.idCong, opcoes.dataIni, opcoes.dataFim);
 
           registros = [];
@@ -2015,7 +2169,6 @@
             });
           });
 
-          // ordena por data decrescente (mais recente primeiro)
           registros.sort((a, b) => {
             if (a.dataISO !== b.dataISO) return a.dataISO < b.dataISO ? 1 : -1;
             return a.idCongregacao - b.idCongregacao;
@@ -2094,7 +2247,6 @@
 
         const info = `Base: ${totalRegistros} registro(s) • ${totalHinosLancados} hino(s) lançado(s) • hinos ${HINO_MIN} a ${HINO_MAX_REL} • ${filtroTexto(relCongregacaoMais, idCong, dataIni, dataFim)}`;
 
-        // 🆕 limpa cache do modal a cada novo relatório
         cacheDetalhesHino.clear();
 
         renderizarRelatorio(relResultadoMais, "🏆 50 Hinos Mais Tocados", lista, info, {
@@ -2147,34 +2299,6 @@
 
     btnGerarMais.addEventListener("click", gerarMaisTocados);
     btnGerarMenos.addEventListener("click", gerarMenosTocados);
-
-    // ==========================================
-    // 🚀 INICIALIZAÇÃO
-    // ==========================================
-    async function iniciarAplicacao() {
-      if (appIniciada) return;
-      appIniciada = true;
-
-      construirGridHinos();
-      inputData.value = hojeISO();
-
-      await carregarCongregacoes();
-
-      // 🆕 VISITANTE: trava o select na congregação dele
-      if (modoVisitante) {
-        selectCong.value = String(CONG_VISITANTE);
-        selectCong.disabled = true;
-      } else if (ehAdminGeral() && selectCong.options.length >= 2) {
-        selectCong.selectedIndex = 1;
-      }
-
-      await carregarRegistroAtual();
-
-      await carregarCongregacoesRelatorios();
-      await carregarDatasRelatorios();
-
-      abrirPagina("inclusao");
-    }
 
     // ==========================================
     // GERAR RELATÓRIO — COM OBSERVAÇÃO
@@ -2268,7 +2392,299 @@
       }
     }
 
-    btnGerarObs.addEventListener("click", gerarComObservacao);    
+    btnGerarObs.addEventListener("click", gerarComObservacao);
+
+    // ==========================================
+    // 🆕 NUNCA TOCADOS — JARDIM EUROPA
+    // ==========================================
+    function atualizarVisibilidadeMenuNunca() {
+      if (!menuNuncaTocados) return;
+
+      // Visitante: sempre Jardim Europa
+      if (modoVisitante) {
+        menuNuncaTocados.style.display = "block";
+        return;
+      }
+
+      const idCongForm = Number(selectCong.value || 0);
+      const idCongRel  = Number(relCongregacaoMais ? relCongregacaoMais.value : 0);
+
+      const mostrar = idCongForm === CONG_JARDIM_EUROPA || idCongRel === CONG_JARDIM_EUROPA;
+      menuNuncaTocados.style.display = mostrar ? "block" : "none";
+
+      if (!mostrar) {
+        const paginaAtual = document.querySelector(".pagina.ativa");
+        if (paginaAtual && paginaAtual.id === "page-nunca-tocados") {
+          abrirPagina("inclusao");
+        }
+      }
+    }
+
+    // Popula select de congregação do relatório Nunca Tocados (só Jardim Europa)
+    async function carregarCongregacoesNunca() {
+      try {
+        if (!colCongDetectada) return;
+
+        atualizarVisibilidadeMenuNunca();
+
+        const snap = await db.collection(colCongDetectada).get();
+        const opts = [];
+
+        if (!modoVisitante && ehAdminGeral()) {
+          opts.push('<option value="">Todas</option>');
+        }
+
+        snap.forEach(doc => {
+          const d = doc.data();
+          const id = (campoIdDetectado && d[campoIdDetectado] !== undefined)
+            ? d[campoIdDetectado] : doc.id;
+          const nome = (campoNomeDetectado && d[campoNomeDetectado] !== undefined)
+            ? d[campoNomeDetectado] : doc.id;
+
+          if (Number(id) !== CONG_JARDIM_EUROPA) return;
+
+          opts.push(`<option value="${id}">${nome}</option>`);
+        });
+
+        relCongregacaoNunca.innerHTML = opts.join("");
+        relCongregacaoNunca.value = String(CONG_JARDIM_EUROPA);
+        relCongregacaoNunca.disabled = true;
+      } catch (e) {
+        diag(`\n⚠️ Erro ao carregar congregação do Nunca Tocados: ${e.message}`);
+      }
+    }
+
+    // Popula as datas do relatório Nunca Tocados
+    async function carregarDatasNuncaTocados() {
+      try {
+        const iniAtual = relDataInicialNunca.value;
+        const fimAtual = relDataFinalNunca.value;
+
+        const opts = ['<option value="">Todas</option>'];
+        todasDatasDisponiveis.forEach(iso => {
+          opts.push(`<option value="${iso}">${isoParaBR(iso)}</option>`);
+        });
+        const html = opts.join("");
+
+        relDataInicialNunca.innerHTML = html;
+        relDataFinalNunca.innerHTML   = html;
+
+        if (iniAtual && todasDatasDisponiveis.includes(iniAtual)) relDataInicialNunca.value = iniAtual;
+        if (fimAtual && todasDatasDisponiveis.includes(fimAtual)) relDataFinalNunca.value = fimAtual;
+      } catch (e) {
+        diag(`\n⚠️ Erro ao carregar datas do Nunca Tocados: ${e.message}`);
+      }
+    }
+
+    // Renderiza a lista do relatório Nunca Tocados
+    function renderizarNuncaTocados() {
+      if (!ultimoResultadoNunca) {
+        relResultadoNunca.innerHTML = '<p class="rel-info">Gere o relatório primeiro.</p>';
+        return;
+      }
+
+      const { itens, infoBase } = ultimoResultadoNunca;
+
+      const lista = mostrandoSomenteZeros
+        ? itens.filter(i => i.qtd === 0)
+        : itens;
+
+      if (!lista.length) {
+        relResultadoNunca.innerHTML = `<p class="rel-info">Nenhum hino para mostrar${mostrandoSomenteZeros ? " (todos já foram tocados!)" : ""}.</p>`;
+        return;
+      }
+
+      const totalZeros = itens.filter(i => i.qtd === 0).length;
+      const totalTocados = itens.length - totalZeros;
+
+      const titulo = mostrandoSomenteZeros
+        ? `🚫 Hinos Nunca Tocados (0x) — ${totalZeros} hino(s)`
+        : `📋 Repertório Jardim Europa — ${itens.length} hino(s)`;
+
+      const linhas = lista.map((item, idx) => {
+        const zerado = item.qtd === 0;
+        return `
+          <tr class="linha-clicavel"
+              data-hino="${item.hino}"
+              title="Clique para ver as datas">
+            <td style="width:70px;font-weight:700;color:#64748b;">${idx + 1}º</td>
+            <td style="font-weight:600;">Hino ${item.hino}</td>
+            <td>
+              <span class="qtd-badge ${zerado ? 'qtd-zero' : ''}">
+                ${item.qtd}x
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      relResultadoNunca.innerHTML = `
+        <div class="rel-titulo">${titulo}</div>
+        <div class="rel-info">
+          ${infoBase} •
+          <strong>${totalTocados}</strong> já tocado(s) •
+          <strong>${totalZeros}</strong> nunca tocado(s)
+        </div>
+        <div class="rel-info" style="color:#1a3a6c;font-weight:600;">
+          💡 Clique em uma linha para ver as datas em que o hino foi tocado.
+        </div>
+        <div class="tabela-wrap">
+          <table class="tabela-rel">
+            <thead>
+              <tr><th>#</th><th>Hino</th><th>Quantidade</th></tr>
+            </thead>
+            <tbody>${linhas}</tbody>
+          </table>
+        </div>
+      `;
+
+      relResultadoNunca.querySelectorAll("tr.linha-clicavel").forEach(tr => {
+        tr.addEventListener("click", () => {
+          const hino = Number(tr.getAttribute("data-hino"));
+          abrirModalDetalhesHino(hino, {
+            idCong: CONG_JARDIM_EUROPA,
+            dataIni: relDataInicialNunca.value || null,
+            dataFim: relDataFinalNunca.value || null
+          });
+        });
+      });
+
+      btnNuncaSomenteZeros.textContent = mostrandoSomenteZeros
+        ? "📋 Mostrar Todos"
+        : "🚫 Somente 0x";
+    }
+
+    async function gerarNuncaTocados() {
+      relResultadoNunca.innerHTML = '<p class="rel-info">⏳ Calculando...</p>';
+      btnGerarNunca.disabled = true;
+
+      try {
+        const dataIni = relDataInicialNunca.value;
+        const dataFim = relDataFinalNunca.value;
+
+        if (dataIni && dataFim && dataIni > dataFim) {
+          throw new Error("A Data Inicial não pode ser maior que a Data Final.");
+        }
+
+        const docs = await buscarParaRelatorio(CONG_JARDIM_EUROPA, dataIni, dataFim);
+
+        const setRepertorio = new Set(HINOS_JARDIM_EUROPA);
+        const contagem = {};
+        HINOS_JARDIM_EUROPA.forEach(n => contagem[n] = 0);
+
+        let totalRegistros = 0;
+        docs.forEach(doc => {
+          const d = doc.data();
+          const lista = normalizarHinos(d);
+          let achou = false;
+          lista.forEach(({ numero }) => {
+            const n = Number(numero);
+            if (Number.isInteger(n) && setRepertorio.has(n)) {
+              contagem[n]++;
+              achou = true;
+            }
+          });
+          if (achou) totalRegistros++;
+        });
+
+        const itens = HINOS_JARDIM_EUROPA
+          .map(hino => ({ hino, qtd: contagem[hino] }))
+          .sort((a, b) => {
+            if (a.qtd === 0 && b.qtd !== 0) return -1;
+            if (a.qtd !== 0 && b.qtd === 0) return 1;
+            if (a.qtd === 0 && b.qtd === 0) return a.hino - b.hino;
+            return b.qtd - a.qtd || a.hino - b.hino;
+          });
+
+        const infoBase = `Base: ${totalRegistros} registro(s) • Repertório com ${HINOS_JARDIM_EUROPA.length} hinos • ${filtroTexto(relCongregacaoNunca, CONG_JARDIM_EUROPA, dataIni, dataFim)}`;
+
+        ultimoResultadoNunca = { itens, infoBase };
+        mostrandoSomenteZeros = false;
+
+        cacheDetalhesHino.clear();
+
+        renderizarNuncaTocados();
+
+      } catch (e) {
+        console.error(e);
+        relResultadoNunca.innerHTML = "";
+        setStatus("❌ " + e.message, "err");
+      } finally {
+        btnGerarNunca.disabled = false;
+      }
+    }
+
+    btnGerarNunca.addEventListener("click", gerarNuncaTocados);
+    btnNuncaSomenteZeros.addEventListener("click", () => {
+      mostrandoSomenteZeros = !mostrandoSomenteZeros;
+      renderizarNuncaTocados();
+    });
+
+    // ==========================================
+    // INICIALIZAÇÃO
+    // ==========================================
+    async function iniciarAplicacao() {
+      if (appIniciada) return;
+      appIniciada = true;
+
+      construirGridHinos();
+      inputData.value = hojeISO();
+
+      await carregarCongregacoes();
+
+      if (modoVisitante) {
+        selectCong.value = String(CONG_VISITANTE);
+        selectCong.disabled = true;
+      } else if (ehAdminGeral() && selectCong.options.length >= 2) {
+        selectCong.selectedIndex = 1;
+      }
+
+      await carregarRegistroAtual();
+
+      await carregarCongregacoesRelatorios();
+      await carregarDatasRelatorios();
+      await carregarDatasExistentesNoSelect();
+
+      // 🆕 Relatório Nunca Tocados
+      await carregarCongregacoesNunca();
+      atualizarVisibilidadeMenuNunca();
+
+      abrirPagina("inclusao");
+    }
+
+    // ==========================================
+    // EVENTOS EXTRAS — Select de datas já cadastradas
+    // ==========================================
+    selectDataExistente.addEventListener("change", async () => {
+      const iso = selectDataExistente.value;
+      if (!iso) return;
+      inputData.value = iso;
+      await carregarRegistroAtual();
+    });
+
+    inputData.addEventListener("change", async () => {
+      await carregarRegistroAtual();
+
+      const iso = inputData.value;
+      if (!iso) return;
+      const opt = Array.from(selectDataExistente.options).find(o => o.value === iso);
+      selectDataExistente.value = opt ? iso : "";
+    });
+
+    // Reavalia visibilidade do menu Nunca Tocados quando os selects de relatório mudarem
+    ["relCongregacaoMais", "relCongregacaoMenos", "relCongregacaoObs"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("change", atualizarVisibilidadeMenuNunca);
+    });
+
+    // Quando o usuário clicar no item do submenu "Nunca Tocados", garante que está atualizado
+    if (menuNuncaTocados) {
+      menuNuncaTocados.addEventListener("click", async () => {
+        await carregarCongregacoesNunca();
+        await carregarDatasNuncaTocados();
+      });
+    }
+
   </script>
 </body>
 </html>
