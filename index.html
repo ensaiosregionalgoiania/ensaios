@@ -638,7 +638,13 @@ const HORA = {T:"17:00",T1:"16:30",N:"19:30"};
 const TIPOS = {local:"Ensaio local",regional:"Ensaio regional",culto:"Culto",rjm:"RJM"};
 const TURNOS = {manha:"Manhã",tarde:"Tarde",noite:"Noite"};
 const FREQ = {T:"Todos os meses",P:"Meses pares",I:"Meses ímpares","3M":"A cada 3 meses"};
-const norm = s => (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+// Normaliza para busca: remove acentos, cedilha, til, e trata equivalências fonéticas pt-BR
+const norm = s => (s || "")
+  .normalize("NFD")                    // separa letras dos acentos
+  .replace(/[\u0300-\u036f]/g, "")     // remove acentos, cedilha, til, trema
+  .toLowerCase()
+  .replace(/y/g, "i")                  // Y ↔ I  (ex.: Ypsilon ↔ Ipsilon)
+  .replace(/z/g, "s");                 // Z ↔ S  (ex.: Luiz ↔ Luis)
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const today = new Date(); today.setHours(0,0,0,0);
 const dayKey = d => d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
