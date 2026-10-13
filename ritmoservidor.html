@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TapSync Host</title>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --bg: #0e1014; --card: #171a21; --line: #262a34; --text: #e9ebf1; --muted: #8b91a1;
+    --warm: #ffb547; --score: #43e0a1; --bad: #ff6b6b; --accent: #7aa2ff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 16px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
+  h1 span { color: var(--muted); font-weight: 500; }
+  h2 { margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  .status { font-size: 13px; color: var(--muted); }
+  .status.bad { color: var(--bad); }
+  main { display: grid; gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+  .wide { grid-column: 1 / -1; }
+  #qr { background: #fff; padding: 12px; border-radius: 10px; width: max-content; margin: 0 auto 12px; min-height: 264px; min-width: 264px;
+    display: grid; place-items: center; color: #555; }
+  #qr img, #qr canvas { display: block; }
+  .code { text-align: center; font: 600 18px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .05em; }
+  #joinLink { display: block; text-align: center; color: var(--accent); font-size: 12px; word-break: break-all; margin-top: 6px; }
+  details { margin-top: 12px; font-size: 13px; color: var(--muted); }
+  summary { cursor: pointer; }
+  input, select { width: 100%; background: #0f1218; color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 10px; font: inherit; }
+  .hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+  .hint.warn { color: var(--warm); }
+  .field { display: grid; grid-template-columns: 1fr 110px; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .field label { font-size: 14px; }
+  .field small { display: block; color: var(--muted); font-size: 12px; }
+  #roundInfo { font-size: 13px; color: var(--muted); margin: 4px 0 14px; }
+  .buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font: inherit; font-weight: 600; border: 1px solid var(--line); background: #222632; color: var(--text);
+    padding: 10px 14px; border-radius: 10px; cursor: pointer; }
+  button.primary { background: var(--score); border-color: var(--score); color: #062a1c; }
+  button.danger { background: transparent; border-color: var(--bad); color: var(--bad); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  #startHint { font-size: 12px; color: var(--muted); margin-top: 8px; min-height: 1em; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  #players li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+  #players li:last-child { border-bottom: 0; }
+  #players li.empty { color: var(--muted); justify-content: center; padding: 24px 0; }
+  #players b { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pill { font-size: 12px; padding: 2px 9px; border-radius: 99px; background: #262a34; color: var(--muted); white-space: nowrap; }
+  .pill.ok { background: rgba(67,224,161,.14); color: var(--score); }
+  .pill.warn { background: rgba(255,181,71,.14); color: var(--warm); }
+  /* stage */
+  .stage { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
+  .pulse { --p: 0; width: 140px; height: 140px; border-radius: 50%; background: var(--muted);
+    transform: scale(calc(.78 + var(--p) * .22)); opacity: calc(.25 + var(--p) * .75); }
+  .stage.warm .pulse { background: var(--warm); }
+  .stage.score .pulse { background: var(--score); }
+  .pulse.accent { box-shadow: 0 0 0 calc(var(--p) * 14px) rgba(255,255,255,.18); }
+  #stagePhase { font-size: 34px; font-weight: 700; margin: 0; }
+  #stageSub { color: var(--muted); margin: 4px 0 14px; font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; background: #0f1218; border-radius: 99px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--text); border-radius: 99px; }
+  .stage.warm .bar > i { background: var(--warm); }
+  .stage.score .bar > i { background: var(--score); }
+  /* results */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .stat { background: #0f1218; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  .stat .v { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  .tableWrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  tr.avg td { font-weight: 700; border-top: 2px solid var(--line); border-bottom: 0; }
+  td.score { font-weight: 700; color: var(--score); }
+  @media (max-width: 560px) { .stage { grid-template-columns: 1fr; justify-items: center; text-align: center; } .stage > div:last-child { width: 100%; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>TapSync <span>· host</span></h1>
+  <div id="status" class="status">Connecting to signaling server…</div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Scan to join</h2>
+    <div id="qr">Generating…</div>
+    <div class="code" id="hostCode">—</div>
+    <a id="joinLink" target="_blank" rel="noopener"></a>
+    <details>
+      <summary>Client page URL</summary>
+      <p class="hint">The QR code points here, with <code>?host=…</code> added. Change it if client.html lives elsewhere.</p>
+      <input id="clientUrl" spellcheck="false">
+      <p class="hint warn" id="fileWarn" hidden>This page is opened from a local file. Phones can't open file:// links — serve both files over HTTPS (e.g. GitHub Pages) or point this URL to where client.html is hosted.</p>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>Round settings</h2>
+    <div class="field"><label for="bpm">Tempo<small>beats per minute</small></label><input id="bpm" type="number" min="30" max="260" value="100"></div>
+    <div class="field"><label for="grace">Warm-up beats<small>grace period, not scored</small></label><input id="grace" type="number" min="0" max="64" value="8"></div>
+    <div class="field"><label for="duration">Scored time<small>seconds</small></label><input id="duration" type="number" min="3" max="600" value="20"></div>
+    <div class="field"><label for="bar">Accent every<small>beats (louder click)</small></label>
+      <select id="bar"><option value="0">none</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="6">6</option></select></div>
+    <div id="roundInfo"></div>
+    <div class="buttons">
+      <button id="testBtn">Test sound</button>
+      <button id="startBtn" class="primary" disabled>Sync &amp; start</button>
+      <button id="stopBtn" class="danger" hidden>Stop</button>
+    </div>
+    <div id="startHint"></div>
+  </section>
+
+  <section class="card">
+    <h2>Players <span id="count"></span></h2>
+    <ul id="players"></ul>
+  </section>
+
+  <section class="card wide stage" id="stage" hidden>
+    <div class="pulse" id="pulse"></div>
+    <div>
+      <p id="stagePhase">—</p>
+      <p id="stageSub"></p>
+      <div class="bar"><i id="stageBar"></i></div>
+    </div>
+  </section>
+
+  <section class="card wide" id="resultsCard" hidden>
+    <h2>Results · round <span id="resRound"></span></h2>
+    <div class="stats" id="avgStats"></div>
+    <div class="tableWrap"><table id="resultsTable"></table></div>
+  </section>
+</main>
+
+<script>
+'use strict';
+const LEAD_MS = 3000;          // time between "start" message and first click
+const SYNC_TIMEOUT_MS = 6000;  // max time to wait for clients to resync
+const RESULT_WAIT_MS = 8000;   // max time to wait for results after the last beat
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const fmt = (v, d = 0) => (v == null || !isFinite(v)) ? '—' : v.toFixed(d);
+const fmtSigned = (v, d = 0) => (v == null || !isFinite(v)) ? '—' : (v > 0 ? '+' : '') + v.toFixed(d);
+
+const clients = new Map(); // peerId -> { id, conn, name, synced, rtt, offset, inRound }
+let peer = null, hostId = null;
+let audioCtx = null, master = null, roundBus = null;
+let phase = 'lobby';       // lobby | syncing | running | collecting | results
+let round = null, roundNo = 0, endTimer = null, resultTimer = null;
+
+/* ---------- networking ---------- */
+function makeId() {
+  const a = 'abcdefghjkmnpqrstuvwxyz23456789';
+  let s = '';
+  for (let i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)];
+  return 'tapsync-' + s;
+}
+
+function setStatus(text, bad) {
+  const el = $('#status');
+  el.textContent = text;
+  el.className = bad ? 'status bad' : 'status';
+}
+
+function initPeer() {
+  hostId = makeId();
+  peer = new Peer(hostId, { debug: 1 });
+  peer.on('open', () => { setStatus('Ready — players can scan the code'); updateQR(); });
+  peer.on('connection', onConnection);
+  peer.on('disconnected', () => {
+    setStatus('Lost signaling server — reconnecting… (connected players stay connected)', true);
+    setTimeout(() => { try { if (!peer.destroyed) peer.reconnect(); } catch (e) {} }, 1500);
+  });
+  peer.on('error', (err) => {
+    console.warn(err);
+    if (err.type === 'unavailable-id') { peer.destroy(); initPeer(); return; }
+    if (err.type === 'peer-unavailable') return;
+    setStatus('Network error: ' + err.type, true);
+  });
+}
+
+function send(conn, msg) { try { if (conn && conn.open) conn.send(msg); } catch (e) { console.warn(e); } }
+
+function onConnection(conn) {
+  conn.on('open', () => {
+    clients.set(conn.peer, { id: conn.peer, conn, name: 'Player', synced: false, rtt: null, offset: null, inRound: false });
+    send(conn, { type: 'welcome' });
+    renderPlayers();
+  });
+  conn.on('data', (msg) => onData(conn, msg));
+  conn.on('close', () => { clients.delete(conn.peer); renderPlayers(); checkAllResults(); });
+  conn.on('error', (e) => console.warn('conn error', e));
+}
+
+function onData(conn, msg) {
+  if (!msg || typeof msg !== 'object') return;
+  // Answer clock pings first and fast.
+  if (msg.type === 'ping') { conn.send({ type: 'pong', id: msg.id, t1: performance.now() }); return; }
+  const c = clients.get(conn.peer);
+  if (!c) return;
+  switch (msg.type) {
+    case 'hello':
+      c.name = String(msg.name || 'Player').slice(0, 24);
+      renderPlayers();
+      break;
+    case 'synced':
+      c.synced = true; c.rtt = +msg.rtt; c.offset = +msg.offset;
+      renderPlayers();
+      break;
+    case 'results':
+      if (round && msg.round === round.no && round.players.includes(c.id)) {
+        round.results.set(c.id, sanitizeResult(msg.result));
+        renderPlayers();
+        checkAllResults();
+      }
+      break;
+  }
+}
+
+function sanitizeResult(r) {
+  const n = (v) => (typeof v === 'number' && isFinite(v)) ? v : null;
+  return {
+    score: n(r.score) ?? 0, hits: n(r.hits) ?? 0, beats: n(r.beats) ?? 0, extra: n(r.extra) ?? 0,
+    meanAbs: n(r.meanAbs), bias: n(r.bias), std: n(r.std), tempo: n(r.tempo),
+    perBeat: Array.isArray(r.perBeat) ? r.perBeat.map(n) : [],
+  };
+}
+
+/* ---------- QR / join link ---------- */
+function defaultClientUrl() {
+  try { return new URL('client.html', location.href).href; } catch (e) { return 'client.html'; }
+}
+function joinUrl() {
+  const base = $('#clientUrl').value.trim() || defaultClientUrl();
+  try { const u = new URL(base, location.href); u.searchParams.set('host', hostId); return u.href; }
+  catch (e) { return base + (base.includes('?') ? '&' : '?') + 'host=' + encodeURIComponent(hostId); }
+}
+function updateQR() {
+  if (!hostId || !peer || !peer.open) return;
+  const url = joinUrl();
+  const el = $('#qr');
+  el.innerHTML = '';
+  new QRCode(el, { text: url, width: 240, height: 240, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+  $('#joinLink').href = url;
+  $('#joinLink').textContent = url;
+  $('#hostCode').textContent = hostId;
+}
+
+/* ---------- settings ---------- */
+function readSettings() {
+  const bpm = clamp(+$('#bpm').value || 100, 30, 260);
+  const graceBeats = clamp(Math.round(+$('#grace').value || 0), 0, 64);
+  const seconds = clamp(+$('#duration').value || 20, 3, 600);
+  const interval = 60000 / bpm;
+  const measureBeats = Math.max(2, Math.round(seconds * 1000 / interval));
+  return { bpm, graceBeats, measureBeats, interval, beatsPerBar: +$('#bar').value || 0 };
+}
+function updateRoundInfo() {
+  const s = readSettings();
+  const total = (s.graceBeats + s.measureBeats) * s.interval / 1000;
+  $('#roundInfo').textContent = `${s.graceBeats} warm-up + ${s.measureBeats} scored beats · ${total.toFixed(1)} s of clicks`;
+}
+
+/* ---------- audio ---------- */
+async function ensureAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+    master = audioCtx.createGain();
+    master.gain.value = 0.9;
+    master.connect(audioCtx.destination);
+    // iOS unlock: play one silent frame
+    const b = audioCtx.createBuffer(1, 1, 22050), src = audioCtx.createBufferSource();
+    src.buffer = b; src.connect(audioCtx.destination); src.start(0);
+  }
+  if (audioCtx.state !== 'running') await audioCtx.resume();
+}
+
+function click(when, accent, dest) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(accent ? 1650 : 1100, when);
+  g.gain.setValueAtTime(0.0001, when);
+  g.gain.exponentialRampToValueAtTime(accent ? 1.0 : 0.6, when + 0.0015);
+  g.gain.exponentialRampToValueAtTime(0.0001, when + 0.07);
+  o.connect(g).connect(dest || master);
+  o.start(when);
+  o.stop(when + 0.08);
+}
+
+// Returns a function converting a performance.now() time to an AudioContext time,
+// so the click leaves the speaker at that performance.now() time.
+function audioMapper() {
+  const ts = audioCtx.getOutputTimestamp ? audioCtx.getOutputTimestamp() : null;
+  if (ts && ts.performanceTime > 0 && ts.contextTime > 0) {
+    const { contextTime, performanceTime } = ts;
+    return (p) => contextTime + (p - performanceTime) / 1000;
+  }
+  const lat = audioCtx.outputLatency || audioCtx.baseLatency || 0;
+  const pc = performance.now(), ac = audioCtx.currentTime;
+  return (p) => ac + (p - pc) / 1000 - lat;
+}
+
+function scheduleClicks(r) {
+  roundBus = audioCtx.createGain();
+  roundBus.connect(master);
+  const map = audioMapper();
+  for (let b = 0; b < r.totalBeats; b++) {
+    const accent = r.beatsPerBar > 0 && b % r.beatsPerBar === 0;
+    click(map(r.startTime + b * r.interval), accent, roundBus);
+  }
+}
+
+async function testSound() {
+  await ensureAudio();
+  const t = audioCtx.currentTime + 0.05;
+  for (let i = 0; i < 4; i++) click(t + i * 0.5, i === 0);
+}
+
+/* ---------- round flow ---------- */
+function waitFor(pred, ms) {
+  return new Promise((res) => {
+    const t0 = performance.now();
+    (function chk() {
+      if (pred()) return res(true);
+      if (performance.now() - t0 > ms) return res(false);
+      setTimeout(chk, 50);
+    })();
+  });
+}
+
+async function startRound() {
+  if (!(phase === 'lobby' || phase === 'results')) return;
+  try { await ensureAudio(); } catch (e) { setStatus('Could not start audio: ' + e.message, true); return; }
+  const s = readSettings();
+  phase = 'syncing';
+  $('#resultsCard').hidden = true;
+  showStage('', 'Synchronizing clocks…', 'Measuring network delay to every player', 0);
+  for (const c of clients.values()) { c.synced = false; c.inRound = false; send(c.conn, { type: 'resync' }); }
+  renderPlayers();
+
+  await waitFor(() => phase !== 'syncing' || [...clients.values()].every((c) => c.synced), SYNC_TIMEOUT_MS);
+  if (phase !== 'syncing') return; // stopped meanwhile
+
+  const players = [...clients.values()].filter((c) => c.synced);
+  if (!players.length) {
+    phase = 'lobby'; $('#stage').hidden = true;
+    setStatus('No player finished syncing — try again', true);
+    renderPlayers();
+    return;
+  }
+
+  roundNo++;
+  const total = s.graceBeats + s.measureBeats;
+  const startTime = performance.now() + LEAD_MS;
+  round = {
+    no: roundNo, ...s, totalBeats: total, startTime, endTime: startTime + total * s.interval,
+    players: players.map((c) => c.id), names: Object.fromEntries(players.map((c) => [c.id, c.name])),
+    results: new Map(),
+  };
+  for (const c of players) {
+    c.inRound = true;
+    send(c.conn, {
+      type: 'start', round: round.no, startTime, bpm: s.bpm, interval: s.interval,
+      graceBeats: s.graceBeats, measureBeats: s.measureBeats, totalBeats: total,
+    });
+  }
+  scheduleClicks(round);
+  phase = 'running';
+  renderPlayers();
+
+  endTimer = setTimeout(() => {
+    if (phase !== 'running') return;
+    phase = 'collecting';
+    resultTimer = setTimeout(finalizeRound, RESULT_WAIT_MS);
+    renderPlayers();
+    checkAllResults();
+  }, round.endTime - performance.now() + s.interval);
+}
+
+function checkAllResults() {
+  if (phase !== 'collecting' || !round) return;
+  const waiting = round.players.filter((id) => !round.results.has(id) && clients.has(id));
+  if (!waiting.length) finalizeRound();
+}
+
+function stopRound() {
+  if (roundBus) { try { roundBus.disconnect(); } catch (e) {} roundBus = null; }
+  clearTimeout(endTimer); clearTimeout(resultTimer);
+  for (const c of clients.values()) { if (c.inRound) send(c.conn, { type: 'abort' }); c.inRound = false; }
+  round = null;
+  phase = 'lobby';
+  $('#stage').hidden = true;
+  renderPlayers();
+}
+
+const mean = (a) => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const stdev = (a) => { if (a.length < 2) return null; const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1)); };
+
+function finalizeRound() {
+  clearTimeout(resultTimer);
+  if (!round || phase === 'results') return;
+  phase = 'results';
+  const r = round;
+  const rows = r.players.filter((id) => r.results.has(id))
+    .map((id) => ({ id, name: clients.get(id)?.name || r.names[id], ...r.results.get(id) }))
+    .sort((a, b) => b.score - a.score);
+  const missing = r.players.filter((id) => !r.results.has(id)).map((id) => r.names[id]);
+
+  const pick = (k) => rows.map((x) => x[k]).filter((v) => v != null);
+  const avg = {
+    score: mean(pick('score')), meanAbs: mean(pick('meanAbs')), bias: mean(pick('bias')),
+    std: mean(pick('std')), tempo: mean(pick('tempo')),
+    hitRate: rows.length ? 100 * rows.reduce((s, x) => s + x.hits, 0) / Math.max(1, rows.reduce((s, x) => s + x.beats, 0)) : null,
+    hits: mean(pick('hits')), extra: mean(pick('extra')),
+  };
+  // Ensemble spread: per scored beat, std-dev of the players' errors; averaged.
+  let spread = null;
+  if (rows.length >= 2) {
+    const spreads = [];
+    for (let j = 0; j < r.measureBeats; j++) {
+      const v = rows.map((x) => x.perBeat[j]).filter((e) => e != null);
+      if (v.length >= 2) spreads.push(stdev(v));
+    }
+    spread = mean(spreads);
+  }
+
+  const stat = (v, k) => `<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`;
+  $('#resRound').textContent = r.no;
+  $('#avgStats').innerHTML =
+    stat(fmt(avg.score), 'Average score') +
+    stat(fmt(avg.meanAbs) + '<small> ms</small>', 'Average timing error') +
+    stat(avg.bias == null ? '—' : fmt(Math.abs(avg.bias)) + `<small> ms ${avg.bias < 0 ? 'early' : 'late'}</small>`, 'Average bias') +
+    stat(fmt(avg.std) + '<small> ms</small>', 'Average consistency (σ)') +
+    stat(fmt(avg.hitRate) + '<small>%</small>', 'Beats hit') +
+    (spread != null ? stat(fmt(spread) + '<small> ms</small>', 'Ensemble spread (σ between players)') : '') +
+    stat(fmt(avg.tempo, 1) + '<small> bpm</small>', `Group tempo (target ${fmt(r.bpm, 0)})`);
+
+  const head = '<tr><th>#</th><th>Player</th><th>Score</th><th>Avg error</th><th>Bias</th><th>σ</th><th>Hits</th><th>Extra</th><th>Tempo</th></tr>';
+  const body = rows.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.name)}</td><td class="score">${fmt(x.score)}</td>
+      <td>${fmt(x.meanAbs)} ms</td><td>${fmtSigned(x.bias)} ms</td><td>${fmt(x.std)} ms</td>
+      <td>${x.hits}/${x.beats}</td><td>${x.extra}</td><td>${fmt(x.tempo, 1)}</td></tr>`).join('');
+  const avgRow = rows.length ? `<tr class="avg"><td></td><td>Average</td><td class="score">${fmt(avg.score)}</td>
+      <td>${fmt(avg.meanAbs)} ms</td><td>${fmtSigned(avg.bias)} ms</td><td>${fmt(avg.std)} ms</td>
+      <td>${fmt(avg.hits, 1)}/${r.measureBeats}</td><td>${fmt(avg.extra, 1)}</td><td>${fmt(avg.tempo, 1)}</td></tr>` : '';
+  const miss = missing.length ? `<tr><td colspan="9" style="text-align:left;color:var(--muted)">No results from: ${missing.map(esc).join(', ')}</td></tr>` : '';
+  $('#resultsTable').innerHTML = head + body + avgRow + miss;
+
+  rows.forEach((x, i) => {
+    const c = clients.get(x.id);
+    if (c) send(c.conn, { type: 'summary', round: r.no, rank: i + 1, of: rows.length, avgScore: avg.score, avgMeanAbs: avg.meanAbs });
+  });
+  for (const c of clients.values()) c.inRound = false;
+  $('#stage').hidden = true;
+  $('#resultsCard').hidden = false;
+  renderPlayers();
+}
+
+/* ---------- UI ---------- */
+function renderPlayers() {
+  const list = [...clients.values()];
+  $('#count').textContent = list.length ? `(${list.length})` : '';
+  const ul = $('#players');
+  if (!list.length) {
+    ul.innerHTML = '<li class="empty">Waiting for players to scan the code…</li>';
+  } else {
+    ul.innerHTML = list.map((c) => {
+      let st;
+      if (round && c.inRound && (phase === 'running' || phase === 'collecting')) {
+        st = round.results.has(c.id) ? '<span class="pill ok">done</span>' : '<span class="pill">playing</span>';
+      } else if (c.synced) {
+        st = `<span class="pill ok">synced · ±${fmt(c.rtt / 2, 1)} ms</span>`;
+      } else {
+        st = '<span class="pill warn">syncing…</span>';
+      }
+      return `<li><b>${esc(c.name)}</b>${st}</li>`;
+    }).join('');
+  }
+  updateButtons();
+}
+
+function updateButtons() {
+  const idle = phase === 'lobby' || phase === 'results';
+  const list = [...clients.values()];
+  const unsynced = list.filter((c) => !c.synced).length;
+  $('#startBtn').disabled = !idle || !list.length || unsynced > 0;
+  $('#startBtn').textContent = phase === 'results' ? 'Sync & play again' : 'Sync & start';
+  $('#stopBtn').hidden = idle;
+  for (const id of ['#bpm', '#grace', '#duration', '#bar']) $(id).disabled = !idle;
+  $('#startHint').textContent =
+    !idle ? '' :
+    !list.length ? 'Waiting for at least one player.' :
+    unsynced ? `Waiting for ${unsynced} player${unsynced > 1 ? 's' : ''} to synchronize…` :
+    `All ${list.length} player${list.length > 1 ? 's' : ''} connected and synchronized.`;
+}
+
+function showStage(cls, phaseText, sub, prog) {
+  const st = $('#stage');
+  st.hidden = false;
+  st.className = 'card wide stage ' + (cls || '');
+  setStage(phaseText, sub, prog);
+}
+let lastStage = '';
+function setStage(phaseText, sub, prog) {
+  const key = phaseText + '|' + sub;
+  if (key !== lastStage) { $('#stagePhase').textContent = phaseText; $('#stageSub').textContent = sub; lastStage = key; }
+  $('#stageBar').style.width = (clamp(prog, 0, 1) * 100).toFixed(2) + '%';
+}
+
+function tick() {
+  requestAnimationFrame(tick);
+  if (!round || !(phase === 'running' || phase === 'collecting')) return;
+  const r = round, now = performance.now(), st = $('#stage'), pulse = $('#pulse');
+  if (now < r.startTime) {
+    st.className = 'card wide stage';
+    pulse.style.setProperty('--p', 0);
+    setStage(`Starting in ${((r.startTime - now) / 1000).toFixed(1)} s`, `${r.players.length} player${r.players.length > 1 ? 's' : ''} · ${fmt(r.bpm)} bpm`, 0);
+    return;
+  }
+  const t = (now - r.startTime) / r.interval, b = Math.floor(t);
+  if (b >= r.totalBeats) {
+    st.className = 'card wide stage';
+    pulse.style.setProperty('--p', 0);
+    setStage('Finished', 'Collecting results…', 1);
+    return;
+  }
+  const frac = t - b;
+  pulse.style.setProperty('--p', Math.max(0, 1 - frac * 2.5).toFixed(3));
+  pulse.classList.toggle('accent', r.beatsPerBar > 0 && b % r.beatsPerBar === 0);
+  if (b < r.graceBeats) {
+    st.className = 'card wide stage warm';
+    setStage('Warm-up', `beat ${b + 1} of ${r.graceBeats} · not scored`, (b + frac) / r.graceBeats);
+  } else {
+    st.className = 'card wide stage score';
+    const m = b - r.graceBeats;
+    setStage('Scoring', `beat ${m + 1} of ${r.measureBeats} · ${((r.endTime - now) / 1000).toFixed(1)} s left`, (m + frac) / r.measureBeats);
+  }
+}
+
+let wakeLock = null;
+async function keepAwake() {
+  try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) {}
+}
+
+/* ---------- boot ---------- */
+$('#clientUrl').value = defaultClientUrl();
+$('#fileWarn').hidden = location.protocol !== 'file:';
+if (location.protocol === 'file:') $('details').open = true;
+$('#clientUrl').addEventListener('change', updateQR);
+for (const id of ['#bpm', '#grace', '#duration', '#bar']) $(id).addEventListener('input', updateRoundInfo);
+$('#testBtn').addEventListener('click', testSound);
+$('#startBtn').addEventListener('click', () => { keepAwake(); startRound(); });
+$('#stopBtn').addEventListener('click', stopRound);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepAwake(); });
+window.addEventListener('beforeunload', () => { try { peer && peer.destroy(); } catch (e) {} });
+
+updateRoundInfo();
+renderPlayers();
+keepAwake();
+if (typeof Peer === 'undefined') setStatus('Could not load PeerJS (check internet connection)', true);
+else initPeer();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

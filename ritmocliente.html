@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0e1014">
+<title>TapSync</title>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<style>
+  :root {
+    --bg: #0e1014; --card: #171a21; --line: #262a34; --text: #e9ebf1; --muted: #8b91a1;
+    --warm: #ffb547; --score: #43e0a1; --bad: #ff6b6b; --accent: #7aa2ff;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overscroll-behavior: none; }
+  .screen { min-height: 100%; padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto;
+    display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+  .screen[hidden] { display: none; }
+  h1 { margin: 0; font-size: 28px; }
+  h1 span { color: var(--muted); font-weight: 500; }
+  p { margin: 0; }
+  .muted { color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  input { width: 100%; background: #0f1218; color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px; font: inherit; font-size: 17px; }
+  button { font: inherit; font-weight: 700; font-size: 17px; border: 0; border-radius: 12px; padding: 14px 18px;
+    background: var(--score); color: #062a1c; width: 100%; cursor: pointer; }
+  button.ghost { background: #222632; color: var(--text); border: 1px solid var(--line); }
+  button:disabled { opacity: .5; }
+  .msg { min-height: 1.4em; font-size: 14px; color: var(--muted); }
+  .msg.bad { color: var(--bad); }
+  .spin { width: 44px; height: 44px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--score);
+    animation: spin 1s linear infinite; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  ol { margin: 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
+  ol li { margin: 4px 0; }
+
+  /* play screen: whole viewport is the tap pad */
+  #play { position: fixed; inset: 0; max-width: none; padding: 0; margin: 0; display: block;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: pointer; }
+  #play[hidden] { display: none; }
+  #pad { position: absolute; inset: 0; background: #111419; transition: background .3s; overflow: hidden; }
+  #play.warm #pad { background: #1e1810; }
+  #play.score #pad { background: #0f1e18; }
+  .hud { position: absolute; left: 0; right: 0; top: calc(28px + env(safe-area-inset-top)); text-align: center; padding: 0 20px; pointer-events: none; }
+  #phase { font-size: 40px; font-weight: 800; letter-spacing: -.01em; }
+  #play.warm #phase { color: var(--warm); }
+  #play.score #phase { color: var(--score); }
+  #sub { color: var(--muted); margin-top: 6px; font-size: 16px; }
+  .bar { height: 6px; background: rgba(255,255,255,.08); border-radius: 99px; margin: 18px auto 0; max-width: 360px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--text); }
+  #play.warm .bar > i { background: var(--warm); }
+  #play.score .bar > i { background: var(--score); }
+  .center { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  #ring { width: 46vmin; height: 46vmin; border-radius: 50%; border: 3px solid rgba(255,255,255,.12);
+    display: grid; place-items: center; font-size: 15px; color: var(--muted); text-align: center; }
+  #ring b { display: block; font-size: 44px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .ripple { position: absolute; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%;
+    background: rgba(255,255,255,.35); pointer-events: none; animation: rip .45s ease-out forwards; }
+  #play.warm .ripple { background: rgba(255,181,71,.45); }
+  #play.score .ripple { background: rgba(67,224,161,.45); }
+  @keyframes rip { from { transform: scale(.3); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
+  .foot { position: absolute; left: 0; right: 0; bottom: calc(22px + env(safe-area-inset-bottom)); text-align: center; color: var(--muted); font-size: 13px; pointer-events: none; }
+
+  /* results */
+  .big { text-align: center; }
+  .big .score { font-size: 84px; font-weight: 800; line-height: 1; color: var(--score); font-variant-numeric: tabular-nums; }
+  .big .grade { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { background: #0f1218; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  .stat .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .v small { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  #chart svg { width: 100%; height: auto; display: block; }
+  #summary { text-align: center; font-size: 15px; }
+  #summary b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<section class="screen" id="join">
+  <h1>TapSync <span>· player</span></h1>
+  <p class="muted">Tap along with the host's metronome and see how tight your timing is.</p>
+  <form class="card" id="joinForm" autocomplete="off">
+    <label for="name">Your name</label>
+    <input id="name" maxlength="24" placeholder="e.g. Ana">
+    <div id="hostRow" style="margin-top:14px">
+      <label for="host">Host code</label>
+      <input id="host" placeholder="tapsync-xxxxxx" autocapitalize="off" spellcheck="false">
+    </div>
+    <div style="margin-top:16px"><button id="joinBtn" type="submit">Join</button></div>
+    <p class="msg" id="joinMsg" style="margin-top:10px"></p>
+  </form>
+</section>
+
+<section class="screen" id="lobby" hidden>
+  <div class="spin"></div>
+  <h1 style="text-align:center" id="lobbyTitle">Connected</h1>
+  <p class="muted" style="text-align:center" id="lobbyMsg">Synchronizing clock…</p>
+  <div class="card">
+    <ol>
+      <li>Keep this screen open. Turn your sound down — listen to the host's clicks.</li>
+      <li>When the round starts, tap <b>anywhere on the screen</b> on every click.</li>
+      <li>The first beats are a warm-up and don't count. Then scoring begins.</li>
+      <li>Keep tapping until the clicks stop. Your results appear right after.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="screen" id="play" hidden>
+  <div id="pad">
+    <div class="hud">
+      <div id="phase">Get ready</div>
+      <div id="sub"></div>
+      <div class="bar"><i id="bar"></i></div>
+    </div>
+    <div class="center"><div id="ring"><div><b id="tapCount">0</b>taps</div></div></div>
+    <div class="foot">Tap anywhere · space bar works too</div>
+  </div>
+</section>
+
+<section class="screen" id="results" hidden>
+  <div class="big">
+    <div class="muted" id="resName"></div>
+    <div class="score" id="resScore">0</div>
+    <div class="grade" id="resGrade"></div>
+  </div>
+  <div class="stats" id="resStats"></div>
+  <div class="card" id="chart"></div>
+  <p class="muted" id="summary">Waiting for the group average…</p>
+  <p class="muted" style="text-align:center;font-size:13px">Stay on this page — the host can start another round.</p>
+</section>
+
+<section class="screen" id="lost" hidden>
+  <h1>Disconnected</h1>
+  <p class="muted" id="lostMsg">The connection to the host was lost.</p>
+  <button id="rejoinBtn">Reconnect</button>
+</section>
+
+<script>
+'use strict';
+const $ = (s) => document.querySelector(s);
+const fmt = (v, d = 0) => (v == null || !isFinite(v)) ? '—' : v.toFixed(d);
+const params = new URLSearchParams(location.search);
+
+let peer = null, conn = null, myName = '';
+let offset = 0, rttBest = null;          // offset = hostClock - myClock (ms)
+let syncing = false, resyncQueued = false, pingSeq = 0;
+const pending = new Map();
+let round = null, taps = [], finishTimer = null, connectTimer = null;
+
+function show(id) { for (const s of document.querySelectorAll('.screen')) s.hidden = s.id !== id; }
+function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function setJoinMsg(t, bad) { const m = $('#joinMsg'); m.textContent = t; m.className = 'msg' + (bad ? ' bad' : ''); }
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* ---------- connect ---------- */
+function join() {
+  myName = $('#name').value.trim().slice(0, 24) || ('Player ' + Math.floor(10 + Math.random() * 90));
+  $('#name').value = myName;
+  store('tapsync-name', myName);
+  const host = $('#host').value.trim();
+  if (!host) { setJoinMsg('Enter the host code shown on the host screen.', true); return; }
+  if (typeof Peer === 'undefined') { setJoinMsg('Could not load PeerJS — check your internet connection.', true); return; }
+
+  $('#joinBtn').disabled = true;
+  setJoinMsg('Connecting…');
+  show('join');
+  keepAwake();
+  cleanup();
+
+  peer = new Peer({ debug: 1 });
+  peer.on('open', () => {
+    conn = peer.connect(host, { reliable: true, serialization: 'json' });
+    wireConn(conn);
+  });
+  peer.on('error', (err) => {
+    console.warn(err);
+    if (conn && conn.open) return; // non-fatal once connected
+    fail(err.type === 'peer-unavailable' ? 'Host not found. Is the host page still open? Rescan the code.' : 'Connection error: ' + err.type);
+  });
+  clearTimeout(connectTimer);
+  connectTimer = setTimeout(() => { if (!conn || !conn.open) fail('Timed out connecting to the host. Try again, or use the same Wi-Fi network.'); }, 20000);
+}
+
+function fail(msg) {
+  clearTimeout(connectTimer);
+  cleanup();
+  show('join');
+  $('#joinBtn').disabled = false;
+  setJoinMsg(msg, true);
+}
+
+function cleanup() {
+  try { if (conn) conn.close(); } catch (e) {}
+  try { if (peer) peer.destroy(); } catch (e) {}
+  conn = null; peer = null;
+  for (const p of pending.values()) p.res(null);
+  pending.clear();
+}
+
+function wireConn(c) {
+  c.on('open', () => {
+    clearTimeout(connectTimer);
+    $('#joinBtn').disabled = false;
+    setJoinMsg('');
+    c.send({ type: 'hello', name: myName });
+    $('#lobbyTitle').textContent = 'Hi, ' + myName;
+    setLobby('Synchronizing clock with the host…');
+    show('lobby');
+    runSync(30);
+  });
+  c.on('data', onData);
+  c.on('close', () => { if (c === conn) lost(); });
+  c.on('error', (e) => console.warn('conn error', e));
+}
+
+function lost() {
+  clearTimeout(finishTimer);
+  round = null;
+  conn = null;
+  show('lost');
+}
+
+function send(msg) { try { if (conn && conn.open) conn.send(msg); } catch (e) { console.warn(e); } }
+
+function onData(m) {
+  if (!m || typeof m !== 'object') return;
+  switch (m.type) {
+    case 'pong': {
+      const t3 = performance.now();
+      const p = pending.get(m.id);
+      if (p) { pending.delete(m.id); p.res({ rtt: t3 - p.t0, offset: m.t1 - (p.t0 + t3) / 2 }); }
+      break;
+    }
+    case 'resync': runSync(16); break;
+    case 'start': startRound(m); break;
+    case 'abort': abortRound(); break;
+    case 'summary': showSummary(m); break;
+  }
+}
+
+/* ---------- clock sync (NTP-style) ---------- */
+function pingOnce() {
+  return new Promise((res) => {
+    const id = ++pingSeq, t0 = performance.now();
+    pending.set(id, { t0, res });
+    send({ type: 'ping', id });
+    setTimeout(() => { if (pending.has(id)) { pending.delete(id); res(null); } }, 1000);
+  });
+}
+
+async function runSync(n) {
+  if (syncing) { resyncQueued = true; return; }
+  syncing = true;
+  try {
+    const samples = [];
+    for (let i = 0; i < n && conn && conn.open; i++) {
+      const s = await pingOnce();
+      if (s) samples.push(s);
+      await sleep(20);
+    }
+    if (samples.length < 3) throw new Error('not enough samples');
+    // Keep the fastest round trips (least queueing delay) and take the median offset.
+    samples.sort((a, b) => a.rtt - b.rtt);
+    const best = samples.slice(0, Math.max(3, Math.ceil(samples.length / 4)));
+    const offs = best.map((s) => s.offset).sort((a, b) => a - b);
+    offset = offs[Math.floor(offs.length / 2)];
+    rttBest = best[0].rtt;
+    send({ type: 'synced', offset, rtt: rttBest });
+    if (!round) setLobby(`Clock synced (±${fmt(rttBest / 2, 1)} ms). Waiting for the host to start…`);
+  } catch (e) {
+    console.warn('sync failed', e);
+    if (conn && conn.open) { setLobby('Sync failed, retrying…'); setTimeout(() => runSync(n), 2000); }
+  } finally {
+    syncing = false;
+    if (resyncQueued) { resyncQueued = false; runSync(16); }
+  }
+}
+
+function setLobby(t) { $('#lobbyMsg').textContent = t; }
+
+/* ---------- round ---------- */
+function startRound(m) {
+  clearTimeout(finishTimer);
+  const startLocal = m.startTime - offset;
+  round = {
+    no: m.round, startTime: m.startTime, startLocal, interval: m.interval, bpm: m.bpm,
+    graceBeats: m.graceBeats, measureBeats: m.measureBeats, totalBeats: m.totalBeats,
+    scoreLocal: startLocal + m.graceBeats * m.interval,
+    endLocal: startLocal + m.totalBeats * m.interval, offset, done: false,
+  };
+  taps = [];
+  $('#tapCount').textContent = '0';
+  $('#summary').textContent = 'Waiting for the group average…';
+  show('play');
+  keepAwake();
+  finishTimer = setTimeout(finishRound, Math.max(0, round.endLocal + m.interval / 2 + 150 - performance.now()));
+}
+
+function abortRound() {
+  clearTimeout(finishTimer);
+  round = null;
+  show('lobby');
+  setLobby('The host stopped the round. Waiting for the next one…');
+}
+
+function onTap(ts, x, y) {
+  if (!round || round.done) return;
+  const now = performance.now();
+  // Event timestamps share performance.now()'s time origin; fall back if a browser disagrees.
+  const t = (typeof ts === 'number' && ts > 0 && Math.abs(ts - now) < 1000) ? ts : now;
+  if (t < round.startLocal - round.interval / 2 || t > round.endLocal + round.interval / 2) return;
+  taps.push(t);
+  $('#tapCount').textContent = taps.length;
+  ripple(x, y);
+  if (navigator.vibrate) { try { navigator.vibrate(8); } catch (e) {} }
+}
+
+function ripple(x, y) {
+  const pad = $('#pad');
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = (x ?? pad.clientWidth / 2) + 'px';
+  r.style.top = (y ?? pad.clientHeight / 2) + 'px';
+  pad.appendChild(r);
+  setTimeout(() => r.remove(), 500);
+}
+
+function finishRound() {
+  if (!round || round.done) return;
+  round.done = true;
+  const res = analyze(round, taps);
+  send({ type: 'results', round: round.no, result: res });
+  renderResults(res, round);
+  show('results');
+}
+
+const mean = (a) => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const stdev = (a) => { if (a.length < 2) return null; const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1)); };
+
+function analyze(r, tapsLocal) {
+  const I = r.interval;
+  const tol = Math.min(I / 4, 150);                 // error at which a hit earns 0 points
+  const tapsH = tapsLocal.map((t) => t + r.offset).sort((a, b) => a - b); // host clock
+  const beats = [];
+  for (let b = r.graceBeats; b < r.totalBeats; b++) beats.push(r.startTime + b * I);
+
+  // Match each scored beat to the nearest unused tap within half a beat.
+  const used = new Set(), perBeat = [];
+  for (const bt of beats) {
+    let best = -1, bd = Infinity;
+    for (let i = 0; i < tapsH.length; i++) {
+      if (used.has(i)) continue;
+      const d = Math.abs(tapsH[i] - bt);
+      if (d < bd && d <= I / 2) { bd = d; best = i; }
+    }
+    if (best >= 0) { used.add(best); perBeat.push(tapsH[best] - bt); } else perBeat.push(null);
+  }
+  const winStart = beats[0] - I / 2, winEnd = beats[beats.length - 1] + I / 2;
+  const extra = tapsH.filter((t, i) => !used.has(i) && t >= winStart && t <= winEnd).length;
+  const errs = perBeat.filter((e) => e != null);
+
+  const acc = errs.reduce((s, e) => s + Math.max(0, 1 - Math.abs(e) / tol), 0);
+  const score = Math.round(100 * acc / (beats.length + extra));
+
+  // Tapped tempo from inter-tap intervals inside the scoring window.
+  const inWin = tapsH.filter((t) => t >= winStart && t <= winEnd);
+  const iois = [];
+  for (let i = 1; i < inWin.length; i++) { const d = inWin[i] - inWin[i - 1]; if (d > I * 0.5 && d < I * 1.5) iois.push(d); }
+  iois.sort((a, b) => a - b);
+  const tempo = iois.length ? 60000 / iois[Math.floor(iois.length / 2)] : null;
+
+  return {
+    score, hits: errs.length, beats: beats.length, extra,
+    meanAbs: errs.length ? mean(errs.map(Math.abs)) : null,
+    bias: errs.length ? mean(errs) : null,
+    std: stdev(errs),
+    tempo, tol,
+    perBeat: perBeat.map((e) => e == null ? null : Math.round(e * 10) / 10),
+  };
+}
+
+function grade(s) {
+  if (s >= 90) return 'Locked in';
+  if (s >= 75) return 'Tight';
+  if (s >= 55) return 'Solid';
+  if (s >= 35) return 'A bit loose';
+  return 'Keep practicing';
+}
+
+function renderResults(res, r) {
+  $('#resName').textContent = myName + ' · round ' + r.no;
+  $('#resScore').textContent = res.score;
+  $('#resGrade').textContent = grade(res.score);
+  const stat = (v, k) => `<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`;
+  const biasTxt = res.bias == null ? '—' : `${fmt(Math.abs(res.bias))}<small> ms ${res.bias < 0 ? 'early' : 'late'}</small>`;
+  $('#resStats').innerHTML =
+    stat(`${fmt(res.meanAbs)}<small> ms</small>`, 'Average timing error') +
+    stat(biasTxt, 'Tendency (bias)') +
+    stat(`${fmt(res.std)}<small> ms</small>`, 'Consistency (σ)') +
+    stat(`${res.hits}<small>/${res.beats}</small>`, 'Beats hit') +
+    stat(`${res.extra}`, 'Extra taps') +
+    stat(`${fmt(res.tempo, 1)}<small> / ${fmt(r.bpm)} bpm</small>`, 'Your tempo');
+  $('#chart').innerHTML = chartSvg(res.perBeat, res.tol, r.interval);
+}
+
+function chartSvg(perBeat, tol, I) {
+  const W = 340, H = 150, padL = 34, padR = 8, padT = 12, padB = 18;
+  const n = perBeat.length, range = Math.max(tol * 2, ...perBeat.filter((e) => e != null).map(Math.abs)) ;
+  const lim = Math.min(range, I / 2);
+  const x = (i) => padL + (n <= 1 ? 0 : i * (W - padL - padR) / (n - 1));
+  const y = (e) => padT + (H - padT - padB) / 2 * (1 - Math.max(-1, Math.min(1, e / lim)));
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Timing error per scored beat">`;
+  s += `<rect x="${padL}" y="${y(tol)}" width="${W - padL - padR}" height="${y(-tol) - y(tol)}" fill="rgba(67,224,161,.08)"/>`;
+  s += `<line x1="${padL}" x2="${W - padR}" y1="${y(0)}" y2="${y(0)}" stroke="#3a4050"/>`;
+  s += `<text x="${padL - 4}" y="${y(lim) + 4}" text-anchor="end" font-size="9" fill="#8b91a1">+${Math.round(lim)}</text>`;
+  s += `<text x="${padL - 4}" y="${y(0) + 3}" text-anchor="end" font-size="9" fill="#8b91a1">0</text>`;
+  s += `<text x="${padL - 4}" y="${y(-lim)}" text-anchor="end" font-size="9" fill="#8b91a1">−${Math.round(lim)}</text>`;
+  s += `<text x="${padL + 2}" y="${padT - 2}" font-size="9" fill="#8b91a1">late (ms)</text>`;
+  s += `<text x="${padL + 2}" y="${H - 4}" font-size="9" fill="#8b91a1">early · each dot is one scored beat</text>`;
+  const pts = [];
+  perBeat.forEach((e, i) => {
+    if (e == null) {
+      s += `<text x="${x(i)}" y="${y(0) + 3}" text-anchor="middle" font-size="9" fill="#ff6b6b">×</text>`;
+      return;
+    }
+    const a = Math.abs(e);
+    const col = a <= tol / 3 ? '#43e0a1' : a <= tol ? '#ffb547' : '#ff6b6b';
+    pts.push(`${x(i).toFixed(1)},${y(e).toFixed(1)}`);
+    s += `<circle cx="${x(i).toFixed(1)}" cy="${y(e).toFixed(1)}" r="3.2" fill="${col}"/>`;
+  });
+  if (pts.length > 1) s = s.replace('<line', `<polyline points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,.15)"/><line`);
+  return s + '</svg>';
+}
+
+function showSummary(m) {
+  if (!round || m.round !== round.no) return;
+  $('#summary').innerHTML = `You placed <b>#${m.rank}</b> of ${m.of}. Group average score: <b>${fmt(m.avgScore)}</b> · average error ${fmt(m.avgMeanAbs)} ms.`;
+}
+
+/* ---------- play screen animation ---------- */
+let lastKey = '';
+function tick() {
+  requestAnimationFrame(tick);
+  if (!round || $('#play').hidden) return;
+  const r = round, now = performance.now();
+  let cls, ph, sub, prog;
+  if (now < r.startLocal) {
+    cls = ''; ph = 'Get ready'; sub = `Clicks start in ${Math.ceil((r.startLocal - now) / 1000)}…`; prog = 0;
+  } else if (now < r.scoreLocal) {
+    cls = 'warm'; ph = 'Start tapping'; sub = 'Warm-up — find the beat (not scored)';
+    prog = (now - r.startLocal) / (r.scoreLocal - r.startLocal);
+  } else if (now < r.endLocal) {
+    cls = 'score'; ph = 'Scoring'; sub = `Keep tapping · ${Math.ceil((r.endLocal - now) / 1000)} s left`;
+    prog = (now - r.scoreLocal) / (r.endLocal - r.scoreLocal);
+  } else {
+    cls = ''; ph = 'Done'; sub = 'Calculating your results…'; prog = 1;
+  }
+  const key = cls + ph + sub;
+  if (key !== lastKey) { $('#play').className = 'screen ' + cls; $('#phase').textContent = ph; $('#sub').textContent = sub; lastKey = key; }
+  $('#bar').style.width = (Math.max(0, Math.min(1, prog)) * 100).toFixed(2) + '%';
+}
+
+/* ---------- misc ---------- */
+let wakeLock = null;
+async function keepAwake() {
+  try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && conn) keepAwake(); });
+
+$('#pad').addEventListener('pointerdown', (e) => { e.preventDefault(); onTap(e.timeStamp, e.offsetX, e.offsetY); }, { passive: false });
+$('#play').addEventListener('touchstart', (e) => e.preventDefault(), { passive: false }); // no scroll/zoom
+$('#play').addEventListener('contextmenu', (e) => e.preventDefault());
+document.addEventListener('keydown', (e) => {
+  if (e.repeat || $('#play').hidden) return;
+  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); onTap(e.timeStamp); }
+});
+$('#joinForm').addEventListener('submit', (e) => { e.preventDefault(); join(); });
+$('#rejoinBtn').addEventListener('click', join);
+window.addEventListener('beforeunload', cleanup);
+
+$('#name').value = load('tapsync-name') || '';
+if (params.get('host')) { $('#host').value = params.get('host'); $('#hostRow').hidden = true; }
+if (!$('#name').value) $('#name').focus();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
