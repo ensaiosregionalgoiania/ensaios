@@ -97,9 +97,9 @@
     <a id="joinLink" target="_blank" rel="noopener"></a>
     <details>
       <summary>URL da página do cliente</summary>
-      <p class="hint">O QR code aponta para cá, com <code>?host=…</code> adicionado. Altere se o client.html estiver em outro lugar.</p>
+      <p class="hint">O QR code aponta para cá, com <code>?host=…</code> adicionado. Altere se o ritmocliente.html estiver em outro lugar.</p>
       <input id="clientUrl" spellcheck="false">
-      <p class="hint warn" id="fileWarn" hidden>Esta página foi aberta a partir de um arquivo local. Celulares não conseguem abrir links file:// — sirva os dois arquivos via HTTPS (ex.: GitHub Pages) ou aponte esta URL para onde o client.html está hospedado.</p>
+      <p class="hint warn" id="fileWarn" hidden>Esta página foi aberta a partir de um arquivo local. Celulares não conseguem abrir links file:// — sirva os dois arquivos via HTTPS (ex.: GitHub Pages) ou aponte esta URL para onde o ritmocliente.html está hospedado.</p>
     </details>
   </section>
 
@@ -238,7 +238,7 @@ function sanitizeResult(r) {
 
 /* ---------- QR / link de entrada ---------- */
 function defaultClientUrl() {
-  try { return new URL('client.html', location.href).href; } catch (e) { return 'client.html'; }
+  try { return new URL('ritmocliente.html', location.href).href; } catch (e) { return 'ritmocliente.html'; }
 }
 function joinUrl() {
   const base = $('#clientUrl').value.trim() || defaultClientUrl();
