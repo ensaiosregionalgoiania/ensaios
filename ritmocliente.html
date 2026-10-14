@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -38,7 +38,7 @@
   ol { margin: 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
   ol li { margin: 4px 0; }
 
-  /* play screen: whole viewport is the tap pad */
+  /* tela de jogo: toda a viewport é a área de toque */
   #play { position: fixed; inset: 0; max-width: none; padding: 0; margin: 0; display: block;
     touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: pointer; }
   #play[hidden] { display: none; }
@@ -65,7 +65,7 @@
   @keyframes rip { from { transform: scale(.3); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
   .foot { position: absolute; left: 0; right: 0; bottom: calc(22px + env(safe-area-inset-bottom)); text-align: center; color: var(--muted); font-size: 13px; pointer-events: none; }
 
-  /* results */
+  /* resultados */
   .big { text-align: center; }
   .big .score { font-size: 84px; font-weight: 800; line-height: 1; color: var(--score); font-variant-numeric: tabular-nums; }
   .big .grade { font-size: 20px; font-weight: 700; margin-top: 4px; }
@@ -82,30 +82,30 @@
 <body>
 
 <section class="screen" id="join">
-  <h1>TapSync <span>· player</span></h1>
-  <p class="muted">Tap along with the host's metronome and see how tight your timing is.</p>
+  <h1>TapSync <span>· jogador</span></h1>
+  <p class="muted">Toque junto com o metrônomo do anfitrião e veja quão preciso é o seu tempo.</p>
   <form class="card" id="joinForm" autocomplete="off">
-    <label for="name">Your name</label>
-    <input id="name" maxlength="24" placeholder="e.g. Ana">
+    <label for="name">Seu nome</label>
+    <input id="name" maxlength="24" placeholder="ex.: Ana">
     <div id="hostRow" style="margin-top:14px">
-      <label for="host">Host code</label>
+      <label for="host">Código do anfitrião</label>
       <input id="host" placeholder="tapsync-xxxxxx" autocapitalize="off" spellcheck="false">
     </div>
-    <div style="margin-top:16px"><button id="joinBtn" type="submit">Join</button></div>
+    <div style="margin-top:16px"><button id="joinBtn" type="submit">Entrar</button></div>
     <p class="msg" id="joinMsg" style="margin-top:10px"></p>
   </form>
 </section>
 
 <section class="screen" id="lobby" hidden>
   <div class="spin"></div>
-  <h1 style="text-align:center" id="lobbyTitle">Connected</h1>
-  <p class="muted" style="text-align:center" id="lobbyMsg">Synchronizing clock…</p>
+  <h1 style="text-align:center" id="lobbyTitle">Conectado</h1>
+  <p class="muted" style="text-align:center" id="lobbyMsg">Sincronizando relógio…</p>
   <div class="card">
     <ol>
-      <li>Keep this screen open. Turn your sound down — listen to the host's clicks.</li>
-      <li>When the round starts, tap <b>anywhere on the screen</b> on every click.</li>
-      <li>The first beats are a warm-up and don't count. Then scoring begins.</li>
-      <li>Keep tapping until the clicks stop. Your results appear right after.</li>
+      <li>Mantenha esta tela aberta. Diminua o som — ouça os cliques do anfitrião.</li>
+      <li>Quando a rodada começar, toque <b>em qualquer lugar da tela</b> a cada clique.</li>
+      <li>As primeiras batidas são um aquecimento e não contam. Depois a pontuação começa.</li>
+      <li>Continue tocando até os cliques pararem. Seus resultados aparecem logo em seguida.</li>
     </ol>
   </div>
 </section>
@@ -113,12 +113,12 @@
 <section class="screen" id="play" hidden>
   <div id="pad">
     <div class="hud">
-      <div id="phase">Get ready</div>
+      <div id="phase">Prepare-se</div>
       <div id="sub"></div>
       <div class="bar"><i id="bar"></i></div>
     </div>
-    <div class="center"><div id="ring"><div><b id="tapCount">0</b>taps</div></div></div>
-    <div class="foot">Tap anywhere · space bar works too</div>
+    <div class="center"><div id="ring"><div><b id="tapCount">0</b>toques</div></div></div>
+    <div class="foot">Toque em qualquer lugar · a barra de espaço também funciona</div>
   </div>
 </section>
 
@@ -130,14 +130,14 @@
   </div>
   <div class="stats" id="resStats"></div>
   <div class="card" id="chart"></div>
-  <p class="muted" id="summary">Waiting for the group average…</p>
-  <p class="muted" style="text-align:center;font-size:13px">Stay on this page — the host can start another round.</p>
+  <p class="muted" id="summary">Aguardando a média do grupo…</p>
+  <p class="muted" style="text-align:center;font-size:13px">Fique nesta página — o anfitrião pode iniciar outra rodada.</p>
 </section>
 
 <section class="screen" id="lost" hidden>
-  <h1>Disconnected</h1>
-  <p class="muted" id="lostMsg">The connection to the host was lost.</p>
-  <button id="rejoinBtn">Reconnect</button>
+  <h1>Desconectado</h1>
+  <p class="muted" id="lostMsg">A conexão com o anfitrião foi perdida.</p>
+  <button id="rejoinBtn">Reconectar</button>
 </section>
 
 <script>
@@ -147,7 +147,7 @@ const fmt = (v, d = 0) => (v == null || !isFinite(v)) ? '—' : v.toFixed(d);
 const params = new URLSearchParams(location.search);
 
 let peer = null, conn = null, myName = '';
-let offset = 0, rttBest = null;          // offset = hostClock - myClock (ms)
+let offset = 0, rttBest = null;          // offset = relógioDoAnfitrião - meuRelógio (ms)
 let syncing = false, resyncQueued = false, pingSeq = 0;
 const pending = new Map();
 let round = null, taps = [], finishTimer = null, connectTimer = null;
@@ -158,17 +158,17 @@ function load(k) { try { return localStorage.getItem(k); } catch (e) { return nu
 function setJoinMsg(t, bad) { const m = $('#joinMsg'); m.textContent = t; m.className = 'msg' + (bad ? ' bad' : ''); }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/* ---------- connect ---------- */
+/* ---------- conexão ---------- */
 function join() {
-  myName = $('#name').value.trim().slice(0, 24) || ('Player ' + Math.floor(10 + Math.random() * 90));
+  myName = $('#name').value.trim().slice(0, 24) || ('Jogador ' + Math.floor(10 + Math.random() * 90));
   $('#name').value = myName;
   store('tapsync-name', myName);
   const host = $('#host').value.trim();
-  if (!host) { setJoinMsg('Enter the host code shown on the host screen.', true); return; }
-  if (typeof Peer === 'undefined') { setJoinMsg('Could not load PeerJS — check your internet connection.', true); return; }
+  if (!host) { setJoinMsg('Digite o código do anfitrião mostrado na tela dele.', true); return; }
+  if (typeof Peer === 'undefined') { setJoinMsg('Não foi possível carregar o PeerJS — verifique sua conexão com a internet.', true); return; }
 
   $('#joinBtn').disabled = true;
-  setJoinMsg('Connecting…');
+  setJoinMsg('Conectando…');
   show('join');
   keepAwake();
   cleanup();
@@ -180,11 +180,11 @@ function join() {
   });
   peer.on('error', (err) => {
     console.warn(err);
-    if (conn && conn.open) return; // non-fatal once connected
-    fail(err.type === 'peer-unavailable' ? 'Host not found. Is the host page still open? Rescan the code.' : 'Connection error: ' + err.type);
+    if (conn && conn.open) return; // não fatal após conectar
+    fail(err.type === 'peer-unavailable' ? 'Anfitrião não encontrado. A página dele ainda está aberta? Escaneie o código novamente.' : 'Erro de conexão: ' + err.type);
   });
   clearTimeout(connectTimer);
-  connectTimer = setTimeout(() => { if (!conn || !conn.open) fail('Timed out connecting to the host. Try again, or use the same Wi-Fi network.'); }, 20000);
+  connectTimer = setTimeout(() => { if (!conn || !conn.open) fail('Tempo esgotado ao conectar com o anfitrião. Tente de novo, ou use a mesma rede Wi-Fi.'); }, 20000);
 }
 
 function fail(msg) {
@@ -209,14 +209,14 @@ function wireConn(c) {
     $('#joinBtn').disabled = false;
     setJoinMsg('');
     c.send({ type: 'hello', name: myName });
-    $('#lobbyTitle').textContent = 'Hi, ' + myName;
-    setLobby('Synchronizing clock with the host…');
+    $('#lobbyTitle').textContent = 'Olá, ' + myName;
+    setLobby('Sincronizando o relógio com o anfitrião…');
     show('lobby');
     runSync(30);
   });
   c.on('data', onData);
   c.on('close', () => { if (c === conn) lost(); });
-  c.on('error', (e) => console.warn('conn error', e));
+  c.on('error', (e) => console.warn('erro de conexão', e));
 }
 
 function lost() {
@@ -244,7 +244,7 @@ function onData(m) {
   }
 }
 
-/* ---------- clock sync (NTP-style) ---------- */
+/* ---------- sincronização de relógio (estilo NTP) ---------- */
 function pingOnce() {
   return new Promise((res) => {
     const id = ++pingSeq, t0 = performance.now();
@@ -264,18 +264,18 @@ async function runSync(n) {
       if (s) samples.push(s);
       await sleep(20);
     }
-    if (samples.length < 3) throw new Error('not enough samples');
-    // Keep the fastest round trips (least queueing delay) and take the median offset.
+    if (samples.length < 3) throw new Error('amostras insuficientes');
+    // Mantém os round-trips mais rápidos (menor atraso de fila) e usa a mediana do offset.
     samples.sort((a, b) => a.rtt - b.rtt);
     const best = samples.slice(0, Math.max(3, Math.ceil(samples.length / 4)));
     const offs = best.map((s) => s.offset).sort((a, b) => a - b);
     offset = offs[Math.floor(offs.length / 2)];
     rttBest = best[0].rtt;
     send({ type: 'synced', offset, rtt: rttBest });
-    if (!round) setLobby(`Clock synced (±${fmt(rttBest / 2, 1)} ms). Waiting for the host to start…`);
+    if (!round) setLobby(`Relógio sincronizado (±${fmt(rttBest / 2, 1)} ms). Aguardando o anfitrião iniciar…`);
   } catch (e) {
-    console.warn('sync failed', e);
-    if (conn && conn.open) { setLobby('Sync failed, retrying…'); setTimeout(() => runSync(n), 2000); }
+    console.warn('falha na sincronização', e);
+    if (conn && conn.open) { setLobby('Falha na sincronização, tentando de novo…'); setTimeout(() => runSync(n), 2000); }
   } finally {
     syncing = false;
     if (resyncQueued) { resyncQueued = false; runSync(16); }
@@ -284,7 +284,7 @@ async function runSync(n) {
 
 function setLobby(t) { $('#lobbyMsg').textContent = t; }
 
-/* ---------- round ---------- */
+/* ---------- rodada ---------- */
 function startRound(m) {
   clearTimeout(finishTimer);
   const startLocal = m.startTime - offset;
@@ -296,7 +296,7 @@ function startRound(m) {
   };
   taps = [];
   $('#tapCount').textContent = '0';
-  $('#summary').textContent = 'Waiting for the group average…';
+  $('#summary').textContent = 'Aguardando a média do grupo…';
   show('play');
   keepAwake();
   finishTimer = setTimeout(finishRound, Math.max(0, round.endLocal + m.interval / 2 + 150 - performance.now()));
@@ -306,13 +306,13 @@ function abortRound() {
   clearTimeout(finishTimer);
   round = null;
   show('lobby');
-  setLobby('The host stopped the round. Waiting for the next one…');
+  setLobby('O anfitrião parou a rodada. Aguardando a próxima…');
 }
 
 function onTap(ts, x, y) {
   if (!round || round.done) return;
   const now = performance.now();
-  // Event timestamps share performance.now()'s time origin; fall back if a browser disagrees.
+  // Os timestamps de evento compartilham a origem de tempo do performance.now(); recorre a now se um navegador discordar.
   const t = (typeof ts === 'number' && ts > 0 && Math.abs(ts - now) < 1000) ? ts : now;
   if (t < round.startLocal - round.interval / 2 || t > round.endLocal + round.interval / 2) return;
   taps.push(t);
@@ -345,12 +345,12 @@ const stdev = (a) => { if (a.length < 2) return null; const m = mean(a); return 
 
 function analyze(r, tapsLocal) {
   const I = r.interval;
-  const tol = Math.min(I / 4, 150);                 // error at which a hit earns 0 points
-  const tapsH = tapsLocal.map((t) => t + r.offset).sort((a, b) => a - b); // host clock
+  const tol = Math.min(I / 4, 150);                 // erro a partir do qual um toque vale 0 pontos
+  const tapsH = tapsLocal.map((t) => t + r.offset).sort((a, b) => a - b); // relógio do anfitrião
   const beats = [];
   for (let b = r.graceBeats; b < r.totalBeats; b++) beats.push(r.startTime + b * I);
 
-  // Match each scored beat to the nearest unused tap within half a beat.
+  // Associa cada batida pontuada ao toque não usado mais próximo dentro de meia batida.
   const used = new Set(), perBeat = [];
   for (const bt of beats) {
     let best = -1, bd = Infinity;
@@ -368,7 +368,7 @@ function analyze(r, tapsLocal) {
   const acc = errs.reduce((s, e) => s + Math.max(0, 1 - Math.abs(e) / tol), 0);
   const score = Math.round(100 * acc / (beats.length + extra));
 
-  // Tapped tempo from inter-tap intervals inside the scoring window.
+  // Tempo tocado a partir dos intervalos entre toques dentro da janela de pontuação.
   const inWin = tapsH.filter((t) => t >= winStart && t <= winEnd);
   const iois = [];
   for (let i = 1; i < inWin.length; i++) { const d = inWin[i] - inWin[i - 1]; if (d > I * 0.5 && d < I * 1.5) iois.push(d); }
@@ -386,26 +386,26 @@ function analyze(r, tapsLocal) {
 }
 
 function grade(s) {
-  if (s >= 90) return 'Locked in';
-  if (s >= 75) return 'Tight';
-  if (s >= 55) return 'Solid';
-  if (s >= 35) return 'A bit loose';
-  return 'Keep practicing';
+  if (s >= 90) return 'No ritmo';
+  if (s >= 75) return 'Preciso';
+  if (s >= 55) return 'Sólido';
+  if (s >= 35) return 'Um pouco solto';
+  return 'Continue praticando';
 }
 
 function renderResults(res, r) {
-  $('#resName').textContent = myName + ' · round ' + r.no;
+  $('#resName').textContent = myName + ' · rodada ' + r.no;
   $('#resScore').textContent = res.score;
   $('#resGrade').textContent = grade(res.score);
   const stat = (v, k) => `<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`;
-  const biasTxt = res.bias == null ? '—' : `${fmt(Math.abs(res.bias))}<small> ms ${res.bias < 0 ? 'early' : 'late'}</small>`;
+  const biasTxt = res.bias == null ? '—' : `${fmt(Math.abs(res.bias))}<small> ms ${res.bias < 0 ? 'adiantado' : 'atrasado'}</small>`;
   $('#resStats').innerHTML =
-    stat(`${fmt(res.meanAbs)}<small> ms</small>`, 'Average timing error') +
-    stat(biasTxt, 'Tendency (bias)') +
-    stat(`${fmt(res.std)}<small> ms</small>`, 'Consistency (σ)') +
-    stat(`${res.hits}<small>/${res.beats}</small>`, 'Beats hit') +
-    stat(`${res.extra}`, 'Extra taps') +
-    stat(`${fmt(res.tempo, 1)}<small> / ${fmt(r.bpm)} bpm</small>`, 'Your tempo');
+    stat(`${fmt(res.meanAbs)}<small> ms</small>`, 'Erro médio de tempo') +
+    stat(biasTxt, 'Tendência (bias)') +
+    stat(`${fmt(res.std)}<small> ms</small>`, 'Consistência (σ)') +
+    stat(`${res.hits}<small>/${res.beats}</small>`, 'Batidas acertadas') +
+    stat(`${res.extra}`, 'Toques extras') +
+    stat(`${fmt(res.tempo, 1)}<small> / ${fmt(r.bpm)} bpm</small>`, 'Seu tempo');
   $('#chart').innerHTML = chartSvg(res.perBeat, res.tol, r.interval);
 }
 
@@ -415,14 +415,14 @@ function chartSvg(perBeat, tol, I) {
   const lim = Math.min(range, I / 2);
   const x = (i) => padL + (n <= 1 ? 0 : i * (W - padL - padR) / (n - 1));
   const y = (e) => padT + (H - padT - padB) / 2 * (1 - Math.max(-1, Math.min(1, e / lim)));
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Timing error per scored beat">`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Erro de tempo por batida pontuada">`;
   s += `<rect x="${padL}" y="${y(tol)}" width="${W - padL - padR}" height="${y(-tol) - y(tol)}" fill="rgba(67,224,161,.08)"/>`;
   s += `<line x1="${padL}" x2="${W - padR}" y1="${y(0)}" y2="${y(0)}" stroke="#3a4050"/>`;
   s += `<text x="${padL - 4}" y="${y(lim) + 4}" text-anchor="end" font-size="9" fill="#8b91a1">+${Math.round(lim)}</text>`;
   s += `<text x="${padL - 4}" y="${y(0) + 3}" text-anchor="end" font-size="9" fill="#8b91a1">0</text>`;
   s += `<text x="${padL - 4}" y="${y(-lim)}" text-anchor="end" font-size="9" fill="#8b91a1">−${Math.round(lim)}</text>`;
-  s += `<text x="${padL + 2}" y="${padT - 2}" font-size="9" fill="#8b91a1">late (ms)</text>`;
-  s += `<text x="${padL + 2}" y="${H - 4}" font-size="9" fill="#8b91a1">early · each dot is one scored beat</text>`;
+  s += `<text x="${padL + 2}" y="${padT - 2}" font-size="9" fill="#8b91a1">atrasado (ms)</text>`;
+  s += `<text x="${padL + 2}" y="${H - 4}" font-size="9" fill="#8b91a1">adiantado · cada ponto é uma batida pontuada</text>`;
   const pts = [];
   perBeat.forEach((e, i) => {
     if (e == null) {
@@ -440,10 +440,10 @@ function chartSvg(perBeat, tol, I) {
 
 function showSummary(m) {
   if (!round || m.round !== round.no) return;
-  $('#summary').innerHTML = `You placed <b>#${m.rank}</b> of ${m.of}. Group average score: <b>${fmt(m.avgScore)}</b> · average error ${fmt(m.avgMeanAbs)} ms.`;
+  $('#summary').innerHTML = `Você ficou em <b>#${m.rank}</b> de ${m.of}. Pontuação média do grupo: <b>${fmt(m.avgScore)}</b> · erro médio ${fmt(m.avgMeanAbs)} ms.`;
 }
 
-/* ---------- play screen animation ---------- */
+/* ---------- animação da tela de jogo ---------- */
 let lastKey = '';
 function tick() {
   requestAnimationFrame(tick);
@@ -451,22 +451,22 @@ function tick() {
   const r = round, now = performance.now();
   let cls, ph, sub, prog;
   if (now < r.startLocal) {
-    cls = ''; ph = 'Get ready'; sub = `Clicks start in ${Math.ceil((r.startLocal - now) / 1000)}…`; prog = 0;
+    cls = ''; ph = 'Prepare-se'; sub = `Os cliques começam em ${Math.ceil((r.startLocal - now) / 1000)}…`; prog = 0;
   } else if (now < r.scoreLocal) {
-    cls = 'warm'; ph = 'Start tapping'; sub = 'Warm-up — find the beat (not scored)';
+    cls = 'warm'; ph = 'Comece a tocar'; sub = 'Aquecimento — encontre a batida (não pontua)';
     prog = (now - r.startLocal) / (r.scoreLocal - r.startLocal);
   } else if (now < r.endLocal) {
-    cls = 'score'; ph = 'Scoring'; sub = `Keep tapping · ${Math.ceil((r.endLocal - now) / 1000)} s left`;
+    cls = 'score'; ph = 'Pontuando'; sub = `Continue tocando · ${Math.ceil((r.endLocal - now) / 1000)} s restantes`;
     prog = (now - r.scoreLocal) / (r.endLocal - r.scoreLocal);
   } else {
-    cls = ''; ph = 'Done'; sub = 'Calculating your results…'; prog = 1;
+    cls = ''; ph = 'Fim'; sub = 'Calculando seus resultados…'; prog = 1;
   }
   const key = cls + ph + sub;
   if (key !== lastKey) { $('#play').className = 'screen ' + cls; $('#phase').textContent = ph; $('#sub').textContent = sub; lastKey = key; }
   $('#bar').style.width = (Math.max(0, Math.min(1, prog)) * 100).toFixed(2) + '%';
 }
 
-/* ---------- misc ---------- */
+/* ---------- diversos ---------- */
 let wakeLock = null;
 async function keepAwake() {
   try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) {}
@@ -474,7 +474,7 @@ async function keepAwake() {
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && conn) keepAwake(); });
 
 $('#pad').addEventListener('pointerdown', (e) => { e.preventDefault(); onTap(e.timeStamp, e.offsetX, e.offsetY); }, { passive: false });
-$('#play').addEventListener('touchstart', (e) => e.preventDefault(), { passive: false }); // no scroll/zoom
+$('#play').addEventListener('touchstart', (e) => e.preventDefault(), { passive: false }); // sem scroll/zoom
 $('#play').addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('keydown', (e) => {
   if (e.repeat || $('#play').hidden) return;

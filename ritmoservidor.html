@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,7 +55,7 @@
   .pill { font-size: 12px; padding: 2px 9px; border-radius: 99px; background: #262a34; color: var(--muted); white-space: nowrap; }
   .pill.ok { background: rgba(67,224,161,.14); color: var(--score); }
   .pill.warn { background: rgba(255,181,71,.14); color: var(--warm); }
-  /* stage */
+  /* palco */
   .stage { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
   .pulse { --p: 0; width: 140px; height: 140px; border-radius: 50%; background: var(--muted);
     transform: scale(calc(.78 + var(--p) * .22)); opacity: calc(.25 + var(--p) * .75); }
@@ -68,7 +68,7 @@
   .bar > i { display: block; height: 100%; width: 0; background: var(--text); border-radius: 99px; }
   .stage.warm .bar > i { background: var(--warm); }
   .stage.score .bar > i { background: var(--score); }
-  /* results */
+  /* resultados */
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
   .stat { background: #0f1218; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
   .stat .v { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -85,42 +85,42 @@
 </head>
 <body>
 <header>
-  <h1>TapSync <span>· host</span></h1>
-  <div id="status" class="status">Connecting to signaling server…</div>
+  <h1>TapSync <span>· anfitrião</span></h1>
+  <div id="status" class="status">Conectando ao servidor de sinalização…</div>
 </header>
 
 <main>
   <section class="card">
-    <h2>Scan to join</h2>
-    <div id="qr">Generating…</div>
+    <h2>Escaneie para entrar</h2>
+    <div id="qr">Gerando…</div>
     <div class="code" id="hostCode">—</div>
     <a id="joinLink" target="_blank" rel="noopener"></a>
     <details>
-      <summary>Client page URL</summary>
-      <p class="hint">The QR code points here, with <code>?host=…</code> added. Change it if client.html lives elsewhere.</p>
+      <summary>URL da página do cliente</summary>
+      <p class="hint">O QR code aponta para cá, com <code>?host=…</code> adicionado. Altere se o client.html estiver em outro lugar.</p>
       <input id="clientUrl" spellcheck="false">
-      <p class="hint warn" id="fileWarn" hidden>This page is opened from a local file. Phones can't open file:// links — serve both files over HTTPS (e.g. GitHub Pages) or point this URL to where client.html is hosted.</p>
+      <p class="hint warn" id="fileWarn" hidden>Esta página foi aberta a partir de um arquivo local. Celulares não conseguem abrir links file:// — sirva os dois arquivos via HTTPS (ex.: GitHub Pages) ou aponte esta URL para onde o client.html está hospedado.</p>
     </details>
   </section>
 
   <section class="card">
-    <h2>Round settings</h2>
-    <div class="field"><label for="bpm">Tempo<small>beats per minute</small></label><input id="bpm" type="number" min="30" max="260" value="100"></div>
-    <div class="field"><label for="grace">Warm-up beats<small>grace period, not scored</small></label><input id="grace" type="number" min="0" max="64" value="8"></div>
-    <div class="field"><label for="duration">Scored time<small>seconds</small></label><input id="duration" type="number" min="3" max="600" value="20"></div>
-    <div class="field"><label for="bar">Accent every<small>beats (louder click)</small></label>
-      <select id="bar"><option value="0">none</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="6">6</option></select></div>
+    <h2>Configurações da rodada</h2>
+    <div class="field"><label for="bpm">Tempo<small>batidas por minuto</small></label><input id="bpm" type="number" min="30" max="260" value="100"></div>
+    <div class="field"><label for="grace">Batidas de aquecimento<small>período de graça, não pontua</small></label><input id="grace" type="number" min="0" max="64" value="8"></div>
+    <div class="field"><label for="duration">Tempo pontuado<small>segundos</small></label><input id="duration" type="number" min="3" max="600" value="20"></div>
+    <div class="field"><label for="bar">Acento a cada<small>batidas (clique mais forte)</small></label>
+      <select id="bar"><option value="0">nenhum</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="6">6</option></select></div>
     <div id="roundInfo"></div>
     <div class="buttons">
-      <button id="testBtn">Test sound</button>
-      <button id="startBtn" class="primary" disabled>Sync &amp; start</button>
-      <button id="stopBtn" class="danger" hidden>Stop</button>
+      <button id="testBtn">Testar som</button>
+      <button id="startBtn" class="primary" disabled>Sincronizar e iniciar</button>
+      <button id="stopBtn" class="danger" hidden>Parar</button>
     </div>
     <div id="startHint"></div>
   </section>
 
   <section class="card">
-    <h2>Players <span id="count"></span></h2>
+    <h2>Jogadores <span id="count"></span></h2>
     <ul id="players"></ul>
   </section>
 
@@ -134,7 +134,7 @@
   </section>
 
   <section class="card wide" id="resultsCard" hidden>
-    <h2>Results · round <span id="resRound"></span></h2>
+    <h2>Resultados · rodada <span id="resRound"></span></h2>
     <div class="stats" id="avgStats"></div>
     <div class="tableWrap"><table id="resultsTable"></table></div>
   </section>
@@ -142,9 +142,9 @@
 
 <script>
 'use strict';
-const LEAD_MS = 3000;          // time between "start" message and first click
-const SYNC_TIMEOUT_MS = 6000;  // max time to wait for clients to resync
-const RESULT_WAIT_MS = 8000;   // max time to wait for results after the last beat
+const LEAD_MS = 3000;          // tempo entre a mensagem "start" e o primeiro clique
+const SYNC_TIMEOUT_MS = 6000;  // tempo máximo de espera para os clientes ressincronizarem
+const RESULT_WAIT_MS = 8000;   // tempo máximo de espera por resultados após a última batida
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -158,7 +158,7 @@ let audioCtx = null, master = null, roundBus = null;
 let phase = 'lobby';       // lobby | syncing | running | collecting | results
 let round = null, roundNo = 0, endTimer = null, resultTimer = null;
 
-/* ---------- networking ---------- */
+/* ---------- rede ---------- */
 function makeId() {
   const a = 'abcdefghjkmnpqrstuvwxyz23456789';
   let s = '';
@@ -175,17 +175,17 @@ function setStatus(text, bad) {
 function initPeer() {
   hostId = makeId();
   peer = new Peer(hostId, { debug: 1 });
-  peer.on('open', () => { setStatus('Ready — players can scan the code'); updateQR(); });
+  peer.on('open', () => { setStatus('Pronto — os jogadores podem escanear o código'); updateQR(); });
   peer.on('connection', onConnection);
   peer.on('disconnected', () => {
-    setStatus('Lost signaling server — reconnecting… (connected players stay connected)', true);
+    setStatus('Servidor de sinalização perdido — reconectando… (jogadores conectados continuam conectados)', true);
     setTimeout(() => { try { if (!peer.destroyed) peer.reconnect(); } catch (e) {} }, 1500);
   });
   peer.on('error', (err) => {
     console.warn(err);
     if (err.type === 'unavailable-id') { peer.destroy(); initPeer(); return; }
     if (err.type === 'peer-unavailable') return;
-    setStatus('Network error: ' + err.type, true);
+    setStatus('Erro de rede: ' + err.type, true);
   });
 }
 
@@ -193,24 +193,24 @@ function send(conn, msg) { try { if (conn && conn.open) conn.send(msg); } catch 
 
 function onConnection(conn) {
   conn.on('open', () => {
-    clients.set(conn.peer, { id: conn.peer, conn, name: 'Player', synced: false, rtt: null, offset: null, inRound: false });
+    clients.set(conn.peer, { id: conn.peer, conn, name: 'Jogador', synced: false, rtt: null, offset: null, inRound: false });
     send(conn, { type: 'welcome' });
     renderPlayers();
   });
   conn.on('data', (msg) => onData(conn, msg));
   conn.on('close', () => { clients.delete(conn.peer); renderPlayers(); checkAllResults(); });
-  conn.on('error', (e) => console.warn('conn error', e));
+  conn.on('error', (e) => console.warn('erro de conexão', e));
 }
 
 function onData(conn, msg) {
   if (!msg || typeof msg !== 'object') return;
-  // Answer clock pings first and fast.
+  // Responde aos pings de relógio primeiro e rápido.
   if (msg.type === 'ping') { conn.send({ type: 'pong', id: msg.id, t1: performance.now() }); return; }
   const c = clients.get(conn.peer);
   if (!c) return;
   switch (msg.type) {
     case 'hello':
-      c.name = String(msg.name || 'Player').slice(0, 24);
+      c.name = String(msg.name || 'Jogador').slice(0, 24);
       renderPlayers();
       break;
     case 'synced':
@@ -236,7 +236,7 @@ function sanitizeResult(r) {
   };
 }
 
-/* ---------- QR / join link ---------- */
+/* ---------- QR / link de entrada ---------- */
 function defaultClientUrl() {
   try { return new URL('client.html', location.href).href; } catch (e) { return 'client.html'; }
 }
@@ -256,7 +256,7 @@ function updateQR() {
   $('#hostCode').textContent = hostId;
 }
 
-/* ---------- settings ---------- */
+/* ---------- configurações ---------- */
 function readSettings() {
   const bpm = clamp(+$('#bpm').value || 100, 30, 260);
   const graceBeats = clamp(Math.round(+$('#grace').value || 0), 0, 64);
@@ -268,17 +268,17 @@ function readSettings() {
 function updateRoundInfo() {
   const s = readSettings();
   const total = (s.graceBeats + s.measureBeats) * s.interval / 1000;
-  $('#roundInfo').textContent = `${s.graceBeats} warm-up + ${s.measureBeats} scored beats · ${total.toFixed(1)} s of clicks`;
+  $('#roundInfo').textContent = `${s.graceBeats} de aquecimento + ${s.measureBeats} batidas pontuadas · ${total.toFixed(1)} s de cliques`;
 }
 
-/* ---------- audio ---------- */
+/* ---------- áudio ---------- */
 async function ensureAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
     master = audioCtx.createGain();
     master.gain.value = 0.9;
     master.connect(audioCtx.destination);
-    // iOS unlock: play one silent frame
+    // Desbloqueio iOS: toca um quadro silencioso
     const b = audioCtx.createBuffer(1, 1, 22050), src = audioCtx.createBufferSource();
     src.buffer = b; src.connect(audioCtx.destination); src.start(0);
   }
@@ -297,8 +297,8 @@ function click(when, accent, dest) {
   o.stop(when + 0.08);
 }
 
-// Returns a function converting a performance.now() time to an AudioContext time,
-// so the click leaves the speaker at that performance.now() time.
+// Retorna uma função que converte um tempo de performance.now() para um tempo do AudioContext,
+// para que o clique saia pelo alto-falante naquele momento de performance.now().
 function audioMapper() {
   const ts = audioCtx.getOutputTimestamp ? audioCtx.getOutputTimestamp() : null;
   if (ts && ts.performanceTime > 0 && ts.contextTime > 0) {
@@ -326,7 +326,7 @@ async function testSound() {
   for (let i = 0; i < 4; i++) click(t + i * 0.5, i === 0);
 }
 
-/* ---------- round flow ---------- */
+/* ---------- fluxo da rodada ---------- */
 function waitFor(pred, ms) {
   return new Promise((res) => {
     const t0 = performance.now();
@@ -340,21 +340,21 @@ function waitFor(pred, ms) {
 
 async function startRound() {
   if (!(phase === 'lobby' || phase === 'results')) return;
-  try { await ensureAudio(); } catch (e) { setStatus('Could not start audio: ' + e.message, true); return; }
+  try { await ensureAudio(); } catch (e) { setStatus('Não foi possível iniciar o áudio: ' + e.message, true); return; }
   const s = readSettings();
   phase = 'syncing';
   $('#resultsCard').hidden = true;
-  showStage('', 'Synchronizing clocks…', 'Measuring network delay to every player', 0);
+  showStage('', 'Sincronizando relógios…', 'Medindo o atraso de rede até cada jogador', 0);
   for (const c of clients.values()) { c.synced = false; c.inRound = false; send(c.conn, { type: 'resync' }); }
   renderPlayers();
 
   await waitFor(() => phase !== 'syncing' || [...clients.values()].every((c) => c.synced), SYNC_TIMEOUT_MS);
-  if (phase !== 'syncing') return; // stopped meanwhile
+  if (phase !== 'syncing') return; // parado nesse meio tempo
 
   const players = [...clients.values()].filter((c) => c.synced);
   if (!players.length) {
     phase = 'lobby'; $('#stage').hidden = true;
-    setStatus('No player finished syncing — try again', true);
+    setStatus('Nenhum jogador terminou de sincronizar — tente de novo', true);
     renderPlayers();
     return;
   }
@@ -423,7 +423,7 @@ function finalizeRound() {
     hitRate: rows.length ? 100 * rows.reduce((s, x) => s + x.hits, 0) / Math.max(1, rows.reduce((s, x) => s + x.beats, 0)) : null,
     hits: mean(pick('hits')), extra: mean(pick('extra')),
   };
-  // Ensemble spread: per scored beat, std-dev of the players' errors; averaged.
+  // Dispersão do conjunto: por batida pontuada, desvio-padrão dos erros dos jogadores; média.
   let spread = null;
   if (rows.length >= 2) {
     const spreads = [];
@@ -437,22 +437,22 @@ function finalizeRound() {
   const stat = (v, k) => `<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`;
   $('#resRound').textContent = r.no;
   $('#avgStats').innerHTML =
-    stat(fmt(avg.score), 'Average score') +
-    stat(fmt(avg.meanAbs) + '<small> ms</small>', 'Average timing error') +
-    stat(avg.bias == null ? '—' : fmt(Math.abs(avg.bias)) + `<small> ms ${avg.bias < 0 ? 'early' : 'late'}</small>`, 'Average bias') +
-    stat(fmt(avg.std) + '<small> ms</small>', 'Average consistency (σ)') +
-    stat(fmt(avg.hitRate) + '<small>%</small>', 'Beats hit') +
-    (spread != null ? stat(fmt(spread) + '<small> ms</small>', 'Ensemble spread (σ between players)') : '') +
-    stat(fmt(avg.tempo, 1) + '<small> bpm</small>', `Group tempo (target ${fmt(r.bpm, 0)})`);
+    stat(fmt(avg.score), 'Pontuação média') +
+    stat(fmt(avg.meanAbs) + '<small> ms</small>', 'Erro médio de tempo') +
+    stat(avg.bias == null ? '—' : fmt(Math.abs(avg.bias)) + `<small> ms ${avg.bias < 0 ? 'adiantado' : 'atrasado'}</small>`, 'Bias médio') +
+    stat(fmt(avg.std) + '<small> ms</small>', 'Consistência média (σ)') +
+    stat(fmt(avg.hitRate) + '<small>%</small>', 'Batidas acertadas') +
+    (spread != null ? stat(fmt(spread) + '<small> ms</small>', 'Dispersão do conjunto (σ entre jogadores)') : '') +
+    stat(fmt(avg.tempo, 1) + '<small> bpm</small>', `Tempo do grupo (alvo ${fmt(r.bpm, 0)})`);
 
-  const head = '<tr><th>#</th><th>Player</th><th>Score</th><th>Avg error</th><th>Bias</th><th>σ</th><th>Hits</th><th>Extra</th><th>Tempo</th></tr>';
+  const head = '<tr><th>#</th><th>Jogador</th><th>Pontuação</th><th>Erro médio</th><th>Bias</th><th>σ</th><th>Acertos</th><th>Extras</th><th>Tempo</th></tr>';
   const body = rows.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.name)}</td><td class="score">${fmt(x.score)}</td>
       <td>${fmt(x.meanAbs)} ms</td><td>${fmtSigned(x.bias)} ms</td><td>${fmt(x.std)} ms</td>
       <td>${x.hits}/${x.beats}</td><td>${x.extra}</td><td>${fmt(x.tempo, 1)}</td></tr>`).join('');
-  const avgRow = rows.length ? `<tr class="avg"><td></td><td>Average</td><td class="score">${fmt(avg.score)}</td>
+  const avgRow = rows.length ? `<tr class="avg"><td></td><td>Média</td><td class="score">${fmt(avg.score)}</td>
       <td>${fmt(avg.meanAbs)} ms</td><td>${fmtSigned(avg.bias)} ms</td><td>${fmt(avg.std)} ms</td>
       <td>${fmt(avg.hits, 1)}/${r.measureBeats}</td><td>${fmt(avg.extra, 1)}</td><td>${fmt(avg.tempo, 1)}</td></tr>` : '';
-  const miss = missing.length ? `<tr><td colspan="9" style="text-align:left;color:var(--muted)">No results from: ${missing.map(esc).join(', ')}</td></tr>` : '';
+  const miss = missing.length ? `<tr><td colspan="9" style="text-align:left;color:var(--muted)">Sem resultados de: ${missing.map(esc).join(', ')}</td></tr>` : '';
   $('#resultsTable').innerHTML = head + body + avgRow + miss;
 
   rows.forEach((x, i) => {
@@ -465,22 +465,22 @@ function finalizeRound() {
   renderPlayers();
 }
 
-/* ---------- UI ---------- */
+/* ---------- interface ---------- */
 function renderPlayers() {
   const list = [...clients.values()];
   $('#count').textContent = list.length ? `(${list.length})` : '';
   const ul = $('#players');
   if (!list.length) {
-    ul.innerHTML = '<li class="empty">Waiting for players to scan the code…</li>';
+    ul.innerHTML = '<li class="empty">Aguardando jogadores escanearem o código…</li>';
   } else {
     ul.innerHTML = list.map((c) => {
       let st;
       if (round && c.inRound && (phase === 'running' || phase === 'collecting')) {
-        st = round.results.has(c.id) ? '<span class="pill ok">done</span>' : '<span class="pill">playing</span>';
+        st = round.results.has(c.id) ? '<span class="pill ok">concluído</span>' : '<span class="pill">jogando</span>';
       } else if (c.synced) {
-        st = `<span class="pill ok">synced · ±${fmt(c.rtt / 2, 1)} ms</span>`;
+        st = `<span class="pill ok">sincronizado · ±${fmt(c.rtt / 2, 1)} ms</span>`;
       } else {
-        st = '<span class="pill warn">syncing…</span>';
+        st = '<span class="pill warn">sincronizando…</span>';
       }
       return `<li><b>${esc(c.name)}</b>${st}</li>`;
     }).join('');
@@ -493,14 +493,14 @@ function updateButtons() {
   const list = [...clients.values()];
   const unsynced = list.filter((c) => !c.synced).length;
   $('#startBtn').disabled = !idle || !list.length || unsynced > 0;
-  $('#startBtn').textContent = phase === 'results' ? 'Sync & play again' : 'Sync & start';
+  $('#startBtn').textContent = phase === 'results' ? 'Sincronizar e jogar de novo' : 'Sincronizar e iniciar';
   $('#stopBtn').hidden = idle;
   for (const id of ['#bpm', '#grace', '#duration', '#bar']) $(id).disabled = !idle;
   $('#startHint').textContent =
     !idle ? '' :
-    !list.length ? 'Waiting for at least one player.' :
-    unsynced ? `Waiting for ${unsynced} player${unsynced > 1 ? 's' : ''} to synchronize…` :
-    `All ${list.length} player${list.length > 1 ? 's' : ''} connected and synchronized.`;
+    !list.length ? 'Aguardando pelo menos um jogador.' :
+    unsynced ? `Aguardando ${unsynced} jogador${unsynced > 1 ? 'es' : ''} sincronizar…` :
+    `Todos os ${list.length} jogador${list.length > 1 ? 'es' : ''} conectados e sincronizados.`;
 }
 
 function showStage(cls, phaseText, sub, prog) {
@@ -523,14 +523,14 @@ function tick() {
   if (now < r.startTime) {
     st.className = 'card wide stage';
     pulse.style.setProperty('--p', 0);
-    setStage(`Starting in ${((r.startTime - now) / 1000).toFixed(1)} s`, `${r.players.length} player${r.players.length > 1 ? 's' : ''} · ${fmt(r.bpm)} bpm`, 0);
+    setStage(`Começando em ${((r.startTime - now) / 1000).toFixed(1)} s`, `${r.players.length} jogador${r.players.length > 1 ? 'es' : ''} · ${fmt(r.bpm)} bpm`, 0);
     return;
   }
   const t = (now - r.startTime) / r.interval, b = Math.floor(t);
   if (b >= r.totalBeats) {
     st.className = 'card wide stage';
     pulse.style.setProperty('--p', 0);
-    setStage('Finished', 'Collecting results…', 1);
+    setStage('Finalizado', 'Coletando resultados…', 1);
     return;
   }
   const frac = t - b;
@@ -538,11 +538,11 @@ function tick() {
   pulse.classList.toggle('accent', r.beatsPerBar > 0 && b % r.beatsPerBar === 0);
   if (b < r.graceBeats) {
     st.className = 'card wide stage warm';
-    setStage('Warm-up', `beat ${b + 1} of ${r.graceBeats} · not scored`, (b + frac) / r.graceBeats);
+    setStage('Aquecimento', `batida ${b + 1} de ${r.graceBeats} · não pontua`, (b + frac) / r.graceBeats);
   } else {
     st.className = 'card wide stage score';
     const m = b - r.graceBeats;
-    setStage('Scoring', `beat ${m + 1} of ${r.measureBeats} · ${((r.endTime - now) / 1000).toFixed(1)} s left`, (m + frac) / r.measureBeats);
+    setStage('Pontuando', `batida ${m + 1} de ${r.measureBeats} · ${((r.endTime - now) / 1000).toFixed(1)} s restantes`, (m + frac) / r.measureBeats);
   }
 }
 
@@ -551,7 +551,7 @@ async function keepAwake() {
   try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) {}
 }
 
-/* ---------- boot ---------- */
+/* ---------- inicialização ---------- */
 $('#clientUrl').value = defaultClientUrl();
 $('#fileWarn').hidden = location.protocol !== 'file:';
 if (location.protocol === 'file:') $('details').open = true;
@@ -566,7 +566,7 @@ window.addEventListener('beforeunload', () => { try { peer && peer.destroy(); } 
 updateRoundInfo();
 renderPlayers();
 keepAwake();
-if (typeof Peer === 'undefined') setStatus('Could not load PeerJS (check internet connection)', true);
+if (typeof Peer === 'undefined') setStatus('Não foi possível carregar o PeerJS (verifique a conexão com a internet)', true);
 else initPeer();
 requestAnimationFrame(tick);
 </script>
