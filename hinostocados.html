@@ -443,6 +443,46 @@
     }
     .qtd-zero { background: #fee2e2; color: #991b1b; }
 
+    /* 🆕 Cards de resumo (totais) */
+    .cards-resumo {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .card-resumo {
+      flex: 1;
+      min-width: 150px;
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: #fff;
+    }
+    .card-resumo .card-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.85;
+      letter-spacing: 0.4px;
+    }
+    .card-resumo .card-valor {
+      font-size: 1.9rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-top: 4px;
+    }
+    .card-resumo .card-sub {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+    .card-resumo.card-hinos {
+      background: linear-gradient(135deg, #1a3a6c, #2c5282);
+      box-shadow: 0 4px 14px rgba(26,58,108,0.25);
+    }
+    .card-resumo.card-cultos {
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      box-shadow: 0 4px 14px rgba(13,148,136,0.25);
+    }
+
     .user-info {
       margin-left: auto;
       display: flex;
@@ -1184,6 +1224,27 @@
 
     function ehAdminGeral() {
       return !congUsuarioLogado || Number(congUsuarioLogado) === 0;
+    }
+
+    // ==========================================
+    // 🆕 CARDS DE RESUMO (totais)
+    // ==========================================
+    function renderizarCardsResumo(totalHinos, totalCultos) {
+      return `
+        <div class="cards-resumo">
+          <div class="card-resumo card-hinos">
+            <div class="card-label">🎵 TOTAL DE HINOS</div>
+            <div class="card-valor">${totalHinos}</div>
+            <div class="card-sub">hinos lançados no período</div>
+          </div>
+
+          <div class="card-resumo card-cultos">
+            <div class="card-label">⛪ TOTAL DE CULTOS</div>
+            <div class="card-valor">${totalCultos}</div>
+            <div class="card-sub">registros no período</div>
+          </div>
+        </div>
+      `;
     }
 
     // ==========================================
@@ -2069,8 +2130,14 @@
     // RENDERIZAÇÃO DO RELATÓRIO
     // ==========================================
     function renderizarRelatorio(container, titulo, lista, info, opcoes = {}) {
+      const cards = opcoes.cardsResumo || "";
+
       if (!lista.length) {
-        container.innerHTML = `<p class="rel-info">Nenhum dado encontrado para os filtros selecionados.</p>`;
+        container.innerHTML = `
+          <div class="rel-titulo">${titulo}</div>
+          ${cards}
+          <p class="rel-info">Nenhum dado encontrado para os filtros selecionados.</p>
+        `;
         return;
       }
 
@@ -2086,6 +2153,7 @@
 
       container.innerHTML = `
         <div class="rel-titulo">${titulo}</div>
+        ${cards}
         <div class="rel-info">${info}</div>
         ${clicavel ? '<div class="rel-info" style="color:#1a3a6c;font-weight:600;">💡 Clique em uma linha para ver as datas em que o hino foi tocado.</div>' : ""}
         <div class="tabela-wrap">
@@ -2249,12 +2317,19 @@
 
         cacheDetalhesHino.clear();
 
-        renderizarRelatorio(relResultadoMais, "🏆 50 Hinos Mais Tocados", lista, info, {
-          clicavel: true,
-          idCong: idCong || null,
-          dataIni: dataIni || null,
-          dataFim: dataFim || null
-        });
+        renderizarRelatorio(
+          relResultadoMais,
+          "🏆 50 Hinos Mais Tocados",
+          lista,
+          info,
+          {
+            clicavel: true,
+            idCong: idCong || null,
+            dataIni: dataIni || null,
+            dataFim: dataFim || null,
+            cardsResumo: renderizarCardsResumo(totalHinosLancados, totalRegistros)
+          }
+        );
       } catch (e) {
         relResultadoMais.innerHTML = "";
         setStatus("❌ " + e.message, "err");
@@ -2288,7 +2363,16 @@
           .slice(0, TOP_N);
 
         const info = `Base: ${totalRegistros} registro(s) • ${totalHinosLancados} hino(s) lançado(s) • hinos ${HINO_MIN} a ${HINO_MAX_REL} • ${filtroTexto(relCongregacaoMenos, idCong, dataIni, dataFim)}`;
-        renderizarRelatorio(relResultadoMenos, "📉 50 Hinos Menos Tocados", lista, info);
+
+        renderizarRelatorio(
+          relResultadoMenos,
+          "📉 50 Hinos Menos Tocados",
+          lista,
+          info,
+          {
+            cardsResumo: renderizarCardsResumo(totalHinosLancados, totalRegistros)
+          }
+        );
       } catch (e) {
         relResultadoMenos.innerHTML = "";
         setStatus("❌ " + e.message, "err");
@@ -2319,11 +2403,14 @@
         const docs = await buscarParaRelatorio(idCong, dataIni, dataFim);
 
         const linhas = [];
+        let totalRegistros = 0;
+
         docs.forEach(doc => {
           const d = doc.data();
           const iso = timestampParaISO(d.data);
           const lista = normalizarHinos(d);
 
+          let temObs = false;
           lista.forEach(({ numero, observacao }) => {
             const obs = String(observacao || "").trim();
             if (numero === null || obs === "") return;
@@ -2335,7 +2422,9 @@
               hino: Number(numero),
               observacao: obs
             });
+            temObs = true;
           });
+          if (temObs) totalRegistros++;
         });
 
         linhas.sort((a, b) => {
@@ -2349,8 +2438,14 @@
           return opt ? opt.textContent : String(id);
         };
 
+        const cards = renderizarCardsResumo(linhas.length, totalRegistros);
+
         if (!linhas.length) {
-          relResultadoObs.innerHTML = `<p class="rel-info">Nenhum hino com observação encontrado para os filtros selecionados.</p>`;
+          relResultadoObs.innerHTML = `
+            <div class="rel-titulo">📝 Hinos com Observação</div>
+            ${cards}
+            <p class="rel-info">Nenhum hino com observação encontrado para os filtros selecionados.</p>
+          `;
           return;
         }
 
@@ -2368,6 +2463,7 @@
 
         relResultadoObs.innerHTML = `
           <div class="rel-titulo">📝 Hinos com Observação</div>
+          ${cards}
           <div class="rel-info">${info}</div>
           <div class="tabela-wrap">
             <table class="tabela-rel">
@@ -2483,19 +2579,28 @@
         return;
       }
 
-      const { itens, infoBase } = ultimoResultadoNunca;
+      const { itens, infoBase, totalHinosTocados, totalCultos } = ultimoResultadoNunca;
 
       const lista = mostrandoSomenteZeros
         ? itens.filter(i => i.qtd === 0)
         : itens;
 
-      if (!lista.length) {
-        relResultadoNunca.innerHTML = `<p class="rel-info">Nenhum hino para mostrar${mostrandoSomenteZeros ? " (todos já foram tocados!)" : ""}.</p>`;
-        return;
-      }
-
       const totalZeros = itens.filter(i => i.qtd === 0).length;
       const totalTocados = itens.length - totalZeros;
+
+      const cards = renderizarCardsResumo(totalHinosTocados, totalCultos);
+
+      if (!lista.length) {
+        relResultadoNunca.innerHTML = `
+          <div class="rel-titulo">🚫 Hinos Nunca Tocados</div>
+          ${cards}
+          <p class="rel-info">Nenhum hino para mostrar${mostrandoSomenteZeros ? " (todos já foram tocados!)" : ""}.</p>
+        `;
+        btnNuncaSomenteZeros.textContent = mostrandoSomenteZeros
+          ? "📋 Mostrar Todos"
+          : "🚫 Somente 0x";
+        return;
+      }
 
       const titulo = mostrandoSomenteZeros
         ? `🚫 Hinos Nunca Tocados (0x) — ${totalZeros} hino(s)`
@@ -2520,6 +2625,7 @@
 
       relResultadoNunca.innerHTML = `
         <div class="rel-titulo">${titulo}</div>
+        ${cards}
         <div class="rel-info">
           ${infoBase} •
           <strong>${totalTocados}</strong> já tocado(s) •
@@ -2573,6 +2679,8 @@
         HINOS_JARDIM_EUROPA.forEach(n => contagem[n] = 0);
 
         let totalRegistros = 0;
+        let totalHinosTocados = 0;
+
         docs.forEach(doc => {
           const d = doc.data();
           const lista = normalizarHinos(d);
@@ -2581,6 +2689,7 @@
             const n = Number(numero);
             if (Number.isInteger(n) && setRepertorio.has(n)) {
               contagem[n]++;
+              totalHinosTocados++;
               achou = true;
             }
           });
@@ -2598,7 +2707,12 @@
 
         const infoBase = `Base: ${totalRegistros} registro(s) • Repertório com ${HINOS_JARDIM_EUROPA.length} hinos • ${filtroTexto(relCongregacaoNunca, CONG_JARDIM_EUROPA, dataIni, dataFim)}`;
 
-        ultimoResultadoNunca = { itens, infoBase };
+        ultimoResultadoNunca = {
+          itens,
+          infoBase,
+          totalHinosTocados,
+          totalCultos: totalRegistros
+        };
         mostrandoSomenteZeros = false;
 
         cacheDetalhesHino.clear();
