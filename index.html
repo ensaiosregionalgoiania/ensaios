@@ -1455,8 +1455,20 @@ const LAYOUT={
   c22:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
 };
 const LAYOUT_FALLBACK = LAYOUT.c06;
-
-function abrirConvite(id,k,t){ convAtual={id,k,tipo:t==="regional"?"Ensaio Regional":"Ensaio Local"}; $("convOut").hidden=true; pintarConvite(); $("sheet").hidden=false; }
+const MODELOS_DISPONIVEIS = Object.keys(LAYOUT);
+function modeloAleatorio(){
+  return MODELOS_DISPONIVEIS[Math.floor(Math.random() * MODELOS_DISPONIVEIS.length)];
+}
+function abrirConvite(id,k,t){
+  modeloAtual = modeloAleatorio();   // ← é AQUI que sorteia
+  convAtual = {id, k, tipo: t==="regional" ? "Ensaio Regional" : "Ensaio Local"};
+  $("convOut").hidden = true;
+  document.querySelectorAll(".sw").forEach(s=>{
+    s.setAttribute("aria-pressed", s.dataset.s === modeloAtual);
+  });
+  pintarConvite();
+  $("sheet").hidden = false;
+}
 
 function pintarConvite(){
   if(!convAtual) return;
@@ -1548,40 +1560,67 @@ function planoManual(){
 function carregarImg(src){ return new Promise((ok,err)=>{ const im=new Image(); im.crossOrigin="anonymous"; im.onload=()=>ok(im); im.onerror=err; im.src=src; }); }
 
 async function gerarImagem(){
-  const ig=IGREJAS[convAtual.id], d=fromKey(convAtual.k), tipo=convAtual.tipo, [rt]=rel(d), L=LAYOUT[modeloAtual];
+  const ig = IGREJAS[convAtual.id];
+  const d  = fromKey(convAtual.k);
+  const tipo = convAtual.tipo;
+  const [rt] = rel(d);
+
+  if(!ig) throw new Error("Casa de oração não encontrada para o convite (id inválido).");
+  if(!d)  throw new Error("Data do convite inválida.");
+
+  const modeloUsado = modeloAtual;
+  const L = LAYOUT[modeloUsado] || LAYOUT_FALLBACK;
+
   const isReg = tipo === "Ensaio Regional";
   const horaExibir = isReg ? (ig.horaRegional || "09:00") : ig.hora;
-  const raw=getComputedStyle(document.documentElement).getPropertyValue("--"+modeloAtual).trim();
-  let bg=null;
+
+  const raw = getComputedStyle(document.documentElement).getPropertyValue("--"+modeloUsado).trim();
+  let bg = null;
   try{
-    const src=raw.replace(/^url\(["']?/,"").replace(/["']?\)$/,"");
-    if(src) bg=await carregarImg(src);
-  }catch(e){ bg=null; }
+    const src = raw.replace(/^url\(["']?/,"").replace(/["']?\)$/,"");
+    if(src) bg = await carregarImg(src);
+  }catch(e){ bg = null; }
+
   try{ await Promise.all(['600 60px "Cormorant Garamond"','italic 600 60px "Cormorant Garamond"','600 30px "Cinzel"'].map(f=>document.fonts.load(f))); }catch(e){}
+
   const W=1080, H=Math.round(W*1808/1344), c=document.createElement("canvas"); c.width=W; c.height=H;
   const x=c.getContext("2d"), cq=W/100;
-  if(bg) x.drawImage(bg,0,0,W,H); else { const g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,"#14264F"); g.addColorStop(1,"#B8883A"); x.fillStyle=g; x.fillRect(0,0,W,H); }
+
+  if(bg) x.drawImage(bg,0,0,W,H);
+  else { const g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,"#14264F"); g.addColorStop(1,"#B8883A"); x.fillStyle=g; x.fillRect(0,0,W,H); }
+
   const CAPS='"Cinzel", Georgia, serif', DISP='"Cormorant Garamond", Georgia, serif';
   const ls=v=>{ if("letterSpacing" in x) x.letterSpacing=v+"px"; };
   const line=(t,font,size,y,color,spacing=0,align="center",lx=W/2)=>{ x.font=font.replace("SZ",size+"px"); x.fillStyle=color; x.textAlign=align; x.textBaseline="alphabetic"; ls(spacing); x.fillText(t,lx+(align==="center"?spacing/2:0),y); ls(0); };
+
   let y=H*L.top;
   y+=3.2*cq; line("CONVITE",'600 SZ '+CAPS,3.2*cq,y,"#8F6420",.2*3.2*cq);
   y+=1.5*cq+11*cq*.9; line(tipo,'600 SZ '+DISP,11*cq,y,"#15223F");
+
   const nomeLimpo=ig.nome.replace(/<\/?b>/gi,"");
   let fs=7*cq; const maxW=W*.86; let linhas;
   for(let tries=0;tries<4;tries++){ x.font=`italic 600 ${fs}px ${DISP}`; linhas=[]; let cur="";
     nomeLimpo.split(/\s+/).forEach(w=>{ const t=cur?cur+" "+w:w; if(x.measureText(t).width>maxW&&cur){ linhas.push(cur); cur=w; } else cur=t; }); if(cur) linhas.push(cur);
     if(linhas.length<=2) break; fs*=.86; }
+
   y+=2.5*cq;
   linhas.forEach(t=>{ y+=fs*1.05; line(t,'italic 600 SZ '+DISP,fs,y,"#15223F"); });
   y+=1.5*cq+3.4*cq; line(ig.cidade.toUpperCase(),'500 SZ '+CAPS,3.4*cq,y,"#15223F",.14*3.4*cq);
+
   const lx=W*L.dl; let yy=H*L.dt; const dc=L.dc;
   const dataTxt=`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")} · ${WD[d.getDay()]}`;
   [["DATA",dataTxt],["HORÁRIO",horaExibir]].forEach(([k,v],i)=>{ if(i) yy+=2.6*cq; yy+=3*cq; line(k,'500 SZ '+CAPS,3*cq,yy,dc,.14*3*cq,"left",lx); yy+=7.4*cq*.95; line(v,'600 SZ '+DISP,7.4*cq,yy,dc,0,"left",lx); });
-  if(L.call){ yy+=2.6*cq; x.font=`italic 500 ${4.6*cq}px ${DISP}`; const txt=(rt==="Hoje"?"É hoje! ":"")+"Contamos com a sua presença."; let cur=""; const ws=txt.split(" ");
+
+  if(L.call){
+    yy+=2.6*cq;
+    x.font=`italic 500 ${4.6*cq}px ${DISP}`;
+    const txt=(rt==="Hoje"?"É hoje! ":"")+"Contamos com a sua presença.";
+    let cur=""; const ws=txt.split(" ");
     ws.forEach((w,i)=>{ const t=cur?cur+" "+w:w; if(x.measureText(t).width>50*cq&&cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); cur=w; } else cur=t; });
-    if(cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); } }
-    return await new Promise((ok,err)=>c.toBlob(b=>b?ok(b):err(new Error("blob")),"image/jpeg",.9));
+    if(cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); }
+  }
+
+  return await new Promise((ok,err)=>c.toBlob(b=>b?ok(b):err(new Error("canvas.toBlob retornou null (imagem grande demais ou canvas bloqueado)")),"image/jpeg",.9));
 }
 
 function nomeArquivo(){ const ig=IGREJAS[convAtual.id]; return ("convite-"+norm(ig.nome.replace(/<\/?b>/gi,"")).replace(/[^a-z0-9]+/g,"-")+".jpg").replace(/-+/g,"-"); }
