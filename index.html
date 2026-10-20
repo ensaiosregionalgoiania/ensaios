@@ -100,7 +100,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   flex:none;
   overflow:hidden;
 }
-.mark i{display:none}
+.mark i {
+    width: 26px;
+    height: 26px;
+    background: #D9B46A;
+    -webkit-mask: var(--logo) center / contain no-repeat;
+    mask: var(--logo) center / contain no-repeat;
+}
 .ccb{font-family:var(--font-caps);font-weight:600;font-size:12px;letter-spacing:.12em;line-height:1.35;color:#D9B46A;min-width:0}
 .ccb small{display:block;font-size:10px;letter-spacing:.2em;color:#F7F1E1;opacity:.7;font-weight:500}
 .hbtns{margin-left:auto;display:flex;gap:6px;align-items:center}
@@ -1429,8 +1435,29 @@ pintarTema(tema!=="auto");
 
 // ---------- convite ----------
 let convTxt="", modeloAtual="c06", convAtual=null, convBlob=null, convGen=0;
-const LAYOUT={ c06:{top:.07,dt:.40,dl:.07,dc:"#15223F",call:true}, c07:{top:.04,dt:.61,dl:.08,dc:"#F7F1E1",call:false}, c10:{top:.12,dt:.48,dl:.13,dc:"#15223F",call:true} };
+const LAYOUT={
+  c01:{top:.07, dt:.45, dl:.30, dc:"#15223F", call:true},
+  c06:{top:.07, dt:.40, dl:.07, dc:"#15223F", call:true},
+  c07:{top:.04, dt:.61, dl:.08, dc:"#F7F1E1", call:false},
+  c09:{top:.12, dt:.48, dl:.30, dc:"#15223F", call:true},
+  c10:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
+  c11:{top:.12, dt:.43, dl:.25, dc:"#15223F", call:true},
+  c12:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
+  c13:{top:.12, dt:.48, dl:.35, dc:"#15223F", call:true},
+  c14:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
+  c15:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
+  c16:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
+  c17:{top:.12, dt:.48, dl:.35, dc:"#F7F1E1", call:false},
+  c18:{top:.08, dt:.40, dl:.20, dc:"#15223F", call:true},
+  c19:{top:.12, dt:.48, dl:.40, dc:"#15223F", call:true},
+  c20:{top:.12, dt:.48, dl:.35, dc:"#F7F1E1", call:false},
+  c21:{top:.12, dt:.48, dl:.50, dc:"#15223F", call:true},
+  c22:{top:.12, dt:.48, dl:.13, dc:"#15223F", call:true},
+};
+const LAYOUT_FALLBACK = LAYOUT.c06;
+
 function abrirConvite(id,k,t){ convAtual={id,k,tipo:t==="regional"?"Ensaio Regional":"Ensaio Local"}; $("convOut").hidden=true; pintarConvite(); $("sheet").hidden=false; }
+
 function pintarConvite(){
   if(!convAtual) return;
   const ig=IGREJAS[convAtual.id], d=fromKey(convAtual.k), tipo=convAtual.tipo, [rt]=rel(d), url=mapsUrl(ig);
@@ -1443,23 +1470,74 @@ function pintarConvite(){
   const wa="https://wa.me/?text="+encodeURIComponent(convTxt);
   $("waBtn").href=wa;
   convBlob=null; const gen=++convGen; prontoWA(false);
-  gerarImagem().then(b=>{ if(gen===convGen){ convBlob=b; prontoWA(true); } }).catch(()=>{ if(gen===convGen) prontoWA(true); });
+  gerarImagem().then(b=>{ if(gen===convGen){ convBlob=b; prontoWA(true); } })
+    .catch(err=>{
+      alert("Não foi possível gerar o convite.\n\nDetalhe técnico: " + (err && err.message ? err.message : String(err)));
+      if(gen===convGen) prontoWA(true);
+    });
 }
 
 function prontoWA(ok){ const b=$("waBtn"); b.querySelector("span").textContent=ok?"Enviar no WhatsApp":"Preparando convite…"; if(ok) b.removeAttribute("aria-busy"); else b.setAttribute("aria-busy","true"); }
 function arquivoConvite(){ return convBlob?new File([convBlob],nomeArquivo(),{type:"image/jpeg"}):null; }
 const ehCelular = () => matchMedia("(pointer:coarse)").matches;
+
 function enviarWhatsApp(e){
-  const file=arquivoConvite();
-  if(file&&navigator.canShare&&navigator.canShare({files:[file],text:convTxt})){
+  try {
+    const file = arquivoConvite();
+
+    if(!navigator.share){
+      e.preventDefault();
+      alert("Não foi possível enviar o convite.\n\nMotivo: este navegador não suporta compartilhamento (navigator.share).\n\nUse 'Copiar imagem' ou salve a imagem abaixo.");
+      planoManual();
+      return;
+    }
+
+    if(!file){
+      e.preventDefault();
+      alert("Não foi possível enviar o convite.\n\nMotivo: a imagem ainda não terminou de ser gerada.\n\nAguarde 1-2 segundos e toque novamente em 'Enviar no WhatsApp'.");
+      return;
+    }
+
+    if(!navigator.canShare){
+      e.preventDefault();
+      alert("Não foi possível enviar o convite.\n\nMotivo: este navegador não permite verificar compartilhamento de arquivos (navigator.canShare ausente).\n\nUse 'Copiar imagem' ou salve a imagem abaixo.");
+      planoManual();
+      return;
+    }
+
+    let canShareFiles = false;
+    try {
+      canShareFiles = navigator.canShare({ files: [file] });
+    } catch (err) {
+      e.preventDefault();
+      alert("Não foi possível enviar o convite.\n\nMotivo: erro ao verificar canShare.\n\nDetalhe técnico: " + (err && err.message ? err.message : String(err)));
+      planoManual();
+      return;
+    }
+
+    if(!canShareFiles){
+      e.preventDefault();
+      alert("Não foi possível enviar o convite.\n\nMotivo: este navegador não aceita compartilhar este arquivo (canShare retornou false).\n\nUse 'Copiar imagem' ou salve a imagem abaixo.");
+      planoManual();
+      return;
+    }
+
     e.preventDefault();
-    navigator.share({files:[file],text:convTxt}).catch(err=>{ if(!err||err.name!=="AbortError") planoManual(); });
-    return;
+    navigator.share({ files: [file] })
+      .then(() => {})
+      .catch(err => {
+        if(err && err.name === "AbortError") return;
+        alert("Não foi possível enviar o convite.\n\nMotivo: falha ao abrir o compartilhamento.\n\nDetalhe técnico: " + (err && err.message ? err.message : String(err)));
+        planoManual();
+      });
+
+  } catch (fatal) {
+    e.preventDefault();
+    alert("Não foi possível enviar o convite.\n\nErro inesperado.\n\nDetalhe técnico: " + (fatal && fatal.message ? fatal.message : String(fatal)));
+    planoManual();
   }
-  if(ehCelular()){ e.preventDefault(); copiarTexto(); planoManual(); return; }
-  try{ navigator.clipboard.write([new ClipboardItem({"image/png":pngDe(convBlob)})]).then(()=>toast("Imagem copiada. No WhatsApp, cole (Ctrl+V)."),()=>planoManual()); }
-  catch(err){ planoManual(); }
 }
+
 function pngDe(blob){ return new Promise((ok,err)=>{ const i=new Image(); i.onload=()=>{ const c=document.createElement("canvas"); c.width=i.width; c.height=i.height; c.getContext("2d").drawImage(i,0,0); c.toBlob(ok,"image/png"); }; i.onerror=err; i.src=URL.createObjectURL(blob); }); }
 function planoManual(){
   $("convMsg").innerHTML = ehCelular()
@@ -1503,7 +1581,7 @@ async function gerarImagem(){
   if(L.call){ yy+=2.6*cq; x.font=`italic 500 ${4.6*cq}px ${DISP}`; const txt=(rt==="Hoje"?"É hoje! ":"")+"Contamos com a sua presença."; let cur=""; const ws=txt.split(" ");
     ws.forEach((w,i)=>{ const t=cur?cur+" "+w:w; if(x.measureText(t).width>50*cq&&cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); cur=w; } else cur=t; });
     if(cur){ yy+=4.6*cq*1.15; line(cur,'italic 500 SZ '+DISP,4.6*cq,yy,dc,0,"left",lx); } }
-  return await new Promise((ok,err)=>c.toBlob(b=>b?ok(b):err(new Error("blob")),"image/jpeg",.9));
+    return await new Promise((ok,err)=>c.toBlob(b=>b?ok(b):err(new Error("blob")),"image/jpeg",.9));
 }
 
 function nomeArquivo(){ const ig=IGREJAS[convAtual.id]; return ("convite-"+norm(ig.nome.replace(/<\/?b>/gi,"")).replace(/[^a-z0-9]+/g,"-")+".jpg").replace(/-+/g,"-"); }
