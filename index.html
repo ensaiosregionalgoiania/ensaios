@@ -1557,34 +1557,39 @@ function enviarWhatsApp(e){
 
     if(!navigator.canShare){
       e.preventDefault();
-      alert("Não foi possível enviar o convite.\n\nMotivo: este navegador não permite verificar compartilhamento de arquivos (navigator.canShare ausente).\n\nUse 'Copiar imagem' ou salve a imagem abaixo.");
+      // Sem canShare: tenta compartilhar só o texto + mostra a imagem para envio manual
+      navigator.share({ text: convTxt }).catch(()=>{});
       planoManual();
       return;
     }
 
+    // 1) Tenta compartilhar arquivo + texto (WhatsApp aceita os dois juntos)
     let canShareFiles = false;
     try {
-      canShareFiles = navigator.canShare({ files: [file] });
+      canShareFiles = navigator.canShare({ files: [file], text: convTxt });
     } catch (err) {
+      canShareFiles = false;
+    }
+
+    if(canShareFiles){
       e.preventDefault();
-      alert("Não foi possível enviar o convite.\n\nMotivo: erro ao verificar canShare.\n\nDetalhe técnico: " + (err && err.message ? err.message : String(err)));
-      planoManual();
+      navigator.share({ files: [file], text: convTxt })
+        .then(() => {})
+        .catch(err => {
+          if(err && err.name === "AbortError") return;
+          // 2) Fallback: compartilha só o texto e mostra a imagem
+          navigator.share({ text: convTxt }).catch(()=>{});
+          planoManual();
+        });
       return;
     }
 
-    if(!canShareFiles){
-      e.preventDefault();
-      alert("Não foi possível enviar o convite.\n\nMotivo: este navegador não aceita compartilhar este arquivo (canShare retornou false).\n\nUse 'Copiar imagem' ou salve a imagem abaixo.");
-      planoManual();
-      return;
-    }
-
+    // 3) Navegador não aceita arquivo+texto: compartilha o texto e mostra a imagem
     e.preventDefault();
-    navigator.share({ files: [file] })
-      .then(() => {})
+    navigator.share({ text: convTxt })
+      .then(() => { planoManual(); })
       .catch(err => {
-        if(err && err.name === "AbortError") return;
-        alert("Não foi possível enviar o convite.\n\nMotivo: falha ao abrir o compartilhamento.\n\nDetalhe técnico: " + (err && err.message ? err.message : String(err)));
+        if(err && err.name === "AbortError") { planoManual(); return; }
         planoManual();
       });
 
