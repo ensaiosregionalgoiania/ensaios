@@ -577,10 +577,11 @@ async function carregarTudo() {
         const e = d.data();
         const diaEnsaio   = recomporDiaEnsaio(e.semana, e.diaSemana);
         const cidadeNome  = e.cidadeId ? (mapCidades[e.cidadeId] || e.cidadeId) : '';
-        const encRegional = e.encarregadoRegionalId
-            ? (mapRegionais[e.encarregadoRegionalId] || e.encarregadoRegionalId)
-            : '';
-        const diasCultoStr = Array.isArray(e.diasCulto) ? e.diasCulto.join('+') : safe(e.diasCulto, '');
+const encRegional = e.encarregadoRegionalId
+    ? (mapRegionais[e.encarregadoRegionalId] || String(e.encarregadoRegionalId))
+    : '';
+
+      const diasCultoStr = Array.isArray(e.diasCulto) ? e.diasCulto.join('+') : safe(e.diasCulto, '');
         const ensaioReg    = (e.ensaioRegional && typeof e.ensaioRegional === 'object')
             ? timestampParaStrBR(e.ensaioRegional)
             : safe(e.ensaioRegional, '');
@@ -774,7 +775,17 @@ function reconstruirDados(){
     });
   });    
   CIDADES.push(...[...new Set(IGREJAS.map(i=>i.cidade))].sort((a,b)=>norm(a).localeCompare(norm(b))));
-  ENCR.push(...[...new Set(IGREJAS.flatMap(i=>(i.encR||"").split(/[\/,]/).map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>norm(a).localeCompare(norm(b))));
+  ENCR.push(...[
+  ...new Set(
+    IGREJAS.flatMap(i => {
+      const v = i.encR;
+      if (v == null) return [];
+      // se for array, junta; se for número/objeto, converte para string
+      const txt = Array.isArray(v) ? v.join("/") : String(v);
+      return txt.split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+    })
+  )
+].sort((a,b)=>norm(a).localeCompare(norm(b))));
   HORAS.push(...[...new Set(IGREJAS.flatMap(i=>[i.hora, i.horaRegional, ...i.cultos.map(c=>c.hora)]))].sort());
 
   IGREJAS.forEach(ig => { ig.prox = proximasIgreja(ig, 4); });
